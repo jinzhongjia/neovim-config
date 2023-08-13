@@ -2,7 +2,7 @@ return {
 	"clang-format",
 	"gofumpt",
 	"goimports",
-	"prettierd",
+	"prettier",
 	"stylua",
 	"jq",
 	"shfmt",
