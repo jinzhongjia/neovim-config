@@ -119,7 +119,6 @@ require("lazy").setup({
     -- gitsigns
     {
         "lewis6991/gitsigns.nvim",
-        enabled = true,
         event = "VeryLazy",
         config = function()
             require("plugin.gitsigns")
@@ -197,14 +196,25 @@ require("lazy").setup({
     {
         "rebelot/kanagawa.nvim",
         -- event = "UIEnter",
+        enabled = true,
+        priority = 1000,
         config = function()
             vim.cmd("colorscheme kanagawa")
         end
     },
     {
         "catppuccin/nvim",
-        enable = false,
-        name = "catppuccin",
-        priority = 1000
+        enabled  = false,
+        name     = "catppuccin",
+        priority = 1000,
+        config   = function()
+            local catppuccin = require("catppuccin")
+
+            catppuccin.setup({
+                flavour = "macchiato",
+            })
+
+            vim.cmd.colorscheme("catppuccin")
+        end
     }
 })
