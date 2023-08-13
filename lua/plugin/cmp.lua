@@ -39,6 +39,7 @@ npairs.add_rules({
 
 local cmp_autopairs = require("nvim-autopairs.completion.cmp")
 
+---@diagnostic disable-next-line: redefined-local
 local cmpMapping = function(cmp)
 	local feedkey = function(key, mode)
 		vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
@@ -106,14 +107,19 @@ local cmpMapping = function(cmp)
 	}
 end
 
+---@diagnostic disable-next-line: missing-fields
 cmp.setup({
 	window = {
+---@diagnostic disable-next-line: missing-fields
 		completion = { -- rounded border; thin-style scrollbar
 			border = "rounded",
+---@diagnostic disable-next-line: assign-type-mismatch
 			scrollbar = "║",
 		},
+---@diagnostic disable-next-line: missing-fields
 		documentation = { -- no border; native-style scrollbar
 			border = "rounded",
+---@diagnostic disable-next-line: assign-type-mismatch
 			scrollbar = "",
 			-- other options
 		},
@@ -145,6 +151,7 @@ cmp.setup({
 	-- Shortcut settings
 	mapping = cmpMapping(cmp),
 	-- Display type icons with lspkind-nvim
+---@diagnostic disable-next-line: missing-fields
 	formatting = {
 		format = lspkind.cmp_format({
 			mode = "symbol",
