@@ -255,6 +255,14 @@ require("lazy").setup({
 	-- On second press the preview will be closed and fold will be opened.
 	-- When preview is opened, the l key will close it and open fold. In all other cases these keys will work as usual.
 	{ "anuvyklack/fold-preview.nvim", dependencies = "anuvyklack/keymap-amend.nvim", config = true },
+	{
+		dir = "~/code/guard.nvim",
+		-- "nvimdev/guard.nvim",
+		event = "VeryLazy",
+		config = function()
+			require("plugin.guard")
+		end,
+	},
 
 	-- fugitive
 	{
