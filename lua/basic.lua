@@ -8,7 +8,6 @@ opt.sidescroll = 5
 opt.number = true
 opt.relativenumber = true
 
-
 -- highlight current row
 opt.cursorline = true
 
@@ -75,6 +74,7 @@ opt.foldcolumn = "1"
 opt.foldlevel = 99
 opt.foldlevelstart = 99
 opt.foldenable = true
+opt.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
 
 vim.g.zig_fmt_autosave = false
 

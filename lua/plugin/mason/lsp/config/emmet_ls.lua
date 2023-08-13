@@ -1,5 +1,5 @@
 local opt = {
-    on_attach = function(client, bufnr) end,
+	on_attach = function(client, bufnr) end,
 }
 
 return opt

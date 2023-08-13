@@ -62,7 +62,7 @@ map("n", "<C-s>", ":w<CR>")
 map("i", "<C-s>", "<ESC>:w<CR>")
 
 -- Configure Copy Shortcuts
-map("v", "<C-c>", '"+y')       -- copy
-map("v", "<C-x>", '"+d')       -- cut
+map("v", "<C-c>", '"+y') -- copy
+map("v", "<C-x>", '"+d') -- cut
 -- map("n", "<C-v>", '"+p') -- paste from system clipboard
 map("i", "<C-v>", '<ESC>"+pa') -- paste from system clipboard
