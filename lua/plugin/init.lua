@@ -273,6 +273,10 @@ require("lazy").setup({
 		"tpope/vim-fugitive",
 		event = "VeryLazy",
 	},
+	{
+		"ziglang/zig.vim",
+		event = "VeryLazy",
+	},
 
 	-- colorscheme
 	{
