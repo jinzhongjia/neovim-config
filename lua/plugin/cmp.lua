@@ -143,14 +143,14 @@ cmp.setup({
         -- For luasnip users.
         { name = 'luasnip' },
 
-    }, { { name = "buffer" }, { name = "path" } }),
+    }, { { name = "buffer" } }),
 
     -- Shortcut settings
     mapping = cmpMapping(cmp),
     -- Display type icons with lspkind-nvim
     formatting = {
         format = lspkind.cmp_format({
-            mode = "symbol_text",
+            mode = "symbol",
             --mode = 'symbol', -- show only symbol annotations
 
             maxwidth = 50, -- prevent the popup from showing more than provided characters (e.g 50 will not show more than 50 characters)
