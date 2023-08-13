@@ -37,7 +37,7 @@ M.mapLSP = function(mapbuf)
 	mapbuf("n", "gj", "<cmd>LspUI diagnostic next<CR>", opt)
 
 	-- format
-	mapbuf("n", "<leader>f", "<cmd>lua vim.lsp.buf.format()<CR>", opt)
+	mapbuf("n", "<leader>f", "<cmd>GuardFmt<CR>", opt)
 
 	-- mapbuf("n", "<C-k>", "<cmd>lua vim.lsp.buf.signature_help()<CR>", opt)
 

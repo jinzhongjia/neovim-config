@@ -127,7 +127,11 @@ require("lazy").setup({
 	{
 		"gelguy/wilder.nvim",
 		event = "VeryLazy",
-		build = ":UpdateRemotePlugins",
+		build = function()
+			vim.cmd([[UpdateRemotePlugins]])
+			vim.cmd(string.format("source %s/rplugin.vim", vim.fn.stdpath("data")))
+		end,
+
 		config = function()
 			require("plugin.wilder")
 		end,
