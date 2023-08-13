@@ -65,6 +65,9 @@ require("lazy").setup({
     -- comment
     {
         "numToStr/Comment.nvim",
+        dependencies = {
+            "JoosepAlviste/nvim-ts-context-commentstring"
+        },
         event = "VeryLazy",
         config = function()
             require("plugin.Comment")
@@ -123,12 +126,65 @@ require("lazy").setup({
         end,
     },
     {
-"gelguy/wilder.nvim",
-event="VeryLazy",
-config=function()
+        "gelguy/wilder.nvim",
+        event = "VeryLazy",
+        build = ':UpdateRemotePlugins',
+        config = function()
+            require("plugin.wilder")
+        end
+    },
+    {
+        "nvim-treesitter/nvim-treesitter",
+        dependencies = { "JoosepAlviste/nvim-ts-context-commentstring" },
+        event = "VeryLazy",
+        build = ":TSUpdate",
+        config = function()
+            require("plugin.nvim-treesitter")
+        end
+    },
+    {
+        "lukas-reineke/indent-blankline.nvim",
+        event = "VeryLazy",
+        config = function()
+            require("plugin.indent-blankline")
+        end,
+    },
+    {
+        "williamboman/mason.nvim",
+        event = "VeryLazy",
+        dependencies = {
+            "neovim/nvim-lspconfig",
+            "williamboman/mason-lspconfig.nvim",
+            "jose-elias-alvarez/null-ls.nvim",
+            "jayp0521/mason-null-ls.nvim",
+            "b0o/schemastore.nvim",
+            "folke/neodev.nvim"
+        },
+        config = function()
+            require("plugin.mason")
+        end
+    },
 
-  require("plugin.wilder")
-end
+    {
+        "hrsh7th/nvim-cmp",
+        dependencies = {
+            "hrsh7th/cmp-nvim-lsp",
+            "hrsh7th/cmp-buffer",
+            "hrsh7th/cmp-path",
+            "hrsh7th/cmp-nvim-lsp-document-symbol",
+            "hrsh7th/cmp-nvim-lsp-signature-help",
+            --
+            "L3MON4D3/LuaSnip",
+            "saadparwaiz1/cmp_luasnip",
+            --- ui denpendences
+            "onsails/lspkind-nvim",
+            --- autopairs
+            "windwp/nvim-autopairs",
+        },
+        event = "VeryLazy",
+        config = function()
+            require("plugin.cmp")
+        end,
     },
 
     -- fugitive
