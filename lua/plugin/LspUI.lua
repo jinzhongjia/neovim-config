@@ -4,8 +4,4 @@ if not status then
 	return
 end
 
-LspUI.setup({
-	lightbulb = {
-		icon = "",
-	},
-})
+LspUI.setup()
