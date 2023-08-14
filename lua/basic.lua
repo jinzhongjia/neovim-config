@@ -50,7 +50,7 @@ opt.writebackup = false
 opt.swapfile = false
 
 opt.updatetime = 300
-opt.timeoutlen = 500
+opt.timeoutlen = 300
 
 opt.splitbelow = true
 opt.splitright = true
