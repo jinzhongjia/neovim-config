@@ -5,6 +5,8 @@ opt.fileencoding = "utf-8"
 opt.scrolloff = 5
 opt.sidescroll = 5
 
+opt.autochdir = true
+
 opt.number = true
 opt.relativenumber = true
 
