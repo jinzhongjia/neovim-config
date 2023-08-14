@@ -97,6 +97,7 @@ require("lazy").setup({
 
 	-- lspui
 	{
+		-- dir = "~/code/LspUI.nvim",
 		"jinzhongjia/LspUI.nvim",
 		branch = "v2",
 		event = "VeryLazy",
@@ -266,8 +267,8 @@ require("lazy").setup({
 		config = true,
 	},
 	{
-		dir = "~/code/guard.nvim",
-		-- "nvimdev/guard.nvim",
+		-- dir = "~/code/guard.nvim",
+		"nvimdev/guard.nvim",
 		event = "VeryLazy",
 		config = function()
 			require("plugin.guard")

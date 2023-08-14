@@ -8,4 +8,6 @@ return {
 	"shfmt",
 	"black",
 	"isort",
+	"luacheck",
+	"hadolint",
 }
