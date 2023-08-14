@@ -3,7 +3,7 @@ if not status then
 	vim.notify("not found cokeline")
 	return
 end
-cokeline.setup()
+cokeline.setup({})
 
 local map = vim.api.nvim_set_keymap
 

@@ -30,7 +30,19 @@ require("lazy").setup({
 	},
 	-- buffer line
 	{
+		"akinsho/bufferline.nvim",
+		dependencies = {
+			"nvim-tree/nvim-web-devicons",
+			"famiu/bufdelete.nvim",
+		},
+		event = "UIEnter",
+		config = function()
+			require("plugin.bufferline")
+		end,
+	},
+	{
 		"willothy/nvim-cokeline",
+		enabled = false,
 		event = "UIEnter",
 		dependencies = {
 			"nvim-lua/plenary.nvim", -- Required for v0.4.0+
