@@ -110,16 +110,16 @@ end
 ---@diagnostic disable-next-line: missing-fields
 cmp.setup({
 	window = {
----@diagnostic disable-next-line: missing-fields
+		---@diagnostic disable-next-line: missing-fields
 		completion = { -- rounded border; thin-style scrollbar
 			border = "rounded",
----@diagnostic disable-next-line: assign-type-mismatch
+			---@diagnostic disable-next-line: assign-type-mismatch
 			scrollbar = "║",
 		},
----@diagnostic disable-next-line: missing-fields
+		---@diagnostic disable-next-line: missing-fields
 		documentation = { -- no border; native-style scrollbar
 			border = "rounded",
----@diagnostic disable-next-line: assign-type-mismatch
+			---@diagnostic disable-next-line: assign-type-mismatch
 			scrollbar = "",
 			-- other options
 		},
@@ -151,7 +151,7 @@ cmp.setup({
 	-- Shortcut settings
 	mapping = cmpMapping(cmp),
 	-- Display type icons with lspkind-nvim
----@diagnostic disable-next-line: missing-fields
+	---@diagnostic disable-next-line: missing-fields
 	formatting = {
 		format = lspkind.cmp_format({
 			mode = "symbol",

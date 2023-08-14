@@ -22,4 +22,3 @@ guard.setup({
 	-- Use lsp if no formatter was defined for this filetype
 	lsp_as_default_formatter = true,
 })
-
