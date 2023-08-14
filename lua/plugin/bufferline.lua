@@ -28,13 +28,13 @@ bufferline.setup({
 	},
 })
 
-tool.map("n", "<Tab>", ":BufferLineMoveNext<cr>")
-tool.map("n", "bn", ":BufferLineMoveNext<cr>")
-tool.map("n", "<S-Tab>", ":BufferLineMovePrev<cr>")
-tool.map("n", "bp", ":BufferLineMovePrev<cr>")
+tool.map("n", "<Tab>", ":BufferLineCycleNext<cr>")
+tool.map("n", "bn", ":BufferLineCycleNext<cr>")
+tool.map("n", "<S-Tab>", ":BufferLineCyclePrev<cr>")
+tool.map("n", "bp", ":BufferLineCyclePrev<cr>")
 tool.map("n", "bd", ":Bdelete<cr>")
 
 tool.map("n", "<leader>bl", ":BufferLineCloseRight<cr>")
 tool.map("n", "<leader>bh", ":BufferLineCloseLeft<cr>")
-tool.map("n", "<leader>bj", ":BufferLineMoveNext<cr>")
-tool.map("n", "<leader>bk", ":BufferLineMovePrev<cr>")
+tool.map("n", "<leader>bn", ":BufferLineMoveNext<cr>")
+tool.map("n", "<leader>bp", ":BufferLineMovePrev<cr>")
