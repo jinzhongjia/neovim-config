@@ -33,24 +33,11 @@ require("lazy").setup({
 		"akinsho/bufferline.nvim",
 		dependencies = {
 			"nvim-tree/nvim-web-devicons",
-			"famiu/bufdelete.nvim",
+			"moll/vim-bbye",
 		},
 		event = "UIEnter",
 		config = function()
 			require("plugin.bufferline")
-		end,
-	},
-	{
-		"willothy/nvim-cokeline",
-		enabled = false,
-		event = "UIEnter",
-		dependencies = {
-			"nvim-lua/plenary.nvim", -- Required for v0.4.0+
-			"nvim-tree/nvim-web-devicons", -- If you want devicons
-			"famiu/bufdelete.nvim",
-		},
-		config = function()
-			require("plugin.cokeline")
 		end,
 	},
 	-- status line
@@ -97,8 +84,8 @@ require("lazy").setup({
 
 	-- lspui
 	{
-		-- dir = "~/code/LspUI.nvim",
-		"jinzhongjia/LspUI.nvim",
+		dir = "~/code/LspUI.nvim",
+		-- "jinzhongjia/LspUI.nvim",
 		branch = "v2",
 		event = "VeryLazy",
 		config = function()
@@ -138,18 +125,6 @@ require("lazy").setup({
 		end,
 	},
 	{
-		"gelguy/wilder.nvim",
-		event = "VeryLazy",
-		build = function()
-			vim.cmd([[UpdateRemotePlugins]])
-			vim.cmd(string.format("source %s/rplugin.vim", vim.fn.stdpath("data")))
-		end,
-
-		config = function()
-			require("plugin.wilder")
-		end,
-	},
-	{
 		"nvim-treesitter/nvim-treesitter",
 		dependencies = { "JoosepAlviste/nvim-ts-context-commentstring" },
 		event = "VeryLazy",
@@ -186,7 +161,11 @@ require("lazy").setup({
 		dependencies = {
 			"hrsh7th/cmp-nvim-lsp",
 			"hrsh7th/cmp-buffer",
-			"hrsh7th/cmp-path",
+			-- "hrsh7th/cmp-path",
+			-- async path
+			"FelipeLema/cmp-async-path",
+			"lukas-reineke/cmp-rg",
+			"hrsh7th/cmp-cmdline",
 			"hrsh7th/cmp-nvim-lsp-document-symbol",
 			"hrsh7th/cmp-nvim-lsp-signature-help",
 			--
@@ -289,6 +268,13 @@ require("lazy").setup({
 	{
 		"ziglang/zig.vim",
 		event = "VeryLazy",
+	},
+	{
+		"voldikss/vim-translator",
+		event = "VeryLazy",
+		config = function()
+			require("plugin.vim-translator")
+		end,
 	},
 
 	-- colorscheme

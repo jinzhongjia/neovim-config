@@ -142,7 +142,9 @@ cmp.setup({
 		-- signature-help
 		{ name = "nvim_lsp_signature_help" },
 
-		{ name = "path" },
+		{ name = "async_path" },
+
+		{ name = "rg" },
 
 		-- For luasnip users.
 		-- { name = 'luasnip' },
@@ -169,12 +171,20 @@ cmp.setup({
 	},
 })
 
--- -- / Find mode uses buffer source
--- cmp.setup.cmdline("/", {
---     mapping = cmp.mapping.preset.cmdline(),
---     sources = {
---         { name = "buffer" },
---     },
--- })
+cmp.setup.cmdline(":", {
+	mapping = cmp.mapping.preset.cmdline(),
+	sources = cmp.config.sources({
+		{ name = "async_path" },
+	}, {
+		{ name = "cmdline" },
+	}),
+})
+
+cmp.setup.cmdline({ "/", "?" }, {
+	mapping = cmp.mapping.preset.cmdline(),
+	sources = {
+		{ name = "buffer" },
+	},
+})
 
 cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
