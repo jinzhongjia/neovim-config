@@ -84,8 +84,8 @@ require("lazy").setup({
 
     -- lspui
     {
-        dir = "~/code/LspUI.nvim",
-        -- "jinzhongjia/LspUI.nvim",
+        -- dir = "~/code/LspUI.nvim",
+        "jinzhongjia/LspUI.nvim",
         branch = "v2",
         event = "VeryLazy",
         config = function()
@@ -146,8 +146,6 @@ require("lazy").setup({
         dependencies = {
             "neovim/nvim-lspconfig",
             "williamboman/mason-lspconfig.nvim",
-            "jose-elias-alvarez/null-ls.nvim",
-            "jayp0521/mason-null-ls.nvim",
             "b0o/schemastore.nvim",
             "folke/neodev.nvim",
         },
