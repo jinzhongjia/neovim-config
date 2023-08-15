@@ -276,6 +276,11 @@ require("lazy").setup({
 			require("plugin.vim-translator")
 		end,
 	},
+	{
+		"m4xshen/smartcolumn.nvim",
+		event = "VeryLazy",
+		opts = {},
+	},
 
 	-- colorscheme
 	{
