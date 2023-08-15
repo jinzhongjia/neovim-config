@@ -16,9 +16,9 @@ map("n", "<leader>fc", ":FloatermKill<CR>")
 map("t", "<leader>fc", "<C-\\><C-n>:FloatermKill<CR>")
 
 if vim.fn.executable("lazygit") then
-	map("n", "<leader>fg", ":FloatermNew lazygit <CR>")
+    map("n", "<leader>fg", ":FloatermNew lazygit <CR>")
 end
 
 if vim.fn.executable("lazydocker") then
-	map("n", "<leader>fd", ":FloatermNew lazydocker <CR>")
+    map("n", "<leader>fd", ":FloatermNew lazydocker <CR>")
 end

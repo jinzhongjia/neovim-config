@@ -17,11 +17,11 @@ opt.signcolumn = "yes"
 
 opt.colorcolumn = "80"
 
-opt.tabstop = 2
-opt.softtabstop = 2
+opt.tabstop = 4
+opt.softtabstop = 4
 opt.shiftround = true
 
-opt.shiftwidth = 2
+opt.shiftwidth = 4
 
 opt.expandtab = true
 
@@ -88,6 +88,6 @@ vim.g.loaded_netrwPlugin = 1
 -- more:https://neovim.io/doc/user/diagnostic.html#diagnostic-signs
 local signs = { Error = "󰅚", Warn = "", Hint = "", Info = "" }
 for type, icon in pairs(signs) do
-	local hl = "DiagnosticSign" .. type
-	vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
+    local hl = "DiagnosticSign" .. type
+    vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
 end

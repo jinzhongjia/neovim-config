@@ -1,7 +1,7 @@
 local status, guard = pcall(require, "guard")
 if not status then
-	vim.notify("not found guard")
-	return
+    vim.notify("not found guard")
+    return
 end
 
 local ft = require("guard.filetype")
@@ -18,8 +18,8 @@ ft("rust"):fmt("rustfmt")
 ft("python"):fmt("black"):append("isort")
 
 guard.setup({
-	-- the only options for the setup function
-	fmt_on_save = false,
-	-- Use lsp if no formatter was defined for this filetype
-	lsp_as_default_formatter = true,
+    -- the only options for the setup function
+    fmt_on_save = false,
+    -- Use lsp if no formatter was defined for this filetype
+    lsp_as_default_formatter = true,
 })
