@@ -165,7 +165,7 @@ cmp.setup({
             before = function(entry, vim_item)
                 --- @cast vim_item vim.CompletedItem
                 -- Source Displays the source of the hint
-                if entry.source.name == "nvim_lsp" then
+                if entry.source.name == "rg" or entry.source.name == "buffer" then
                     vim_item.dup = nil
                 end
                 vim_item.menu = "[" .. string.upper(entry.source.name) .. "]"
