@@ -156,7 +156,7 @@ cmp.setup({
     ---@diagnostic disable-next-line: missing-fields
     formatting = {
         format = lspkind.cmp_format({
-            mode = "symbol",
+            mode = "symbol_text",
             --mode = 'symbol', -- show only symbol annotations
 
             maxwidth = 50, -- prevent the popup from showing more than provided characters (e.g 50 will not show more than 50 characters)
