@@ -284,15 +284,15 @@ require("lazy").setup({
     {
         "rebelot/kanagawa.nvim",
         -- event = "UIEnter",
-        enabled = false,
+        enabled = true,
         priority = 1000,
         config = function()
-            vim.cmd("colorscheme kanagawa")
+            -- vim.cmd("colorscheme kanagawa")
         end,
     },
     {
         "catppuccin/nvim",
-        enabled = false,
+        enabled = true,
         name = "catppuccin",
         priority = 1000,
         config = function()
@@ -302,17 +302,17 @@ require("lazy").setup({
                 flavour = "macchiato",
             })
 
-            vim.cmd.colorscheme("catppuccin")
+            -- vim.cmd.colorscheme("catppuccin")
         end,
     },
     {
         "projekt0n/github-nvim-theme",
-        enabled = false,
+        enabled = true,
         lazy = false, -- make sure we load this during startup if it is your main colorscheme
         priority = 1000, -- make sure to load this before all the other start plugins
         config = function()
             require("github-theme").setup({})
-            vim.cmd("colorscheme github_dark_dimmed")
+            -- vim.cmd("colorscheme github_dark_dimmed")
         end,
     },
     {
