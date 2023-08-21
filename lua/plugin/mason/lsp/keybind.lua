@@ -12,22 +12,26 @@ M.mapLSP = function(mapbuf)
 
     -- go xx
     -- mapbuf("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", opt)
-    mapbuf("n", "gd", "<cmd>Glance definitions<CR>", opt)
+    -- mapbuf("n", "gd", "<cmd>Glance definitions<CR>", opt)
+    mapbuf("n", "gd", "<cmd>LspUI definition<CR>", opt)
 
     -- hover document
     -- mapbuf("n", "gh", "<cmd>lua vim.lsp.buf.hover()<CR>", opt)
     mapbuf("n", "gh", "<cmd>LspUI hover<CR>", opt)
 
     -- declaration
-    mapbuf("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>", opt)
+    -- mapbuf("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>", opt)
+    mapbuf("n", "gD", "<cmd>LspUI declaration<CR>", opt)
 
     -- implementation
     -- mapbuf("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<CR>", opt)
-    mapbuf("n", "gi", "<cmd>Glance implementations<CR>", opt)
+    -- mapbuf("n", "gi", "<cmd>Glance implementations<CR>", opt)
+    mapbuf("n", "gi", "<cmd>LspUI implementation<CR>", opt)
 
     -- references
     -- mapbuf("n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>", opt)
-    mapbuf("n", "gr", "<cmd>Glance references<CR>", opt)
+    -- mapbuf("n", "gr", "<cmd>Glance references<CR>", opt)
+    mapbuf("n", "gr", "<cmd>LspUI reference<CR>", opt)
 
     -- diagnostic
     -- mapbuf("n", "gp", "<cmd>lua vim.diagnostic.open_float()<CR>", opt)
@@ -43,7 +47,8 @@ M.mapLSP = function(mapbuf)
 
     -- type definition
     -- mapbuf("n", "<space>D", "<cmd>lua vim.lsp.buf.type_definition()<CR>", opt)
-    mapbuf("n", "<space>D", "<cmd>Glance type_definitions<CR>", opt)
+    -- mapbuf("n", "gtd", "<cmd>Glance type_definitions<CR>", opt)
+    mapbuf("n", "gtd", "<cmd>LspUI type_definition<CR>", opt)
 end
 
 return M
