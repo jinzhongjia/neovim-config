@@ -176,6 +176,7 @@ require("lazy").setup({
             "onsails/lspkind-nvim",
             --- autopairs
             "windwp/nvim-autopairs",
+            "rafamadriz/friendly-snippets",
         },
         event = "VeryLazy",
         config = function()
