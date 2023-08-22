@@ -95,6 +95,7 @@ require("lazy").setup({
     -- glance
     {
         "dnlhc/glance.nvim",
+        enabled = false,
         event = "VeryLazy",
         config = function()
             require("plugin.glance")

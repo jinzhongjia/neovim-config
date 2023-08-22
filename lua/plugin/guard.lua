@@ -1,7 +1,7 @@
 local status, guard = pcall(require, "guard")
 if not status then
-	vim.notify("not found guard")
-	return
+    vim.notify("not found guard")
+    return
 end
 
 local ft = require("guard.filetype")
@@ -9,24 +9,31 @@ local ft = require("guard.filetype")
 ft("c"):fmt("clang-format")
 -- ft("go"):fmt("gofumpt"):append("goimports")
 ft("go"):fmt({
-	cmd = "gofumpt",
-	stdin = true,
+    cmd = "gofumpt",
+    stdin = true,
 }):append({
-	cmd = "goimports",
-	stdin = true,
+    cmd = "goimports",
+    stdin = true,
 })
 ft("typescript,javascript,typescriptreact"):fmt("prettier")
 -- ft("lua"):fmt("stylua"):lint("luacheck")
 ft("lua"):fmt("stylua")
-ft("zig"):fmt("zigfmt")
-ft("json"):fmt("jq")
+ft("zig"):fmt({
+    cmd = "zig",
+    args = { "fmt", "--stdin" },
+    stdin = true,
+})
+ft("json"):fmt({
+    cmd = "jq",
+    stdin = true,
+})
 ft("sh"):fmt("shfmt")
 ft("rust"):fmt("rustfmt")
 ft("python"):fmt("black"):append("isort")
 
 guard.setup({
-	-- the only options for the setup function
-	fmt_on_save = false,
-	-- Use lsp if no formatter was defined for this filetype
-	lsp_as_default_formatter = true,
+    -- the only options for the setup function
+    fmt_on_save = false,
+    -- Use lsp if no formatter was defined for this filetype
+    lsp_as_default_formatter = true,
 })
