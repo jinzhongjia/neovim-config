@@ -322,7 +322,7 @@ require("lazy").setup({
         config = function()
             local vscode = require("vscode")
             vscode.setup()
-            vscode.load()
+            -- vscode.load()
         end,
     },
     {
@@ -332,6 +332,17 @@ require("lazy").setup({
         priority = 1000,
         config = function()
             -- vim.cmd("colorscheme everblush")
+        end,
+    },
+    {
+        "Mofiqul/adwaita.nvim",
+        enabled = true,
+        priority = 1000,
+        config = function()
+            vim.g.adwaita_darker = false -- for darker version
+            vim.g.adwaita_disable_cursorline = false -- to disable cursorline
+            vim.g.adwaita_transparent = false -- makes the background transparent
+            vim.cmd([[colorscheme adwaita]])
         end,
     },
 })
