@@ -86,7 +86,6 @@ require("lazy").setup({
     {
         -- dir = "~/code/LspUI.nvim",
         "jinzhongjia/LspUI.nvim",
-        branch = "v2",
         event = "VeryLazy",
         config = function()
             require("plugin.LspUI")
