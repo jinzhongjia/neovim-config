@@ -345,4 +345,12 @@ require("lazy").setup({
             -- vim.cmd([[colorscheme adwaita]])
         end,
     },
+    {
+        "JoosepAlviste/palenightfall.nvim",
+        enabled = true,
+        priority = 1000,
+        config = function()
+            -- require("palenightfall").setup()
+        end,
+    },
 })
