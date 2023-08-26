@@ -47,7 +47,6 @@ M.mapLSP = function(buffer_id)
         noremap = true,
         silent = true,
         callback = function()
-            print(666)
             local conform = require("conform")
             conform.format({
                 bufnr = buffer_id,
