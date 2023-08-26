@@ -20,8 +20,8 @@ local function default_confit_builder()
             debounce_text_changes = 150,
         },
         --- @param client lsp.Client
-        on_attach =         ---@param bufnr integer
-function(client, bufnr)
+        ---@param bufnr integer
+        on_attach = function(client, bufnr)
             -- Disable the formatting function and leave it to a special plug-in plug-in for processing
             client.server_capabilities.documentFormattingProvider = false
             client.server_capabilities.documentRangeFormattingProvider = false
