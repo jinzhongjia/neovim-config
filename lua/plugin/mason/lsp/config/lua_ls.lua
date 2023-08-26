@@ -8,4 +8,14 @@ neodev.setup({
     -- add any options here, or leave empty to use the default settings
 })
 
-return {}
+return {
+    settings = {
+        Lua = {
+            hint = {
+                enable = true,
+                arrayIndex = "Enable",
+                setType = true,
+            },
+        },
+    },
+}
