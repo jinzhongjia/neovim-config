@@ -245,11 +245,18 @@ require("lazy").setup({
         config = true,
     },
     {
-        -- dir = "~/code/guard.nvim",
         "nvimdev/guard.nvim",
+        enabled = false,
         event = "VeryLazy",
         config = function()
             require("plugin.guard")
+        end,
+    },
+    {
+        "stevearc/conform.nvim",
+        event = "VeryLazy",
+        config = function()
+            require("plugin.conform")
         end,
     },
     {

@@ -19,17 +19,15 @@ local function default_confit_builder()
         flags = {
             debounce_text_changes = 150,
         },
-        on_attach = function(client, bufnr)
+        --- @param client lsp.Client
+        on_attach =         ---@param bufnr integer
+function(client, bufnr)
             -- Disable the formatting function and leave it to a special plug-in plug-in for processing
             client.server_capabilities.documentFormattingProvider = false
             client.server_capabilities.documentRangeFormattingProvider = false
 
-            local function buf_set_keymap(...)
-                vim.api.nvim_buf_set_keymap(bufnr, ...)
-            end
-
             -- Bind shortcut keys
-            require("plugin.mason.lsp.keybind").mapLSP(buf_set_keymap)
+            require("plugin.mason.lsp.keybind").mapLSP(bufnr)
         end,
     }
 
