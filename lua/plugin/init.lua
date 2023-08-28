@@ -245,14 +245,6 @@ require("lazy").setup({
         config = true,
     },
     {
-        "nvimdev/guard.nvim",
-        enabled = false,
-        event = "VeryLazy",
-        config = function()
-            require("plugin.guard")
-        end,
-    },
-    {
         "stevearc/conform.nvim",
         event = "VeryLazy",
         config = function()
@@ -358,6 +350,15 @@ require("lazy").setup({
         priority = 1000,
         config = function()
             -- require("palenightfall").setup()
+        end,
+    },
+    {
+        "Yazeed1s/oh-lucy.nvim",
+        enabled = true,
+        priority = 1000,
+        config = function()
+            -- vim.cmd([[colorscheme oh-lucy]]) -- for oh-lucy
+            -- vim.cmd([[colorscheme oh-lucy-evening]]) -- for oh-lucy-evening
         end,
     },
 })

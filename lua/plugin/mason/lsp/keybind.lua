@@ -50,7 +50,7 @@ M.mapLSP = function(buffer_id)
             local conform = require("conform")
             conform.format({
                 bufnr = buffer_id,
-                async = true,
+                async = false,
                 lsp_fallback = true,
             })
         end,
