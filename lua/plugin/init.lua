@@ -84,8 +84,8 @@ require("lazy").setup({
 
     -- lspui
     {
-        -- dir = "~/code/LspUI.nvim",
         "jinzhongjia/LspUI.nvim",
+        dev = true,
         event = "VeryLazy",
         config = function()
             require("plugin.LspUI")
@@ -355,5 +355,10 @@ require("lazy").setup({
             -- vim.cmd([[colorscheme oh-lucy]]) -- for oh-lucy
             -- vim.cmd([[colorscheme oh-lucy-evening]]) -- for oh-lucy-evening
         end,
+    },
+}, {
+    dev = {
+        path = "~/code",
+        fallback = true,
     },
 })
