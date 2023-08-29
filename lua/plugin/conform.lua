@@ -25,8 +25,6 @@ conform.setup({
             formatters = { "isort", "black" },
             -- Run formatters one after another instead of stopping at the first success
             run_all_formatters = true,
-            -- Don't run these formatters as part of the format_on_save autocmd (see below)
-            format_on_save = false,
         },
         zig = { "zigfmt" },
     },
