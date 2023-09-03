@@ -11,15 +11,15 @@ conform.setup({
             formatters = { "gofumpt", "goimports" },
             run_all_formatters = true,
         },
-        html = { "prettier_d" },
+        html = { "prettierd" },
         json = { "jq" },
         rust = { "rustfmt" },
         bash = { "shfmt" },
         lua = { "stylua" },
         -- Conform will use the first available formatter in the list
-        javascript = { "prettier_d" },
-        typescript = { "prettier_d" },
-        vue = { "prettier_d" },
+        javascript = { "prettierd" },
+        typescript = { "prettierd" },
+        vue = { "prettierd" },
         -- Formatters can also be specified with additional options
         python = {
             formatters = { "isort", "black" },
