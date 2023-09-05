@@ -2,9 +2,8 @@ return {
     "clang-format",
     "gofumpt",
     "goimports",
-    "prettierd",
+    "prettierd", -- prettier for jsx, angular, flow, vue, typescript, css, less, scss, html, json, markdown, yaml
     "stylua",
-    "jq",
     "shfmt",
     "black",
     "isort",

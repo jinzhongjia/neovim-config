@@ -12,7 +12,8 @@ conform.setup({
             run_all_formatters = true,
         },
         html = { "prettierd" },
-        json = { "jq" },
+        json = { "prettierd" },
+        jsonc = { "prettierd" },
         rust = { "rustfmt" },
         bash = { "shfmt" },
         lua = { "stylua" },
@@ -27,5 +28,8 @@ conform.setup({
             run_all_formatters = true,
         },
         zig = { "zigfmt" },
+        markdown = {
+            "prettierd",
+        },
     },
 })
