@@ -20,6 +20,8 @@ conform.setup({
         -- Conform will use the first available formatter in the list
         javascript = { "prettierd" },
         typescript = { "prettierd" },
+        javascriptreact = { "prettierd" },
+        typescriptreact = { "prettierd" },
         vue = { "prettierd" },
         -- Formatters can also be specified with additional options
         python = {
