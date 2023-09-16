@@ -32,6 +32,7 @@ conform.setup({
         zig = { "zigfmt" },
         markdown = {
             "prettierd",
+            "markdownlint"
         },
     },
 })
