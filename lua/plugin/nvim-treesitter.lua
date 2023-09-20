@@ -71,7 +71,4 @@ treesitter.setup({
     context_commentstring = {
         enable = true,
     },
-    markid = {
-        enable = true,
-    },
 })
