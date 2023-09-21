@@ -91,6 +91,14 @@ require("lazy").setup({
             require("plugin.LspUI")
         end,
     },
+    {
+        "jinzhongjia/Zig.nvim",
+        dev = true,
+        event = "VeryLazy",
+        config = function()
+            require("Zig").setup()
+        end,
+    },
     -- glance
     {
         "dnlhc/glance.nvim",
@@ -263,10 +271,6 @@ require("lazy").setup({
     -- fugitive
     {
         "tpope/vim-fugitive",
-        event = "VeryLazy",
-    },
-    {
-        "ziglang/zig.vim",
         event = "VeryLazy",
     },
     {
