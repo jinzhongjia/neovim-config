@@ -362,6 +362,17 @@ require("lazy").setup({
             -- vim.cmd([[colorscheme oh-lucy-evening]]) -- for oh-lucy-evening
         end,
     },
+    {
+        "Yagua/nebulous.nvim",
+        enabled = true,
+        priority = 1000,
+        config = function()
+            -- more details, see github
+            -- require("nebulous").setup({
+            --     variant = "fullmoon",
+            -- })
+        end,
+    },
 }, {
     dev = {
         path = "~/code",
