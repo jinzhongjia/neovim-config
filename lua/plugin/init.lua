@@ -99,15 +99,7 @@ require("lazy").setup({
             require("Zig").setup()
         end,
     },
-    -- glance
-    {
-        "dnlhc/glance.nvim",
-        enabled = false,
-        event = "VeryLazy",
-        config = function()
-            require("plugin.glance")
-        end,
-    },
+
     -- symbol line
     {
         "stevearc/aerial.nvim",
@@ -301,10 +293,10 @@ require("lazy").setup({
             local catppuccin = require("catppuccin")
 
             catppuccin.setup({
-                flavour = "macchiato",
+                flavour = "mocha",
             })
 
-            -- vim.cmd.colorscheme("catppuccin")
+            vim.cmd.colorscheme("catppuccin")
         end,
     },
     {
@@ -370,7 +362,7 @@ require("lazy").setup({
         enabled = true,
         priority = 1000,
         config = function()
-            vim.cmd([[colorscheme gruvbox]])
+            -- vim.cmd([[colorscheme gruvbox]])
         end,
     },
     {
