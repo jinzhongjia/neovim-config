@@ -323,7 +323,7 @@ require("lazy").setup({
         config = function()
             local vscode = require("vscode")
             vscode.setup()
-            vscode.load()
+            -- vscode.load()
         end,
     },
     {
@@ -359,7 +359,7 @@ require("lazy").setup({
         enabled = true,
         priority = 1000,
         config = function()
-            -- vim.cmd([[colorscheme oh-lucy]]) -- for oh-lucy
+            vim.cmd([[colorscheme oh-lucy]]) -- for oh-lucy
             -- vim.cmd([[colorscheme oh-lucy-evening]]) -- for oh-lucy-evening
         end,
     },
