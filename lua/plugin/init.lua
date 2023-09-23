@@ -296,7 +296,7 @@ require("lazy").setup({
                 flavour = "mocha",
             })
 
-            vim.cmd.colorscheme("catppuccin")
+            -- vim.cmd.colorscheme("catppuccin")
         end,
     },
     {
@@ -358,19 +358,11 @@ require("lazy").setup({
         end,
     },
     {
-        "ellisonleao/gruvbox.nvim",
+        "savq/melange-nvim",
         enabled = true,
         priority = 1000,
         config = function()
-            -- vim.cmd([[colorscheme gruvbox]])
-        end,
-    },
-    {
-        "morhetz/gruvbox",
-        enabled = false,
-        priority = 1000,
-        config = function()
-            vim.cmd([[colorscheme gruvbox]])
+            vim.cmd[[colorscheme melange]]
         end,
     },
 }, {
