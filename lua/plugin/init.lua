@@ -164,7 +164,6 @@ require("lazy").setup({
             -- "hrsh7th/cmp-path",
             -- async path
             "FelipeLema/cmp-async-path",
-            "f3fora/cmp-spell",
             "lukas-reineke/cmp-rg",
             "hrsh7th/cmp-cmdline",
             "hrsh7th/cmp-nvim-lsp-document-symbol",
