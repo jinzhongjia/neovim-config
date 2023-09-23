@@ -323,7 +323,7 @@ require("lazy").setup({
         config = function()
             local vscode = require("vscode")
             vscode.setup()
-            vscode.load()
+            -- vscode.load()
         end,
     },
     {
@@ -363,6 +363,22 @@ require("lazy").setup({
             -- require("nebulous").setup({
             --     variant = "fullmoon",
             -- })
+        end,
+    },
+    {
+        "ellisonleao/gruvbox.nvim",
+        enabled = true,
+        priority = 1000,
+        config = function()
+            vim.cmd([[colorscheme gruvbox]])
+        end,
+    },
+    {
+        "morhetz/gruvbox",
+        enabled = false,
+        priority = 1000,
+        config = function()
+            vim.cmd([[colorscheme gruvbox]])
         end,
     },
 }, {
