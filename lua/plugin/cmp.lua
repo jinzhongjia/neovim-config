@@ -137,6 +137,7 @@ cmp.setup({
         { name = "nvim_lsp_signature_help" },
 
         { name = "async_path" },
+        { name = "spell" },
 
         { name = "rg" },
 

@@ -78,6 +78,10 @@ opt.foldlevelstart = 99
 opt.foldenable = true
 opt.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
 
+-- spell suggestion
+opt.spell = true
+opt.spelllang = { 'en_us' }
+
 vim.g.zig_fmt_autosave = false
 
 -- diasble netrw
