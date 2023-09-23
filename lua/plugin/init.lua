@@ -361,8 +361,16 @@ require("lazy").setup({
         enabled = true,
         priority = 1000,
         config = function()
-            vim.cmd([[colorscheme melange]])
+            -- vim.cmd([[colorscheme melange]])
         end,
+    },
+    {
+"askfiy/visual_studio_code",
+        enabled=true,
+        priority=1000,
+        config=function ()
+           vim.cmd([[colorscheme visual_studio_code]]) 
+        end
     },
 
     -- some interesting plugin
