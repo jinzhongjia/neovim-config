@@ -361,8 +361,14 @@ require("lazy").setup({
         enabled = true,
         priority = 1000,
         config = function()
-            vim.cmd[[colorscheme melange]]
+            vim.cmd([[colorscheme melange]])
         end,
+    },
+
+    -- some interesting plugin
+    {
+        "Eandrju/cellular-automaton.nvim",
+        event = "VeryLazy",
     },
 }, {
     dev = {
