@@ -304,7 +304,7 @@ require("lazy").setup({
         priority = 1000, -- make sure to load this before all the other start plugins
         config = function()
             require("github-theme").setup({})
-            -- vim.cmd("colorscheme github_dark_dimmed")
+            vim.cmd("colorscheme github_dark_dimmed")
         end,
     },
     {
@@ -365,12 +365,12 @@ require("lazy").setup({
         end,
     },
     {
-"askfiy/visual_studio_code",
-        enabled=true,
-        priority=1000,
-        config=function ()
-           vim.cmd([[colorscheme visual_studio_code]]) 
-        end
+        "askfiy/visual_studio_code",
+        enabled = true,
+        priority = 1000,
+        config = function()
+            -- vim.cmd([[colorscheme visual_studio_code]])
+        end,
     },
 
     -- some interesting plugin
