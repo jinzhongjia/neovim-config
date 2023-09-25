@@ -4,4 +4,10 @@ if not status then
     return
 end
 
-LspUI.setup()
+LspUI.setup({
+    inlay_hint = {
+        filter = {
+            blacklist = { "zig" },
+        },
+    },
+})
