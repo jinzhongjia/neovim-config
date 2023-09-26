@@ -34,8 +34,5 @@ conform.setup({
             "prettierd",
             "markdownlint",
         },
-        ["*"] = {
-            "codespell",
-        },
     },
 })

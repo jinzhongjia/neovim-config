@@ -9,5 +9,4 @@ return {
     "isort",
     "luacheck",
     "hadolint",
-    "codespell",
 }
