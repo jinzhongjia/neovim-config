@@ -266,6 +266,11 @@ require("lazy").setup({
             "nvim-telescope/telescope-fzf-native.nvim",
         },
     },
+    {
+        "chrisgrieser/nvim-early-retirement",
+        config = true,
+        event = "VeryLazy",
+    },
 
     -- fugitive
     {
