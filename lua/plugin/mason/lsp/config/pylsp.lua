@@ -3,6 +3,7 @@ local opt = {
         pylsp = {
             plugins = {
                 pycodestyle = {
+                    enabled = true,
                     ignore = { "W391" },
                     maxLineLength = 100,
                 },
@@ -13,6 +14,13 @@ local opt = {
                     enabled = true,
                 },
                 rope_completion = {
+                    enabled = true,
+                },
+                jedi_completion = {
+                    fuzzy = true,
+                    eager = true,
+                },
+                pylint = {
                     enabled = true,
                 },
             },
