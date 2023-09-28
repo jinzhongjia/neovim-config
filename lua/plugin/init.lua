@@ -284,6 +284,16 @@ require("lazy").setup({
             require("plugin.vim-translator")
         end,
     },
+    {
+        "skywind3000/asynctasks.vim",
+        dependencies = {
+            "skywind3000/asyncrun.vim",
+        },
+        event = "VeryLazy",
+        config = function()
+            vim.g.asyncrun_open = 6
+        end,
+    },
 
     -- colorscheme
     {
