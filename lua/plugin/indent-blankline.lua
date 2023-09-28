@@ -1,11 +1,19 @@
-local status, ident_blankline = pcall(require, "indent_blankline")
+local status, ibl = pcall(require, "ibl")
 if not status then
     vim.notify("not found indent_blankline")
     return
 end
 
-ident_blankline.setup({
-    space_char_blankline = " ",
-    show_current_context = true,
-    show_current_context_start = true,
-})
+local highlight = {
+    "CursorColumn",
+    "Whitespace",
+}
+
+ibl.setup {
+    indent = { highlight = highlight, char = "" },
+    whitespace = {
+        highlight = highlight,
+        remove_blankline_trail = false,
+    },
+    scope = { enabled = false },
+}
