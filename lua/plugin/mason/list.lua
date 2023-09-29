@@ -9,4 +9,6 @@ return {
     "isort",
     "luacheck",
     "hadolint",
+    "markdownlint",
+    "efm", -- general language server
 }

@@ -148,6 +148,12 @@ require("lazy").setup({
         dependencies = {
             "neovim/nvim-lspconfig",
             "williamboman/mason-lspconfig.nvim",
+            {
+                "mfussenegger/nvim-dap",
+                dependencies = {
+                    "rcarriga/nvim-dap-ui",
+                },
+            },
             "b0o/schemastore.nvim",
             "folke/neodev.nvim",
         },
