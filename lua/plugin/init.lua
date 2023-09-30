@@ -267,6 +267,7 @@ require("lazy").setup({
     },
     {
         "Bekaboo/dropbar.nvim",
+        event = "VeryLazy",
         -- optional, but required for fuzzy finder support
         dependencies = {
             "nvim-telescope/telescope-fzf-native.nvim",
@@ -276,6 +277,22 @@ require("lazy").setup({
         "chrisgrieser/nvim-early-retirement",
         config = true,
         event = "VeryLazy",
+    },
+    {
+        "folke/zen-mode.nvim",
+        event = "VeryLazy",
+        opts = {},
+    },
+    {
+        "folke/todo-comments.nvim",
+        dependencies = { "nvim-lua/plenary.nvim" },
+        event = "VeryLazy",
+        opts = {},
+    },
+    {
+        "folke/twilight.nvim",
+        event = "VeryLazy",
+        opts = {},
     },
 
     -- fugitive
