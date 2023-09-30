@@ -4,6 +4,7 @@ if not status then
     return
 end
 
+-- require the custom list
 local list = require("plugin.mason.list")
 local mason_registry = require("mason-registry")
 
