@@ -154,15 +154,6 @@ require("lazy").setup({
                     "rcarriga/nvim-dap-ui",
                 },
             },
-            {
-
-                "nvimtools/none-ls.nvim",
-                name = "null-ls",
-                dependencies = {
-                    "nvim-lua/plenary.nvim",
-                    "jay-babu/mason-null-ls.nvim",
-                },
-            },
             "b0o/schemastore.nvim",
             "folke/neodev.nvim",
         },
