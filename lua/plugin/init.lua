@@ -317,6 +317,13 @@ require("lazy").setup({
             vim.g.asyncrun_open = 6
         end,
     },
+    {
+        "levouh/tint.nvim",
+        event = "VeryLazy",
+        config = function()
+            require("tint").setup()
+        end,
+    },
 
     -- colorscheme
     {
