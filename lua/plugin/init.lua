@@ -46,6 +46,7 @@ require("lazy").setup({
         event = "UIEnter",
         dependencies = {
             "nvim-tree/nvim-web-devicons",
+            "f-person/git-blame.nvim",
         },
         config = function()
             require("plugin.lualine")
@@ -304,6 +305,9 @@ require("lazy").setup({
     {
         "f-person/git-blame.nvim",
         event = "VeryLazy",
+        config = function()
+            vim.g.gitblame_display_virtual_text = 0
+        end,
     },
     {
         "voldikss/vim-translator",
