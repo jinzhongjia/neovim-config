@@ -298,6 +298,11 @@ require("lazy").setup({
     -- fugitive
     {
         "tpope/vim-fugitive",
+        dependencies = "rbong/vim-flog",
+        event = "VeryLazy",
+    },
+    {
+        "f-person/git-blame.nvim",
         event = "VeryLazy",
     },
     {
@@ -322,6 +327,14 @@ require("lazy").setup({
         event = "VeryLazy",
         config = function()
             require("tint").setup()
+        end,
+    },
+
+    {
+        "nmac427/guess-indent.nvim",
+        event = "VeryLazy",
+        config = function()
+            require("guess-indent").setup()
         end,
     },
 

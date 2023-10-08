@@ -10,7 +10,7 @@ local tool = require("tool")
 -- https://github.com/akinsho/bufferline.nvim#configuration
 ---@diagnostic disable-next-line: missing-fields
 bufferline.setup({
----@diagnostic disable-next-line: missing-fields
+    ---@diagnostic disable-next-line: missing-fields
     options = {
         -- To close the Tab command, use moll/vim-bbye's :Bdelete command here
         close_command = "Bdelete! %d",
