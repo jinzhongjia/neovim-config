@@ -67,7 +67,7 @@ M.mapLSP = function(buffer_id)
     -- type definition
     -- mapbuf("n", "<space>D", "<cmd>lua vim.lsp.buf.type_definition()<CR>", opt)
     -- mapbuf("n", "gtd", "<cmd>Glance type_definitions<CR>", opt)
-    mapbuf(buffer_id, "n", "gtd", "<cmd>LspUI type_definition<CR>", opt)
+    mapbuf(buffer_id, "n", "gy", "<cmd>LspUI type_definition<CR>", opt)
 end
 
 return M
