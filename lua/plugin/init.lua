@@ -330,6 +330,7 @@ require("lazy").setup({
         "levouh/tint.nvim",
         event = "VeryLazy",
         config = function()
+            ---@diagnostic disable-next-line: missing-parameter
             require("tint").setup()
         end,
     },
@@ -339,6 +340,17 @@ require("lazy").setup({
         event = "VeryLazy",
         config = function()
             require("guess-indent").setup()
+        end,
+    },
+
+    {
+        "goolord/alpha-nvim",
+        event = "VIMEnter",
+        dependencies = {
+            "nvim-tree/nvim-web-devicons",
+        },
+        config = function()
+            require("plugin.alpha")
         end,
     },
 
