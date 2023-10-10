@@ -88,7 +88,6 @@ local function projects()
         if type == "directory" then
             tbl[index] = button(tostring(index), "  " .. filename, function()
                 vim.api.nvim_set_current_dir(string.format("%s/%s", base_path, filename))
-                print(string.format("%s/%s", base_path, filename))
             end)
             index = index + 1
         end

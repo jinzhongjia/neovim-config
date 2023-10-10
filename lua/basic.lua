@@ -120,7 +120,7 @@ vim.g.neovide_transparency = 0.9
 
 vim.g.neovide_hide_mouse_when_typing = true
 
-vim.g.neovide_refresh_rate = 144
+-- vim.g.neovide_refresh_rate = 144
 
 vim.g.neovide_refresh_rate_idle = 5
 
