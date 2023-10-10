@@ -104,19 +104,8 @@ end
 ---@diagnostic disable-next-line: missing-fields
 cmp.setup({
     window = {
-        ---@diagnostic disable-next-line: missing-fields
-        completion = { -- rounded border; thin-style scrollbar
-            border = "rounded",
-            ---@diagnostic disable-next-line: assign-type-mismatch
-            scrollbar = "║",
-        },
-        ---@diagnostic disable-next-line: missing-fields
-        documentation = { -- no border; native-style scrollbar
-            border = "rounded",
-            ---@diagnostic disable-next-line: assign-type-mismatch
-            scrollbar = "",
-            -- other options
-        },
+        completion = cmp.config.window.bordered(),
+        documentation = cmp.config.window.bordered(),
     },
     -- Specify the snippet engine
     snippet = {
