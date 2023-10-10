@@ -4,6 +4,7 @@ if not status then
     return
 end
 
+---@diagnostic disable-next-line: missing-fields
 treesitter.setup({
     ensure_installed = {
         "c",

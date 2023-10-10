@@ -10,6 +10,7 @@ if not status_commentstring then
     return
 end
 
+---@diagnostic disable-next-line: missing-fields
 comment.setup({
     pre_hook = commentstring.create_pre_hook(),
 })

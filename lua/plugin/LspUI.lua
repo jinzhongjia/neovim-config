@@ -7,7 +7,7 @@ end
 LspUI.setup({
     inlay_hint = {
         filter = {
-            blacklist = { "zig" },
+            -- blacklist = { "zig" },
         },
     },
 })
