@@ -7,6 +7,9 @@ end
 local tool = require("tool")
 
 nvim_tree.setup({
+
+    disable_netrw = true,
+    sync_root_with_cwd = true,
     filters = {
         dotfiles = true,
         custom = { "node_modules" },
