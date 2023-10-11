@@ -97,7 +97,7 @@ require("lazy").setup({
         dev = true,
         event = "VeryLazy",
         config = function()
-            require("Zig").setup()
+            require("plugin.Zig")
         end,
     },
 

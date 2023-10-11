@@ -30,7 +30,7 @@ local list = {
     -- { name = "kotlin_language_server", alone = false },
     -- { name = "nimls", alone = false },
     -- { name = "ocamllsp", alone = false },
-    { name = "zls", alone = false },
+    -- { name = "zls", alone = false },
     -- { name = "intelephense", alone = false },
     { name = "vtsls", alone = false },
     { name = "unocss", alone = false },
