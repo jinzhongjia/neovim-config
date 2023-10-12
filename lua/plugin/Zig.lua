@@ -11,5 +11,6 @@ zig.setup({
                 require("plugin.mason.lsp.keybind").mapLSP(bufnr)
             end,
         },
+        enable_lspconfig = true,
     },
 })
