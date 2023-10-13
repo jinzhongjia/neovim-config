@@ -7,7 +7,6 @@ return {
     "shfmt",
     "black",
     "isort",
-    "luacheck",
     "hadolint",
     "markdownlint",
     "efm", -- general language server
