@@ -174,9 +174,11 @@ cmp.setup.cmdline(":", {
 
 cmp.setup.cmdline({ "/", "?" }, {
     mapping = cmp.mapping.preset.cmdline(),
-    sources = {
+    sources = cmp.config.sources({
+        { name = "nvim_lsp_document_symbol" },
+    }, {
         { name = "buffer" },
-    },
+    }),
 })
 
 cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
