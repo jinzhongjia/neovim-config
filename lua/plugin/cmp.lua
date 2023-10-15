@@ -76,7 +76,7 @@ cmp.setup({
         -- prev
         ["<C-k>"] = function(fallback)
             if cmp.visible() then
-                cmp.mapping.select_prev_item()
+                cmp.select_prev_item()
             else
                 fallback() -- If you use vim-endwise, this fallback will behave the same as vim-endwise.
             end
@@ -84,9 +84,9 @@ cmp.setup({
         -- Next
         ["<C-j>"] = function(fallback)
             if cmp.visible() then
-                cmp.mapping.select_next_item()
+                cmp.select_next_item()
             else
-                fallback() -- If you use vim-endwise, this fallback will behave the same as vim-endwise.
+                fallback()
             end
         end,
         -- confirm

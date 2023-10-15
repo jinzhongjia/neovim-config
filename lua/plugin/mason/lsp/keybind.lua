@@ -18,7 +18,7 @@ M.mapLSP = function(buffer_id)
 
     -- hover document
     -- mapbuf("n", "gh", "<cmd>lua vim.lsp.buf.hover()<CR>", opt)
-    mapbuf(buffer_id, "n", "gh", "<cmd>LspUI hover<CR>", opt)
+    mapbuf(buffer_id, "n", "K", "<cmd>LspUI hover<CR>", opt)
 
     -- declaration
     -- mapbuf("n", "gD", "<cmd>lua vim.lsp.buf.declaration()<CR>", opt)
