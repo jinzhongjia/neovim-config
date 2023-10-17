@@ -139,6 +139,25 @@ cmp.setup({
         -- Scrolling if the window has too much content
         ["<C-u>"] = cmp.mapping(cmp.mapping.scroll_docs(-4), { "i", "c" }),
         ["<C-d>"] = cmp.mapping(cmp.mapping.scroll_docs(4), { "i", "c" }),
+        -- Custom code snippet to jump to next parameter
+        ["<C-l>"] = cmp.mapping(function(_)
+            local feedkey = function(key, mode)
+                vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
+            end
+            if vim.fn["vsnip#available"](1) == 1 then
+                feedkey("<Plug>(vsnip-expand-or-jump)", "")
+            end
+        end, { "i", "s" }),
+
+        -- Custom code snippet to jump to the previous parameter
+        ["<C-h>"] = cmp.mapping(function()
+            local feedkey = function(key, mode)
+                vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
+            end
+            if vim.fn["vsnip#jumpable"](-1) == 1 then
+                feedkey("<Plug>(vsnip-jump-prev)", "")
+            end
+        end, { "i", "s" }),
     },
     -- Display type icons with lspkind-nvim
     ---@diagnostic disable-next-line: missing-fields
