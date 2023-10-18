@@ -385,7 +385,7 @@ require("lazy").setup({
         priority = 1000, -- make sure to load this before all the other start plugins
         config = function()
             require("github-theme").setup({})
-            vim.cmd("colorscheme github_dark_dimmed")
+            -- vim.cmd("colorscheme github_dark_dimmed")
         end,
     },
     {
@@ -395,7 +395,7 @@ require("lazy").setup({
         config = function()
             local vscode = require("vscode")
             vscode.setup()
-            -- vscode.load()
+            vscode.load()
         end,
     },
     {
