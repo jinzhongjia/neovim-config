@@ -4,6 +4,7 @@ if not status then
     return
 end
 
+vim.g.gitblame_display_virtual_text = 0
 local git_blame = require("gitblame")
 
 lualine.setup({

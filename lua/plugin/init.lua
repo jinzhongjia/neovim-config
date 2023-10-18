@@ -303,13 +303,6 @@ require("lazy").setup({
         event = "VeryLazy",
     },
     {
-        "f-person/git-blame.nvim",
-        event = "VeryLazy",
-        config = function()
-            vim.g.gitblame_display_virtual_text = 0
-        end,
-    },
-    {
         "voldikss/vim-translator",
         event = "VeryLazy",
         config = function()
