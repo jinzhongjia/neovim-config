@@ -353,6 +353,13 @@ require("lazy").setup({
             require("plugin.alpha")
         end,
     },
+    {
+        "sindrets/diffview.nvim",
+        event = "VeryLazy",
+        config = function()
+            require("diffview").setup()
+        end,
+    },
 
     -- colorscheme
     {
