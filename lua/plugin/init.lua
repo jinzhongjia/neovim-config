@@ -46,7 +46,10 @@ require("lazy").setup({
         event = "UIEnter",
         dependencies = {
             "nvim-tree/nvim-web-devicons",
-            "f-person/git-blame.nvim",
+            {
+                "f-person/git-blame.nvim",
+                commit = "e4dafc79cc7dcf4eec0547dbc6f3f3821b2f2b14",
+            },
         },
         config = function()
             require("plugin.lualine")
@@ -395,7 +398,7 @@ require("lazy").setup({
         config = function()
             local vscode = require("vscode")
             vscode.setup()
-            vscode.load()
+            -- vscode.load()
         end,
     },
     {
@@ -470,6 +473,23 @@ require("lazy").setup({
 
             -- Set colorscheme after options
             -- vim.cmd("colorscheme rose-pine")
+        end,
+    },
+    {
+        "uloco/bluloco.nvim",
+        lazy = false,
+        priority = 1000,
+        dependencies = { "rktjmp/lush.nvim" },
+        config = function()
+            require("bluloco").setup({
+                style = "auto", -- "auto" | "dark" | "light"
+                transparent = false,
+                italics = false,
+                terminal = true, -- bluoco colors are enabled in gui terminals per default.
+                guicursor = true,
+            })
+
+            vim.cmd[[colorscheme bluloco]]
         end,
     },
 }, {
