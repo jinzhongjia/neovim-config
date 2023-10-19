@@ -398,7 +398,7 @@ require("lazy").setup({
         config = function()
             local vscode = require("vscode")
             vscode.setup()
-            -- vscode.load()
+            vscode.load()
         end,
     },
     {
@@ -489,7 +489,7 @@ require("lazy").setup({
                 guicursor = true,
             })
 
-            vim.cmd[[colorscheme bluloco]]
+            -- vim.cmd[[colorscheme bluloco]]
         end,
     },
 }, {
