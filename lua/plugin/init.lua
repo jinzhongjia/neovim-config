@@ -46,10 +46,7 @@ require("lazy").setup({
         event = "UIEnter",
         dependencies = {
             "nvim-tree/nvim-web-devicons",
-            {
-                "f-person/git-blame.nvim",
-                commit = "e4dafc79cc7dcf4eec0547dbc6f3f3821b2f2b14",
-            },
+            "f-person/git-blame.nvim",
         },
         config = function()
             require("plugin.lualine")
