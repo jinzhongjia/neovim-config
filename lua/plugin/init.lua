@@ -503,6 +503,14 @@ require("lazy").setup({
             -- vim.cmd[[colorscheme bluloco]]
         end,
     },
+    {
+        "ronisbr/nano-theme.nvim",
+        enabled = true,
+        priority = 1000,
+        config = function()
+            -- vim.cmd[[colorscheme nano-theme]]
+        end,
+    },
 
     -- some interesting plugin
     {
