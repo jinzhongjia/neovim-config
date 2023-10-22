@@ -14,7 +14,13 @@ M.mapLSP = function(buffer_id)
     -- go xx
     -- mapbuf("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", opt)
     -- mapbuf("n", "gd", "<cmd>Glance definitions<CR>", opt)
-    mapbuf(buffer_id, "n", "gd", "<cmd>LspUI definition<CR>", opt)
+    if vim.api.nvim_get_option_value("filetype", {
+        buf = buffer_id,
+    }) == "lua" then
+        mapbuf(buffer_id, "n", "gd", "<cmd>LspUI type_definition<CR>", opt)
+    else
+        mapbuf(buffer_id, "n", "gd", "<cmd>LspUI definition<CR>", opt)
+    end
 
     -- hover document
     -- mapbuf("n", "gh", "<cmd>lua vim.lsp.buf.hover()<CR>", opt)
@@ -67,7 +73,13 @@ M.mapLSP = function(buffer_id)
     -- type definition
     -- mapbuf("n", "<space>D", "<cmd>lua vim.lsp.buf.type_definition()<CR>", opt)
     -- mapbuf("n", "gtd", "<cmd>Glance type_definitions<CR>", opt)
-    mapbuf(buffer_id, "n", "gy", "<cmd>LspUI type_definition<CR>", opt)
+    if vim.api.nvim_get_option_value("filetype", {
+        buf = buffer_id,
+    }) == "lua" then
+        mapbuf(buffer_id, "n", "gy", "<cmd>LspUI type_definition<CR>", opt)
+    else
+        mapbuf(buffer_id, "n", "gy", "<cmd>LspUI type_definition<CR>", opt)
+    end
 end
 
 return M
