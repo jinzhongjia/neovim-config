@@ -162,7 +162,6 @@ require("lazy").setup({
             require("plugin.mason")
         end,
     },
-
     {
         "hrsh7th/nvim-cmp",
         dependencies = {
@@ -395,7 +394,7 @@ require("lazy").setup({
         config = function()
             local vscode = require("vscode")
             vscode.setup()
-            vscode.load()
+            -- vscode.load()
         end,
     },
     {
@@ -453,15 +452,21 @@ require("lazy").setup({
             -- vim.cmd([[colorscheme visual_studio_code]])
         end,
     },
-
-    -- some interesting plugin
     {
-        "Eandrju/cellular-automaton.nvim",
-        event = "VeryLazy",
+        "rockyzhang24/arctic.nvim",
+        branch = "v2",
+        enabled = true,
+        priority = 1000,
+        dependencies = { "rktjmp/lush.nvim" },
+        config = function()
+            vim.cmd([[colorscheme arctic]])
+        end,
     },
     {
         "rose-pine/neovim",
         name = "rose-pine",
+        enabled = true,
+        priority = 1000,
         config = function()
             require("rose-pine").setup({
                 --- @usage 'auto'|'main'|'moon'|'dawn'
@@ -474,7 +479,7 @@ require("lazy").setup({
     },
     {
         "uloco/bluloco.nvim",
-        lazy = false,
+        enabled = true,
         priority = 1000,
         dependencies = { "rktjmp/lush.nvim" },
         config = function()
@@ -488,6 +493,12 @@ require("lazy").setup({
 
             -- vim.cmd[[colorscheme bluloco]]
         end,
+    },
+
+    -- some interesting plugin
+    {
+        "Eandrju/cellular-automaton.nvim",
+        event = "VeryLazy",
     },
 }, {
     dev = {
