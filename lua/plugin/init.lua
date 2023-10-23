@@ -138,7 +138,7 @@ require("lazy").setup({
     },
     {
         "lukas-reineke/indent-blankline.nvim",
-        enabled = false,
+        enabled = true,
         event = "VeryLazy",
         config = function()
             require("plugin.indent-blankline")
@@ -351,14 +351,6 @@ require("lazy").setup({
         event = "VeryLazy",
         config = function()
             require("diffview").setup()
-        end,
-    },
-    {
-        "shellRaining/hlchunk.nvim",
-        event = { "UIEnter" },
-        enabled = true,
-        config = function()
-            require("hlchunk").setup({})
         end,
     },
 
