@@ -16,6 +16,8 @@
 git clone -b hybrid https://github.com/jinzhongjia/neovim-config.git ~/.config/nvim
 ```
 
+> 目前的neovim开发版本似乎有一些奇怪的更改,主题首次安装时会出现奇怪的错误报告或崩溃，但重新启动后一切正常。
+
 对于Coc用户：
 
 0.8之后的Neovim即可。
