@@ -18,6 +18,8 @@ neovim version: `nightly`
 git clone -b hybrid https://github.com/jinzhongjia/neovim-config.git ~/.config/nvim
 ```
 
+> The current neovim development version seems to have some strange modifications. The theme will trigger strange errors or crash when it is first installed, but everything will be normal after restarting.
+
 For coc users:
 
 neovim version: `latest release`
