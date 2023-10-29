@@ -16,6 +16,9 @@ return {
                 arrayIndex = "Enable",
                 setType = true,
             },
+            workspace = {
+                checkThirdParty = false,
+            },
         },
     },
 }
