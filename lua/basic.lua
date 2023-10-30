@@ -92,6 +92,14 @@ for type, icon in pairs(signs) do
     vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
 end
 
+vim.api.nvim_create_autocmd("TextYankPost", {
+    group = vim.api.nvim_create_augroup("highlight_on_yank", {}),
+    desc = "Briefly highlight yanked text",
+    callback = function()
+        vim.highlight.on_yank()
+    end,
+})
+
 if not vim.g.neovide then
     -- Put anything you want to happen only in Neovide here
     return
