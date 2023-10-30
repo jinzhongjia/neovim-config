@@ -15,10 +15,10 @@ map("t", "fs", "<C-\\><C-n>:FloatermToggle<CR>")
 map("n", "fc", ":FloatermKill<CR>")
 map("t", "fc", "<C-\\><C-n>:FloatermKill<CR>")
 
-if vim.fn.executable("lazygit") then
+if vim.fn.executable("lazygit") == 1 then
     map("n", "fg", ":FloatermNew lazygit <CR>")
 end
 
-if vim.fn.executable("lazydocker") then
+if vim.fn.executable("lazydocker") == 1 then
     map("n", "fd", ":FloatermNew lazydocker <CR>")
 end
