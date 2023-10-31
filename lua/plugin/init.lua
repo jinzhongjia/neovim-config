@@ -15,13 +15,13 @@ require("lazy").setup({
     -- manage itself
     "folke/lazy.nvim",
     -- colorscheme
-    {
-        "projekt0n/github-nvim-theme",
-        config = function()
-            require("github-theme").setup({})
-            vim.cmd("colorscheme github_dark_dimmed")
-        end,
-    },
+    -- {
+    --     "projekt0n/github-nvim-theme",
+    --     config = function()
+    --         require("github-theme").setup({})
+    --         vim.cmd("colorscheme github_dark_dimmed")
+    --     end,
+    -- },
     -- file explorer
     {
         "nvim-tree/nvim-tree.lua",
@@ -44,7 +44,7 @@ require("lazy").setup({
             "nvim-tree/nvim-web-devicons",
             "moll/vim-bbye",
         },
-        -- event = "UIEnter",
+        event = "UIEnter",
         config = function()
             require("plugin.bufferline")
         end,
@@ -52,7 +52,7 @@ require("lazy").setup({
     -- status line
     {
         "nvim-lualine/lualine.nvim",
-        -- event = "UIEnter",
+        event = "UIEnter",
         dependencies = {
             "nvim-tree/nvim-web-devicons",
             -- "f-person/git-blame.nvim",
@@ -140,7 +140,9 @@ require("lazy").setup({
             "JoosepAlviste/nvim-ts-context-commentstring",
         },
         event = "VeryLazy",
-        build = ":TSUpdate",
+        build = function()
+            require("nvim-treesitter.install").update({ with_sync = true })()
+        end,
         config = function()
             require("plugin.nvim-treesitter")
         end,
