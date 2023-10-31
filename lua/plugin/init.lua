@@ -27,6 +27,7 @@ require("lazy").setup({
         "nvim-tree/nvim-tree.lua",
         version = "*",
         event = "VeryLazy",
+        -- event = "UIEnter",
         dependencies = {
             "nvim-tree/nvim-web-devicons",
             "antosha417/nvim-lsp-file-operations",
@@ -43,7 +44,7 @@ require("lazy").setup({
             "nvim-tree/nvim-web-devicons",
             "moll/vim-bbye",
         },
-        event = "UIEnter",
+        -- event = "UIEnter",
         config = function()
             require("plugin.bufferline")
         end,
@@ -51,7 +52,7 @@ require("lazy").setup({
     -- status line
     {
         "nvim-lualine/lualine.nvim",
-        event = "UIEnter",
+        -- event = "UIEnter",
         dependencies = {
             "nvim-tree/nvim-web-devicons",
             -- "f-person/git-blame.nvim",
@@ -246,7 +247,7 @@ require("lazy").setup({
                 end,
             },
         },
-        event = "BufReadPost",
+        event = "VeryLazy",
         config = function()
             require("plugin.nvim-ufo")
         end,
@@ -346,7 +347,7 @@ require("lazy").setup({
 
     {
         "goolord/alpha-nvim",
-        event = "VIMEnter",
+        -- event = "VIMEnter",
         dependencies = {
             "nvim-tree/nvim-web-devicons",
         },
