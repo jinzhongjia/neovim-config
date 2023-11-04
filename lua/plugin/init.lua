@@ -369,4 +369,7 @@ require("lazy").setup({
         path = "~/code",
         fallback = true,
     },
+    install = {
+        colorscheme = { "arctic" },
+    },
 })
