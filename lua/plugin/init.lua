@@ -364,6 +364,8 @@ require("lazy").setup({
             require("diffview").setup()
         end,
     },
+
+    unpack(require("theme").theme()),
 }, {
     dev = {
         path = "~/code",
