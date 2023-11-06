@@ -280,7 +280,6 @@ require("lazy").setup({
     {
         "Bekaboo/dropbar.nvim",
         event = "VeryLazy",
-        enabled = false,
         -- optional, but required for fuzzy finder support
         dependencies = {
             "nvim-telescope/telescope-fzf-native.nvim",
@@ -312,6 +311,10 @@ require("lazy").setup({
     {
         "tpope/vim-fugitive",
         dependencies = "rbong/vim-flog",
+        event = "VeryLazy",
+    },
+    {
+        "mbbill/undotree",
         event = "VeryLazy",
     },
     {
