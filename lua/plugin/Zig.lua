@@ -6,6 +6,9 @@ end
 
 zig.setup({
     zls = {
+        web_install = {
+            version = "latest",
+        },
         lspconfig_opt = {
             on_attach = function(client, bufnr)
                 require("plugin.mason.lsp.keybind").mapLSP(bufnr)
