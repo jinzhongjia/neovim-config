@@ -368,6 +368,10 @@ require("lazy").setup({
             require("diffview").setup()
         end,
     },
+    {
+        "wavded/vim-stylus",
+        event = "VeryLazy",
+    },
 
     unpack(require("theme").theme()),
 }, {
