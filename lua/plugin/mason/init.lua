@@ -22,4 +22,3 @@ end
 mason_registry.refresh(vim.schedule_wrap(ensure_installed))
 
 require("plugin.mason.lsp")
-require("plugin.mason.dap")
