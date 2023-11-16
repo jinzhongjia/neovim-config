@@ -43,6 +43,7 @@ treesitter.setup({
         "ninja",
         "nix",
         "python",
+        "pug",
         "rust",
         "scss",
         "sql",
