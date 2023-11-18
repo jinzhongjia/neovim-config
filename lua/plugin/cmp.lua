@@ -31,6 +31,7 @@ local cmp_autopairs = require("nvim-autopairs.completion.cmp")
 
 ---@diagnostic disable-next-line: missing-fields
 cmp.setup({
+    preselect=cmp.PreselectMode.None,
     window = {
         completion = cmp.config.window.bordered(),
         documentation = cmp.config.window.bordered(),
