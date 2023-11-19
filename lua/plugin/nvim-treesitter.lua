@@ -70,7 +70,4 @@ treesitter.setup({
             scope_incremental = "<TAB>",
         },
     },
-    context_commentstring = {
-        enable = true,
-    },
 })
