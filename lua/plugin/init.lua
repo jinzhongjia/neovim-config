@@ -346,6 +346,7 @@ require("lazy").setup({
 
     {
         "goolord/alpha-nvim",
+        enabled = (vim.g.neovide ~= nil),
         -- event = "VIMEnter",
         dependencies = {
             "nvim-tree/nvim-web-devicons",
@@ -366,7 +367,7 @@ require("lazy").setup({
         event = "VeryLazy",
     },
 
-    unpack(require("theme").theme()),
+    -- unpack(require("theme").theme()),
 }, {
     dev = {
         path = "~/code",
