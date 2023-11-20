@@ -14,14 +14,6 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
     -- manage itself
     "folke/lazy.nvim",
-    -- colorscheme
-    -- {
-    --     "projekt0n/github-nvim-theme",
-    --     config = function()
-    --         require("github-theme").setup({})
-    --         vim.cmd("colorscheme github_dark_dimmed")
-    --     end,
-    -- },
     -- file explorer
     {
         "nvim-tree/nvim-tree.lua",
