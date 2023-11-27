@@ -4,6 +4,10 @@ if not status then
     return
 end
 
+vim.g.gitblame_display_virtual_text = 0
+
+local git_blame = require("gitblame")
+
 lualine.setup({
     sections = {
         lualine_x = {
@@ -15,6 +19,9 @@ lualine.setup({
             "encoding",
             "fileformat",
             "filetype",
+        },
+        lualine_c = {
+            { git_blame.get_current_blame_text, cond = git_blame.is_blame_text_available },
         },
     },
 })
