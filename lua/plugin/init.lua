@@ -373,6 +373,10 @@ require("lazy").setup({
         path = "~/code",
         fallback = true,
     },
+    checker = {
+        enabled = true,
+        notify = false,
+    },
     install = {
         colorscheme = { "arctic" },
     },
