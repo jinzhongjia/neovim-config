@@ -8,8 +8,8 @@ conform.setup({
     formatters_by_ft = {
         c = { "clang_format" },
         go = {
-            formatters = { "gofumpt", "goimports" },
-            run_all_formatters = true,
+            "gofumpt",
+            "goimports",
         },
         html = { "prettierd" },
         json = { "prettierd" },
@@ -25,9 +25,8 @@ conform.setup({
         vue = { "prettierd" },
         -- Formatters can also be specified with additional options
         python = {
-            formatters = { "isort", "black" },
-            -- Run formatters one after another instead of stopping at the first success
-            run_all_formatters = true,
+            "isort",
+            "black",
         },
         zig = { "zigfmt" },
         markdown = {
