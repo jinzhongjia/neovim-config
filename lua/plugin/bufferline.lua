@@ -34,7 +34,7 @@ tool.map("n", "<Tab>", ":BufferLineCycleNext<cr>")
 tool.map("n", "bn", ":BufferLineCycleNext<cr>")
 tool.map("n", "<S-Tab>", ":BufferLineCyclePrev<cr>")
 tool.map("n", "bp", ":BufferLineCyclePrev<cr>")
-tool.map("n", "bd", ":Bdelete<cr>")
+tool.map("n", "bd", ":Bdelete!<cr>")
 
 tool.map("n", "<leader>bl", ":BufferLineCloseRight<cr>")
 tool.map("n", "<leader>bh", ":BufferLineCloseLeft<cr>")
