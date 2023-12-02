@@ -65,7 +65,10 @@ telescope.setup({
 -- Telescope extensions
 telescope.load_extension("fzf")
 telescope.load_extension("undo")
-telescope.load_extension("aerial")
+local status_new, _ = pcall(require, "aerial")
+if status_new then
+    telescope.load_extension("aerial")
+end
 
 local tool = require("tool")
 local map = tool.map

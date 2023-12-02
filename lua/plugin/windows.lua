@@ -4,4 +4,8 @@ if not status then
     return
 end
 
-windows.setup()
+windows.setup({
+    ignore = {
+        filetype = { "NvimTree", "undotree", "Outline" },
+    },
+})
