@@ -2,6 +2,8 @@
 require("basic")
 require("keybind")
 
+require("extra")
+
 -- this is plugin load
 require("plugin")
 
