@@ -49,7 +49,7 @@ cmp.setup({
         { name = "vsnip" },
 
         -- document-symbol
-        { name = "nvim_lsp_document_symbol" },
+        -- { name = "nvim_lsp_document_symbol" },
 
         -- signature-help
         { name = "nvim_lsp_signature_help" },
