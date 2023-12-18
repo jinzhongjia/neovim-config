@@ -106,7 +106,7 @@ require("lazy").setup({
     {
         "stevearc/aerial.nvim",
         event = "VeryLazy",
-        enabled = false,
+        enabled = true,
         config = function()
             require("plugin.aerial")
         end,
@@ -115,6 +115,7 @@ require("lazy").setup({
     {
         "hedyhli/outline.nvim",
         event = "VeryLazy",
+        enabled=false,
         config = function()
             -- Example mapping to toggle outline
             vim.keymap.set("n", "<leader>o", "<cmd>Outline<CR>", { desc = "Toggle Outline" })
