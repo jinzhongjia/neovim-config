@@ -115,7 +115,7 @@ require("lazy").setup({
     {
         "hedyhli/outline.nvim",
         event = "VeryLazy",
-        enabled=false,
+        enabled = false,
         config = function()
             -- Example mapping to toggle outline
             vim.keymap.set("n", "<leader>o", "<cmd>Outline<CR>", { desc = "Toggle Outline" })
@@ -170,6 +170,7 @@ require("lazy").setup({
             "williamboman/mason-lspconfig.nvim",
             {
                 "mfussenegger/nvim-dap",
+                enabled = false,
                 dependencies = {
                     "rcarriga/nvim-dap-ui",
                     "theHamsta/nvim-dap-virtual-text",
@@ -380,6 +381,11 @@ require("lazy").setup({
     {
         "wavded/vim-stylus",
         event = "VeryLazy",
+    },
+    {
+        "stevearc/stickybuf.nvim",
+        event = "VeryLazy",
+        opts = {},
     },
 
     -- unpack(require("theme").theme()),
