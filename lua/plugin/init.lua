@@ -263,6 +263,13 @@ require("lazy").setup({
             require("plugin.nvim-ufo")
         end,
     },
+    {
+        "kevinhwang91/nvim-hlslens",
+        event = "VeryLazy",
+        config = function()
+            require("plugin.hlslens")
+        end,
+    },
     -- Folding preview, by default h and l keys are used.
     -- On first press of h key, when cursor is on a closed fold, the preview will be shown.
     -- On second press the preview will be closed and fold will be opened.
