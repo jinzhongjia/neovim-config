@@ -31,7 +31,7 @@ local cmp_autopairs = require("nvim-autopairs.completion.cmp")
 
 ---@diagnostic disable-next-line: missing-fields
 cmp.setup({
-    preselect=cmp.PreselectMode.None,
+    preselect = cmp.PreselectMode.None,
     window = {
         completion = cmp.config.window.bordered(),
         documentation = cmp.config.window.bordered(),
@@ -47,6 +47,8 @@ cmp.setup({
         { name = "nvim_lsp" },
 
         { name = "vsnip" },
+
+        { name = "treesitter" },
 
         -- document-symbol
         -- { name = "nvim_lsp_document_symbol" },
