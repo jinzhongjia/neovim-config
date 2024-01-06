@@ -170,7 +170,7 @@ require("lazy").setup({
             "williamboman/mason-lspconfig.nvim",
             {
                 "mfussenegger/nvim-dap",
-                enabled = false,
+                enabled = true,
                 dependencies = {
                     "rcarriga/nvim-dap-ui",
                     "theHamsta/nvim-dap-virtual-text",
