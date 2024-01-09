@@ -16,6 +16,7 @@ lualine.setup({
                 cond = require("lazy.status").has_updates,
                 color = { fg = "#ff9e64" },
             },
+            "copilot",
             "encoding",
             "fileformat",
             "filetype",
@@ -25,15 +26,3 @@ lualine.setup({
         },
     },
 })
-
--- vim.g.gitblame_display_virtual_text = 0
---
--- local git_blame = require("gitblame")
---
--- lualine.setup({
---     sections = {
---         lualine_c = {
---             { git_blame.get_current_blame_text, cond = git_blame.is_blame_text_available },
---         },
---     },
--- })

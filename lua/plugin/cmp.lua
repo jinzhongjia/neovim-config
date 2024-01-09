@@ -44,9 +44,12 @@ cmp.setup({
     },
     -- Completion source
     sources = cmp.config.sources({
+
         { name = "nvim_lsp" },
 
         { name = "vsnip" },
+
+        { name = "copilot" },
 
         -- { name = "treesitter" },
 
@@ -107,10 +110,12 @@ cmp.setup({
         -- super tab
         ["<Tab>"] = cmp.mapping(function(fallback)
             local has_words_before = function()
-                unpack = unpack or table.unpack
+                if vim.api.nvim_get_option_value("buftype", { buf = 0 }) == "prompt" then
+                    return false
+                end
                 local line, col = unpack(vim.api.nvim_win_get_cursor(0))
                 return col ~= 0
-                    and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+                    and vim.api.nvim_buf_get_text(0, line - 1, 0, line - 1, col, {})[1]:match("^%s*$") == nil
             end
 
             local feedkey = function(key, mode)
@@ -119,6 +124,8 @@ cmp.setup({
 
             if cmp.visible() then
                 cmp.select_next_item()
+            -- elseif require("copilot.suggestion").is_visible() then
+            --     require("copilot.suggestion").accept()
             elseif vim.fn["vsnip#available"](1) == 1 then
                 feedkey("<Plug>(vsnip-expand-or-jump)", "")
             elseif has_words_before() then
@@ -181,6 +188,7 @@ cmp.setup({
                 vim_item.menu = "[" .. string.upper(entry.source.name) .. "]"
                 return vim_item
             end,
+            symbol_map = { Copilot = "" },
         }),
     },
 })

@@ -48,6 +48,10 @@ require("lazy").setup({
         dependencies = {
             "nvim-tree/nvim-web-devicons",
             "f-person/git-blame.nvim",
+            {
+                "AndreM222/copilot-lualine",
+                dependencies = "zbirenbaum/copilot.lua",
+            },
         },
         config = function()
             require("plugin.lualine")
@@ -188,6 +192,26 @@ require("lazy").setup({
         dependencies = {
             "hrsh7th/cmp-nvim-lsp",
             "hrsh7th/cmp-buffer",
+            {
+                "zbirenbaum/copilot-cmp",
+                dependencies = {
+                    "zbirenbaum/copilot.lua",
+                    build = ":Copilot auth",
+                    opts = {
+                        suggestion = { enabled = false },
+                        panel = { enabled = false },
+                        filetypes = {
+                            -- markdown = true,
+                            -- help = true,
+                            ["*"] = true,
+                        },
+                    },
+                },
+                config = function()
+                    require("copilot_cmp").setup()
+                end,
+            },
+
             -- "hrsh7th/cmp-path",
             -- async path
             "FelipeLema/cmp-async-path",
