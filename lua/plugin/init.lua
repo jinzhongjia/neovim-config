@@ -203,7 +203,7 @@ require("lazy").setup({
                         filetypes = {
                             -- markdown = true,
                             -- help = true,
-                            ["*"] = true,
+                            ["*"] = false,
                         },
                     },
                 },
