@@ -61,6 +61,7 @@ require("lazy").setup({
     {
         "anuvyklack/windows.nvim",
         event = "VeryLazy",
+        enabled = false,
         dependencies = "anuvyklack/middleclass",
         config = function()
             require("plugin.windows")
