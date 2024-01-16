@@ -44,24 +44,24 @@ M.mapLSP = function(buffer_id)
 
     -- format
     -- mapbuf("n", "<leader>f", "<cmd>GuardFmt<CR>", opt)
-    if vim.api.nvim_get_option_value("filetype", {
-        buf = buffer_id,
-    }) == "zig" then
-        mapbuf(buffer_id, "n", "<leader>f", "<cmd>Zig fmt<CR>", opt)
-    else
-        mapbuf(buffer_id, "n", "<leader>f", "", {
-            noremap = true,
-            silent = true,
-            callback = function()
-                local conform = require("conform")
-                conform.format({
-                    bufnr = buffer_id,
-                    async = false,
-                    lsp_fallback = true,
-                })
-            end,
-        })
-    end
+    -- if vim.api.nvim_get_option_value("filetype", {
+    --     buf = buffer_id,
+    -- }) == "zig" then
+    --     mapbuf(buffer_id, "n", "<leader>f", "<cmd>Zig fmt<CR>", opt)
+    -- else
+    mapbuf(buffer_id, "n", "<leader>f", "", {
+        noremap = true,
+        silent = true,
+        callback = function()
+            local conform = require("conform")
+            conform.format({
+                bufnr = buffer_id,
+                async = false,
+                lsp_fallback = true,
+            })
+        end,
+    })
+    -- end
 
     -- mapbuf("n", "<C-k>", "<cmd>lua vim.lsp.buf.signature_help()<CR>", opt)
 
