@@ -130,3 +130,10 @@ if vim.fn.has("win32") then
     vim.o.shellpipe = "| Out-File -Encoding UTF8 %s"
     vim.o.shellredir = "| Out-File -Encoding UTF8 %s"
 end
+
+vim.api.nvim_create_user_command("Config", function()
+    --- @type string
+    ---@diagnostic disable-next-line: assign-type-mismatch
+    local config_path = vim.fn.stdpath("config")
+    vim.fn.chdir(config_path)
+end,{})
