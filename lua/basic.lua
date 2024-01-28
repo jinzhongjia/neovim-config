@@ -121,3 +121,12 @@ vim.api.nvim_create_autocmd("TextYankPost", {
         vim.highlight.on_yank()
     end,
 })
+
+if vim.fn.has("win32") then
+    vim.o.shell = "pwsh"
+    vim.o.shellxquote = ""
+    vim.o.shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command "
+    vim.o.shellquote = ""
+    vim.o.shellpipe = "| Out-File -Encoding UTF8 %s"
+    vim.o.shellredir = "| Out-File -Encoding UTF8 %s"
+end
