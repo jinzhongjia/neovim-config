@@ -15,7 +15,9 @@ map("t", "fs", "<C-\\><C-n>:FloatermToggle<CR>")
 map("n", "fc", ":FloatermKill<CR>")
 map("t", "fc", "<C-\\><C-n>:FloatermKill<CR>")
 
-if vim.fn.executable("lazygit") == 1 then
+if vim.fn.has("win32") and vim.fn.executable("gitui") == 1 then
+    map("n", "fg", ":FloatermNew gitui <CR>")
+elseif vim.fn.executable("lazygit") == 1 then
     map("n", "fg", ":FloatermNew lazygit <CR>")
 end
 
