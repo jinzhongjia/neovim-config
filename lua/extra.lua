@@ -1,4 +1,7 @@
 if vim.g.neovide then
+    local home = vim.fn.expand("~")
+    vim.fn.chdir(home)
+
     if vim.fn.has("win32") == 1 then
         vim.o.guifont = "Maple Mono SC NF:h15"
     elseif vim.fn.has("linux") == 1 then
