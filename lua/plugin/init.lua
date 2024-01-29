@@ -290,6 +290,13 @@ require("lazy").setup({
         end,
     },
     {
+        "voldikss/vim-translator",
+        event = "VeryLazy",
+        config = function()
+            require("plugin.vim-translator")
+        end,
+    },
+    {
         "kevinhwang91/nvim-hlslens",
         event = "VeryLazy",
         config = function()
@@ -328,6 +335,48 @@ require("lazy").setup({
         },
     },
     {
+        "ray-x/lsp_signature.nvim",
+        event = "VeryLazy",
+        config = function()
+            require("plugin.lsp_signature")
+        end,
+    },
+    {
+        "levouh/tint.nvim",
+        event = "VeryLazy",
+        config = function()
+            require("plugin.tint")
+        end,
+    },
+
+    {
+        "nmac427/guess-indent.nvim",
+        event = "VeryLazy",
+        config = function()
+            require("plugin.guess-indent")
+        end,
+    },
+
+    {
+        "goolord/alpha-nvim",
+        enabled = (vim.g.neovide ~= nil),
+        -- event = "VIMEnter",
+        dependencies = {
+            "nvim-tree/nvim-web-devicons",
+        },
+        config = function()
+            require("plugin.alpha")
+        end,
+    },
+    {
+        "sindrets/diffview.nvim",
+        event = "VeryLazy",
+        config = function()
+            require("plugin.diffview")
+        end,
+    },
+
+    {
         "chrisgrieser/nvim-early-retirement",
         config = true,
         event = "VeryLazy",
@@ -359,13 +408,7 @@ require("lazy").setup({
         "mbbill/undotree",
         event = "VeryLazy",
     },
-    {
-        "voldikss/vim-translator",
-        event = "VeryLazy",
-        config = function()
-            require("plugin.vim-translator")
-        end,
-    },
+
     {
         "skywind3000/asynctasks.vim",
         dependencies = {
@@ -376,41 +419,7 @@ require("lazy").setup({
             vim.g.asyncrun_open = 6
         end,
     },
-    {
-        "levouh/tint.nvim",
-        event = "VeryLazy",
-        config = function()
-            ---@diagnostic disable-next-line: missing-parameter
-            require("tint").setup()
-        end,
-    },
 
-    {
-        "nmac427/guess-indent.nvim",
-        event = "VeryLazy",
-        config = function()
-            require("guess-indent").setup()
-        end,
-    },
-
-    {
-        "goolord/alpha-nvim",
-        enabled = (vim.g.neovide ~= nil),
-        -- event = "VIMEnter",
-        dependencies = {
-            "nvim-tree/nvim-web-devicons",
-        },
-        config = function()
-            require("plugin.alpha")
-        end,
-    },
-    {
-        "sindrets/diffview.nvim",
-        event = "VeryLazy",
-        config = function()
-            require("diffview").setup()
-        end,
-    },
     {
         "wavded/vim-stylus",
         event = "VeryLazy",
