@@ -132,7 +132,9 @@ local buttons = {
             vim.cmd([[ene]])
         end),
         button("c", "  Configuration", function()
-            vim.cmd([[cd ~/.config/nvim/]])
+            local config_path = vim.fn.stdpath("config")
+            vim.fn.chdir(config_path)
+            vim.api.nvim_command("bdelete")
         end),
         button("u", "  Update plugins", function()
             vim.cmd([[Lazy sync]])
