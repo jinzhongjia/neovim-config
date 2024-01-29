@@ -88,7 +88,7 @@ local function projects()
         if type == "directory" then
             tbl[index] = button(tostring(index), "  " .. filename, function()
                 ---@diagnostic disable-next-line: param-type-mismatch
-                vim.api.nvim_set_current_dir(vim.fn.fnamemodify(string.format("%s/%s", base_path, filename)))
+                vim.api.nvim_set_current_dir(vim.fn.fnamemodify(string.format("%s/%s", base_path, filename),":p"))
             end)
             index = index + 1
         end
