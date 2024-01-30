@@ -1,82 +1,84 @@
-local opt = vim.opt
-opt.encoding = "utf-8"
-opt.fileencoding = "utf-8"
+local o = vim.o
+o.encoding = "utf-8"
+o.fileencoding = "utf-8"
 
-opt.scrolloff = 5
-opt.sidescroll = 5
+o.scrolloff = 5
+o.sidescroll = 5
 
-opt.autochdir = false
+o.autochdir = false
 
-opt.number = true
-opt.relativenumber = true
+o.number = true
+o.relativenumber = true
 
 -- highlight current row
-opt.cursorline = true
+o.cursorline = true
 
-opt.signcolumn = "yes"
+o.signcolumn = "yes"
 
-opt.colorcolumn = "80"
+o.colorcolumn = "80"
 
-opt.tabstop = 4
-opt.softtabstop = 4
-opt.shiftround = true
+o.tabstop = 4
+o.softtabstop = 4
+o.shiftround = true
 
-opt.shiftwidth = 4
+o.shiftwidth = 4
 
-opt.expandtab = true
+o.expandtab = true
 
-opt.autoindent = true
-opt.smartindent = true
+o.autoindent = true
+o.smartindent = true
 
-opt.ignorecase = true
-opt.smartcase = true
+o.ignorecase = true
+o.smartcase = true
 
-opt.hlsearch = true
-opt.incsearch = true
+o.hlsearch = true
+o.incsearch = true
 
-opt.cmdheight = 1
+o.cmdheight = 1
 
-opt.autoread = true
+o.autoread = true
 
-opt.wrap = false
-opt.whichwrap = "b,s,<,>,[,]"
+o.wrap = false
+o.whichwrap = "b,s,<,>,[,]"
 
-opt.hidden = true
+o.hidden = true
 
-opt.mouse = "a"
+o.mouse = "a"
 
-opt.backup = false
-opt.writebackup = false
-opt.swapfile = false
+o.backup = false
+o.writebackup = false
+o.swapfile = false
 
-opt.updatetime = 300
-opt.timeoutlen = 400
+o.updatetime = 300
+o.timeoutlen = 400
 
-opt.splitbelow = true
-opt.splitright = true
+o.splitbelow = true
+o.splitright = true
 
-opt.completeopt = "menu,menuone,noselect,noinsert"
+o.completeopt = "menu,menuone,noselect,noinsert"
 
-opt.background = "dark"
+o.background = "dark"
 
-opt.termguicolors = true
+o.termguicolors = true
 
 vim.o.list = true
 vim.o.listchars = "space:·,tab:··,eol:↴"
 
-opt.wildmenu = true
+o.wildmenu = true
 
-opt.pumheight = 10
+o.pumheight = 10
 
-opt.showtabline = 1
+o.showtabline = 1
 
-opt.showmode = false
+o.showmode = false
 
-opt.foldcolumn = "1"
-opt.foldlevel = 99
-opt.foldlevelstart = 99
-opt.foldenable = true
-opt.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
+o.foldcolumn = "1"
+o.foldlevel = 99
+o.foldlevelstart = 99
+o.foldenable = true
+o.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
+
+o.pumblend = 45
 
 vim.g.zig_fmt_autosave = false
 

@@ -52,6 +52,12 @@ map("n", "<C-k>", "3k")
 map("n", "<C-u>", "7k")
 map("n", "<C-d>", "7j")
 
+-- windows size
+map("n", "<C-m>", ":vertical resize +2<CR>")
+map("n", "<C-/>", ":vertical resize -2<CR>")
+map("n", "<C-,>", ":resize +10<CR>")
+map("n", "<C-.>", ":resize -10<CR>")
+
 -- Exit
 -- map("n", "q", ":q<CR>")
 -- map("n", "qq", ":q!<CR>")
