@@ -329,13 +329,6 @@ require("lazy").setup({
         },
     },
     {
-        "ray-x/lsp_signature.nvim",
-        event = "VeryLazy",
-        config = function()
-            require("plugin.lsp_signature")
-        end,
-    },
-    {
         "levouh/tint.nvim",
         event = "VeryLazy",
         enabled = false,
