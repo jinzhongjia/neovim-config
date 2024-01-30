@@ -51,14 +51,6 @@ cmp.setup({
 
         { name = "copilot" },
 
-        -- { name = "treesitter" },
-
-        -- document-symbol
-        -- { name = "nvim_lsp_document_symbol" },
-
-        -- signature-help
-        -- { name = "nvim_lsp_signature_help" },
-
         { name = "async_path" },
 
         -- { name = "rg" },
