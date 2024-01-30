@@ -53,9 +53,9 @@ map("n", "<C-u>", "7k")
 map("n", "<C-d>", "7j")
 
 -- Exit
-map("n", "q", ":q<CR>")
-map("n", "qq", ":q!<CR>")
-map("n", "Q", ":qa!<CR>")
+-- map("n", "q", ":q<CR>")
+-- map("n", "qq", ":q!<CR>")
+-- map("n", "Q", ":qa!<CR>")
 
 -- ctrl+s save
 map("n", "<C-s>", ":w<CR>")
