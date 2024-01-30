@@ -78,8 +78,6 @@ o.foldlevelstart = 99
 o.foldenable = true
 o.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
 
-o.pumblend = 45
-
 vim.g.zig_fmt_autosave = false
 
 -- diasble netrw

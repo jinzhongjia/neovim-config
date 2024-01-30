@@ -1,4 +1,5 @@
 if vim.g.neovide then
+    vim.o.pumblend = 45
     local home = vim.fn.expand("~")
     vim.fn.chdir(home)
 
