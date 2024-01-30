@@ -320,6 +320,18 @@ require("lazy").setup({
     {
         "Bekaboo/dropbar.nvim",
         event = "VeryLazy",
+        opts = {
+            general = {
+                update_events = {
+                    win = {
+                        "CursorHold",
+                        "CursorHoldI",
+                        "WinEnter",
+                        "WinResized",
+                    },
+                },
+            },
+        },
         -- optional, but required for fuzzy finder support
         dependencies = {
             "nvim-telescope/telescope-fzf-native.nvim",
