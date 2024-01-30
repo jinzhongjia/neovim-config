@@ -122,7 +122,7 @@ vim.api.nvim_create_autocmd("TextYankPost", {
     end,
 })
 
-if vim.fn.has("win32") then
+if vim.fn.has("win32") == 1 then
     vim.o.shell = "pwsh"
     vim.o.shellxquote = ""
     vim.o.shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command "
@@ -136,4 +136,4 @@ vim.api.nvim_create_user_command("Config", function()
     ---@diagnostic disable-next-line: assign-type-mismatch
     local config_path = vim.fn.stdpath("config")
     vim.fn.chdir(config_path)
-end,{})
+end, {})
