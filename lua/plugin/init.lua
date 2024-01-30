@@ -433,7 +433,7 @@ require("lazy").setup({
     -- unpack(require("theme").theme()),
 }, {
     dev = {
-        path = "~/code",
+        path = vim.fn.expand("~/code"),
         fallback = true,
     },
     checker = {
