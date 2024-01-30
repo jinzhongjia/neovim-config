@@ -35,6 +35,9 @@ nvim_tree.setup({
         vim.keymap.set("n", "sv", api.node.open.vertical, opts("Open: Vertical Split"))
         vim.keymap.set("n", "sh", api.node.open.horizontal, opts("Open: Horizontal Split"))
     end,
+    git = {
+        timeout = 1000,
+    },
 })
 
 tool.map("n", "<leader>e", ":NvimTreeToggle<CR>")

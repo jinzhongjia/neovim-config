@@ -18,7 +18,7 @@ require("lazy").setup({
     {
         "nvim-tree/nvim-tree.lua",
         version = "*",
-        event = "VeryLazy",
+        event = "UIEnter",
         -- event = "UIEnter",
         dependencies = {
             "nvim-tree/nvim-web-devicons",
@@ -344,6 +344,7 @@ require("lazy").setup({
     {
         "levouh/tint.nvim",
         event = "VeryLazy",
+        enabled = false,
         config = function()
             require("plugin.tint")
         end,
