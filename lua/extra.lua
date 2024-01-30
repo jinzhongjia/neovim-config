@@ -13,6 +13,29 @@ if vim.g.neovide then
         end
     end
 
+    vim.g.neovide_input_ime = false
+    local function set_ime(args)
+        if args.event:match("Enter$") then
+            vim.g.neovide_input_ime = true
+        else
+            vim.g.neovide_input_ime = false
+        end
+    end
+
+    local ime_input = vim.api.nvim_create_augroup("ime_input", { clear = true })
+
+    vim.api.nvim_create_autocmd({ "InsertEnter", "InsertLeave" }, {
+        group = ime_input,
+        pattern = "*",
+        callback = set_ime,
+    })
+
+    vim.api.nvim_create_autocmd({ "CmdlineEnter", "CmdlineLeave" }, {
+        group = ime_input,
+        pattern = "[/\\?]",
+        callback = set_ime,
+    })
+
     vim.g.neovide_padding_top = 0
     vim.g.neovide_padding_bottom = 0
     vim.g.neovide_padding_right = 0
@@ -28,14 +51,13 @@ if vim.g.neovide then
     vim.g.neovide_refresh_rate = 144
 
     vim.g.neovide_refresh_rate_idle = 5
+    vim.g.neovide_no_idle = true
 
     vim.g.neovide_fullscreen = false
 
     vim.g.neovide_remember_window_size = true
 
     vim.g.neovide_cursor_antialiasing = true
-
-    vim.g.neovide_input_ime = true
 
     vim.g.neovide_cursor_animation_length = 0
     vim.g.neovide_floating_shadow = false
