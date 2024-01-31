@@ -36,12 +36,14 @@ lualine.setup({
                         if not signature.hint then
                             return signature.label
                         end
-                        local res = ""
-                        for i, parameter in ipairs(signature.parameters) do
-                            res = string.format("%s%s%s", res, parameter, i == #signature.parameters and "" or ", ")
-                        end
 
-                        return res
+                        return signature.parameters[signature.hint].label
+                        -- local res = ""
+                        -- for i, parameter in ipairs(signature.parameters) do
+                        --     res = string.format("%s%s%s", res, parameter.label, i == #signature.parameters and "" or ", ")
+                        -- end
+                        --
+                        -- return res
                     elseif is_blame then
                         return git_blame.get_current_blame_text()
                     end

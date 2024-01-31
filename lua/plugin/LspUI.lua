@@ -6,15 +6,28 @@ end
 
 local tool = require("tool")
 
+local transparency = vim.g.neovide and 45 or 0
+
 LspUI.setup({
-    inlay_hint = {
-        -- enable = false,
-        filter = {
-            -- blacklist = { "zig" },
-        },
+    hover = {
+        transparency = transparency,
+    },
+    rename = {
+        transparency = transparency,
+    },
+    code_action = {
+        transparency = transparency,
+    },
+    diagnostic = {
+        transparency = transparency,
+    },
+    pos_keybind = {
+        transparency = transparency,
+    },
+    signature = {
+        enable = true,
     },
 })
-
 
 tool.map("n", "<leader>rn", "<cmd>LspUI rename<CR>")
 tool.map("n", "<leader>ca", "<cmd>LspUI code_action<CR>")
