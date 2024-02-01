@@ -36,7 +36,7 @@ nvim_tree.setup({
         vim.keymap.set("n", "sh", api.node.open.horizontal, opts("Open: Horizontal Split"))
     end,
     git = {
-        timeout = 1000,
+        timeout = 5000,
     },
 })
 
