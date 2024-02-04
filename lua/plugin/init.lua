@@ -245,6 +245,7 @@ require("lazy").setup({
                 "nvim-telescope/telescope-fzf-native.nvim",
                 build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
             },
+            "nvim-telescope/telescope-live-grep-args.nvim",
         },
         event = "VeryLazy",
         config = function()
@@ -372,7 +373,6 @@ require("lazy").setup({
             require("plugin.diffview")
         end,
     },
-
     {
         "chrisgrieser/nvim-early-retirement",
         config = true,

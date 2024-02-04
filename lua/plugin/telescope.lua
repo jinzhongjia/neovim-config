@@ -65,6 +65,7 @@ telescope.setup({
 -- Telescope extensions
 telescope.load_extension("fzf")
 telescope.load_extension("undo")
+telescope.load_extension("live_grep_args")
 local status_new, _ = pcall(require, "aerial")
 if status_new then
     telescope.load_extension("aerial")
