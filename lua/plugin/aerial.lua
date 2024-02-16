@@ -12,4 +12,4 @@ aerial.setup({
     },
 })
 
-tool.map("n", "<leader>a", "<cmd>AerialToggle!<CR>")
+tool.map("n", "<leader>a", "<CMD>AerialToggle!<CR>")

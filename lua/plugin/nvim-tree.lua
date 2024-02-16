@@ -40,4 +40,4 @@ nvim_tree.setup({
     },
 })
 
-tool.map("n", "<leader>e", ":NvimTreeToggle<CR>")
+tool.map("n", "<leader>e", "<CMD>NvimTreeToggle<CR>")

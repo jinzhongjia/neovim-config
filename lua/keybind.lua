@@ -7,8 +7,8 @@ vim.g.maplocalleader = " "
 map("n", "s", "")
 
 -- Windows split screen shortcuts
-map("n", "sv", ":vsp<CR>")
-map("n", "sh", ":sp<CR>")
+map("n", "sv", "<CMD>vsp<CR>")
+map("n", "sh", "<CMD>sp<CR>")
 -- Close current
 map("n", "sc", "<C-w>c")
 -- Close other
@@ -21,29 +21,29 @@ map("n", "wk", "<C-w>k")
 map("n", "wl", "<C-w>l")
 
 -- Left and right proportional control
-map("n", "<C-Left>", ":vertical resize -2<CR>")
-map("n", "<C-Right>", ":vertical resize +2<CR>")
-map("n", "s,", ":vertical resize -2<CR>")
-map("n", "s.", ":vertical resize +2<CR>")
+map("n", "<C-Left>", "<CMD>vertical resize -2<CR>")
+map("n", "<C-Right>", "<CMD>vertical resize +2<CR>")
+map("n", "s,", "<CMD>vertical resize -2<CR>")
+map("n", "s.", "<CMD>vertical resize +2<CR>")
 -- Up and down ratio
-map("n", "sj", ":resize +2<CR>")
-map("n", "sk", ":resize -2<CR>")
-map("n", "<C-Down>", ":resize +2<CR>")
-map("n", "<C-Up>", ":resize -2<CR>")
+map("n", "sj", "<CMD>resize +2<CR>")
+map("n", "sk", "<CMD>resize -2<CR>")
+map("n", "<C-Down>", "<CMD>resize +2<CR>")
+map("n", "<C-Up>", "<CMD>resize -2<CR>")
 -- Ratio
 map("n", "s=", "<C-w>=")
 
 -- Terminal related
-map("n", "<leader>t", ":sp | terminal<CR>")
-map("n", "<leader>vt", ":vsp | terminal<CR>")
+map("n", "<leader>t", "<CMD>sp | terminal<CR>")
+map("n", "<leader>vt", "<CMD>vsp | terminal<CR>")
 
 -- Indent code in visual mode
 map("v", "<", "<gv")
 map("v", ">", ">gv")
 
 -- Move selected text up and down
-map("v", "J", ":move '>+1<CR>gv-gv")
-map("v", "K", ":move '<-2<CR>gv-gv")
+map("v", "J", "<CMD>move '>+1<CR>gv-gv")
+map("v", "K", "<CMD>move '<-2<CR>gv-gv")
 
 -- Scroll up and down
 map("n", "<C-j>", "3j")
@@ -58,8 +58,8 @@ map("n", "<C-d>", "7j")
 -- map("n", "Q", ":qa!<CR>")
 
 -- ctrl+s save
-map("n", "<C-s>", ":w<CR>")
-map("i", "<C-s>", "<ESC>:w<CR>")
+map("n", "<C-s>", "<CMD>w<CR>")
+map("i", "<C-s>", "<ESC><CMD>w<CR>")
 
 -- Configure Copy Shortcuts
 map("v", "<C-c>", '"+y') -- copy

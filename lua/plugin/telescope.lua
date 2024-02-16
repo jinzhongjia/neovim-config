@@ -74,10 +74,10 @@ end
 local tool = require("tool")
 local map = tool.map
 -- find files
-map("n", "<C-p>", ":Telescope find_files<CR>")
+map("n", "<C-p>", "<CMD>Telescope find_files<CR>")
 -- Global search
-map("n", "<C-f>", ":Telescope live_grep<CR>")
+map("n", "<C-f>", "<CMD>Telescope live_grep<CR>")
 -- workspace_diagnostics
-map("n", "<leader>wd", ":Telescope diagnostics<CR>")
+map("n", "<leader>wd", "<CMD>Telescope diagnostics<CR>")
 -- undo
-map("n", "<leader>u", ":Telescope undo<cr>")
+map("n", "<leader>u", "<CMD>Telescope undo<cr>")

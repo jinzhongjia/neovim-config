@@ -111,23 +111,8 @@ require("lazy").setup({
     {
         "stevearc/aerial.nvim",
         event = "VeryLazy",
-        enabled = true,
         config = function()
             require("plugin.aerial")
-        end,
-    },
-
-    {
-        "hedyhli/outline.nvim",
-        event = "VeryLazy",
-        enabled = false,
-        config = function()
-            -- Example mapping to toggle outline
-            vim.keymap.set("n", "<leader>o", "<cmd>Outline<CR>", { desc = "Toggle Outline" })
-
-            require("outline").setup({
-                -- Your setup opts here (leave empty to use defaults)
-            })
         end,
     },
     -- floaterm
@@ -161,7 +146,6 @@ require("lazy").setup({
     },
     {
         "lukas-reineke/indent-blankline.nvim",
-        enabled = true,
         event = "VeryLazy",
         config = function()
             require("plugin.indent-blankline")
@@ -175,7 +159,6 @@ require("lazy").setup({
             "williamboman/mason-lspconfig.nvim",
             {
                 "mfussenegger/nvim-dap",
-                enabled = true,
                 dependencies = {
                     "rcarriga/nvim-dap-ui",
                     "theHamsta/nvim-dap-virtual-text",
@@ -294,14 +277,7 @@ require("lazy").setup({
             require("plugin.vim-translator")
         end,
     },
-    {
-        "kevinhwang91/nvim-hlslens",
-        event = "VeryLazy",
-        enabled = false,
-        config = function()
-            require("plugin.hlslens")
-        end,
-    },
+
     -- Folding preview, by default h and l keys are used.
     -- On first press of h key, when cursor is on a closed fold, the preview will be shown.
     -- On second press the preview will be closed and fold will be opened.
@@ -338,14 +314,6 @@ require("lazy").setup({
         dependencies = {
             "nvim-telescope/telescope-fzf-native.nvim",
         },
-    },
-    {
-        "levouh/tint.nvim",
-        event = "VeryLazy",
-        enabled = false,
-        config = function()
-            require("plugin.tint")
-        end,
     },
 
     {
