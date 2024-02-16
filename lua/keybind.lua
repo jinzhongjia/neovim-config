@@ -23,11 +23,11 @@ map("n", "wl", "<C-w>l")
 -- Left and right proportional control
 map("n", "<C-Left>", ":vertical resize -2<CR>")
 map("n", "<C-Right>", ":vertical resize +2<CR>")
-map("n", "s,", ":vertical resize -20<CR>")
-map("n", "s.", ":vertical resize +20<CR>")
+map("n", "s,", ":vertical resize -2<CR>")
+map("n", "s.", ":vertical resize +2<CR>")
 -- Up and down ratio
-map("n", "sj", ":resize +10<CR>")
-map("n", "sk", ":resize -10<CR>")
+map("n", "sj", ":resize +2<CR>")
+map("n", "sk", ":resize -2<CR>")
 map("n", "<C-Down>", ":resize +2<CR>")
 map("n", "<C-Up>", ":resize -2<CR>")
 -- Ratio
@@ -51,12 +51,6 @@ map("n", "<C-k>", "3k")
 -- Ctrl u / ctrl + d move only 9 lines, half screen by default
 map("n", "<C-u>", "7k")
 map("n", "<C-d>", "7j")
-
--- windows size
-map("n", "<C-m>", ":vertical resize +2<CR>")
-map("n", "<C-/>", ":vertical resize -2<CR>")
-map("n", "<C-,>", ":resize +10<CR>")
-map("n", "<C-.>", ":resize -10<CR>")
 
 -- Exit
 -- map("n", "q", ":q<CR>")
