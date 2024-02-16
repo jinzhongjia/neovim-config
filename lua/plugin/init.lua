@@ -297,6 +297,7 @@ require("lazy").setup({
     {
         "kevinhwang91/nvim-hlslens",
         event = "VeryLazy",
+        enabled = false,
         config = function()
             require("plugin.hlslens")
         end,
@@ -372,6 +373,16 @@ require("lazy").setup({
         config = function()
             require("plugin.diffview")
         end,
+    },
+    {
+        "akinsho/toggleterm.nvim",
+        event = "VeryLazy",
+        config = true,
+    },
+    {
+        "willothy/flatten.nvim",
+        event = "VeryLazy",
+        config = true,
     },
     {
         "chrisgrieser/nvim-early-retirement",

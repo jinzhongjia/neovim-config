@@ -122,18 +122,36 @@ vim.api.nvim_create_autocmd("TextYankPost", {
     end,
 })
 
-if vim.fn.has("win32") == 1 then
+-- when on windows and pwsh exists
+if vim.fn.has("win32") == 1 and vim.fn.executable("pwsh") == 1 then
+    -- https://github.com/neovim/neovim/issues/15634
     vim.o.shell = "pwsh"
+    vim.o.shellcmdflag =
+        "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;"
+    vim.o.shellpipe = "2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode"
+    vim.o.shellredir = "-RedirectStandardOutput %s -NoNewWindow -Wait"
     vim.o.shellxquote = ""
-    vim.o.shellcmdflag = "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command "
     vim.o.shellquote = ""
-    vim.o.shellpipe = "| Out-File -Encoding UTF8 %s"
-    vim.o.shellredir = "| Out-File -Encoding UTF8 %s"
 end
 
+-- add Config command to chdir cwd to config path
 vim.api.nvim_create_user_command("Config", function()
     --- @type string
     ---@diagnostic disable-next-line: assign-type-mismatch
     local config_path = vim.fn.stdpath("config")
     vim.fn.chdir(config_path)
 end, {})
+
+-- reload buffer on focus
+vim.api.nvim_create_autocmd({
+    "FocusGained",
+    "BufEnter",
+    "CursorHold",
+}, {
+    desc = "Reload buffer on focus",
+    callback = function()
+        if vim.fn.getcmdwintype() == "" then
+            vim.cmd("checktime")
+        end
+    end,
+})
