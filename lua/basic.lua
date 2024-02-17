@@ -123,7 +123,7 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 })
 
 -- when on windows and pwsh exists
-if vim.fn.has("win32") == 1 and vim.fn.executable("pwsh") == 1 then
+if vim.fn.has("win32") == 1 then
     -- https://github.com/neovim/neovim/issues/15634
     vim.o.shell = "pwsh"
     vim.o.shellcmdflag =
