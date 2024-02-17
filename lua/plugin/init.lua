@@ -395,6 +395,10 @@ require("lazy").setup({
             vim.g.asyncrun_open = 6
         end,
     },
+    {
+        "RRethy/vim-illuminate",
+        event = "VeryLazy",
+    },
 
     {
         "wavded/vim-stylus",
