@@ -409,6 +409,10 @@ require("lazy").setup({
         event = "VeryLazy",
         opts = {},
     },
+    {
+        "sitiom/nvim-numbertoggle",
+        event = "VeryLazy",
+    },
 
     -- unpack(require("theme").theme()),
 }, {
