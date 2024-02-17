@@ -7,9 +7,10 @@ end
 conform.setup({
     formatters_by_ft = {
         c = { "clang_format" },
+        cpp = { "clang_format" },
         go = {
             "gofumpt",
-            "goimports",
+            "goimports-reviser",
         },
         html = { "prettierd" },
         json = { "prettierd" },
@@ -30,8 +31,15 @@ conform.setup({
         },
         zig = { "zigfmt" },
         markdown = {
+            "cbfmt",
             "prettierd",
             "markdownlint",
+        },
+        yaml = {
+            "yamlfmt",
+        },
+        xml = {
+            "xmlformat",
         },
     },
 })
