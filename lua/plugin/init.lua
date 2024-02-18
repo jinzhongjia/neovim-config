@@ -413,6 +413,13 @@ require("lazy").setup({
         "jeffkreeftmeijer/vim-numbertoggle",
         event = "VeryLazy",
     },
+    {
+        "mfussenegger/nvim-lint",
+        event = "VeryLazy",
+        config = function()
+            require("plugin.nvim-lint")
+        end,
+    },
 
     -- unpack(require("theme").theme()),
 }, {

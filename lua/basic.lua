@@ -140,7 +140,9 @@ vim.api.nvim_create_user_command("Config", function()
     ---@diagnostic disable-next-line: assign-type-mismatch
     local config_path = vim.fn.stdpath("config")
     vim.fn.chdir(config_path)
-end, {})
+end, {
+    desc = "command for config",
+})
 
 -- reload buffer on focus
 vim.api.nvim_create_autocmd({

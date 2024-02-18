@@ -47,6 +47,7 @@ treesitter.setup({
         "rust",
         "scss",
         "sql",
+        "svelte",
         "toml",
         "typescript",
         "vue",
