@@ -1,8 +1,6 @@
 --- @param name string
---- @param is_fmt boolean
-local function get_efm_config(name, is_fmt)
-    local status, config =
-        pcall(require, string.format("efmls-configs.%s.%s", is_fmt and "formatters" or "linters", name))
+local function get_efm_config(name)
+    local status, config = pcall(require, string.format("efmls-configs.linters.%s", name))
     if not status then
         vim.notify(string.format("not found %s", name))
         return {}
@@ -10,40 +8,37 @@ local function get_efm_config(name, is_fmt)
     return config
 end
 
-local eslint_d = get_efm_config("eslint_d", false)
-local stylelint = get_efm_config("stylelint", false)
+local xo = get_efm_config("xo")
+local stylelint = get_efm_config("stylelint")
 
 local languages = {
     javascript = {
-        eslint_d,
-        get_efm_config("js_standard", false),
+        xo,
+        get_efm_config("js_standard"),
     },
-    typescript = { eslint_d },
-    javascriptreact = { eslint_d },
-    typescriptreact = { eslint_d },
-    vue = { eslint_d },
-    lua = {
-        get_efm_config("stylua", true),
-        get_efm_config("luacheck", false),
-    },
+    typescript = { xo },
+    javascriptreact = { xo },
+    typescriptreact = { xo },
+    vue = { xo },
     css = {
         stylelint,
     },
     dockerfile = {
-        get_efm_config("hadolint", false),
+        get_efm_config("hadolint"),
     },
     go = {
-        get_efm_config("golangci_lint", false),
+        get_efm_config("golangci_lint"),
     },
     python = {
-        get_efm_config("pylint", false),
+        get_efm_config("pylint"),
     },
     markdown = {
-        get_efm_config("markdownlint", false),
-        get_efm_config("alex", false),
+        get_efm_config("markdownlint"),
+        get_efm_config("alex"),
     },
     yaml = {
-        get_efm_config("actionlint", false),
+        get_efm_config("actionlint"),
+        get_efm_config("yamllint"),
     },
     less = {
         stylelint,
@@ -54,9 +49,11 @@ local languages = {
     scss = {
         stylelint,
     },
-
     vim = {
-        get_efm_config("vint", false),
+        get_efm_config("vint"),
+    },
+    sh = {
+        get_efm_config("shellcheck"),
     },
 }
 
@@ -74,4 +71,3 @@ local opt = {
 }
 
 return opt
-

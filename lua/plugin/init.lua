@@ -106,7 +106,6 @@ require("lazy").setup({
             require("plugin.Zig")
         end,
     },
-
     -- symbol line
     {
         "stevearc/aerial.nvim",
@@ -131,6 +130,7 @@ require("lazy").setup({
             require("plugin.gitsigns")
         end,
     },
+    -- treesitter
     {
         "nvim-treesitter/nvim-treesitter",
         dependencies = {
@@ -144,6 +144,7 @@ require("lazy").setup({
             require("plugin.nvim-treesitter")
         end,
     },
+    -- indent blankline
     {
         "lukas-reineke/indent-blankline.nvim",
         event = "VeryLazy",
@@ -218,7 +219,7 @@ require("lazy").setup({
             require("plugin.cmp")
         end,
     },
-
+    -- telescope
     {
         "nvim-telescope/telescope.nvim",
         dependencies = {
@@ -246,7 +247,7 @@ require("lazy").setup({
             require("plugin.hlargs")
         end,
     },
-
+    -- ufo fold
     {
         "kevinhwang91/nvim-ufo",
         dependencies = {
@@ -271,6 +272,7 @@ require("lazy").setup({
             require("plugin.nvim-ufo")
         end,
     },
+    -- translator
     {
         "voldikss/vim-translator",
         event = "VeryLazy",
@@ -278,11 +280,7 @@ require("lazy").setup({
             require("plugin.vim-translator")
         end,
     },
-
-    -- Folding preview, by default h and l keys are used.
-    -- On first press of h key, when cursor is on a closed fold, the preview will be shown.
-    -- On second press the preview will be closed and fold will be opened.
-    -- When preview is opened, the l key will close it and open fold. In all other cases these keys will work as usual.
+    -- format
     {
         "stevearc/conform.nvim",
         event = "VeryLazy",
@@ -291,12 +289,14 @@ require("lazy").setup({
             require("plugin.conform")
         end,
     },
+    -- trouble
     {
         "folke/trouble.nvim",
         event = "VeryLazy",
         dependencies = { "nvim-tree/nvim-web-devicons" },
         opts = {},
     },
+    -- winbar
     {
         "Bekaboo/dropbar.nvim",
         event = "VeryLazy",
@@ -317,7 +317,7 @@ require("lazy").setup({
             "nvim-telescope/telescope-fzf-native.nvim",
         },
     },
-
+    -- indent
     {
         "nmac427/guess-indent.nvim",
         event = "VeryLazy",
@@ -325,11 +325,11 @@ require("lazy").setup({
             require("plugin.guess-indent")
         end,
     },
-
+    -- board
     {
         "goolord/alpha-nvim",
         enabled = (vim.g.neovide ~= nil),
-        -- event = "VIMEnter",
+        event = "UIEnter",
         dependencies = {
             "nvim-tree/nvim-web-devicons",
         },
@@ -337,6 +337,7 @@ require("lazy").setup({
             require("plugin.alpha")
         end,
     },
+    -- diffview
     {
         "sindrets/diffview.nvim",
         event = "VeryLazy",
@@ -344,6 +345,7 @@ require("lazy").setup({
             require("plugin.diffview")
         end,
     },
+    -- terminal
     {
         "akinsho/toggleterm.nvim",
         event = "VeryLazy",
@@ -375,8 +377,6 @@ require("lazy").setup({
         event = "VeryLazy",
         opts = {},
     },
-    --
-    -- fugitive
     {
         "tpope/vim-fugitive",
         dependencies = "rbong/vim-flog",
@@ -386,7 +386,6 @@ require("lazy").setup({
         "mbbill/undotree",
         event = "VeryLazy",
     },
-
     {
         "skywind3000/asynctasks.vim",
         dependencies = {
@@ -401,7 +400,6 @@ require("lazy").setup({
         "RRethy/vim-illuminate",
         event = "VeryLazy",
     },
-
     {
         "wavded/vim-stylus",
         event = "VeryLazy",

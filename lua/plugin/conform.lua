@@ -33,7 +33,6 @@ conform.setup({
         markdown = {
             "cbfmt",
             "prettierd",
-            "markdownlint",
         },
         yaml = {
             "yamlfmt",

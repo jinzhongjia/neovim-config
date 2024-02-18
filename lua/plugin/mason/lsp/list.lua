@@ -1,4 +1,3 @@
--- this list will be used by efm and conform
 local list = {
     { name = "lua_ls", alone = false },
     { name = "clangd", alone = false },
