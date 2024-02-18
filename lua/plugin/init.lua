@@ -410,7 +410,7 @@ require("lazy").setup({
         opts = {},
     },
     {
-        "sitiom/nvim-numbertoggle",
+        "jeffkreeftmeijer/vim-numbertoggle",
         event = "VeryLazy",
     },
 
