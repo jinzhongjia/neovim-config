@@ -9,7 +9,6 @@ return {
     "isort",
     "hadolint",
     "markdownlint",
-    "efm", -- general language server
     "yamlfmt",
     "xmlformatter",
     "cbfmt",

@@ -156,6 +156,7 @@ require("lazy").setup({
         event = "VeryLazy",
         dependencies = {
             "neovim/nvim-lspconfig",
+            "creativenull/efmls-configs-nvim",
             "williamboman/mason-lspconfig.nvim",
             {
                 "mfussenegger/nvim-dap",
@@ -285,6 +286,7 @@ require("lazy").setup({
     {
         "stevearc/conform.nvim",
         event = "VeryLazy",
+        enabled = true,
         config = function()
             require("plugin.conform")
         end,
@@ -412,13 +414,6 @@ require("lazy").setup({
     {
         "jeffkreeftmeijer/vim-numbertoggle",
         event = "VeryLazy",
-    },
-    {
-        "mfussenegger/nvim-lint",
-        event = "VeryLazy",
-        config = function()
-            require("plugin.nvim-lint")
-        end,
     },
 
     -- unpack(require("theme").theme()),

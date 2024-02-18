@@ -1,3 +1,4 @@
+-- this list will be used by efm and conform
 local list = {
     { name = "lua_ls", alone = false },
     { name = "clangd", alone = false },
@@ -37,6 +38,7 @@ local list = {
     { name = "yamlls", alone = false },
     { name = "lemminx", alone = false },
     { name = "taplo", alone = false },
+    { name = "efm", alone = false },
 }
 
 return list
