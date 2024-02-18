@@ -32,8 +32,6 @@ return {
     "actionlint",
     -- efm
     "alex",
-    --
-    "codespell",
     -- efm
     "golangci-lint",
     -- efm

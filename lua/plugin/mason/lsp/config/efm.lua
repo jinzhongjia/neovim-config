@@ -16,12 +16,13 @@ local languages = {
         xo,
         get_efm_config("js_standard"),
     },
-    typescript = { xo },
-    javascriptreact = { xo },
-    typescriptreact = { xo },
-    vue = { xo },
+    typescript = { xo,  },
+    javascriptreact = { xo,  },
+    typescriptreact = { xo,  },
+    vue = { xo,  },
     css = {
         stylelint,
+        
     },
     dockerfile = {
         get_efm_config("hadolint"),
