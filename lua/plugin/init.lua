@@ -18,8 +18,7 @@ require("lazy").setup({
     {
         "nvim-tree/nvim-tree.lua",
         version = "*",
-        event = "UIEnter",
-        -- event = "UIEnter",
+        event = "VimEnter",
         dependencies = {
             "nvim-tree/nvim-web-devicons",
             "antosha417/nvim-lsp-file-operations",
@@ -349,7 +348,9 @@ require("lazy").setup({
     {
         "akinsho/toggleterm.nvim",
         event = "VeryLazy",
-        config = true,
+        config = function()
+            require("plugin.toggleterm")
+        end,
     },
     {
         "willothy/flatten.nvim",

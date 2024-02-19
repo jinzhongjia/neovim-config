@@ -33,10 +33,6 @@ map("n", "<C-Up>", "<CMD>resize -2<CR>")
 -- Ratio
 map("n", "s=", "<C-w>=")
 
--- Terminal related
-map("n", "<leader>t", "<CMD>sp | terminal<CR>")
-map("n", "<leader>vt", "<CMD>vsp | terminal<CR>")
-
 -- Indent code in visual mode
 map("v", "<", "<gv")
 map("v", ">", ">gv")
