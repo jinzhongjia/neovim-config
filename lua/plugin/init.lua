@@ -60,7 +60,7 @@ require("lazy").setup({
     {
         "anuvyklack/windows.nvim",
         event = "VeryLazy",
-        enabled = false,
+        enabled = true,
         dependencies = "anuvyklack/middleclass",
         config = function()
             require("plugin.windows")
@@ -419,7 +419,8 @@ require("lazy").setup({
         config = true,
     },
     {
-        "hedyhli/outline.nvim",
+        "jinzhongjia/outline.nvim",
+        dev = true,
         lazy = true,
         cmd = { "Outline", "OutlineOpen" },
         keys = { -- Example mapping to toggle outline
