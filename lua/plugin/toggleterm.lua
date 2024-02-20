@@ -19,4 +19,6 @@ local tool = require("tool")
 
 -- Terminal related
 tool.map("n", "<leader>t", "<CMD>ToggleTerm direction=horizontal<CR>")
+tool.map("t", "<leader>t", "<CMD>ToggleTerm direction=horizontal<CR>")
 tool.map("n", "<leader>vt", "<CMD>ToggleTerm direction=vertical<CR>")
+tool.map("t", "<leader>vt", "<CMD>ToggleTerm direction=vertical<CR>")

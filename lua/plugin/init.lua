@@ -414,6 +414,15 @@ require("lazy").setup({
         "jeffkreeftmeijer/vim-numbertoggle",
         event = "VeryLazy",
     },
+    {
+        "tpope/vim-endwise",
+        event = "VeryLazy",
+    },
+    {
+        "nacro90/numb.nvim",
+        evnet = "VeryLazy",
+        config = true,
+    },
 
     -- unpack(require("theme").theme()),
 }, {
