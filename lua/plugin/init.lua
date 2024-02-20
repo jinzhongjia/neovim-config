@@ -109,6 +109,7 @@ require("lazy").setup({
     {
         "stevearc/aerial.nvim",
         event = "VeryLazy",
+        enabled = false,
         config = function()
             require("plugin.aerial")
         end,
@@ -416,6 +417,17 @@ require("lazy").setup({
         "nacro90/numb.nvim",
         evnet = "VeryLazy",
         config = true,
+    },
+    {
+        "hedyhli/outline.nvim",
+        lazy = true,
+        cmd = { "Outline", "OutlineOpen" },
+        keys = { -- Example mapping to toggle outline
+            { "<leader>a", "<cmd>Outline<CR>", desc = "Toggle outline" },
+        },
+        opts = {
+            -- Your setup opts here
+        },
     },
 
     -- unpack(require("theme").theme()),
