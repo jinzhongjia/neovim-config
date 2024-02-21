@@ -21,7 +21,6 @@ require("lazy").setup({
         event = "UIEnter",
         dependencies = {
             "nvim-tree/nvim-web-devicons",
-            "antosha417/nvim-lsp-file-operations",
         },
         config = function()
             require("plugin.nvim-tree")
