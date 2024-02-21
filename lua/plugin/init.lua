@@ -22,7 +22,6 @@ require("lazy").setup({
         dependencies = {
             "nvim-tree/nvim-web-devicons",
             "antosha417/nvim-lsp-file-operations",
-            "echasnovski/mini.base16",
         },
         config = function()
             require("plugin.nvim-tree")
