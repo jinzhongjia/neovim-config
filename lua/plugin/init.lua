@@ -323,7 +323,7 @@ require("lazy").setup({
     {
         "goolord/alpha-nvim",
         enabled = (vim.g.neovide ~= nil),
-        event = "UIEnter",
+        event = "VIMEnter",
         dependencies = {
             "nvim-tree/nvim-web-devicons",
         },
