@@ -44,7 +44,7 @@ require("lazy").setup({
         event = "UIEnter",
         dependencies = {
             "nvim-tree/nvim-web-devicons",
-            "jinzhongjia/git-blame.nvim",
+            "f-person/git-blame.nvim",
             {
                 "AndreM222/copilot-lualine",
                 dependencies = "zbirenbaum/copilot.lua",
