@@ -1,3 +1,5 @@
+--- @type ("pwsh"|"nu")?
+local enable_shell = "pwsh"
 local o = vim.o
 o.encoding = "utf-8"
 o.fileencoding = "utf-8"
@@ -123,7 +125,8 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 })
 
 -- when on windows and pwsh exists
-if vim.fn.has("win32") == 1 then
+-- this is for pwsh
+if vim.fn.has("win32") == 1 and vim.fn.executable("pwsh") == 1 and enable_shell == "pwsh" then
     -- https://github.com/neovim/neovim/issues/15634
     vim.o.shell = "pwsh"
     vim.o.shellcmdflag =
@@ -132,6 +135,13 @@ if vim.fn.has("win32") == 1 then
     vim.o.shellredir = "-RedirectStandardOutput %s -NoNewWindow -Wait"
     vim.o.shellxquote = ""
     vim.o.shellquote = ""
+end
+
+if vim.fn.executable("nu") == 1 and enable_shell == "nu" then
+    vim.o.shell = "nu"
+    vim.o.shellcmdflag = "-c"
+    vim.o.shellquote = ""
+    vim.o.shellxquote = ""
 end
 
 -- add Config command to chdir cwd to config path
