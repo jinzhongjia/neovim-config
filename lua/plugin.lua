@@ -409,6 +409,7 @@ require("lazy").setup({
                     "LspUI-declaration",
                     "LspUI-reference",
                     "LspUI-implementation",
+                    "mason",
                 },
             })
         end,
