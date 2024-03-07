@@ -410,6 +410,7 @@ require("lazy").setup({
                     "LspUI-reference",
                     "LspUI-implementation",
                     "mason",
+                    "floaterm",
                 },
             })
         end,
