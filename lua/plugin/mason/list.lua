@@ -44,4 +44,6 @@ return {
     "shellcheck",
     -- efm
     "yamllint",
+    -- efm
+    "xo",
 }
