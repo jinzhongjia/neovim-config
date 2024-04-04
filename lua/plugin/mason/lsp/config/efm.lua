@@ -8,21 +8,14 @@ local function get_efm_config(name)
     return config
 end
 
-local xo = get_efm_config("xo")
 local stylelint = get_efm_config("stylelint")
 
 local languages = {
     javascript = {
-        xo,
         get_efm_config("js_standard"),
     },
-    typescript = { xo,  },
-    javascriptreact = { xo,  },
-    typescriptreact = { xo,  },
-    vue = { xo,  },
     css = {
         stylelint,
-        
     },
     dockerfile = {
         get_efm_config("hadolint"),

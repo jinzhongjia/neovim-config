@@ -49,6 +49,7 @@ treesitter.setup({
         "sql",
         "svelte",
         "toml",
+        "tsx",
         "typescript",
         "vue",
         "yaml",
