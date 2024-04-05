@@ -46,9 +46,6 @@ local languages = {
     vim = {
         get_efm_config("vint"),
     },
-    sh = {
-        get_efm_config("shellcheck"),
-    },
 }
 
 local opt = {

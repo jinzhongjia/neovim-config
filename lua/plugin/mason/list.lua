@@ -41,7 +41,5 @@ return {
     -- efm
     "vint",
     -- efm
-    "shellcheck",
-    -- efm
     "yamllint",
 }
