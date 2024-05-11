@@ -19,7 +19,7 @@ local function default_confit_builder()
         flags = {
             debounce_text_changes = 150,
         },
-        --- @param client lsp.Client
+        --- @param client vim.lsp.Client
         ---@param bufnr integer
         on_attach = function(client, bufnr)
             -- Disable the formatting function and leave it to a special plug-in plug-in for processing
@@ -27,7 +27,7 @@ local function default_confit_builder()
             client.server_capabilities.documentRangeFormattingProvider = false
 
             -- Bind shortcut keys
-            require("plugin.mason.lsp.keybind").mapLSP(bufnr)
+            require("plugin.lspconfig.keybind").mapLSP(bufnr)
         end,
     }
 

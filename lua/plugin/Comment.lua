@@ -11,6 +11,7 @@ if not status_commentstring then
 end
 vim.g.skip_ts_context_commentstring_module = true
 
+---@diagnostic disable-next-line: missing-fields
 commentstring.setup({
     enable_autocmd = false,
 })

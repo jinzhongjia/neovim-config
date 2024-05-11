@@ -130,6 +130,7 @@ local buttons = {
         end),
         button("c", "  Configuration", function()
             local config_path = vim.fn.stdpath("config")
+            ---@diagnostic disable-next-line: param-type-mismatch
             vim.fn.chdir(config_path)
             vim.api.nvim_command("bdelete")
         end),

@@ -10,8 +10,8 @@ zig.setup({
             version = "latest",
         },
         lspconfig_opt = {
-            on_attach = function(client, bufnr)
-                require("plugin.mason.lsp.keybind").mapLSP(bufnr)
+            on_attach = function(_, bufnr)
+                require("plugin.lspconfig.keybind").mapLSP(bufnr)
             end,
         },
         enable_lspconfig = true,

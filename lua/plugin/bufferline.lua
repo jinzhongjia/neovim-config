@@ -30,9 +30,7 @@ bufferline.setup({
     },
 })
 
--- tool.map("n", "<Tab>", ":BufferLineCycleNext<cr>")
 tool.map("n", "bn", "<CMD>BufferLineCycleNext<cr>")
--- tool.map("n", "<S-Tab>", ":BufferLineCyclePrev<cr>")
 tool.map("n", "bp", "<CMD>BufferLineCyclePrev<cr>")
 tool.map("n", "bd", "<CMD>Bdelete!<cr>")
 

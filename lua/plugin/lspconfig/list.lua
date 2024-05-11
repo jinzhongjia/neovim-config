@@ -13,8 +13,8 @@ local lists = {
     { name = "pyright", alone = false },
     { name = "volar", alone = false },
     { cmd = "vim-language-server", name = "vimls", alone = false },
-    -- { name = "vtsls",                      alone = false }, -- TODO
-    -- { name = "unocss",                     alone = false }, -- TODO
+    { name = "vtsls", alone = false }, -- TODO: for nixos
+    { name = "unocss", alone = false }, -- TODO: for nixos
     { cmd = "yaml-language-server", name = "yamlls", alone = false },
     { name = "lemminx", alone = false },
     { name = "taplo", alone = false },

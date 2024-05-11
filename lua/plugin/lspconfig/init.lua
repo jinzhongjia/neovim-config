@@ -6,12 +6,12 @@ end
 
 local list = require("plugin.lspconfig.list")
 
-local default_config = require("plugin.mason.lsp.default")
+local default_config = require("plugin.lspconfig.default")
 
 for _, ele in pairs(list) do
     local cmd = ele.cmd or ele.name
     if check_exec(cmd) then
-        local cmd_status, config = pcall(require, "plugin.mason.lsp.config." .. ele.name)
+        local cmd_status, config = pcall(require, "plugin.lspconfig.config." .. ele.name)
         if not cmd_status then
             config = {}
         end
