@@ -22,9 +22,6 @@ local list = {
     { name = "volar", alone = false }, -- Can be customized to override the default tsserver
     -- { name = "marksman", alone = false },
     { name = "vimls", alone = false },
-    { name = "jsonls", alone = false },
-    { name = "dockerls", alone = false },
-    { name = "cssls", alone = false },
     -- { name = "hls", alone = false },
     -- { name = "vls", alone = false },
     -- { name = "kotlin_language_server", alone = false },

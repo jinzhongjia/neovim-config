@@ -152,6 +152,7 @@ require("lazy").setup({
     },
     {
         "williamboman/mason.nvim",
+        enabled = not isNixos(),
         event = "VeryLazy",
         dependencies = {
             "neovim/nvim-lspconfig",
@@ -164,6 +165,19 @@ require("lazy").setup({
         config = function()
             require("plugin.mason")
         end,
+    },
+    {
+        "neovim/nvim-lspconfig",
+        event = "VeryLazy",
+        enabled = isNixos(),
+        dependencies = {
+            "creativenull/efmls-configs-nvim",
+            "b0o/schemastore.nvim",
+            "folke/neodev.nvim",
+        },
+        config = function()
+            require("plugin.lspconfig")
+        end
     },
     {
         "hrsh7th/nvim-cmp",
@@ -220,7 +234,9 @@ require("lazy").setup({
             "debugloop/telescope-undo.nvim",
             {
                 "nvim-telescope/telescope-fzf-native.nvim",
-                build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
+                enabled = not isNixos(),
+                build =
+                "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
             },
             "nvim-telescope/telescope-live-grep-args.nvim",
         },
@@ -251,8 +267,8 @@ require("lazy").setup({
                     require("statuscol").setup({
                         relculright = true,
                         segments = {
-                            { text = { builtin.foldfunc }, click = "v:lua.ScFa" },
-                            { text = { "%s" }, click = "v:lua.ScSa" },
+                            { text = { builtin.foldfunc },      click = "v:lua.ScFa" },
+                            { text = { "%s" },                  click = "v:lua.ScSa" },
                             { text = { builtin.lnumfunc, " " }, click = "v:lua.ScLa" },
                         },
                     })
@@ -307,6 +323,7 @@ require("lazy").setup({
         -- optional, but required for fuzzy finder support
         dependencies = {
             "nvim-telescope/telescope-fzf-native.nvim",
+            enabled = not isNixos(),
         },
     },
     -- indent
@@ -450,8 +467,8 @@ require("lazy").setup({
         },
     },
     {
-        "HiPhish/rainbow-delimiters.nvim",
-        event = "VeryLazy",
+        "direnv/direnv.vim",
+        event = "VeryLazy"
     },
 
     -- unpack(require("theme").theme()),

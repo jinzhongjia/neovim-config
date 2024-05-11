@@ -63,7 +63,9 @@ telescope.setup({
 })
 
 -- Telescope extensions
-telescope.load_extension("fzf")
+if not isNixos() then
+    telescope.load_extension("fzf")
+end
 telescope.load_extension("undo")
 telescope.load_extension("live_grep_args")
 local status_new, _ = pcall(require, "aerial")
