@@ -1,3 +1,5 @@
 lazy-lock.json
 lua/.luarc.json
 .luarc.json
+.vscode/settings.json
+.direnv
