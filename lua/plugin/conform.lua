@@ -81,5 +81,8 @@ conform.setup({
         xml = check({
             { name = "xmlformat" },
         }),
+        nix = check({
+            { name = "nixpkgs_fmt", cmd = "nixpkgs-fmt" },
+        }),
     },
 })

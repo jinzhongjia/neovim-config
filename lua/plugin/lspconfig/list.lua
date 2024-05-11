@@ -1,3 +1,4 @@
+--- @type { name:string, cmd:string?, alone:boolean, enable:boolean? }
 local lists = {
     { cmd = "lua-language-server", name = "lua_ls", alone = false },
     { name = "clangd", alone = false },
@@ -19,6 +20,7 @@ local lists = {
     { name = "lemminx", alone = false },
     { name = "taplo", alone = false },
     { cmd = "efm-langserver", name = "efm", alone = false },
+    { cmd = "nil", name = "nil_ls", alone = false, enable = false },
 }
 
 return lists

@@ -9,11 +9,13 @@ local installServers = {}
 local default_config = require("plugin.lspconfig.default")
 
 for _, ele in pairs(list) do
-    table.insert(installServers, ele.name)
-    if ele.alone then
-        table.insert(alones, ele.name)
-    else
-        table.insert(servers, ele.name)
+    if ele.enable or true then
+        table.insert(installServers, ele.name)
+        if ele.alone then
+            table.insert(alones, ele.name)
+        else
+            table.insert(servers, ele.name)
+        end
     end
 end
 
