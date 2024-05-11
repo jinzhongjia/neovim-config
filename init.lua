@@ -1,4 +1,4 @@
--- this is just tool function 
+-- this is just tool function
 require("others")
 
 -- this is basic config

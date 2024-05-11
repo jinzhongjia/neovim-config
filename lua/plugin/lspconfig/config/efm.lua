@@ -28,7 +28,7 @@ local languages = {
         get_efm_config("hadolint"),
     },
     go = {
-        get_efm_config("golangci_lint","golangci-lint"),
+        get_efm_config("golangci_lint", "golangci-lint"),
     },
     python = {
         get_efm_config("pylint"),

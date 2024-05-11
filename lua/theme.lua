@@ -1,5 +1,5 @@
-local M={}
- M.theme = function()
+local M = {}
+M.theme = function()
     return {
         {
             "rebelot/kanagawa.nvim",
@@ -152,4 +152,4 @@ local M={}
     }
 end
 
-return M 
+return M

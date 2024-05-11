@@ -177,7 +177,7 @@ require("lazy").setup({
         },
         config = function()
             require("plugin.lspconfig")
-        end
+        end,
     },
     {
         "hrsh7th/nvim-cmp",
@@ -235,8 +235,7 @@ require("lazy").setup({
             {
                 "nvim-telescope/telescope-fzf-native.nvim",
                 enabled = not isNixos(),
-                build =
-                "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
+                build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
             },
             "nvim-telescope/telescope-live-grep-args.nvim",
         },
@@ -267,8 +266,8 @@ require("lazy").setup({
                     require("statuscol").setup({
                         relculright = true,
                         segments = {
-                            { text = { builtin.foldfunc },      click = "v:lua.ScFa" },
-                            { text = { "%s" },                  click = "v:lua.ScSa" },
+                            { text = { builtin.foldfunc }, click = "v:lua.ScFa" },
+                            { text = { "%s" }, click = "v:lua.ScSa" },
                             { text = { builtin.lnumfunc, " " }, click = "v:lua.ScLa" },
                         },
                     })
@@ -468,7 +467,7 @@ require("lazy").setup({
     },
     {
         "direnv/direnv.vim",
-        event = "VeryLazy"
+        event = "VeryLazy",
     },
 
     -- unpack(require("theme").theme()),
