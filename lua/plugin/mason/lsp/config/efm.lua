@@ -1,5 +1,11 @@
 --- @param name string
-local function get_efm_config(name)
+--- @param command string?
+local function get_efm_config(name, command)
+    local cmd = command or name
+    if isNixos() and not check_exec(cmd) then
+        return
+    end
+
     local status, config = pcall(require, string.format("efmls-configs.linters.%s", name))
     if not status then
         vim.notify(string.format("not found %s", name))
@@ -12,6 +18,7 @@ local stylelint = get_efm_config("stylelint")
 
 local languages = {
     javascript = {
+        -- now nixos not support this
         get_efm_config("js_standard"),
     },
     css = {
@@ -21,7 +28,7 @@ local languages = {
         get_efm_config("hadolint"),
     },
     go = {
-        get_efm_config("golangci_lint"),
+        get_efm_config("golangci_lint","golangci-lint"),
     },
     python = {
         get_efm_config("pylint"),
