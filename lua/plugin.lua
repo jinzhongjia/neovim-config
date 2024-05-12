@@ -97,6 +97,7 @@ require("lazy").setup({
     },
     {
         "jinzhongjia/Zig.nvim",
+        enabled = not isNixos(),
         dev = true,
         event = "VeryLazy",
         config = function()

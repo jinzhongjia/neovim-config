@@ -21,6 +21,7 @@ local lists = {
     { name = "taplo", alone = false },
     { cmd = "efm-langserver", name = "efm", alone = false },
     { cmd = "nil", name = "nil_ls", alone = false, enable = false },
+    { name = "zls", alone = false, enable = false },
 }
 
 return lists
