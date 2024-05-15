@@ -177,8 +177,7 @@ require("lazy").setup({
         },
         config = function()
             if isNixos() then
-                
-            require("plugin.lspconfig")
+                require("plugin.lspconfig")
             end
         end,
     },
@@ -469,7 +468,7 @@ require("lazy").setup({
     },
     {
         "direnv/direnv.vim",
-        enabled=isNixos(),
+        enabled = isNixos(),
         event = "VeryLazy",
     },
 
