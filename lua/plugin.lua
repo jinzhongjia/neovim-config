@@ -170,14 +170,16 @@ require("lazy").setup({
     {
         "neovim/nvim-lspconfig",
         event = "VeryLazy",
-        enabled = isNixos(),
         dependencies = {
             "creativenull/efmls-configs-nvim",
             "b0o/schemastore.nvim",
             "folke/neodev.nvim",
         },
         config = function()
+            if isNixos() then
+                
             require("plugin.lspconfig")
+            end
         end,
     },
     {
@@ -323,7 +325,6 @@ require("lazy").setup({
         -- optional, but required for fuzzy finder support
         dependencies = {
             "nvim-telescope/telescope-fzf-native.nvim",
-            enabled = not isNixos(),
         },
     },
     -- indent
@@ -468,6 +469,7 @@ require("lazy").setup({
     },
     {
         "direnv/direnv.vim",
+        enabled=isNixos(),
         event = "VeryLazy",
     },
 
