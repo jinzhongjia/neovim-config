@@ -50,6 +50,7 @@ git clone -b coc https://github.com/jinzhongjia/neovim-config.git ~/AppData/Loca
 - ripgrep (*embed lsp*)
 - unzip (*embed lsp*)
 - Cmake (*embed lsp*)
+- Microsoft C++ Build Tools (For *embed lsp* and windows)
 
 For GUI, you can install [Neovide](https://neovide.dev/) (My configuration includes neovide's configuration), this is a great GUI client!
 
