@@ -38,6 +38,8 @@ git clone -b coc https://github.com/jinzhongjia/neovim-config.git ~/AppData/Loca
 
 ## Denpendences
 
+- wget
+- curl
 - Golang
 - Rust
 - Python
