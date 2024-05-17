@@ -16,7 +16,7 @@ Embed lsp is for geek customization, coc is for lightweight configuration.
 
 For embed lsp users:
 
-neovim version: `nightly`
+neovim version: `0.10`
 
 ```sh
 # for unix-like
