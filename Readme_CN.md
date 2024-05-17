@@ -14,7 +14,7 @@
 
 对于内置Lsp用户：
 
-需要最新开发版的Neovim,即 `nightly`。
+至少为 `0.10` 版本！
 
 ```sh
 # for unix-like
@@ -48,6 +48,7 @@ git clone -b coc https://github.com/jinzhongjia/neovim-config.git ~/AppData/Loca
 - ripgrep (*内置LSP*)
 - unzip (*内置LSP*)
 - Cmake (*内置LSP*)
+- Microsoft C++ Build Tools (windows 平台下使用 *内置LSP* 需要)
 
 关于 GUI，建议使用 [Neovide](https://neovide.dev/)，非常棒的客户端，我的配置已经包含 neovide 的设置。
 
