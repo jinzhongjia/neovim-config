@@ -455,7 +455,7 @@ require("lazy").setup({
         config = true,
     },
     {
-        "jinzhongjia/outline.nvim",
+        "hedyhli/outline.nvim",
         dev = true,
         lazy = true,
         cmd = { "Outline", "OutlineOpen" },
