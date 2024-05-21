@@ -471,6 +471,13 @@ require("lazy").setup({
         enabled = isNixos(),
         event = "VeryLazy",
     },
+    {
+        "kevinhwang91/nvim-hlslens",
+        event = "VeryLazy",
+        config = function()
+            require("plugin.hlslens")
+        end,
+    },
 
     -- unpack(require("theme").theme()),
 }, {
