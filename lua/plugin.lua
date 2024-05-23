@@ -67,17 +67,6 @@ require("lazy").setup({
         end,
     },
 
-    -- comment
-    {
-        "numToStr/Comment.nvim",
-        dependencies = {
-            "JoosepAlviste/nvim-ts-context-commentstring",
-        },
-        event = "VeryLazy",
-        config = function()
-            require("plugin.Comment")
-        end,
-    },
     -- lsp progress
     {
         "j-hui/fidget.nvim",
@@ -134,9 +123,6 @@ require("lazy").setup({
     -- treesitter
     {
         "nvim-treesitter/nvim-treesitter",
-        dependencies = {
-            "JoosepAlviste/nvim-ts-context-commentstring",
-        },
         event = "VeryLazy",
         build = function()
             require("nvim-treesitter.install").update({ with_sync = true })()
@@ -488,6 +474,11 @@ require("lazy").setup({
         opts = {
             -- your options here
         },
+    },
+    {
+        "folke/ts-comments.nvim",
+        event = "VeryLazy",
+        opts = {},
     },
 
     -- unpack(require("theme").theme()),
