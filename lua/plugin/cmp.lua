@@ -39,7 +39,7 @@ cmp.setup({
     -- Specify the snippet engine
     snippet = {
         expand = function(args)
-            vim.fn["vsnip#anonymous"](args.body)
+            vim.snippet.expand(args.body)
         end,
     },
     -- Completion source
@@ -47,16 +47,12 @@ cmp.setup({
 
         { name = "nvim_lsp" },
 
-        { name = "vsnip" },
+        { name = "snippets" },
 
         { name = "copilot" },
 
         { name = "async_path" },
 
-        -- { name = "rg" },
-
-        -- For luasnip users.
-        -- { name = 'luasnip' },
     }, { { name = "buffer" } }),
 
     -- Shortcut settings
@@ -110,6 +106,8 @@ cmp.setup({
                     and vim.api.nvim_buf_get_text(0, line - 1, 0, line - 1, col, {})[1]:match("^%s*$") == nil
             end
 
+            --- @param key string
+            --- @param mode string
             local feedkey = function(key, mode)
                 vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
             end
@@ -118,8 +116,8 @@ cmp.setup({
                 cmp.select_next_item()
             -- elseif require("copilot.suggestion").is_visible() then
             --     require("copilot.suggestion").accept()
-            elseif vim.fn["vsnip#available"](1) == 1 then
-                feedkey("<Plug>(vsnip-expand-or-jump)", "")
+            elseif vim.snippet.active({ direction = 1 }) then
+                feedkey("<cmd>lua vim.snippet.jump(1)<CR>", "")
             elseif has_words_before() then
                 cmp.complete()
             else
@@ -134,8 +132,8 @@ cmp.setup({
 
             if cmp.visible() then
                 cmp.select_prev_item()
-            elseif vim.fn["vsnip#jumpable"](-1) == 1 then
-                feedkey("<Plug>(vsnip-jump-prev)", "")
+            elseif vim.snippet.active({ direction = -1 }) then
+                feedkey("<cmd>lua vim.snippet.jump(-1)<CR>", "")
             end
         end, { "i", "s" }),
         -- Scrolling if the window has too much content
@@ -146,8 +144,8 @@ cmp.setup({
             local feedkey = function(key, mode)
                 vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
             end
-            if vim.fn["vsnip#available"](1) == 1 then
-                feedkey("<Plug>(vsnip-expand-or-jump)", "")
+            if vim.snippet.active({ direction = 1 }) then
+                feedkey("<cmd>lua vim.snippet.jump(1)<CR>", "")
             end
         end, { "i", "s" }),
 
@@ -156,8 +154,8 @@ cmp.setup({
             local feedkey = function(key, mode)
                 vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
             end
-            if vim.fn["vsnip#jumpable"](-1) == 1 then
-                feedkey("<Plug>(vsnip-jump-prev)", "")
+            if vim.snippet.active({ direction = -1 }) then
+                feedkey("<cmd>lua vim.snippet.jump(-1)<CR>", "")
             end
         end, { "i", "s" }),
     },

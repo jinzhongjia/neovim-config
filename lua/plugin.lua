@@ -9,6 +9,8 @@ if not vim.loop.fs_stat(lazypath) then
         lazypath,
     })
 end
+
+---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
@@ -206,16 +208,17 @@ require("lazy").setup({
                 end,
             },
 
-            -- "hrsh7th/cmp-path",
             -- async path
             "FelipeLema/cmp-async-path",
             "lukas-reineke/cmp-rg",
             "hrsh7th/cmp-cmdline",
-            --
-            -- "L3MON4D3/LuaSnip",
-            -- "saadparwaiz1/cmp_luasnip",
-            "hrsh7th/vim-vsnip",
-            "hrsh7th/cmp-vsnip",
+            {
+
+                "garymjr/nvim-snippets",
+                opts = {
+                    friendly_snippets = true,
+                },
+            },
             --- ui denpendences
             "onsails/lspkind-nvim",
             --- autopairs
