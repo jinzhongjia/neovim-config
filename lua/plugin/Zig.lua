@@ -7,7 +7,7 @@ end
 zig.setup({
     zls = {
         web_install = {
-            version = "latest",
+            version = "latestTagged",
         },
         lspconfig_opt = {
             on_attach = function(_, bufnr)
