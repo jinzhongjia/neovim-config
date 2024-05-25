@@ -94,11 +94,6 @@ local function button(key, txt, position, callback, retain)
     }
 end
 
---- @type integer
-local project_index = 0
-
-local project_length = 7
-
 local function projects()
     local path = fn.expand(project_path)
     local iterator = fs.dir(path)
@@ -109,99 +104,73 @@ local function projects()
             break
         end
         if type == "directory" then
-            -- if index >= project_index and index < project_length + project_index then
-            tbl[index - project_index] = button(
-                tostring(index),
-                string.format(" %s", filename),
-                project_position,
-                function()
-                    local path1 = string.format("%s/%s", project_path, filename)
-                    local path2 = fn.expand(path1)
-                    api.nvim_set_current_dir(path2)
-                end
-            )
-            -- end
+            tbl[index] = button(tostring(index), string.format(" %s", filename), project_position, function()
+                local path1 = string.format("%s/%s", project_path, filename)
+                local path2 = fn.expand(path1)
+                api.nvim_set_current_dir(path2)
+            end)
             index = index + 1
         end
     end
-    -- tbl[index] = button("d", "next 7 page", project_position, function()
-    --     if index % 7 == 0 then
-    --         project_index = project_index + project_length
-    --         alpha.redraw(generate_config())
-    --     end
-    -- end, true)
-    -- tbl[index + 1] = button("u", "up 7 page", project_position, function()
-    --     if 0 < index and index < project_length then
-    --         project_index = 0
-    --         alpha.redraw(generate_config())
-    --     else
-    --         project_index = project_index - project_length
-    --         alpha.redraw(generate_config())
-    --     end
-    -- end, true)
 
     return { type = "group", val = tbl }
 end
 
-generate_config = function()
-    local section_project = {
-        type = "group",
-        val = {
-            {
-                type = "text",
-                val = " Projects ",
-                opts = {
-                    hl = "SpecialComment",
-                    shrink_margin = false,
-                    position = project_position,
-                },
-            },
-            { type = "padding", val = 1 },
-            {
-                type = "group",
-                val = function()
-                    return { projects() }
-                end,
-                opts = { shrink_margin = false },
+local section_project = {
+    type = "group",
+    val = {
+        {
+            type = "text",
+            val = " Projects ",
+            opts = {
+                hl = "SpecialComment",
+                shrink_margin = false,
+                position = project_position,
             },
         },
-    }
-
-    local buttons = {
-        type = "group",
-        val = {
-            { type = "text", val = "Quick links", opts = { hl = "SpecialComment", position = button_position } },
-            { type = "padding", val = 1 },
-            button("e", " New file", button_position, function()
-                vim.cmd([[ene]])
-            end),
-            button("c", " Configuration", button_position, function()
-                local config_path = vim.fn.stdpath("config")
-                ---@diagnostic disable-next-line: param-type-mismatch
-                vim.fn.chdir(config_path)
-                vim.api.nvim_command("bdelete")
-            end),
-            button("u", " Update plugins", button_position, function()
-                vim.cmd([[Lazy sync]])
-            end),
+        { type = "padding", val = 1 },
+        {
+            type = "group",
+            val = function()
+                return { projects() }
+            end,
+            opts = { shrink_margin = false },
         },
-    }
+    },
+}
 
-    local theme = {
-        layout = {
-            { type = "padding", val = 2 },
-            header,
-            { type = "padding", val = 2 },
-            section_project,
-            { type = "padding", val = 2 },
-            buttons,
-        },
-        opts = {
-            margin = 5,
-        },
-    }
+local buttons = {
+    type = "group",
+    val = {
+        { type = "text", val = "Quick links", opts = { hl = "SpecialComment", position = button_position } },
+        { type = "padding", val = 1 },
+        button("e", " New file", button_position, function()
+            vim.cmd([[ene]])
+        end),
+        button("c", " Configuration", button_position, function()
+            local config_path = vim.fn.stdpath("config")
+            ---@diagnostic disable-next-line: param-type-mismatch
+            vim.fn.chdir(config_path)
+            vim.api.nvim_command("bdelete")
+        end),
+        button("u", " Update plugins", button_position, function()
+            vim.cmd([[Lazy sync]])
+        end),
+    },
+}
 
-    return theme
-end
+local theme = {
+    layout = {
+        { type = "padding", val = 2 },
+        header,
+        { type = "padding", val = 2 },
+        section_project,
+        { type = "padding", val = 2 },
+        buttons,
+    },
+    opts = {
+        margin = 5,
+    },
+}
 
-alpha.setup(generate_config())
+alpha.setup(theme)
