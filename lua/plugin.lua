@@ -274,9 +274,6 @@ require("lazy").setup({
     {
         "voldikss/vim-translator",
         event = "VeryLazy",
-        config = function()
-            require("plugin.vim-translator")
-        end,
     },
     -- format
     {
