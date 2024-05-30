@@ -162,6 +162,12 @@ M.theme = function()
                 vim.cmd("colorscheme poimandres")
             end,
         },
+        {
+            "rmehri01/onenord.nvim",
+            config = function()
+                require("onenord").setup()
+            end,
+        },
     }
 end
 
