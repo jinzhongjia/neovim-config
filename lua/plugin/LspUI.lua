@@ -27,6 +27,9 @@ LspUI.setup({
     signature = {
         enable = true,
     },
+    inlay_hint = {
+        enable = false,
+    },
 })
 
 tool.map("n", "<leader>rn", "<CMD>LspUI rename<CR>")

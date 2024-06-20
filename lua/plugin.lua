@@ -414,6 +414,7 @@ require("lazy").setup({
                     "LspUI-implementation",
                     "mason",
                     "floaterm",
+                    "lazy",
                     "alpha",
                 },
             })
