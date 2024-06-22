@@ -82,6 +82,8 @@ o.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
 
 vim.g.zig_fmt_autosave = false
 
+vim.g.loaded_perl_provider = false
+
 -- diasble netrw
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
