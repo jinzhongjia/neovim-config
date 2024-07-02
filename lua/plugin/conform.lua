@@ -47,7 +47,6 @@ conform.setup({
         lua = check({
             { name = "stylua" },
         }),
-        -- Conform will use the first available formatter in the list
         javascript = check({
             { name = "prettierd" },
         }),
@@ -63,7 +62,6 @@ conform.setup({
         vue = check({
             { name = "prettierd" },
         }),
-        -- Formatters can also be specified with additional options
         python = check({
             { name = "isort" },
             { name = "black" },
