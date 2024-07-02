@@ -52,6 +52,8 @@ cmp.setup({
         { name = "copilot" },
 
         { name = "async_path" },
+
+        { name = "lazydev" },
     }, { { name = "buffer" } }),
 
     -- Shortcut settings

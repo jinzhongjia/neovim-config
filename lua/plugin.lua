@@ -149,7 +149,6 @@ require("lazy").setup({
             "williamboman/mason-lspconfig.nvim",
 
             "b0o/schemastore.nvim",
-            "folke/neodev.nvim",
         },
         config = function()
             require("plugin.mason")
@@ -161,7 +160,6 @@ require("lazy").setup({
         dependencies = {
             "creativenull/efmls-configs-nvim",
             "b0o/schemastore.nvim",
-            "folke/neodev.nvim",
         },
         config = function()
             if isNixos() then
@@ -470,6 +468,22 @@ require("lazy").setup({
         "folke/ts-comments.nvim",
         event = "VeryLazy",
         opts = {},
+    },
+    {
+        "folke/lazydev.nvim",
+        event = "VeryLazy",
+        opts = {
+            library = {
+                -- See the configuration section for more details
+                -- Load luvit types when the `vim.uv` word is found
+                { path = "luvit-meta/library", words = { "vim%.uv" } },
+            },
+        },
+    },
+    {
+        -- optional `vim.uv` typings
+        "Bilal2453/luvit-meta",
+        event = "VeryLazy",
     },
 
     -- unpack(require("theme").theme()),

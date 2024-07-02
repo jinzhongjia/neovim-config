@@ -159,7 +159,6 @@ require("lazy").setup({
             "williamboman/mason-lspconfig.nvim",
 
             "b0o/schemastore.nvim",
-            "folke/neodev.nvim",
         },
         config = function()
             require("plugin.mason")
