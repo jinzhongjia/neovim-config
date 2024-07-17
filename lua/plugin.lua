@@ -481,9 +481,20 @@ require("lazy").setup({
         },
     },
     {
-        -- optional `vim.uv` typings
         "Bilal2453/luvit-meta",
         event = "VeryLazy",
+    },
+    {
+        "NeogitOrg/neogit",
+        dependencies = {
+            "nvim-lua/plenary.nvim", -- required
+            "sindrets/diffview.nvim", -- optional - Diff integration
+
+            -- Only one of these is needed, not both.
+            "nvim-telescope/telescope.nvim", -- optional
+            "ibhagwan/fzf-lua", -- optional
+        },
+        config = true,
     },
 
     -- unpack(require("theme").theme()),
