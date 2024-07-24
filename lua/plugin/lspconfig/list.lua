@@ -11,7 +11,7 @@ local lists = {
     { cmd = "vscode-html-language-server", name = "html", alone = false },
     { cmd = "vscode-json-language-server", name = "jsonls", alone = false },
     { name = "rust_analyzer", alone = false },
-    { name = "pyright", alone = false },
+    { name = "basedpyright", alone = false },
     { name = "volar", alone = false },
     { cmd = "vim-language-server", name = "vimls", alone = false },
     { name = "vtsls", alone = false }, -- TODO: for nixos
