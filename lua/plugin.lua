@@ -199,9 +199,16 @@ require("lazy").setup({
             "FelipeLema/cmp-async-path",
             "lukas-reineke/cmp-rg",
             "hrsh7th/cmp-cmdline",
+            "SirVer/ultisnips",
             {
-
+                "quangnguyen30192/cmp-nvim-ultisnips",
+                config = function()
+                    require("cmp_nvim_ultisnips").setup({})
+                end,
+            },
+            {
                 "garymjr/nvim-snippets",
+                enabled = false,
                 opts = {
                     friendly_snippets = true,
                 },

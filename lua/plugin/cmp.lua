@@ -39,7 +39,8 @@ cmp.setup({
     -- Specify the snippet engine
     snippet = {
         expand = function(args)
-            vim.snippet.expand(args.body)
+            vim.fn["UltiSnips#Anon"](args.body)
+            -- vim.snippet.expand(args.body)
         end,
     },
     -- Completion source
@@ -47,7 +48,8 @@ cmp.setup({
 
         { name = "nvim_lsp" },
 
-        { name = "snippets" },
+        { name = "ultisnips" },
+        -- { name = "snippets" },
 
         { name = "copilot" },
 
@@ -118,7 +120,9 @@ cmp.setup({
             -- elseif require("copilot.suggestion").is_visible() then
             --     require("copilot.suggestion").accept()
             elseif vim.snippet.active({ direction = 1 }) then
-                feedkey("<cmd>lua vim.snippet.jump(1)<CR>", "")
+                local cmp_ultisnips_mappings = require("cmp_nvim_ultisnips.mappings")
+                cmp_ultisnips_mappings.expand_or_jump_forwards(fallback)
+                -- feedkey("<cmd>lua vim.snippet.jump(1)<CR>", "")
             elseif has_words_before() then
                 cmp.complete()
             else
@@ -126,7 +130,7 @@ cmp.setup({
             end
         end, { "i", "s" }),
         -- shift super tab
-        ["<S-Tab>"] = cmp.mapping(function()
+        ["<S-Tab>"] = cmp.mapping(function(fallback)
             local feedkey = function(key, mode)
                 vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
             end
@@ -134,7 +138,9 @@ cmp.setup({
             if cmp.visible() then
                 cmp.select_prev_item()
             elseif vim.snippet.active({ direction = -1 }) then
-                feedkey("<cmd>lua vim.snippet.jump(-1)<CR>", "")
+                local cmp_ultisnips_mappings = require("cmp_nvim_ultisnips.mappings")
+                cmp_ultisnips_mappings.jump_backwards(fallback)
+                -- feedkey("<cmd>lua vim.snippet.jump(-1)<CR>", "")
             end
         end, { "i", "s" }),
         -- Scrolling if the window has too much content
