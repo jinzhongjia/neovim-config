@@ -503,6 +503,11 @@ require("lazy").setup({
         },
         opts = {},
     },
+    {
+        "sontungexpt/better-diagnostic-virtual-text",
+        event = "VeryLazy",
+        opts = {},
+    },
 
     -- unpack(require("theme").theme()),
 }, {
