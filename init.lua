@@ -12,4 +12,4 @@ require("extra")
 require("plugin")
 
 -- set colorscheme
-vim.cmd([[colorscheme arctic]])
+vim.cmd.colorscheme("arctic")
