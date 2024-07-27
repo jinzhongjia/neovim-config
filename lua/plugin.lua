@@ -199,16 +199,8 @@ require("lazy").setup({
             "FelipeLema/cmp-async-path",
             "lukas-reineke/cmp-rg",
             "hrsh7th/cmp-cmdline",
-            "SirVer/ultisnips",
-            {
-                "quangnguyen30192/cmp-nvim-ultisnips",
-                config = function()
-                    require("cmp_nvim_ultisnips").setup({})
-                end,
-            },
             {
                 "garymjr/nvim-snippets",
-                enabled = false,
                 opts = {
                     friendly_snippets = true,
                 },
@@ -501,11 +493,6 @@ require("lazy").setup({
             { "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
             { "nvim-lua/plenary.nvim" }, -- for curl, log wrapper
         },
-        opts = {},
-    },
-    {
-        "sontungexpt/better-diagnostic-virtual-text",
-        event = "VeryLazy",
         opts = {},
     },
 
