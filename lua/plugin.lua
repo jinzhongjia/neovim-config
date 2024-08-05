@@ -375,8 +375,8 @@ require("lazy").setup({
         opts = {},
     },
     {
-        "tpope/vim-fugitive",
-        dependencies = "rbong/vim-flog",
+        "rbong/vim-flog",
+        dependencies = "tpope/vim-fugitive",
         event = "VeryLazy",
     },
     {
