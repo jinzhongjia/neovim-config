@@ -22,7 +22,6 @@ require("lazy").setup({
     -- file explorer
     {
         "nvim-tree/nvim-tree.lua",
-        version = "*",
         event = "UIEnter",
         dependencies = {
             "nvim-tree/nvim-web-devicons",
