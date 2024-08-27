@@ -449,9 +449,7 @@ require("lazy").setup({
         keys = { -- Example mapping to toggle outline
             { "<leader>a", "<cmd>Outline<CR>", desc = "Toggle outline" },
         },
-        opts = {
-            -- Your setup opts here
-        },
+        opts = {},
     },
     {
         "direnv/direnv.vim",
