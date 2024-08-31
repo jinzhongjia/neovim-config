@@ -493,6 +493,10 @@ require("lazy").setup({
         },
         opts = {},
     },
+    {
+        "HiPhish/rainbow-delimiters.nvim",
+        event = "VeryLazy",
+    },
 
     -- unpack(require("theme").theme()),
 }, {
