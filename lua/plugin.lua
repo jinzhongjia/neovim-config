@@ -296,7 +296,7 @@ require("lazy").setup({
         "Bekaboo/dropbar.nvim",
         event = "VeryLazy",
         opts = {
-            general = {
+            bar = {
                 update_events = {
                     win = {
                         "CursorHold",
