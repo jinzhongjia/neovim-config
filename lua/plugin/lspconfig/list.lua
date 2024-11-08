@@ -3,7 +3,8 @@ local lists = {
     { cmd = "lua-language-server", name = "lua_ls", alone = false },
     { name = "clangd", alone = false },
     { cmd = "bash-language-server", name = "bashls", alone = false },
-    { name = "cmake", alone = false },
+    -- disable cmake lsp, it can not be installed!
+    { name = "cmake", alone = false, enable = false },
     { cmd = "vscode-css-language-server", name = "cssls", alone = false },
     { cmd = "docker-langserver", name = "dockerls", alone = false },
     { cmd = "emmet-language-server", name = "emmet_ls", alone = false },
