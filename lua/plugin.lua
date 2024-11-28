@@ -439,8 +439,8 @@ require("lazy").setup({
     },
     {
         "nacro90/numb.nvim",
-        evnet = "VeryLazy",
-        config = true,
+        event = "VeryLazy",
+        opts = {},
     },
     {
         "hedyhli/outline.nvim",
@@ -491,6 +491,7 @@ require("lazy").setup({
             { "zbirenbaum/copilot.lua" }, -- or github/copilot.vim
             { "nvim-lua/plenary.nvim" }, -- for curl, log wrapper
         },
+        event = "VeryLazy",
         opts = {},
     },
     {
