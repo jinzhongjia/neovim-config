@@ -53,4 +53,8 @@ if vim.g.neovide then
 
     vim.g.neovide_cursor_animation_length = 0
     vim.g.neovide_floating_shadow = false
+elseif vim.g.nvy then
+    vim.o.guifont = "Maple Mono SC NF:h15"
+    local home = vim.fn.expand("~")
+    vim.fn.chdir(home)
 end
