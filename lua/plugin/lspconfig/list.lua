@@ -20,7 +20,7 @@ local lists = {
     { cmd = "yaml-language-server", name = "yamlls", alone = false },
     { name = "lemminx", alone = false },
     { name = "taplo", alone = false },
-    { cmd = "efm-langserver", name = "efm", alone = false },
+    { cmd = "efm-langserver", name = "efm", alone = false, enable = false },
     { cmd = "nil", name = "nil_ls", alone = false, enable = false },
     { name = "zls", alone = false },
     { name = "csharp_ls", alone = false },
