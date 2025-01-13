@@ -13,6 +13,7 @@ treesitter.setup({
         "vim",
         "vimdoc",
         "bash",
+        "c_sharp",
         "cmake",
         "cpp",
         "comment",
