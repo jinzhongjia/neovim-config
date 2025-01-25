@@ -4,7 +4,6 @@ if not status then
     return
 end
 
-local tool = require("tool")
 
 nvim_tree.setup({
 
@@ -40,4 +39,4 @@ nvim_tree.setup({
     },
 })
 
-tool.map("n", "<leader>e", "<CMD>NvimTreeToggle<CR>")
+__key_bind("n", "<leader>e", "<CMD>NvimTreeToggle<CR>")

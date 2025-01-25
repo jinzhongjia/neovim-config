@@ -4,12 +4,10 @@ if not status then
     return
 end
 
-local tool = require("tool")
-
 aerial.setup({
     layout = {
         min_width = 20,
     },
 })
 
-tool.map("n", "<leader>a", "<CMD>AerialToggle!<CR>")
+__key_bind("n", "<leader>a", "<CMD>AerialToggle!<CR>")

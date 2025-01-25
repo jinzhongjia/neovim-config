@@ -10,7 +10,7 @@ local check = function(list)
     local res = {}
     for _, ele in pairs(list) do
         local cmd = ele.cmd or ele.name
-        if not isNixos() or check_exec(cmd) then
+        if __check_exec(cmd) then
             table.insert(res, ele.name)
         end
     end

@@ -1,12 +1,14 @@
--- this is just tool function
-require("others")
+-- some tools function
+require("tool")
 
 -- this is basic config
 require("basic")
+
+-- config for keybind
 require("keybind")
 
--- some other config
-require("extra")
+-- config for editor
+require("editor")
 
 -- this is plugin load
 require("plugin")

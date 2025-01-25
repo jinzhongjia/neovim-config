@@ -2,9 +2,6 @@
 --- @param command string?
 local function get_efm_config(name, command)
     local cmd = command or name
-    if isNixos() and not check_exec(cmd) then
-        return
-    end
 
     local status, config = pcall(require, string.format("efmls-configs.linters.%s", name))
     if not status then

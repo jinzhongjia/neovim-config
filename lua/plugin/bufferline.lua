@@ -4,8 +4,6 @@ if not status then
     return
 end
 
-local tool = require("tool")
-
 -- bufferline config
 -- https://github.com/akinsho/bufferline.nvim#configuration
 ---@diagnostic disable-next-line: missing-fields
@@ -30,11 +28,10 @@ bufferline.setup({
     },
 })
 
-tool.map("n", "bn", "<CMD>BufferLineCycleNext<cr>")
-tool.map("n", "bp", "<CMD>BufferLineCyclePrev<cr>")
-tool.map("n", "bd", "<CMD>Bdelete!<cr>")
-
-tool.map("n", "<leader>bl", "<CMD>BufferLineCloseRight<cr>")
-tool.map("n", "<leader>bh", "<CMD>BufferLineCloseLeft<cr>")
-tool.map("n", "<leader>bn", "<CMD>BufferLineMoveNext<cr>")
-tool.map("n", "<leader>bp", "<CMD>BufferLineMovePrev<cr>")
+__key_bind("n", "bn", "<CMD>BufferLineCycleNext<cr>")
+__key_bind("n", "bp", "<CMD>BufferLineCyclePrev<cr>")
+__key_bind("n", "bd", "<CMD>Bdelete!<cr>")
+__key_bind("n", "<leader>bl", "<CMD>BufferLineCloseRight<cr>")
+__key_bind("n", "<leader>bh", "<CMD>BufferLineCloseLeft<cr>")
+__key_bind("n", "<leader>bn", "<CMD>BufferLineMoveNext<cr>")
+__key_bind("n", "<leader>bp", "<CMD>BufferLineMovePrev<cr>")

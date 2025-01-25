@@ -10,7 +10,7 @@ local default_config = require("plugin.lspconfig.default")
 
 for _, ele in pairs(list) do
     local cmd = ele.cmd or ele.name
-    if check_exec(cmd) then
+    if __check_exec(cmd) then
         local cmd_status, config = pcall(require, "plugin.lspconfig.config." .. ele.name)
         if not cmd_status then
             config = {}

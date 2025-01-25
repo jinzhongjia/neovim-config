@@ -145,7 +145,6 @@ require("lazy").setup(
         },
         {
             "williamboman/mason.nvim",
-            enabled = not isNixos(),
             event = "VeryLazy",
             dependencies = {
                 "neovim/nvim-lspconfig",
@@ -166,9 +165,7 @@ require("lazy").setup(
                 "b0o/schemastore.nvim",
             },
             config = function()
-                if isNixos() then
-                    require("plugin.lspconfig")
-                end
+                require("plugin.lspconfig")
             end,
         },
         {
@@ -226,7 +223,6 @@ require("lazy").setup(
                 "debugloop/telescope-undo.nvim",
                 {
                     "nvim-telescope/telescope-fzf-native.nvim",
-                    enabled = not isNixos(),
                     build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
                 },
                 "nvim-telescope/telescope-live-grep-args.nvim",
@@ -452,11 +448,6 @@ require("lazy").setup(
                 { "<leader>a", "<cmd>Outline<CR>", desc = "Toggle outline" },
             },
             opts = {},
-        },
-        {
-            "direnv/direnv.vim",
-            enabled = isNixos(),
-            event = "VeryLazy",
         },
         {
             "kevinhwang91/nvim-hlslens",

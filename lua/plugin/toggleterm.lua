@@ -15,10 +15,9 @@ toggleterm.setup({
     autochdir = true,
 })
 
-local tool = require("tool")
 
 -- Terminal related
-tool.map("n", "<leader>t", "<CMD>ToggleTerm direction=horizontal<CR>")
+__key_bind("n", "<leader>t", "<CMD>ToggleTerm direction=horizontal<CR>")
 -- tool.map("t", "<leader>t", "<CMD>ToggleTerm direction=horizontal<CR>")
-tool.map("n", "<leader>vt", "<CMD>ToggleTerm direction=vertical<CR>")
+__key_bind("n", "<leader>vt", "<CMD>ToggleTerm direction=vertical<CR>")
 -- tool.map("t", "<leader>vt", "<CMD>ToggleTerm direction=vertical<CR>")

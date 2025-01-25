@@ -1,6 +1,6 @@
 --- @type ("pwsh"|"nu")?
 local windows_shell = "pwsh"
-local o = vim.o
+local o, g, api, fn = vim.o, vim.g, vim.api, vim.fn
 o.encoding = "utf-8"
 o.fileencoding = "utf-8"
 
@@ -63,8 +63,8 @@ o.background = "dark"
 
 o.termguicolors = true
 
-vim.o.list = true
-vim.o.listchars = "space:·,tab:··,eol:↴"
+o.list = true
+o.listchars = "space:·,tab:··,eol:↴"
 
 o.wildmenu = true
 
@@ -80,13 +80,12 @@ o.foldlevelstart = 99
 o.foldenable = true
 o.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
 
-vim.g.zig_fmt_autosave = false
-
-vim.g.loaded_perl_provider = false
+g.zig_fmt_autosave = false
+g.loaded_perl_provider = false
 
 -- diasble netrw
-vim.g.loaded_netrw = 1
-vim.g.loaded_netrwPlugin = 1
+g.loaded_netrw = 1
+g.loaded_netrwPlugin = 1
 
 -- replace default diagnostic signs
 -- more:https://neovim.io/doc/user/diagnostic.html#diagnostic-signs
@@ -118,7 +117,7 @@ vim.diagnostic.config({
     },
 })
 
-vim.api.nvim_create_autocmd("TextYankPost", {
+api.nvim_create_autocmd("TextYankPost", {
     group = vim.api.nvim_create_augroup("highlight_on_yank", {}),
     desc = "Briefly highlight yanked text",
     callback = function()
@@ -128,36 +127,36 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 
 -- when on windows and pwsh exists
 -- this is for pwsh
-if vim.fn.has("win32") == 1 and vim.fn.executable("pwsh") == 1 and windows_shell == "pwsh" then
+if fn.has("win32") == 1 and fn.executable("pwsh") == 1 and windows_shell == "pwsh" then
     -- https://github.com/neovim/neovim/issues/15634
-    vim.o.shell = "pwsh"
-    vim.o.shellcmdflag =
+    o.shell = "pwsh"
+    o.shellcmdflag =
         "-NoLogo -NoProfile -ExecutionPolicy RemoteSigned -Command [Console]::InputEncoding=[Console]::OutputEncoding=[System.Text.Encoding]::UTF8;"
-    vim.o.shellpipe = "2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode"
-    vim.o.shellredir = "-RedirectStandardOutput %s -NoNewWindow -Wait"
-    vim.o.shellxquote = ""
-    vim.o.shellquote = ""
+    o.shellpipe = "2>&1 | Out-File -Encoding UTF8 %s; exit $LastExitCode"
+    o.shellredir = "-RedirectStandardOutput %s -NoNewWindow -Wait"
+    o.shellxquote = ""
+    o.shellquote = ""
 end
 
-if vim.fn.executable("nu") == 1 and windows_shell == "nu" then
-    vim.o.shell = "nu"
-    vim.o.shellcmdflag = "-c"
-    vim.o.shellquote = ""
-    vim.o.shellxquote = ""
+if fn.executable("nu") == 1 and windows_shell == "nu" then
+    o.shell = "nu"
+    o.shellcmdflag = "-c"
+    o.shellquote = ""
+    o.shellxquote = ""
 end
 
 -- add Config command to chdir cwd to config path
-vim.api.nvim_create_user_command("Config", function()
+api.nvim_create_user_command("Config", function()
     --- @type string
     ---@diagnostic disable-next-line: assign-type-mismatch
-    local config_path = vim.fn.stdpath("config")
-    vim.fn.chdir(config_path)
+    local config_path = fn.stdpath("config")
+    fn.chdir(config_path)
 end, {
     desc = "command for config",
 })
 
 -- reload buffer on focus
-vim.api.nvim_create_autocmd({
+api.nvim_create_autocmd({
     "FocusGained",
     "BufEnter",
     "CursorHold",

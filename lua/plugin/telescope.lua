@@ -63,9 +63,7 @@ telescope.setup({
 })
 
 -- Telescope extensions
-if not isNixos() then
-    telescope.load_extension("fzf")
-end
+telescope.load_extension("fzf")
 telescope.load_extension("undo")
 telescope.load_extension("live_grep_args")
 local status_new, _ = pcall(require, "aerial")
@@ -73,13 +71,11 @@ if status_new then
     telescope.load_extension("aerial")
 end
 
-local tool = require("tool")
-local map = tool.map
 -- find files
-map("n", "<C-p>", "<CMD>Telescope find_files<CR>")
+__key_bind("n", "<C-p>", "<CMD>Telescope find_files<CR>")
 -- Global search
-map("n", "<C-f>", "<CMD>Telescope live_grep<CR>")
+__key_bind("n", "<C-f>", "<CMD>Telescope live_grep<CR>")
 -- workspace_diagnostics
-map("n", "<leader>wd", "<CMD>Telescope diagnostics<CR>")
+__key_bind("n", "<leader>wd", "<CMD>Telescope diagnostics<CR>")
 -- undo
-map("n", "<leader>u", "<CMD>Telescope undo<cr>")
+__key_bind("n", "<leader>u", "<CMD>Telescope undo<cr>")
