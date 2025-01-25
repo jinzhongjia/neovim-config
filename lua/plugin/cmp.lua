@@ -11,6 +11,14 @@ if not status_lspkind then
     return
 end
 
+local status, colorful_menu = pcall(require, "colorful-menu")
+if not status then
+    vim.notify("not found colorful-menu")
+    return
+end
+
+colorful_menu.setup({})
+
 -- autopairs
 local status_npairs, npairs = pcall(require, "nvim-autopairs")
 if not status_npairs then
@@ -163,24 +171,25 @@ cmp.setup({
     -- Display type icons with lspkind-nvim
     ---@diagnostic disable-next-line: missing-fields
     formatting = {
-        format = lspkind.cmp_format({
-            mode = "symbol_text",
-            --mode = 'symbol', -- show only symbol annotations
+        format = function(_entry, _vim_item)
+            local kind = lspkind.cmp_format({
+                mode = "symbol_text",
+            })(_entry, vim.deepcopy(_vim_item))
 
-            maxwidth = 50, -- prevent the popup from showing more than provided characters (e.g 50 will not show more than 50 characters)
-            -- The function below will be called before any actual modifications from lspkind
-            -- so that you can provide more controls on popup customization. (See [#30](https://github.com/onsails/lspkind-nvim/pull/30))
-            before = function(entry, vim_item)
-                --- @cast vim_item vim.CompletedItem
-                -- Source Displays the source of the hint
-                if entry.source.name == "rg" or entry.source.name == "buffer" then
-                    vim_item.dup = nil
-                end
-                vim_item.menu = "[" .. string.upper(entry.source.name) .. "]"
-                return vim_item
-            end,
-            symbol_map = { Copilot = "" },
-        }),
+            local highlights_info = colorful_menu.cmp_highlights(_entry)
+
+            -- if highlight_info==nil, which means missing ts parser, let's fallback to use default `vim_item.abbr`.
+            -- What this plugin offers is two fields: `vim_item.abbr_hl_group` and `vim_item.abbr`.
+            if highlights_info ~= nil then
+                _vim_item.abbr_hl_group = highlights_info.highlights
+                _vim_item.abbr = highlights_info.text
+            end
+            local strings = vim.split(kind.kind, "%s", { trimempty = true })
+            _vim_item.kind = " " .. (strings[1] or "") .. " "
+            _vim_item.menu = ""
+
+            return _vim_item
+        end,
     },
 })
 

@@ -208,6 +208,7 @@ require("lazy").setup(
                 },
                 --- ui denpendences
                 "onsails/lspkind-nvim",
+                "xzbdmw/colorful-menu.nvim",
                 --- autopairs
                 "windwp/nvim-autopairs",
                 "rafamadriz/friendly-snippets",
