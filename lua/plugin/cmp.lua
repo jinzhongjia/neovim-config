@@ -52,25 +52,17 @@ cmp.setup({
     },
     -- Completion source
     sources = cmp.config.sources({
-
         { name = "nvim_lsp" },
-
         { name = "snippets" },
-
         { name = "copilot" },
-
         { name = "async_path" },
-
         { name = "lazydev" },
     }, { { name = "buffer" } }),
 
     -- Shortcut settings
     mapping = {
         -- Completion appears
-        ["<A-.>"] = cmp.mapping(cmp.mapping.complete(), {
-            "i",
-            "c",
-        }),
+        ["<A-.>"] = cmp.mapping(cmp.mapping.complete(), { "i", "c" }),
         -- Cancel
         ["<A-,>"] = cmp.mapping({
             i = cmp.mapping.abort(),
@@ -171,6 +163,7 @@ cmp.setup({
     -- Display type icons with lspkind-nvim
     ---@diagnostic disable-next-line: missing-fields
     formatting = {
+        fields = { "kind", "abbr", "menu" },
         format = function(_entry, _vim_item)
             local kind = lspkind.cmp_format({
                 mode = "symbol_text",
@@ -185,7 +178,7 @@ cmp.setup({
                 _vim_item.abbr = highlights_info.text
             end
             local strings = vim.split(kind.kind, "%s", { trimempty = true })
-            _vim_item.kind = " " .. (strings[1] or "") .. " "
+            _vim_item.kind = (strings[1] or "")
             _vim_item.menu = ""
 
             return _vim_item

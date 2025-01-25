@@ -198,7 +198,6 @@ require("lazy").setup(
 
                 -- async path
                 "FelipeLema/cmp-async-path",
-                "lukas-reineke/cmp-rg",
                 "hrsh7th/cmp-cmdline",
                 {
                     "garymjr/nvim-snippets",
