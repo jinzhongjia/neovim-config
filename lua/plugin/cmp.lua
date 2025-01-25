@@ -76,8 +76,24 @@ cmp.setup({
                 fallback() -- If you use vim-endwise, this fallback will behave the same as vim-endwise.
             end
         end,
+        -- prev
+        ["<C-p>"] = function(fallback)
+            if cmp.visible() then
+                cmp.select_prev_item()
+            else
+                fallback() -- If you use vim-endwise, this fallback will behave the same as vim-endwise.
+            end
+        end,
         -- Next
         ["<C-j>"] = function(fallback)
+            if cmp.visible() then
+                cmp.select_next_item()
+            else
+                fallback()
+            end
+        end,
+        -- Next
+        ["<C-n>"] = function(fallback)
             if cmp.visible() then
                 cmp.select_next_item()
             else
@@ -193,6 +209,11 @@ cmp.setup.cmdline(":", {
     }, {
         { name = "cmdline" },
     }),
+    ---@diagnostic disable-next-line: missing-fields
+    formatting = {
+        -- kind is icon, abbr is completion name, menu is [Function]
+        fields = { "abbr", "menu" },
+    },
 })
 
 cmp.setup.cmdline({ "/", "?" }, {
@@ -200,6 +221,11 @@ cmp.setup.cmdline({ "/", "?" }, {
     sources = cmp.config.sources({
         { name = "buffer" },
     }),
+    ---@diagnostic disable-next-line: missing-fields
+    formatting = {
+        -- kind is icon, abbr is completion name, menu is [Function]
+        fields = { "abbr", "menu" },
+    },
 })
 
 cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
