@@ -46,11 +46,6 @@ __key_bind("n", "<C-k>", "3k")
 __key_bind("n", "<C-u>", "7k")
 __key_bind("n", "<C-d>", "7j")
 
--- Exit
--- map("n", "q", ":q<CR>")
--- map("n", "qq", ":q!<CR>")
--- map("n", "Q", ":qa!<CR>")
-
 -- ctrl+s save
 __key_bind("n", "<C-s>", "<CMD>w<CR>")
 __key_bind("i", "<C-s>", "<ESC><CMD>w<CR>")

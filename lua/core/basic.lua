@@ -127,7 +127,7 @@ api.nvim_create_autocmd("TextYankPost", {
 
 -- when on windows and pwsh exists
 -- this is for pwsh
-if fn.has("win32") == 1 and fn.executable("pwsh") == 1 and windows_shell == "pwsh" then
+if fn.has("win32") == 1 and __check_exec("pwsh") and windows_shell == "pwsh" then
     -- https://github.com/neovim/neovim/issues/15634
     o.shell = "pwsh"
     o.shellcmdflag =
@@ -138,7 +138,7 @@ if fn.has("win32") == 1 and fn.executable("pwsh") == 1 and windows_shell == "pws
     o.shellquote = ""
 end
 
-if fn.executable("nu") == 1 and windows_shell == "nu" then
+if __check_exec("nu") and windows_shell == "nu" then
     o.shell = "nu"
     o.shellcmdflag = "-c"
     o.shellquote = ""
@@ -151,9 +151,7 @@ api.nvim_create_user_command("Config", function()
     ---@diagnostic disable-next-line: assign-type-mismatch
     local config_path = fn.stdpath("config")
     fn.chdir(config_path)
-end, {
-    desc = "command for config",
-})
+end, { desc = "command for config" })
 
 -- reload buffer on focus
 api.nvim_create_autocmd({

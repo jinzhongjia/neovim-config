@@ -1,11 +1,4 @@
--- some tools function
-require("tool")
-
--- this is basic config
-require("basic")
-
--- config for keybind
-require("keybind")
+require("core")
 
 -- config for editor
 require("editor")
