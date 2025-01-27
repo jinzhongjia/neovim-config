@@ -60,4 +60,9 @@ return
             vim.keymap.set("n", "];", dropbar_api.select_next_context, { desc = "Select next context" })
         end,
     },
+    {
+        "zbirenbaum/neodim",
+        event = "LspAttach",
+        opts = {},
+    },
 }
