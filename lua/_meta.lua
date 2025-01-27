@@ -3,4 +3,4 @@
 --- @field lsp string
 --- @field others table?
 --- @field before_set function?
---- @field agter_set function?
+--- @field after_set function?
