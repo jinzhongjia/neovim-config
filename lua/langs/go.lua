@@ -17,7 +17,7 @@ return
             },
         },
     },
-    others = {},
+    others = { "gofumpt", "goimports-reviser" },
     before_set = nil,
     after_set = nil,
 }

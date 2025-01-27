@@ -3,7 +3,7 @@ return
 {
     lsp = "cssls",
     opt = {},
-    others = {},
+    others = { "prettierd" },
     before_set = nil,
     after_set = nil,
 }

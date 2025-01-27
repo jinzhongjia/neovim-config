@@ -10,3 +10,27 @@ function _G.__key_bind(mode, lhs, rhs)
     vim.api.nvim_set_keymap(mode, lhs, rhs, opt)
 end
 
+--- @param arr1 any[]
+--- @param arr2 any[]
+function _G.__merge_and_dedup(arr1, arr2)
+    local unique_set = {}
+    local merged_array = {}
+
+    -- 合并并去重 arr1
+    for _, value in ipairs(arr1) do
+        if not unique_set[value] then
+            table.insert(merged_array, value)
+            unique_set[value] = true
+        end
+    end
+
+    -- 合并并去重 arr2
+    for _, value in ipairs(arr2) do
+        if not unique_set[value] then
+            table.insert(merged_array, value)
+            unique_set[value] = true
+        end
+    end
+
+    return merged_array
+end

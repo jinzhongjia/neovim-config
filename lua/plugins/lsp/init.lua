@@ -1,4 +1,4 @@
-local langs = require("langs")
+-- local langs = require("langs")
 
 --- @param opt table?
 local function config(opt)
@@ -26,22 +26,51 @@ local function config(opt)
     return vim.tbl_deep_extend("force", default_config, opt)
 end
 
-local servers, handlers = {}, {}
+local servers, handlers, others = {}, {}, {}
 
-for _, lang in pairs(langs) do
+---@diagnostic disable-next-line: param-type-mismatch
+local langs_path = vim.fs.normalize(vim.fs.joinpath(vim.fn.stdpath("config"), "lua", "langs"))
+for file, _ in vim.fs.dir(langs_path) do
+    local file_name = vim.fn.fnamemodify(file, ":t:r")
+    --- @type LangSpec
+    local lang = require("langs." .. file_name)
+
     table.insert(servers, lang.lsp)
+
     handlers[lang.lsp] = function()
         local lspconfig = require("lspconfig")
         lspconfig[lang.lsp].setup(config(lang.opt))
     end
+
+    others = __merge_and_dedup(others, lang.others)
 end
+
 return {
     require("plugins.lsp.ui"),
     {
         "williamboman/mason-lspconfig.nvim",
         event = "VeryLazy",
         dependencies = {
-            { "williamboman/mason.nvim", opts = {} },
+            {
+                "williamboman/mason.nvim",
+                config = function()
+                    local mason = require("mason")
+                    local mason_registry = require("mason-registry")
+
+                    local ensure_installed = function()
+                        for _, name in pairs(others) do
+                            if not mason_registry.is_installed(name) then
+                                local package = mason_registry.get_package(name)
+                                package:install()
+                            end
+                        end
+                    end
+
+                    mason.setup()
+
+                    mason_registry.refresh(vim.schedule_wrap(ensure_installed))
+                end,
+            },
             { "neovim/nvim-lspconfig" },
             { "hrsh7th/cmp-nvim-lsp" },
         },

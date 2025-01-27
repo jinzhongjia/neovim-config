@@ -8,7 +8,7 @@ return
             return vim.fn.getcwd()
         end,
     },
-    others = {},
+    others = { "clang-format" },
     before_set = nil,
     after_set = nil,
 }
