@@ -7,6 +7,8 @@ return
             "hrsh7th/cmp-nvim-lsp",
             "hrsh7th/cmp-buffer",
             "hrsh7th/cmp-cmdline",
+            "hrsh7th/cmp-calc",
+            "hrsh7th/cmp-nvim-lsp-document-symbol",
             -- async path
             {
                 "FelipeLema/cmp-async-path",
@@ -56,6 +58,7 @@ return
                 }, {
                     { name = "async_path" },
                     { name = "buffer" },
+                    { name = "calc" },
                 }),
 
                 -- Shortcut settings
@@ -213,6 +216,8 @@ return
             cmp.setup.cmdline({ "/", "?" }, {
                 mapping = cmp.mapping.preset.cmdline(),
                 sources = cmp.config.sources({
+                    { name = "nvim_lsp_document_symbol" },
+                }, {
                     { name = "buffer" },
                 }),
                 ---@diagnostic disable-next-line: missing-fields
