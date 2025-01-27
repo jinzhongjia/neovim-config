@@ -34,4 +34,17 @@ return
             { "<leader>lg", "<cmd>LazyGit<cr>", desc = "LazyGit" },
         },
     },
+
+    {
+        "NeogitOrg/neogit",
+        dependencies = {
+            "nvim-lua/plenary.nvim", -- required
+            "sindrets/diffview.nvim", -- optional - Diff integration
+
+            -- Only one of these is needed.
+            "nvim-telescope/telescope.nvim", -- optional
+        },
+        event = "VeryLazy",
+        config = true,
+    },
 }

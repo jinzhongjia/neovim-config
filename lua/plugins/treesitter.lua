@@ -2,10 +2,6 @@ return
 --- @type LazySpec
 {
     {
-        "HiPhish/rainbow-delimiters.nvim",
-        event = "VeryLazy",
-    },
-    {
         "nvim-treesitter/nvim-treesitter",
         event = "VeryLazy",
         build = function()

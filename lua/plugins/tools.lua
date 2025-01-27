@@ -28,6 +28,7 @@ return
     },
     {
         "folke/todo-comments.nvim",
+        event = "VeryLazy",
         dependencies = { "nvim-lua/plenary.nvim" },
         opts = {},
     },
@@ -41,9 +42,7 @@ return
     },
     {
         "skywind3000/asynctasks.vim",
-        dependencies = {
-            "skywind3000/asyncrun.vim",
-        },
+        dependencies = { "skywind3000/asyncrun.vim" },
         event = "VeryLazy",
         init = function()
             vim.g.asyncrun_open = 6
