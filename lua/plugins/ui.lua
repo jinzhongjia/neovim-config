@@ -104,7 +104,6 @@ return
         event = "VeryLazy",
         dependencies = {
             "anuvyklack/middleclass",
-            "anuvyklack/animation.nvim",
         },
         opts = {
             ignore = {
@@ -182,6 +181,12 @@ return
     {
         "nacro90/numb.nvim",
         event = "VeryLazy",
+        opts = {},
+    },
+    {
+        "echasnovski/mini.animate",
+        event = "VeryLazy",
+        version = "*",
         opts = {},
     },
 }
