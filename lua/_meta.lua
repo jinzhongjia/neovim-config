@@ -1,0 +1,6 @@
+--- @class LangSpec
+--- @field opt table?
+--- @field lsp string
+--- @field others table?
+--- @field before_set function?
+--- @field agter_set function?

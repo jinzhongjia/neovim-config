@@ -62,6 +62,11 @@ return
                 },
             },
         },
+        keys = {
+            { "<C-p>", "<cmd>Telescope find_files<cr>" },
+            { "<C-f>", "<cmd>Telescope live_grep<cr>" },
+            { "<leader>wd", "<cmd>Telescope diagnostics<cr>" },
+        },
     },
     {
         "kevinhwang91/nvim-hlslens",
