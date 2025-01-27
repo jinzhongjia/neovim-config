@@ -14,11 +14,11 @@ return
             },
             { "garymjr/nvim-snippets", opts = { friendly_snippets = true } },
             --- ui denpendences
-            "onsails/lspkind-nvim",
+            { "onsails/lspkind-nvim" },
             { "xzbdmw/colorful-menu.nvim", opts = {} },
             --- autopairs
             { "windwp/nvim-autopairs", opts = {} },
-            "rafamadriz/friendly-snippets",
+            { "rafamadriz/friendly-snippets" },
             {
                 "folke/lazydev.nvim",
                 dependencies = "Bilal2453/luvit-meta",
@@ -52,9 +52,11 @@ return
                 sources = cmp.config.sources({
                     { name = "nvim_lsp" },
                     { name = "snippets" },
-                    { name = "async_path" },
                     { name = "lazydev" },
-                }, { { name = "buffer" } }),
+                }, {
+                    { name = "async_path" },
+                    { name = "buffer" },
+                }),
 
                 -- Shortcut settings
                 mapping = {
@@ -197,9 +199,9 @@ return
             cmp.setup.cmdline(":", {
                 mapping = cmp.mapping.preset.cmdline(),
                 sources = cmp.config.sources({
-                    { name = "async_path" },
-                }, {
                     { name = "cmdline" },
+                }, {
+                    { name = "async_path" },
                 }),
                 ---@diagnostic disable-next-line: missing-fields
                 formatting = {
