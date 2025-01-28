@@ -9,6 +9,7 @@ return
             "hrsh7th/cmp-cmdline",
             "hrsh7th/cmp-calc",
             "hrsh7th/cmp-nvim-lsp-document-symbol",
+            -- ai support copilot
             {
                 "zbirenbaum/copilot-cmp",
                 dependencies = {
@@ -24,6 +25,10 @@ return
             {
                 "FelipeLema/cmp-async-path",
                 url = "https://codeberg.org/FelipeLema/cmp-async-path",
+            },
+            -- ripgrep support
+            {
+                "lukas-reineke/cmp-rg",
             },
             { "garymjr/nvim-snippets", opts = { friendly_snippets = true } },
             --- ui denpendences
@@ -81,6 +86,8 @@ return
                     { name = "async_path" },
                     { name = "buffer" },
                     { name = "calc" },
+                }, {
+                    { name = "rg" },
                 }),
 
                 -- Shortcut settings
@@ -155,22 +162,32 @@ return
                             cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
                         elseif vim.snippet.active({ direction = 1 }) then
                             feedkey("<cmd>lua vim.snippet.jump(1)<CR>", "")
-                        elseif has_words_before() then
-                            cmp.complete()
                         else
                             fallback()
                         end
                     end, { "i", "s" }),
                     -- shift super tab
-                    ["<S-Tab>"] = cmp.mapping(function(_)
+                    ["<S-Tab>"] = cmp.mapping(function(fallback)
+                        local has_words_before = function()
+                            if vim.api.nvim_get_option_value("buftype", { buf = 0 }) == "prompt" then
+                                return false
+                            end
+                            local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+                            return col ~= 0
+                                and vim.api.nvim_buf_get_text(0, line - 1, 0, line - 1, col, {})[1]:match("^%s*$")
+                                    == nil
+                        end
+
                         local feedkey = function(key, mode)
                             vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
                         end
 
-                        if cmp.visible() then
-                            cmp.select_prev_item()
+                        if cmp.visible() and has_words_before() then
+                            cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
                         elseif vim.snippet.active({ direction = -1 }) then
                             feedkey("<cmd>lua vim.snippet.jump(-1)<CR>", "")
+                        else
+                            fallback()
                         end
                     end, { "i", "s" }),
                     -- Scrolling if the window has too much content
