@@ -2,7 +2,8 @@ return
 --- @type LazySpec
 {
     {
-        "lewis6991/gitsigns.nvim",
+        "echasnovski/mini.diff",
+        version = "*",
         event = "VeryLazy",
         opts = {},
     },

@@ -187,6 +187,7 @@ return
         "echasnovski/mini.animate",
         event = "VeryLazy",
         version = "*",
+        enabled = false,
         opts = {},
     },
 }
