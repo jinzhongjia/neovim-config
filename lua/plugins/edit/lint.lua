@@ -12,7 +12,7 @@ return
                 typescript = { "ts-standard" },
                 go = { "golangcilint" },
             }
-            vim.api.nvim_create_autocmd({ "TextChanged" }, {
+            vim.api.nvim_create_autocmd({ "BufEnter", "TextChanged" }, {
                 callback = function(meta)
                     local bufnr = meta.buf
                     if vim.fn.buflisted(bufnr) then
