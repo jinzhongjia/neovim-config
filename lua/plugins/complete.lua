@@ -9,6 +9,17 @@ return
             "hrsh7th/cmp-cmdline",
             "hrsh7th/cmp-calc",
             "hrsh7th/cmp-nvim-lsp-document-symbol",
+            {
+                "zbirenbaum/copilot-cmp",
+                dependencies = {
+                    "zbirenbaum/copilot.lua",
+                    opts = {
+                        suggestion = { enabled = false },
+                        panel = { enabled = false },
+                    },
+                },
+                opts = {},
+            },
             -- async path
             {
                 "FelipeLema/cmp-async-path",
@@ -38,6 +49,16 @@ return
             local colorful_menu = require("colorful-menu")
             local cmp_autopairs = require("nvim-autopairs.completion.cmp")
 
+            -- set lspkind copilot icon
+            do
+                lspkind.init({
+                    symbol_map = {
+                        Copilot = "",
+                    },
+                })
+                vim.api.nvim_set_hl(0, "CmpItemKindCopilot", { fg = "#6CC644" })
+            end
+
             cmp.setup({
                 preselect = cmp.PreselectMode.None,
                 window = {
@@ -53,6 +74,7 @@ return
                 -- Completion source
                 sources = cmp.config.sources({
                     { name = "nvim_lsp" },
+                    { name = "copilot" },
                     { name = "snippets" },
                     { name = "lazydev" },
                 }, {
@@ -129,8 +151,8 @@ return
                             vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
                         end
 
-                        if cmp.visible() then
-                            cmp.select_next_item()
+                        if cmp.visible() and has_words_before() then
+                            cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
                         elseif vim.snippet.active({ direction = 1 }) then
                             feedkey("<cmd>lua vim.snippet.jump(1)<CR>", "")
                         elseif has_words_before() then

@@ -8,7 +8,10 @@ return
             "nvim-treesitter/nvim-treesitter",
             {
                 "zbirenbaum/copilot.lua",
-                opts = {},
+                opts = {
+                    suggestion = { enabled = false },
+                    panel = { enabled = false },
+                },
             },
         },
         opts = {
