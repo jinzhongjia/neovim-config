@@ -107,7 +107,7 @@ return
         },
         opts = {
             ignore = {
-                filetype = { "NvimTree", "undotree", "Outline" },
+                filetype = { "NvimTree", "undotree", "Outline", "codecompanion" },
             },
         },
     },
