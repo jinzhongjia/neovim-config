@@ -1,8 +1,11 @@
-return {
+return
+--- @type LazySpec
+{
     require("plugins.edit.search"),
     require("plugins.edit.fold"),
-    require("plugins.edit.format"),
     require("plugins.edit.indent"),
+    require("plugins.edit.format"),
+    require("plugins.edit.lint"),
     require("plugins.edit.outline"),
     {
         "m-demare/hlargs.nvim",

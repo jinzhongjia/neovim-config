@@ -1,6 +1,8 @@
 --- @class LangSpec
 --- @field opt table?
---- @field lsp string
---- @field others table?
+--- @field lsp string?
+--- @field format string[]?
+--- @field lint string[]?
+--- @field others string[]?
 --- @field before_set function?
 --- @field after_set function?

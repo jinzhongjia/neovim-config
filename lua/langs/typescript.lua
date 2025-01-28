@@ -27,4 +27,5 @@ return
     others = { "prettierd" },
     before_set = nil,
     after_set = nil,
+    lint={"ts-standard"}
 }

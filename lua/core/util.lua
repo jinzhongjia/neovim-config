@@ -12,23 +12,27 @@ end
 
 --- @param arr1 any[]
 --- @param arr2 any[]
-function _G.__merge_and_dedup(arr1, arr2)
+function _G.__tbl_merge(arr1, arr2)
     local unique_set = {}
     local merged_array = {}
 
-    -- 合并并去重 arr1
-    for _, value in ipairs(arr1) do
-        if not unique_set[value] then
-            table.insert(merged_array, value)
-            unique_set[value] = true
+    if arr1 then
+        -- 合并并去重 arr1
+        for _, value in pairs(arr1) do
+            if not unique_set[value] then
+                table.insert(merged_array, value)
+                unique_set[value] = true
+            end
         end
     end
 
-    -- 合并并去重 arr2
-    for _, value in ipairs(arr2) do
-        if not unique_set[value] then
-            table.insert(merged_array, value)
-            unique_set[value] = true
+    if arr2 then
+        -- 合并并去重 arr2
+        for _, value in pairs(arr2) do
+            if not unique_set[value] then
+                table.insert(merged_array, value)
+                unique_set[value] = true
+            end
         end
     end
 

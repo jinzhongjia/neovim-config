@@ -34,15 +34,23 @@ for file, _ in vim.fs.dir(langs_path) do
     local file_name = vim.fn.fnamemodify(file, ":t:r")
     --- @type LangSpec
     local lang = require("langs." .. file_name)
-
-    table.insert(servers, lang.lsp)
-
-    handlers[lang.lsp] = function()
-        local lspconfig = require("lspconfig")
-        lspconfig[lang.lsp].setup(config(lang.opt))
+    if lang.lsp then
+        table.insert(servers, lang.lsp)
+        handlers[lang.lsp] = function()
+            local lspconfig = require("lspconfig")
+            if lang.before_set then
+                lang.before_set()
+            end
+            lspconfig[lang.lsp].setup(config(lang.opt))
+            if lang.after_set then
+                lang.after_set()
+            end
+        end
     end
 
-    others = __merge_and_dedup(others, lang.others)
+    others = __tbl_merge(others, lang.others)
+    others = __tbl_merge(others, lang.lint)
+    others = __tbl_merge(others, lang.format)
 end
 
 return {

@@ -6,4 +6,5 @@ return
     others = { "black", "isort" },
     before_set = nil,
     after_set = nil,
+    lint = { "pylint" },
 }
