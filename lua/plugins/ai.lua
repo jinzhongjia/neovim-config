@@ -17,10 +17,9 @@ return
                 chat = {
                     adapter = "copilot",
                 },
-            },
-            opts = {
-                -- Set debug logging
-                log_level = "DEBUG",
+                inline = {
+                    adapter = "copilot",
+                },
             },
         },
     },
