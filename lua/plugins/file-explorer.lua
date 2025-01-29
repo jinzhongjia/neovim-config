@@ -79,6 +79,7 @@ return
             "nvim-tree/nvim-tree.lua",
             -- "simonmclean/triptych.nvim"
         },
+        event = "VeryLazy",
         opts = {},
     },
 }
