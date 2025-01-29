@@ -9,8 +9,7 @@ return
     },
     {
         "rbong/vim-flog",
-        lazy = true,
-        cmd = { "Flog", "Flogsplit", "Floggit" },
+        event = "VeryLazy",
         dependencies = {
             "tpope/vim-fugitive",
         },
