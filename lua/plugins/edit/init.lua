@@ -1,6 +1,7 @@
 return
 --- @type LazySpec
 {
+    require("plugins.edit.complete"),
     require("plugins.edit.search"),
     require("plugins.edit.fold"),
     require("plugins.edit.indent"),
