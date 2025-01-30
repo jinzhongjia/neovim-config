@@ -62,8 +62,14 @@ return
                     require("rip-substitute").sub()
                 end,
                 mode = { "n", "x" },
-                desc = " rip substitute",
+                desc = "rip substitute",
             },
         },
+    },
+    {
+        "echasnovski/mini.move",
+        version = "*",
+        event = "VeryLazy",
+        opts = {},
     },
 }
