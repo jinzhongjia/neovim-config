@@ -107,21 +107,9 @@ return
             end,
         },
         keys = {
-            -- TODO: add descs
-            {
-                "n",
-                function()
-                    nN("n")
-                end,
-                mode = { "n", "x" },
-            },
-            {
-                "N",
-                function()
-                    nN("N")
-                end,
-                mode = { "n", "x" },
-            },
+            -- stylua: ignore
+            { "n", function() nN("n") end, mode = { "n", "x" }, desc = "key map for ufocmd" },
+            { "N", function() nN("N") end, mode = { "n", "x" }, desc = "key map for ufocmd" },
             { "*", [[*<Cmd>lua require('hlslens').start()<CR>]] },
             { "#", [[#<Cmd>lua require('hlslens').start()<CR>]] },
             { "g*", [[g*<Cmd>lua require('hlslens').start()<CR>]] },
