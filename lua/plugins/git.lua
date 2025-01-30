@@ -47,4 +47,8 @@ return
         event = "VeryLazy",
         config = true,
     },
+    {
+        "sindrets/diffview.nvim",
+        event = "VeryLazy",
+    },
 }
