@@ -47,6 +47,7 @@ return
                 "nix",
                 "python",
                 "pug",
+                "regex",
                 "rust",
                 "scss",
                 "sql",
