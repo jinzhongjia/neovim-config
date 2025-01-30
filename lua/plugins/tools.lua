@@ -99,4 +99,8 @@ return
             { "=P", "<Plug>(YankyPutBeforeFilter)", desc = "Put Before Applying a Filter" },
         },
     },
+    {
+        "kevinhwang91/nvim-bqf",
+        event = "VeryLazy",
+    },
 }

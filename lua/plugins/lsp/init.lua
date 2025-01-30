@@ -1,5 +1,3 @@
--- local langs = require("langs")
-
 --- @param opt table?
 local function config(opt)
     local cmp_nvim_lsp = require("cmp_nvim_lsp")
