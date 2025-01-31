@@ -49,7 +49,13 @@ return
     {
         "catgoose/nvim-colorizer.lua",
         event = "VeryLazy",
-        opts = {},
+        opts = {
+            filetypes = {
+                "css",
+                "javascript",
+                "html",
+            },
+        },
     },
     {
         "chrisgrieser/nvim-rip-substitute",
