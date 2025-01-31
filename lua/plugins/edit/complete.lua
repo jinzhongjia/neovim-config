@@ -26,6 +26,11 @@ return
                 "FelipeLema/cmp-async-path",
                 url = "https://codeberg.org/FelipeLema/cmp-async-path",
             },
+            -- source for git
+            {
+                "petertriho/cmp-git",
+                opts = {},
+            },
             -- ripgrep support
             {
                 "lukas-reineke/cmp-rg",
@@ -87,6 +92,7 @@ return
                     { name = "buffer" },
                     { name = "calc" },
                 }, {
+                    { name = "git" },
                     { name = "rg" },
                 }),
 
