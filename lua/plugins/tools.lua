@@ -41,14 +41,6 @@ return
         event = "VeryLazy",
     },
     {
-        "skywind3000/asynctasks.vim",
-        dependencies = { "skywind3000/asyncrun.vim" },
-        event = "VeryLazy",
-        init = function()
-            vim.g.asyncrun_open = 6
-        end,
-    },
-    {
         "stevearc/stickybuf.nvim",
         event = "VeryLazy",
         opts = {},
@@ -104,6 +96,11 @@ return
         event = "FileType qf",
         ---@module "quicker"
         ---@type quicker.SetupOptions
+        opts = {},
+    },
+    {
+        "stevearc/overseer.nvim",
+        event = "VeryLazy",
         opts = {},
     },
 }
