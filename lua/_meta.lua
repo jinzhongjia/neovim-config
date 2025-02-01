@@ -6,3 +6,4 @@
 --- @field others string[]?
 --- @field before_set function?
 --- @field after_set function?
+--- @field plugins LazySpec[]?
