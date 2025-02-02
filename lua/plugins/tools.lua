@@ -105,11 +105,6 @@ return
         version = "*", -- or branch = "dev", to use the latest commit
     },
     {
-        "tris203/precognition.nvim",
-        event = "VeryLazy",
-        opts = {},
-    },
-    {
         "OXY2DEV/helpview.nvim",
         lazy = false,
         dependencies = {
