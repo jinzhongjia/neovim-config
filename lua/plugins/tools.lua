@@ -117,7 +117,12 @@ return
         },
     },
     {
+        "tweekmonster/helpful.vim",
+        event = "VeryLazy",
+    },
+    {
         "2kabhishek/termim.nvim",
+        event = "VeryLazy",
         cmd = { "Fterm", "FTerm", "Sterm", "STerm", "Vterm", "VTerm" },
     },
 }
