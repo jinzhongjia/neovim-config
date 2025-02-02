@@ -43,6 +43,14 @@ return
         },
     },
     {
+        "leath-dub/snipe.nvim",
+        -- stylua: ignore
+        keys = {
+            { "gb", function() require("snipe").open_buffer_menu() end, desc = "Open Snipe buffer menu" },
+        },
+        opts = {},
+    },
+    {
         "nvim-lualine/lualine.nvim",
         dependencies = {
             "nvim-tree/nvim-web-devicons",

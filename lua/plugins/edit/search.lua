@@ -106,8 +106,8 @@ return
                 render.setVirt(0, lnum - 1, col - 1, chunks, nearest)
             end,
         },
+        -- stylua: ignore
         keys = {
-            -- stylua: ignore
             { "n", function() nN("n") end, mode = { "n", "x" }, desc = "key map for ufocmd" },
             { "N", function() nN("N") end, mode = { "n", "x" }, desc = "key map for ufocmd" },
             { "*", [[*<Cmd>lua require('hlslens').start()<CR>]] },
