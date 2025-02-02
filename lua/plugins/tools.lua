@@ -33,10 +33,6 @@ return
         opts = {},
     },
     {
-        "mbbill/undotree",
-        event = "VeryLazy",
-    },
-    {
         "simnalamburt/vim-mundo",
         event = "VeryLazy",
     },
