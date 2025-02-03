@@ -84,4 +84,8 @@ return
         event = "VeryLazy",
         opts = {},
     },
+    {
+        "mcauley-penney/visual-whitespace.nvim",
+        config = true,
+    },
 }
