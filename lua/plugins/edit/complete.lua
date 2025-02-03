@@ -61,12 +61,23 @@ return
 
             -- set lspkind copilot icon
             do
-                lspkind.init({
-                    symbol_map = {
-                        Copilot = "",
-                    },
-                })
+                lspkind.init({ symbol_map = { Copilot = "" } })
                 vim.api.nvim_set_hl(0, "CmpItemKindCopilot", { fg = "#6CC644" })
+            end
+
+            local function has_words_before()
+                if vim.api.nvim_get_option_value("buftype", { buf = 0 }) == "prompt" then
+                    return false
+                end
+                local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+                return col ~= 0
+                    and vim.api.nvim_buf_get_text(0, line - 1, 0, line - 1, col, {})[1]:match("^%s*$") == nil
+            end
+
+            --- @param key string
+            --- @param mode string
+            local function feedkey(key, mode)
+                vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
             end
 
             cmp.setup({
@@ -148,23 +159,7 @@ return
                     }),
                     -- super tab
                     ["<Tab>"] = cmp.mapping(function(fallback)
-                        local has_words_before = function()
-                            if vim.api.nvim_get_option_value("buftype", { buf = 0 }) == "prompt" then
-                                return false
-                            end
-                            local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-                            return col ~= 0
-                                and vim.api.nvim_buf_get_text(0, line - 1, 0, line - 1, col, {})[1]:match("^%s*$")
-                                    == nil
-                        end
-
-                        --- @param key string
-                        --- @param mode string
-                        local feedkey = function(key, mode)
-                            vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
-                        end
-
-                        if cmp.visible() and has_words_before() then
+                        if cmp.visible() then
                             cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
                         elseif vim.snippet.active({ direction = 1 }) then
                             feedkey("<cmd>lua vim.snippet.jump(1)<CR>", "")
@@ -174,21 +169,7 @@ return
                     end, { "i", "s" }),
                     -- shift super tab
                     ["<S-Tab>"] = cmp.mapping(function(fallback)
-                        local has_words_before = function()
-                            if vim.api.nvim_get_option_value("buftype", { buf = 0 }) == "prompt" then
-                                return false
-                            end
-                            local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-                            return col ~= 0
-                                and vim.api.nvim_buf_get_text(0, line - 1, 0, line - 1, col, {})[1]:match("^%s*$")
-                                    == nil
-                        end
-
-                        local feedkey = function(key, mode)
-                            vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
-                        end
-
-                        if cmp.visible() and has_words_before() then
+                        if cmp.visible() then
                             cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
                         elseif vim.snippet.active({ direction = -1 }) then
                             feedkey("<cmd>lua vim.snippet.jump(-1)<CR>", "")
@@ -201,18 +182,12 @@ return
                     ["<C-d>"] = cmp.mapping(cmp.mapping.scroll_docs(4), { "i", "c" }),
                     -- Custom code snippet to jump to next parameter
                     ["<C-l>"] = cmp.mapping(function(_)
-                        local feedkey = function(key, mode)
-                            vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
-                        end
                         if vim.snippet.active({ direction = 1 }) then
                             feedkey("<cmd>lua vim.snippet.jump(1)<CR>", "")
                         end
                     end, { "i", "s" }),
                     -- Custom code snippet to jump to the previous parameter
                     ["<C-h>"] = cmp.mapping(function()
-                        local feedkey = function(key, mode)
-                            vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
-                        end
                         if vim.snippet.active({ direction = -1 }) then
                             feedkey("<cmd>lua vim.snippet.jump(-1)<CR>", "")
                         end
