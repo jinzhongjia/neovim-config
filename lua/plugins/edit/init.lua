@@ -1,13 +1,15 @@
 return
 --- @type LazySpec
 {
+    require("plugins.edit.comment"),
     require("plugins.edit.complete"),
-    require("plugins.edit.search"),
     require("plugins.edit.fold"),
-    require("plugins.edit.indent"),
     require("plugins.edit.format"),
+    require("plugins.edit.indent"),
     require("plugins.edit.lint"),
     require("plugins.edit.outline"),
+    require("plugins.edit.search"),
+    require("plugins.edit.snippet"),
     {
         "m-demare/hlargs.nvim",
         event = "VeryLazy",

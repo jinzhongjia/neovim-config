@@ -38,7 +38,6 @@ return
     dependencies = {
         "kevinhwang91/promise-async",
         {
-            -- TODO: so why config this ???
             "luukvbaal/statuscol.nvim",
             config = function()
                 local builtin = require("statuscol.builtin")
