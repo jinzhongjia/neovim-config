@@ -16,7 +16,7 @@ return
 {
     {
         "stevearc/conform.nvim",
-        event = { "BufWritePre" },
+        event = "VeryLazy",
         cmd = { "ConformInfo" },
         opts = {
             default_format_opts = {

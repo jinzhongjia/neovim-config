@@ -11,6 +11,7 @@ return
     {
         "jinzhongjia/LspUI.nvim",
         dev = true,
+        event = "VeryLazy",
         opts = {
             hover = {
                 transparency = transparency,

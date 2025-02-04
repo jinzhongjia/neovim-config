@@ -6,6 +6,7 @@ return
 {
     {
         "chrisgrieser/nvim-scissors",
+        event = "VeryLazy",
         dependencies = {
             "nvim-telescope/telescope.nvim",
             {

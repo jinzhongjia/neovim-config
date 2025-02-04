@@ -44,6 +44,7 @@ return
     },
     {
         "Wansmer/treesj",
+        event = "VeryLazy",
         keys = { "<space>m", "<space>j", "<space>s" },
         dependencies = { "nvim-treesitter/nvim-treesitter" }, -- if you install parsers with `nvim-treesitter`
         opts = {},
@@ -61,6 +62,7 @@ return
     },
     {
         "chrisgrieser/nvim-rip-substitute",
+        event = "VeryLazy",
         cmd = "RipSubstitute",
         opts = {},
         keys = {
@@ -88,6 +90,7 @@ return
     },
     {
         "mcauley-penney/visual-whitespace.nvim",
+        event = "VeryLazy",
         config = true,
     },
 }

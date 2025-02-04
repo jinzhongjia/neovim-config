@@ -52,10 +52,10 @@ return
     },
     {
         "chrishrb/gx.nvim",
+        event = "VeryLazy",
         keys = {
             { "gx", "<cmd>Browse<cr>", mode = { "n", "x" }, desc = "Browse URL" },
         },
-        cmd = { "Browse" },
         init = function()
             vim.g.netrw_nogx = 1 -- disable netrw gx
         end,
@@ -65,6 +65,7 @@ return
     },
     {
         "gbprod/yanky.nvim",
+        event = "VeryLazy",
         desc = "Better Yank/Paste",
         opts = {
             highlight = { timer = 150 },
@@ -103,12 +104,12 @@ return
     },
     {
         "NStefan002/screenkey.nvim",
-        lazy = false,
+        event = "VeryLazy",
         version = "*", -- or branch = "dev", to use the latest commit
     },
     {
         "OXY2DEV/helpview.nvim",
-        lazy = false,
+        event = "VeryLazy",
         dependencies = {
             "nvim-treesitter/nvim-treesitter",
         },

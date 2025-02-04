@@ -44,6 +44,7 @@ return
     },
     {
         "leath-dub/snipe.nvim",
+        event = "VeryLazy",
         -- stylua: ignore
         keys = {
             { "gb", function() require("snipe").open_buffer_menu() end, desc = "Open Snipe buffer menu" },
@@ -128,6 +129,7 @@ return
     },
     {
         "folke/trouble.nvim",
+        event = "VeryLazy",
         opts = {
             modes = {
                 test = {
@@ -141,7 +143,6 @@ return
                 },
             },
         }, -- for default options, refer to the configuration section for custom setup.
-        cmd = "Trouble",
         keys = {
             {
                 "<leader>xx",
