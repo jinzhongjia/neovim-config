@@ -3,3 +3,4 @@ lua/.luarc.json
 .luarc.json
 .vscode/settings.json
 .direnv
+lua/plugins/__test.lua
