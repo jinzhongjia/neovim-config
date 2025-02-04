@@ -57,6 +57,10 @@ return
             "nvim-tree/nvim-web-devicons",
             "f-person/git-blame.nvim",
             "jinzhongjia/LspUI.nvim",
+            {
+                "AndreM222/copilot-lualine",
+                dependencies = "zbirenbaum/copilot.lua",
+            },
         },
         event = "UIEnter",
         opts = {
@@ -190,13 +194,6 @@ return
         opts = {},
     },
     {
-        "echasnovski/mini.animate",
-        event = "VeryLazy",
-        version = "*",
-        enabled = false,
-        opts = {},
-    },
-    {
         "folke/which-key.nvim",
         event = "VeryLazy",
         opts = {},
@@ -207,6 +204,16 @@ return
                     require("which-key").show({ global = false })
                 end,
                 desc = "Buffer Local Keymaps (which-key)",
+            },
+        },
+    },
+    {
+        "OXY2DEV/markview.nvim",
+        event = "VeryLazy",
+        opts = {
+            preview = {
+                filetypes = { "markdown", "codecompanion" },
+                ignore_buftypes = {},
             },
         },
     },
