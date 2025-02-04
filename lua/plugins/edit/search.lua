@@ -43,6 +43,8 @@ return
                         -- The preview window scrolls up and down
                         ["<C-u>"] = "preview_scrolling_up",
                         ["<C-d>"] = "preview_scrolling_down",
+                        ["<C-h>"] = "preview_scrolling_left",
+                        ["<C-l>"] = "preview_scrolling_right",
                     },
                 },
                 file_ignore_patterns = { "node_modules", "dist", "__pycache__" },
@@ -110,11 +112,11 @@ return
         keys = {
             { "n", function() nN("n") end, mode = { "n", "x" }, desc = "key map for ufocmd" },
             { "N", function() nN("N") end, mode = { "n", "x" }, desc = "key map for ufocmd" },
-            { "*", [[*<Cmd>lua require('hlslens').start()<CR>]] },
-            { "#", [[#<Cmd>lua require('hlslens').start()<CR>]] },
-            { "g*", [[g*<Cmd>lua require('hlslens').start()<CR>]] },
-            { "g#", [[g#<Cmd>lua require('hlslens').start()<CR>]] },
-            { "<Leader>l", "<Cmd>noh<CR>" },
+            { "*", [[*<Cmd>lua require('hlslens').start()<CR>]], desc = "next cursor word" },
+            { "#", [[#<Cmd>lua require('hlslens').start()<CR>]], desc = "prev cursor word" },
+            { "g*", [[g*<Cmd>lua require('hlslens').start()<CR>]], desc = "next cursor word no bound" },
+            { "g#", [[g#<Cmd>lua require('hlslens').start()<CR>]], desc = "prev cursor word no bound" },
+            { "<Leader>l", "<Cmd>noh<CR>", desc = "disable search hightlight" },
         },
     },
     {
@@ -129,6 +131,29 @@ return
           { "r", mode = "o", function() require("flash").remote() end, desc = "Remote Flash" },
           { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
           { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search" },
+        },
+    },
+    {
+        "MagicDuck/grug-far.nvim",
+        event = "VeryLazy",
+        opts = {},
+        -- stylua: ignore
+        keys = {
+            {
+                "gf",
+                function() require("grug-far").open({ transient = true }) end,
+                desc = "grug far open",
+            },
+            {
+                "gfc",
+                function() require("grug-far").open({ prefills = { paths = vim.fn.expand("%") } }) end,
+                desc = "grug far open current file",
+            },
+            {
+                "gfw",
+                function() require("grug-far").open({ prefills = { search = vim.fn.expand("<cword>") } }) end,
+                desc = "grug far open with cursor word",
+            },
         },
     },
 }

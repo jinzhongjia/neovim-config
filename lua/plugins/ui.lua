@@ -115,7 +115,14 @@ return
         },
         opts = {
             ignore = {
-                filetype = { "NvimTree", "undotree", "Outline", "codecompanion" },
+                filetype = {
+                    "NvimTree",
+                    "undotree",
+                    "Outline",
+                    "codecompanion",
+                    "grug-far",
+                    "grug-far-history",
+                },
             },
         },
     },
@@ -145,16 +152,6 @@ return
                 "<leader>xX",
                 "<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
                 desc = "Buffer Diagnostics (Trouble)",
-            },
-            {
-                "<leader>cs",
-                "<cmd>Trouble symbols toggle focus=false<cr>",
-                desc = "Symbols (Trouble)",
-            },
-            {
-                "<leader>cl",
-                "<cmd>Trouble lsp toggle focus=false win.position=right<cr>",
-                desc = "LSP Definitions / references / ... (Trouble)",
             },
             {
                 "<leader>xL",
@@ -197,5 +194,19 @@ return
         version = "*",
         enabled = false,
         opts = {},
+    },
+    {
+        "folke/which-key.nvim",
+        event = "VeryLazy",
+        opts = {},
+        keys = {
+            {
+                "<leader>?",
+                function()
+                    require("which-key").show({ global = false })
+                end,
+                desc = "Buffer Local Keymaps (which-key)",
+            },
+        },
     },
 }

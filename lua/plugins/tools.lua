@@ -52,7 +52,9 @@ return
     },
     {
         "chrishrb/gx.nvim",
-        keys = { { "gx", "<cmd>Browse<cr>", mode = { "n", "x" } } },
+        keys = {
+            { "gx", "<cmd>Browse<cr>", mode = { "n", "x" }, desc = "Browse URL" },
+        },
         cmd = { "Browse" },
         init = function()
             vim.g.netrw_nogx = 1 -- disable netrw gx

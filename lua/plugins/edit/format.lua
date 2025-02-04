@@ -92,7 +92,7 @@ return
                 function()
                     require("conform").format({ async = true })
                 end,
-                mode = "",
+                mode = "n",
                 desc = "Format buffer",
             },
         },
