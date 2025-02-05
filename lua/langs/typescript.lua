@@ -28,10 +28,11 @@ return
     before_set = nil,
     after_set = nil,
     lint = { "ts-standard" },
-    --- @type LazySpec
     plugins = {
-        "dmmulroy/tsc.nvim",
-        event = "VeryLazy",
-        opts = {},
+        {
+            "dmmulroy/tsc.nvim",
+            event = "VeryLazy",
+            opts = {},
+        },
     },
 }
