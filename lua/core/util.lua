@@ -38,3 +38,17 @@ function _G.__tbl_merge(arr1, arr2)
 
     return merged_array
 end
+
+--- @param arr1 any[]?
+--- @param arr2 any[]?
+function _G.__arr_concat(arr1, arr2)
+    if not arr1 then
+        arr1 = {}
+    end
+    if arr2 then
+        for _, arr2_element in pairs(arr2) do
+            table.insert(arr1, arr2_element)
+        end
+    end
+    return arr1
+end
