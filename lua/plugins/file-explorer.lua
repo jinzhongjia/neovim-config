@@ -4,7 +4,7 @@ return
 {
     {
         "nvim-tree/nvim-tree.lua",
-        event = "VeryLazy",
+        event = "UIEnter",
         dependencies = {
             "nvim-tree/nvim-web-devicons",
             {
