@@ -24,7 +24,11 @@ local function config(opt)
     return vim.tbl_deep_extend("force", default_config, opt)
 end
 
+-- lang servers, server handlers, other tools
 local servers, handlers, others = {}, {}, {}
+
+--- @type LazySpec[]
+local lang_plugins = {}
 
 ---@diagnostic disable-next-line: param-type-mismatch
 local langs_path = vim.fs.normalize(vim.fs.joinpath(vim.fn.stdpath("config"), "lua", "langs"))
@@ -32,6 +36,8 @@ for file, _ in vim.fs.dir(langs_path) do
     local file_name = vim.fn.fnamemodify(file, ":t:r")
     --- @type LangSpec
     local lang = require("langs." .. file_name)
+
+    -- set lang's lspconfig and install lsp
     if lang.lsp then
         table.insert(servers, lang.lsp)
         handlers[lang.lsp] = function()
@@ -46,13 +52,19 @@ for file, _ in vim.fs.dir(langs_path) do
         end
     end
 
+    -- install other tools
     others = __tbl_merge(others, lang.others)
+    -- install lint tools
     others = __tbl_merge(others, lang.lint)
+    -- install format tools
     others = __tbl_merge(others, lang.format)
+
+    -- add lang's plugins
+    __arr_concat(lang_plugins, lang.plugins)
 end
 
-return {
-    require("plugins.lsp.ui"),
+--- @type LazySpec
+local M = {
     {
         "williamboman/mason-lspconfig.nvim",
         event = "VeryLazy",
@@ -87,3 +99,13 @@ return {
         },
     },
 }
+
+-- add ui plugins
+--- @diagnostic disable-next-line: param-type-mismatch
+__arr_concat(M, require("plugins.lsp.ui"))
+
+-- add lang's plugins
+--- @diagnostic disable-next-line: param-type-mismatch
+__arr_concat(M, lang_plugins)
+
+return M

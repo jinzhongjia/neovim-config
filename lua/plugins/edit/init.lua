@@ -1,15 +1,6 @@
-return
 --- @type LazySpec
-{
-    require("plugins.edit.comment"),
-    require("plugins.edit.complete"),
-    require("plugins.edit.fold"),
-    require("plugins.edit.format"),
-    require("plugins.edit.indent"),
-    require("plugins.edit.lint"),
-    require("plugins.edit.outline"),
-    require("plugins.edit.search"),
-    require("plugins.edit.snippet"),
+local M = {
+
     {
         "m-demare/hlargs.nvim",
         event = "VeryLazy",
@@ -94,3 +85,16 @@ return
         config = true,
     },
 }
+
+-- all plugins
+__arr_concat(M,require("plugins.edit.comment"))
+__arr_concat(M,require("plugins.edit.complete"))
+__arr_concat(M,require("plugins.edit.fold"))
+__arr_concat(M,require("plugins.edit.format"))
+__arr_concat(M,require("plugins.edit.indent"))
+__arr_concat(M,require("plugins.edit.lint"))
+__arr_concat(M,require("plugins.edit.outline"))
+__arr_concat(M,require("plugins.edit.search"))
+__arr_concat(M,require("plugins.edit.snippet"))
+
+return M

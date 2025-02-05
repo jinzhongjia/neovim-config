@@ -34,59 +34,61 @@ end
 return
 --- @type LazySpec
 {
-    "kevinhwang91/nvim-ufo",
-    dependencies = {
-        "kevinhwang91/promise-async",
-        {
-            "luukvbaal/statuscol.nvim",
-            config = function()
-                local builtin = require("statuscol.builtin")
-                require("statuscol").setup({
-                    relculright = true,
-                    segments = {
-                        { text = { builtin.foldfunc }, click = "v:lua.ScFa" },
-                        { text = { "%s" }, click = "v:lua.ScSa" },
-                        { text = { builtin.lnumfunc, " " }, click = "v:lua.ScLa" },
-                    },
-                })
-            end,
+    {
+        "kevinhwang91/nvim-ufo",
+        dependencies = {
+            "kevinhwang91/promise-async",
+            {
+                "luukvbaal/statuscol.nvim",
+                config = function()
+                    local builtin = require("statuscol.builtin")
+                    require("statuscol").setup({
+                        relculright = true,
+                        segments = {
+                            { text = { builtin.foldfunc }, click = "v:lua.ScFa" },
+                            { text = { "%s" }, click = "v:lua.ScSa" },
+                            { text = { builtin.lnumfunc, " " }, click = "v:lua.ScLa" },
+                        },
+                    })
+                end,
+            },
         },
-    },
-    event = "VeryLazy",
-    opts = {
-        provider_selector = function(_, _, _)
-            return { "treesitter", "indent" }
-        end,
-        fold_virt_text_handler = handler,
-    },
-    keys = {
-        {
-            "zR",
-            function()
-                require("ufo").openAllFolds()
+        event = "VeryLazy",
+        opts = {
+            provider_selector = function(_, _, _)
+                return { "treesitter", "indent" }
             end,
-            desc = "open all folds",
+            fold_virt_text_handler = handler,
         },
-        {
-            "zM",
-            function()
-                require("ufo").closeAllFolds()
-            end,
-            desc = "close all folds",
-        },
-        {
-            "zr",
-            function()
-                require("ufo").openFoldsExceptKinds()
-            end,
-            desc = "open folds except kinds",
-        },
-        {
-            "zm",
-            function()
-                require("ufo").closeFoldsWith()
-            end,
-            desc = "close folds with",
+        keys = {
+            {
+                "zR",
+                function()
+                    require("ufo").openAllFolds()
+                end,
+                desc = "open all folds",
+            },
+            {
+                "zM",
+                function()
+                    require("ufo").closeAllFolds()
+                end,
+                desc = "close all folds",
+            },
+            {
+                "zr",
+                function()
+                    require("ufo").openFoldsExceptKinds()
+                end,
+                desc = "open folds except kinds",
+            },
+            {
+                "zm",
+                function()
+                    require("ufo").closeFoldsWith()
+                end,
+                desc = "close folds with",
+            },
         },
     },
 }
