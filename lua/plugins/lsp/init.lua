@@ -40,12 +40,15 @@ for file, _ in vim.fs.dir(langs_path) do
     -- set lang's lspconfig and install lsp
     if lang.lsp then
         table.insert(servers, lang.lsp)
+
         handlers[lang.lsp] = function()
             local lspconfig = require("lspconfig")
             if lang.before_set then
                 lang.before_set()
             end
-            lspconfig[lang.lsp].setup(config(lang.opt))
+            if lang.opt then
+                lspconfig[lang.lsp].setup(config(lang.opt))
+            end
             if lang.after_set then
                 lang.after_set()
             end
