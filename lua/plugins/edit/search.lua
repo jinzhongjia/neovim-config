@@ -17,10 +17,6 @@ return
         "nvim-telescope/telescope.nvim",
         dependencies = {
             "nvim-lua/plenary.nvim",
-            {
-                "nvim-telescope/telescope-fzf-native.nvim",
-                build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
-            },
         },
         event = "VeryLazy",
         opts = {
@@ -55,20 +51,53 @@ return
                     hidden = false,
                 },
             },
-            extensions = {
-                fzf = {
-                    fuzzy = true, -- false will only do exact matching
-                    override_generic_sorter = true, -- override the generic sorter
-                    override_file_sorter = true, -- override the file sorter
-                    case_mode = "smart_case", -- or "ignore_case" or "respect_case"
-                },
-            },
+            extensions = {},
         },
         keys = {
             { "<C-p>", "<cmd>Telescope find_files<cr>" },
             { "<C-f>", "<cmd>Telescope live_grep<cr>" },
             { "<leader>wd", "<cmd>Telescope diagnostics<cr>" },
         },
+    },
+    {
+        "nvim-telescope/telescope-fzf-native.nvim",
+        dependencies = "nvim-telescope/telescope.nvim",
+        event = "VeryLazy",
+        build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
+        config = function()
+            require("telescope").load_extension("fzf")
+        end,
+    },
+    {
+        "nvim-telescope/telescope-frecency.nvim",
+        dependencies = "nvim-telescope/telescope.nvim",
+        event = "VeryLazy",
+        -- install the latest stable version
+        version = "*",
+        config = function()
+            require("telescope").load_extension("frecency")
+        end,
+    },
+    {
+        "debugloop/telescope-undo.nvim",
+        dependencies = "nvim-telescope/telescope.nvim",
+        event = "VeryLazy",
+        -- install the latest stable version
+        version = "*",
+        config = function()
+            require("telescope").load_extension("undo")
+        end,
+    },
+    {
+        "paopaol/telescope-git-diffs.nvim",
+        dependencies = {
+            "nvim-telescope/telescope.nvim",
+            "sindrets/diffview.nvim",
+        },
+        event = "VeryLazy",
+        config = function()
+            require("telescope").load_extension("git_diffs")
+        end,
     },
     {
         "kevinhwang91/nvim-hlslens",
