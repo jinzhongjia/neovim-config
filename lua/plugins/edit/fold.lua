@@ -35,6 +35,11 @@ return
 --- @type LazySpec
 {
     {
+        "chrisgrieser/nvim-origami",
+        event = "VeryLazy",
+        opts = {}, -- needed even when using default config
+    },
+    {
         "kevinhwang91/nvim-ufo",
         dependencies = {
             "kevinhwang91/promise-async",
