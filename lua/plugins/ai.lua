@@ -15,6 +15,14 @@ return
                     panel = { enabled = false },
                     filetypes = {
                         ["*"] = false, -- disable for all other filetypes and ignore default `filetypes`
+                        lua = true,
+                        go = true,
+                        zig = true,
+                        typescript = true,
+                        javascript = true,
+                        vue = true,
+                        c = true,
+                        cpp = true,
                     },
                 },
             },
