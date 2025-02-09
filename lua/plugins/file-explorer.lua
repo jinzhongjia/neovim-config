@@ -27,6 +27,9 @@ return
                     quit_on_open = true,
                 },
             },
+            git = {
+                timeout = 1000,
+            },
             -- keymap override
             on_attach = function(buffer_id)
                 local api = require("nvim-tree.api")
