@@ -66,8 +66,6 @@ for file, _ in vim.fs.dir(langs_path) do
     __arr_concat(lang_plugins, lang.plugins)
 end
 
-print(vim.inspect(servers))
-
 --- @type LazySpec
 local M = {
     {
