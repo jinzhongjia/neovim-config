@@ -66,6 +66,8 @@ for file, _ in vim.fs.dir(langs_path) do
     __arr_concat(lang_plugins, lang.plugins)
 end
 
+print(vim.inspect(servers))
+
 --- @type LazySpec
 local M = {
     {
@@ -96,7 +98,6 @@ local M = {
             { "hrsh7th/cmp-nvim-lsp" },
         },
         opts = {
-            automatic_installation = true,
             ensure_installed = servers,
             handlers = handlers,
         },
