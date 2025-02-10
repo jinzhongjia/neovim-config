@@ -1,3 +1,6 @@
+if not vim.g.neovide then
+    return
+end
 local o, g, fn, api = vim.o, vim.g, vim.fn, vim.api
 
 -- cd home
