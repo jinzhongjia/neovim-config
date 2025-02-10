@@ -87,6 +87,9 @@ g.loaded_perl_provider = false
 g.loaded_netrw = 1
 g.loaded_netrwPlugin = 1
 
+-- disable editorconfig integration
+g.editorconfig = false
+
 -- replace default diagnostic signs
 -- more:https://neovim.io/doc/user/diagnostic.html#diagnostic-signs
 -- local signs = { Error = "󰅚", Warn = "", Hint = "", Info = "" }
