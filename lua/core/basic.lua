@@ -89,6 +89,21 @@ g.loaded_netrwPlugin = 1
 
 -- disable editorconfig integration
 g.editorconfig = false
+if vim.fn.has("wsl") == 1 then
+end
+
+g.clipboard = {
+    name = "WslClipboard",
+    copy = {
+        ["+"] = "clip.exe",
+        ["*"] = "clip.exe",
+    },
+    paste = {
+        ["+"] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+        ["*"] = 'powershell.exe -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+    },
+    cache_enabled = 0,
+}
 
 -- replace default diagnostic signs
 -- more:https://neovim.io/doc/user/diagnostic.html#diagnostic-signs
@@ -139,13 +154,6 @@ if fn.has("win32") == 1 and __check_exec("pwsh") and windows_shell == "pwsh" the
     o.shellredir = "-RedirectStandardOutput %s -NoNewWindow -Wait"
     o.shellxquote = ""
     o.shellquote = ""
-end
-
-if __check_exec("nu") and windows_shell == "nu" then
-    o.shell = "nu"
-    o.shellcmdflag = "-c"
-    o.shellquote = ""
-    o.shellxquote = ""
 end
 
 -- add Config command to chdir cwd to config path
