@@ -3,10 +3,10 @@ return
 {
     {
         "nvim-treesitter/nvim-treesitter",
-        event = "VeryLazy",
-        build = function()
-            require("nvim-treesitter.install").update({ with_sync = true })()
-        end,
+        version = false,
+        event = { "VeryLazy" },
+        build = ":TSUpdate",
+        cmd = { "TSUpdateSync", "TSUpdate", "TSInstall" },
         opts = {
             ensure_installed = {
                 "c",
@@ -64,6 +64,7 @@ return
                 enable = true,
                 additional_vim_regex_highlighting = false,
             },
+            indent = { enable = true },
             incremental_selection = {
                 enable = true,
                 keymaps = {
@@ -74,5 +75,9 @@ return
                 },
             },
         },
+        ---@param opts TSConfig
+        config = function(_, opts)
+            require("nvim-treesitter.configs").setup(opts)
+        end,
     },
 }
