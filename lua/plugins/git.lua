@@ -51,4 +51,12 @@ return
         "sindrets/diffview.nvim",
         event = "VeryLazy",
     },
+    {
+        "FabijanZulj/blame.nvim",
+        lazy = false,
+        opts = {},
+        keys = {
+            { "<leader>bt", "<cmd>BlameToggle<cr>", desc = "Blame toogle" },
+        },
+    },
 }
