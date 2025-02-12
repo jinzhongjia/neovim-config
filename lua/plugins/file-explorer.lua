@@ -81,7 +81,6 @@ return
         dependencies = {
             "nvim-lua/plenary.nvim",
             "nvim-tree/nvim-tree.lua",
-            -- "simonmclean/triptych.nvim"
         },
         event = "VeryLazy",
         opts = {},
