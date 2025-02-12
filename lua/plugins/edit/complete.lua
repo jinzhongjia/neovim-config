@@ -31,13 +31,12 @@ return
             {
                 "lukas-reineke/cmp-rg",
             },
-            { "garymjr/nvim-snippets", opts = { friendly_snippets = true } },
+            { "garymjr/nvim-snippets" },
             --- ui denpendences
             { "onsails/lspkind-nvim" },
             { "xzbdmw/colorful-menu.nvim", opts = {} },
             --- autopairs
             { "windwp/nvim-autopairs", opts = {} },
-            { "rafamadriz/friendly-snippets" },
             {
                 "folke/lazydev.nvim",
                 dependencies = "Bilal2453/luvit-meta",
