@@ -171,11 +171,6 @@ return
         },
     },
     {
-        "stevearc/dressing.nvim",
-        event = "VeryLazy",
-        opts = {},
-    },
-    {
         "folke/zen-mode.nvim",
         event = "VeryLazy",
         dependencies = {
