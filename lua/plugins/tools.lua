@@ -133,7 +133,6 @@ return
             input = { enabled = true },
             picker = { enabled = true },
             quickfile = { enabled = true },
-            notifier = { enabled = true },
         },
 
         keys = {
