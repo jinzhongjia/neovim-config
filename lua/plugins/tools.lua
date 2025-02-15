@@ -47,10 +47,6 @@ return
         opts = {},
     },
     {
-        "itchyny/vim-highlighturl",
-        event = "VeryLazy",
-    },
-    {
         "chrishrb/gx.nvim",
         event = "VeryLazy",
         keys = {

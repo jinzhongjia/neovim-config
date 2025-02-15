@@ -32,7 +32,7 @@ return
     },
     {
         "FabijanZulj/blame.nvim",
-        lazy = false,
+        event = "VeryLazy",
         opts = {},
         keys = {
             { "<leader>bt", "<cmd>BlameToggle<cr>", desc = "Blame toogle" },
