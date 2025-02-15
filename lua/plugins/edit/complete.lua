@@ -157,7 +157,8 @@ return
                         if cmp.visible() then
                             cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
                         elseif vim.snippet.active({ direction = 1 }) then
-                            feedkey("<cmd>lua vim.snippet.jump(1)<CR>", "")
+                            vim.snippet.jump(1)
+                            -- feedkey("<cmd>lua vim.snippet.jump(1)<CR>", "")
                         else
                             fallback()
                         end
@@ -167,7 +168,8 @@ return
                         if cmp.visible() then
                             cmp.select_prev_item({ behavior = cmp.SelectBehavior.Select })
                         elseif vim.snippet.active({ direction = -1 }) then
-                            feedkey("<cmd>lua vim.snippet.jump(-1)<CR>", "")
+                            vim.snippet.jump(-1)
+                            -- feedkey("<cmd>lua vim.snippet.jump(-1)<CR>", "")
                         else
                             fallback()
                         end
@@ -176,15 +178,21 @@ return
                     ["<C-u>"] = cmp.mapping(cmp.mapping.scroll_docs(-4), { "i", "c" }),
                     ["<C-d>"] = cmp.mapping(cmp.mapping.scroll_docs(4), { "i", "c" }),
                     -- Custom code snippet to jump to next parameter
-                    ["<C-l>"] = cmp.mapping(function(_)
+                    ["<C-l>"] = cmp.mapping(function(fallback)
                         if vim.snippet.active({ direction = 1 }) then
-                            feedkey("<cmd>lua vim.snippet.jump(1)<CR>", "")
+                            vim.snippet.jump(1)
+                            -- feedkey("<cmd>lua vim.snippet.jump(1)<CR>", "")
+                        else
+                            fallback()
                         end
                     end, { "i", "s" }),
                     -- Custom code snippet to jump to the previous parameter
-                    ["<C-h>"] = cmp.mapping(function()
+                    ["<C-h>"] = cmp.mapping(function(fallback)
                         if vim.snippet.active({ direction = -1 }) then
-                            feedkey("<cmd>lua vim.snippet.jump(-1)<CR>", "")
+                            vim.snippet.jump(-1)
+                            -- feedkey("<cmd>lua vim.snippet.jump(-1)<CR>", "")
+                        else
+                            fallback()
                         end
                     end, { "i", "s" }),
                 },
