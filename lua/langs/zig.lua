@@ -10,10 +10,12 @@ return
         {
             "jinzhongjia/zig-lamp",
             event = "VeryLazy",
+            build = ":ZigLamp build",
             dependencies = {
                 "nvim-lua/plenary.nvim",
                 "MunifTanjim/nui.nvim",
             },
+            dev = true,
         },
     },
 }
