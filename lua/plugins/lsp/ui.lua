@@ -32,7 +32,7 @@ return
                 enable = true,
             },
             inlay_hint = {
-                enable = false,
+                enable = true,
             },
         },
         keys = {

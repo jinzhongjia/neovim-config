@@ -13,9 +13,12 @@ return
             build = ":ZigLamp build",
             dependencies = {
                 "nvim-lua/plenary.nvim",
-                "MunifTanjim/nui.nvim",
+                "neovim/nvim-lspconfig",
             },
             dev = true,
+            init = function()
+                vim.g.zls_auto_install = true
+            end,
         },
     },
 }
