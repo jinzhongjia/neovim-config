@@ -45,7 +45,7 @@ For GUI, you can install [Neovide](https://neovide.dev/) or [Nvy](https://github
 
 ## Note
 
-When you install this configuration compeletely, you need to run`:checkhealth` for check whether has problem.
+When you install this configuration completely, you need to run`:checkhealth` for check whether has problem.
 
 Lsp server and guard denpendences are all installed by mason, you can use `:mason` to check installing information
 
