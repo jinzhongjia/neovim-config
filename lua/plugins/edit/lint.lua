@@ -8,7 +8,6 @@ return
         config = function()
             require("lint").linters_by_ft = {
                 bash = { "bash" },
-                python = { "pylint" },
                 typescript = { "ts-standard" },
                 go = { "golangcilint" },
             }
