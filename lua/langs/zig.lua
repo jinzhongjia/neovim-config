@@ -17,7 +17,7 @@ return
             },
             dev = true,
             init = function()
-                vim.g.zls_auto_install = true
+                vim.g.zig_lamp_zls_auto_install = true
             end,
         },
     },

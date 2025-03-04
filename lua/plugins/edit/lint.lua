@@ -9,7 +9,6 @@ return
             require("lint").linters_by_ft = {
                 bash = { "bash" },
                 typescript = { "ts-standard" },
-                go = { "golangcilint" },
             }
             vim.api.nvim_create_autocmd({ "BufEnter", "TextChanged" }, {
                 callback = function(meta)
