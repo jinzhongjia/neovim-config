@@ -96,5 +96,6 @@ __arr_concat(M, require("plugins.edit.lint"))
 __arr_concat(M, require("plugins.edit.outline"))
 __arr_concat(M, require("plugins.edit.search"))
 __arr_concat(M, require("plugins.edit.snippet"))
+__arr_concat(M, require("plugins.edit.dap"))
 
 return M

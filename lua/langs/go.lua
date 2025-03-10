@@ -18,7 +18,17 @@ return
         },
     },
     lint = { "golangci-lint" },
-    others = { "gofumpt", "goimports-reviser" },
+    others = { "gofumpt", "goimports-reviser", "delve" },
     before_set = nil,
     after_set = nil,
+    plugins = {
+        {
+            "jinzhongjia/nvim-dap-go",
+            event = "VeryLazy",
+            dev = true,
+            config = function()
+                require("dap-go").setup()
+            end,
+        },
+    },
 }
