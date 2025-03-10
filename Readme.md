@@ -33,6 +33,7 @@ git clone https://github.com/jinzhongjia/neovim-config.git ~/AppData/Local/nvim
 - Nodejs
 - Zig
 - Gcc/Clang
+- Dotnet
 - Lazygit
 - Lazydocker
 - fd 

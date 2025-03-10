@@ -27,6 +27,7 @@ git clone -b hybrid https://github.com/jinzhongjia/neovim-config.git ~/AppData/L
 - Nodejs
 - Zig
 - Gcc/Clang
+- Dotnet
 - Lazygit
 - Lazydocker
 - fd 
