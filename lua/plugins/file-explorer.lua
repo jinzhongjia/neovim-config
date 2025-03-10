@@ -17,6 +17,9 @@ return
         opts = {
             disable_netrw = true,
             sync_root_with_cwd = true,
+            update_focused_file = {
+                enable = true,
+            },
             filters = {
                 dotfiles = true,
                 custom = { "node_modules" },

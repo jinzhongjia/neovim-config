@@ -7,7 +7,7 @@ local o, g, fn, api = vim.o, vim.g, vim.fn, vim.api
 fn.chdir(fn.expand("~"))
 
 o.pumblend = 45
-o.guifont = "Maple Mono SC NF:h15"
+o.guifont = "Maple Mono NF:h15"
 
 -- disable input ime
 g.neovide_input_ime = false
