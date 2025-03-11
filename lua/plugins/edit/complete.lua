@@ -46,6 +46,18 @@ return
                     },
                 },
             },
+            -- go pkgs sources for cmp
+            {
+                "Yu-Leo/cmp-go-pkgs",
+                config = function()
+                    vim.api.nvim_create_autocmd({ "LspAttach" }, {
+                        pattern = { "*.go" },
+                        callback = function(args)
+                            require("cmp_go_pkgs").init_items(args)
+                        end,
+                    })
+                end,
+            },
         },
         event = "VeryLazy",
         config = function()
@@ -93,6 +105,7 @@ return
                     { name = "copilot" },
                     { name = "snippets" },
                     { name = "lazydev" },
+                    { name = "go_pkgs" },
                 }, {
                     { name = "async_path" },
                     { name = "buffer" },
