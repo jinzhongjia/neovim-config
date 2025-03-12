@@ -1,4 +1,6 @@
-return {
+return
+--- @type LazySpec
+{
     {
         "tamton-aquib/duck.nvim",
         event = "VeryLazy",
