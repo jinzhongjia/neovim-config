@@ -16,4 +16,13 @@ return
             end, { desc = "kill all ducks" })
         end,
     },
+    {
+        "eandrju/cellular-automaton.nvim",
+
+        evnet = "VeryLazy",
+        keys = {
+            { "<leader>bu", "<cmd>CellularAutomaton make_it_rain<CR>", desc = "make it rain" },
+            { "<leader>bi", "<cmd>CellularAutomaton game_of_life<CR>", desc = "game of life" },
+        },
+    },
 }
