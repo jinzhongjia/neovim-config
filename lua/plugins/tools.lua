@@ -142,4 +142,11 @@ return
             { "<leader>n", function() Snacks.picker.notifications() end, desc = "Notification History" },
         },
     },
+    {
+        "ovk/endec.nvim",
+        event = "VeryLazy",
+        opts = {
+            -- Override default configuration here
+        },
+    },
 }

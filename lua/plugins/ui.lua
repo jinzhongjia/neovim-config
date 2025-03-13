@@ -47,7 +47,7 @@ return
         event = "VeryLazy",
         -- stylua: ignore
         keys = {
-            { "gb", function() require("snipe").open_buffer_menu() end, desc = "Open Snipe buffer menu" },
+            { "<leader>gb", function() require("snipe").open_buffer_menu() end, desc = "Open Snipe buffer menu" },
         },
         opts = {},
     },
