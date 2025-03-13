@@ -168,6 +168,13 @@ return
                 "<cmd>Trouble qflist toggle<cr>",
                 desc = "Quickfix List (Trouble)",
             },
+            { "gd", "<cmd>Trouble lsp_definitions<cr>", desc = "LspUI definition" },
+            { "gf", "<cmd>Trouble lsp_declarations<cr>", desc = "Trouble declaration" },
+            { "gi", "<cmd>Trouble lsp_implementations<cr>", desc = "Trouble implementation" },
+            { "gr", "<cmd>Trouble lsp_references<cr>", desc = "Trouble reference" },
+            { "gy", "<cmd>Trouble lsp_type_definitions<cr>", desc = "Trouble type definition" },
+            { "gci", "<cmd>Trouble lsp_incoming_calls<cr>", desc = "Trouble incoming calls" },
+            { "gco", "<cmd>Trouble lsp_outgoing_calls<cr>", desc = "Trouble outgoing calls" },
         },
     },
     {

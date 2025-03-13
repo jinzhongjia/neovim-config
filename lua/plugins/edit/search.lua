@@ -169,17 +169,17 @@ return
         -- stylua: ignore
         keys = {
             {
-                "gf",
+                "<leader>gf",
                 function() require("grug-far").open({ transient = true }) end,
                 desc = "grug far open",
             },
             {
-                "gfc",
+                "<leader>gfc",
                 function() require("grug-far").open({ prefills = { paths = vim.fn.expand("%") } }) end,
                 desc = "grug far open current file",
             },
             {
-                "gfw",
+                "<leader>gfw",
                 function() require("grug-far").open({ prefills = { search = vim.fn.expand("<cword>") } }) end,
                 desc = "grug far open with cursor word",
             },
