@@ -15,6 +15,7 @@ return
             },
         },
         opts = {
+            view = { adaptive_size = true },
             disable_netrw = true,
             sync_root_with_cwd = true,
             update_focused_file = {
