@@ -17,7 +17,7 @@ return
             },
         },
     },
-    lint = { "golangci-lint" },
+    lint = {},
     others = { "gofumpt", "goimports-reviser", "delve" },
     before_set = nil,
     after_set = nil,
