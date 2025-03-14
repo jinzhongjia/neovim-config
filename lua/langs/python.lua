@@ -1,7 +1,7 @@
 return
 --- @type LangSpec
 {
-    lsp = "pylyzer",
+    lsp = "basedpyright",
     opt = {},
     others = { "black", "isort" },
     before_set = nil,
