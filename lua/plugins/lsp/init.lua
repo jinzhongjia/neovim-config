@@ -69,7 +69,8 @@ end
 --- @type LazySpec
 local M = {
     {
-        "williamboman/mason-lspconfig.nvim",
+        "jinzhongjia/mason-lspconfig.nvim",
+        branch = "protols",
         event = "VeryLazy",
         dependencies = {
             {
