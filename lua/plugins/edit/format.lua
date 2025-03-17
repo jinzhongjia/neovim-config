@@ -1,3 +1,4 @@
+local is_setting_custom_config = false
 return
 --- @type LazySpec
 {
@@ -36,6 +37,12 @@ return
                 -- Customize or remove this keymap to your liking
                 "<leader>f",
                 function()
+                    if not is_setting_custom_config then
+                        require("conform").formatters["goimports-reviser"] = {
+                            prepend_args = { "-imports-order=std,project,company,general " },
+                        }
+                    end
+                    is_setting_custom_config = true
                     require("conform").format({ async = true })
                 end,
                 mode = "n",
