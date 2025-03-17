@@ -21,6 +21,15 @@ return
         event = "VeryLazy",
         opts = {
             defaults = {
+                layout_config = {
+                    preview_width = 0.45, -- 设置 preview 窗口宽度为窗口宽度的 50%
+                    horizontal = {
+                        height = 0.8,
+                        preview_cutoff = 120,
+                        prompt_position = "bottom",
+                        width = 0.8,
+                    },
+                },
                 -- The initial mode entered after opening the pop-up window, the default is insert, it can also be normal
                 initial_mode = "insert",
                 -- Shortcut keys in the window
@@ -47,8 +56,41 @@ return
             },
             pickers = {
                 -- Built-in pickers configuration
-                find_files = {
+                live_grep = {
                     hidden = false,
+                    layout_strategy = "vertical",
+                    layout_config = {
+                        width = 0.9,
+                        height = 0.9,
+                        preview_cutoff = 20,
+                        preview_width = 0.5,
+                        prompt_position = "bottom",
+                    },
+                    prompt_title = "Find Files",
+                },
+                find_files = {
+                    border = true,
+                    borderchars = {
+                        { "─", "│", "─", "│", "┌", "┐", "┘", "└" },
+                        preview = { "─", "│", "─", "│", "┌", "┐", "┘", "└" },
+                        prompt = { "─", "│", " ", "│", "┌", "┐", "│", "│" },
+                        results = { "─", "│", "─", "│", "├", "┤", "┘", "└" },
+                    },
+                    layout_config = {
+                        preview_cutoff = 1,
+                        width = 0.75,
+                        height = 0.55,
+                        -- width = function(_, max_columns, _)
+                        --     return math.min(max_columns, 80)
+                        -- end,
+                        -- height = function(_, _, max_lines)
+                        --     return math.min(max_lines, 15)
+                        -- end,
+                    },
+                    layout_strategy = "center",
+                    previewer = false,
+                    prompt_title = "find files",
+                    results_title = false,
                 },
             },
             extensions = {},
@@ -56,7 +98,6 @@ return
         keys = {
             { "<C-p>", "<cmd>Telescope find_files<cr>" },
             { "<C-f>", "<cmd>Telescope live_grep<cr>" },
-            { "<leader>wd", "<cmd>Telescope diagnostics<cr>" },
         },
     },
     {

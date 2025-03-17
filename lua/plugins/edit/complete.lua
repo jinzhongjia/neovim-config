@@ -36,7 +36,18 @@ return
             { "onsails/lspkind-nvim" },
             { "xzbdmw/colorful-menu.nvim", opts = {} },
             --- autopairs
-            { "windwp/nvim-autopairs", opts = {} },
+            {
+                "windwp/nvim-autopairs",
+                opts = {
+                    disable_filetype = {
+                        "TelescopePrompt",
+                        "spectre_panel",
+                        "codecompanion",
+                        "snacks_input",
+                        "snacks_picker_input",
+                    },
+                },
+            },
             {
                 "folke/lazydev.nvim",
                 dependencies = "Bilal2453/luvit-meta",

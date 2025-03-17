@@ -141,6 +141,24 @@ return
                         user = "Me",
                     },
                     slash_commands = {
+                        ["buffer"] = {
+                            opts = {
+                                contains_code = true,
+                                provider = "telescope", -- default|telescope|mini_pick|fzf_lua
+                            },
+                        },
+                        ["file"] = {
+                            opts = {
+                                provider = "default", -- Other options include 'default', 'mini_pick', 'fzf_lua', snacks
+                                contains_code = true,
+                            },
+                        },
+                        ["symbols"] = {
+                            opts = {
+                                contains_code = true,
+                                provider = "telescope", -- default|telescope|mini_pick|fzf_lua
+                            },
+                        },
                         -- ["git_files"] = {
                         --     description = "List git files",
                         --     ---@param chat CodeCompanion.Chat
