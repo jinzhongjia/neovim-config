@@ -45,6 +45,7 @@ return
                 "meson",
                 "ninja",
                 "nix",
+                "proto",
                 "python",
                 "pug",
                 "regex",
