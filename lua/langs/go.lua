@@ -36,15 +36,16 @@ return
             opts = {},
         },
         {
-            "edolphin-ydf/goimpl.nvim",
+            "olexsmir/gopher.nvim",
+            event = "VeryLazy",
+            -- branch = "develop", -- if you want develop branch
+            -- keep in mind, it might break everything
             dependencies = {
-                { "nvim-lua/plenary.nvim" },
-                { "nvim-telescope/telescope.nvim" },
-                { "nvim-treesitter/nvim-treesitter" },
+                "nvim-lua/plenary.nvim",
+                "nvim-treesitter/nvim-treesitter",
+                "mfussenegger/nvim-dap", -- (optional) only if you use `gopher.dap`
             },
-            config = function()
-                require("telescope").load_extension("goimpl")
-            end,
+            opts = {},
         },
     },
 }
