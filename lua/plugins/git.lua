@@ -25,6 +25,9 @@ return
         },
         event = "VeryLazy",
         config = true,
+        keys = {
+            { "<leader>ng", "<cmd>Neogit<cr>", desc = "NeoGit" },
+        },
     },
     {
         "sindrets/diffview.nvim",

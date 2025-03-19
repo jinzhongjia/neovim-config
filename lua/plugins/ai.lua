@@ -100,6 +100,7 @@ return
                         vue = true,
                         c = true,
                         cpp = true,
+                        proto = true,
                     },
                 },
             },

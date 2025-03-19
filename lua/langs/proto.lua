@@ -3,7 +3,7 @@ return
 {
     lsp = "protols",
     opt = {},
-    others = {},
+    others = { "buf" },
     before_set = nil,
     after_set = nil,
     lint = {},

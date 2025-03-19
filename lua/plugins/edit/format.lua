@@ -30,6 +30,7 @@ return
                 markdown = { "prettierd", "cbfmt" },
                 yaml = { "yamlfmt" },
                 xml = { "xmlformat" },
+                proto = { "buf" },
             },
         },
         keys = {
