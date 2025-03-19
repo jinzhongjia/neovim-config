@@ -22,7 +22,6 @@ return
         opts = {
             defaults = {
                 layout_config = {
-                    preview_width = 0.45, -- 设置 preview 窗口宽度为窗口宽度的 50%
                     horizontal = {
                         height = 0.8,
                         preview_cutoff = 120,
@@ -63,7 +62,6 @@ return
                         width = 0.9,
                         height = 0.9,
                         preview_cutoff = 20,
-                        preview_width = 0.5,
                         prompt_position = "bottom",
                     },
                     prompt_title = "Find Files",
@@ -77,7 +75,6 @@ return
                         results = { "─", "│", "─", "│", "├", "┤", "┘", "└" },
                     },
                     layout_config = {
-                        preview_cutoff = 1,
                         width = 0.75,
                         height = 0.55,
                         -- width = function(_, max_columns, _)
