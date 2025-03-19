@@ -21,14 +21,22 @@ return
         event = "VeryLazy",
         opts = {
             defaults = {
+                layout_strategy = "vertical",
                 layout_config = {
-                    horizontal = {
-                        height = 0.8,
-                        preview_cutoff = 120,
-                        prompt_position = "bottom",
-                        width = 0.8,
-                    },
+                    width = 0.9,
+                    height = 0.9,
+                    preview_cutoff = 20,
+                    prompt_position = "bottom",
                 },
+
+                -- layout_config = {
+                --     horizontal = {
+                --         height = 0.8,
+                --         preview_cutoff = 120,
+                --         prompt_position = "bottom",
+                --         width = 0.8,
+                --     },
+                -- },
                 -- The initial mode entered after opening the pop-up window, the default is insert, it can also be normal
                 initial_mode = "insert",
                 -- Shortcut keys in the window
@@ -57,16 +65,9 @@ return
                 -- Built-in pickers configuration
                 live_grep = {
                     hidden = false,
-                    layout_strategy = "vertical",
-                    layout_config = {
-                        width = 0.9,
-                        height = 0.9,
-                        preview_cutoff = 20,
-                        prompt_position = "bottom",
-                    },
-                    prompt_title = "Find Files",
                 },
                 find_files = {
+                    hidden = false,
                     border = true,
                     borderchars = {
                         { "─", "│", "─", "│", "┌", "┐", "┘", "└" },
@@ -93,8 +94,11 @@ return
             extensions = {},
         },
         keys = {
-            { "<C-p>", "<cmd>Telescope find_files<cr>" },
-            { "<C-f>", "<cmd>Telescope live_grep<cr>" },
+            { "<C-p>", "<cmd>Telescope find_files<cr>", desc = "Telescope find files" },
+            { "<C-f>", "<cmd>Telescope live_grep<cr>", desc = "Telescope live grep" },
+            { "<leader>tb", "<cmd>Telescope buffers<cr>", desc = "Telescope buffers" },
+            { "<leader>tg", "<cmd>Telescope git_branches<cr>", desc = "Telescope git branches" },
+            { "<leader>tc", "<cmd>Telescope git_commits<cr>", desc = "Telescope git commits" },
         },
     },
     {
