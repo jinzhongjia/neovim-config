@@ -67,13 +67,12 @@ return
                     hidden = false,
                 },
                 find_files = {
-                    hidden = false,
+                    hidden = true,
                     border = true,
                     borderchars = {
                         { "─", "│", "─", "│", "┌", "┐", "┘", "└" },
-                        preview = { "─", "│", "─", "│", "┌", "┐", "┘", "└" },
-                        prompt = { "─", "│", " ", "│", "┌", "┐", "│", "│" },
-                        results = { "─", "│", "─", "│", "├", "┤", "┘", "└" },
+                        prompt = { "─", "│", "─", "│", "┌", "┐", "┘", "└" },
+                        results = { "─", "│", "─", "│", "┌", "┐", "┘", "└" },
                     },
                     layout_config = {
                         width = 0.75,
