@@ -122,6 +122,7 @@ return
             },
             display = {
                 chat = {
+                    intro_message = "欢迎使用 CodeCompanion ✨! 按下 ? 查看快捷键", -- 欢迎信息
                     window = {
                         opts = {
                             relativenumber = false,
@@ -148,12 +149,12 @@ return
                         ---The header name for the LLM's messages
                         ---@type string|fun(adapter: CodeCompanion.Adapter): string
                         llm = function(adapter)
-                            return "Aide (" .. adapter.formatted_name .. ")"
+                            return "CodeCompanion (" .. adapter.formatted_name .. ")"
                         end,
 
                         ---The header name for your messages
                         ---@type string
-                        user = "Me",
+                        user = "我",
                     },
                     slash_commands = {
                         ["buffer"] = {
