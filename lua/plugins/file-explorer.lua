@@ -57,6 +57,7 @@ return
                 end
                 -- use add default mappings
                 api.config.mappings.default_on_attach(buffer_id)
+                vim.keymap.del("n", "s", opts("remove s keymap"))
 
                 vim.keymap.set("n", "sv", api.node.open.vertical, opts("Open: Vertical Split"))
                 vim.keymap.set("n", "sh", api.node.open.horizontal, opts("Open: Horizontal Split"))
