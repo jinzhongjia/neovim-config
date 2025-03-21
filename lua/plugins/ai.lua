@@ -145,6 +145,14 @@ return
                 -- Change the default chat adapter
                 chat = {
                     adapter = "copilot",
+                    keymaps = {
+                        send = {
+                            modes = { n = "<CR>", i = "C-CR" },
+                        },
+                        close = {
+                            modes = { n = "<leader>c", i = "<C-c>" },
+                        },
+                    },
                     roles = {
                         ---The header name for the LLM's messages
                         ---@type string|fun(adapter: CodeCompanion.Adapter): string
