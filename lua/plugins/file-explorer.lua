@@ -34,6 +34,14 @@ return
             git = {
                 timeout = 1000,
             },
+            diagnostics = {
+                enable = true,
+                show_on_dirs = true,
+            },
+            modified = {
+                enable = true,
+            },
+            select_prompts = true,
             -- keymap override
             on_attach = function(buffer_id)
                 local api = require("nvim-tree.api")
