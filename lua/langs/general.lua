@@ -1,9 +1,9 @@
 return
 --- @type LangSpec
 {
-    lsp = "bashls",
+    lsp = nil,
     opt = {},
-    others = { "shfmt" },
+    others = { "ast-grep" },
     before_set = nil,
     after_set = nil,
 }

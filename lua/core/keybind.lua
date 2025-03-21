@@ -38,15 +38,6 @@ __key_bind("v", ">", ">gv")
 -- Move selected text up and down
 __key_bind("v", "J", "<CMD>move '>+1<CR>gv-gv")
 __key_bind("v", "K", "<CMD>move '<-2<CR>gv-gv")
-
--- Scroll up and down
-__key_bind("n", "<C-j>", "5j")
-__key_bind("n", "<C-k>", "5k")
--- Ctrl u / ctrl + d move only 9 lines, half screen by default
-__key_bind("n", "<C-u>", "10k")
-__key_bind("n", "<C-d>", "10j")
-
--- ctrl+s save
 __key_bind("n", "<C-s>", "<CMD>w<CR>")
 __key_bind("i", "<C-s>", "<ESC><CMD>w<CR>")
 

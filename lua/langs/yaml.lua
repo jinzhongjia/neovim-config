@@ -11,7 +11,7 @@ return
             },
         },
     },
-    others = {},
+    others = { "yamlfmt" },
     before_set = nil,
     after_set = nil,
     lint = {},
