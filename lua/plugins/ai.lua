@@ -106,6 +106,9 @@ return
             },
         },
         opts = {
+            opts = {
+                language = "Chinese",
+            },
             adapters = {
                 copilot = function()
                     return require("codecompanion.adapters").extend("copilot", {
