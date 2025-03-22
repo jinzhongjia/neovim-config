@@ -18,12 +18,10 @@ return
             view = { adaptive_size = true },
             disable_netrw = true,
             sync_root_with_cwd = true,
-            update_focused_file = {
-                enable = true,
-            },
+            update_focused_file = { enable = true },
             filters = {
                 dotfiles = true,
-                custom = { "node_modules" },
+                custom = { "node_modules", "^.git$" },
             },
             actions = {
                 open_file = {
@@ -31,20 +29,44 @@ return
                     quit_on_open = true,
                 },
             },
-            git = {
-                timeout = 1000,
+            live_filter = {
+                prefix = "[FILTER]: ",
+                always_show_folders = false, -- Turn into false from true by default
             },
+            git = { timeout = 1000 },
             diagnostics = {
                 enable = true,
                 show_on_dirs = true,
-            },
-            modified = {
-                enable = true,
             },
             select_prompts = true,
             -- keymap override
             on_attach = function(buffer_id)
                 local api = require("nvim-tree.api")
+                local git_add = function()
+                    local node = api.tree.get_node_under_cursor()
+                    local gs = node.git_status.file
+
+                    -- If the current node is a directory get children status
+                    if gs == nil then
+                        gs = (node.git_status.dir.direct ~= nil and node.git_status.dir.direct[1])
+                            or (node.git_status.dir.indirect ~= nil and node.git_status.dir.indirect[1])
+                    end
+
+                    -- If the file is untracked, unstaged or partially staged, we stage it
+                    if gs == "??" or gs == "MM" or gs == "AM" or gs == " M" then
+                        vim.cmd("silent !git add " .. node.absolute_path)
+
+                    -- If the file is staged, we unstage
+                    elseif gs == "M " or gs == "A " then
+                        vim.cmd("silent !git restore --staged " .. node.absolute_path)
+                    end
+
+                    api.tree.reload()
+                end
+                local function open_tab_silent(node)
+                    api.node.open.tab(node)
+                    vim.cmd.tabprev()
+                end
 
                 local function opts(desc)
                     return {
@@ -61,6 +83,10 @@ return
 
                 vim.keymap.set("n", "sv", api.node.open.vertical, opts("Open: Vertical Split"))
                 vim.keymap.set("n", "sh", api.node.open.horizontal, opts("Open: Horizontal Split"))
+
+                vim.keymap.set("n", "ga", git_add, opts("Git Add"))
+
+                vim.keymap.set("n", "T", open_tab_silent, opts("Open Tab Silent"))
 
                 local preview = require("nvim-tree-preview")
 

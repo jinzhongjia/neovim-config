@@ -132,9 +132,9 @@ return
                     },
                     ---Customize how tokens are displayed
                     ---@param tokens number
-                    ---@param adapter CodeCompanion.Adapter
+                    ---@param _ CodeCompanion.Adapter
                     ---@return string
-                    token_count = function(tokens, adapter)
+                    token_count = function(tokens, _)
                         return " (" .. tokens .. " tokens)"
                     end,
                 },
