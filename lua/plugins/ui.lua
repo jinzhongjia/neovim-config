@@ -201,11 +201,10 @@ return
     {
         -- 这个插件也不错
         "OXY2DEV/markview.nvim",
-        event = "VeryLazy",
         enabled = false,
         opts = {
             preview = {
-                filetypes = { "markdown", "codecompanion" },
+                filetypes = { "markdown", "codecompanion", "LspUI_hover" },
                 ignore_buftypes = {},
             },
         },
@@ -213,7 +212,7 @@ return
     {
         "MeanderingProgrammer/render-markdown.nvim",
         dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
-        ft = { "markdown", "codecompanion" },
+        ft = { "markdown", "codecompanion", "LspUI_hover" },
         ---@module 'render-markdown'
         ---@type render.md.UserConfig
         opts = {
@@ -221,11 +220,6 @@ return
                 unchecked = { icon = "✘ " },
                 checked = { icon = "✔ " },
                 custom = { todo = { rendered = "◯ " } },
-            },
-            code = {
-                width = "block",
-                left_pad = 2,
-                right_pad = 4,
             },
         },
     },

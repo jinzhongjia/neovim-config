@@ -2,7 +2,8 @@
 local M = {
 
     {
-        "m-demare/hlargs.nvim",
+        "jinzhongjia/hlargs.nvim",
+        branch = "fix-get-bufferline",
         event = "VeryLazy",
         dev = true,
         config = function()

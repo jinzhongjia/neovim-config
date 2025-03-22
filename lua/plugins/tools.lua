@@ -169,10 +169,4 @@ return
             },
         },
     },
-    -- lazy.nvim
-    {
-        "csessh/stopinsert.nvim",
-        event = "VeryLazy",
-        opts = {},
-    },
 }

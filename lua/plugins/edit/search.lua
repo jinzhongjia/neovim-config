@@ -227,4 +227,13 @@ return
             },
         },
     },
+    {
+        "cshuaimin/ssr.nvim",
+        event = "VeryLazy",
+        opts = {},
+        -- stylua: ignore
+        keys = {
+            { "<leader>sr", function() require("ssr").open() end, desc = "structural search and replace" },
+        },
+    },
 }
