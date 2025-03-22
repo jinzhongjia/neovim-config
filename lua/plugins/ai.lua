@@ -211,7 +211,7 @@ return
         },
         keys = {
             {
-                "<leader>ct",
+                "<leader>cc",
                 ":CodeCompanionChat Toggle<CR>",
                 desc = "Toggle CodeCompanionChat",
             },

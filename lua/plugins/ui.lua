@@ -44,6 +44,7 @@ return
     },
     {
         "leath-dub/snipe.nvim",
+        enabled = false,
         event = "VeryLazy",
         -- stylua: ignore
         keys = {
@@ -127,6 +128,7 @@ return
                     "codecompanion",
                     "grug-far",
                     "grug-far-history",
+                    "Mundo",
                 },
             },
         },
@@ -148,26 +150,11 @@ return
             },
         }, -- for default options, refer to the configuration section for custom setup.
         keys = {
-            {
-                "<leader>xx",
-                "<cmd>Trouble diagnostics toggle<cr>",
-                desc = "Diagnostics (Trouble)",
-            },
-            {
-                "<leader>xX",
-                "<cmd>Trouble diagnostics toggle filter.buf=0<cr>",
-                desc = "Buffer Diagnostics (Trouble)",
-            },
-            {
-                "<leader>xL",
-                "<cmd>Trouble loclist toggle<cr>",
-                desc = "Location List (Trouble)",
-            },
-            {
-                "<leader>xQ",
-                "<cmd>Trouble qflist toggle<cr>",
-                desc = "Quickfix List (Trouble)",
-            },
+            -- stylua: ignore
+            { "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", desc = "Diagnostics (Trouble)" },
+            { "<leader>xX", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", desc = "Buffer Diagnostics (Trouble)" },
+            { "<leader>xL", "<cmd>Trouble loclist toggle<cr>", desc = "Location List (Trouble)" },
+            { "<leader>xQ", "<cmd>Trouble qflist toggle<cr>", desc = "Quickfix List (Trouble)" },
             { "gd", "<cmd>Trouble lsp_definitions<cr>", desc = "LspUI definition" },
             { "gf", "<cmd>Trouble lsp_declarations<cr>", desc = "Trouble declaration" },
             { "gi", "<cmd>Trouble lsp_implementations<cr>", desc = "Trouble implementation" },
@@ -193,7 +180,9 @@ return
     {
         "nacro90/numb.nvim",
         event = "VeryLazy",
-        opts = {},
+        opts = {
+            number_only = true,
+        },
     },
     {
         "folke/which-key.nvim",
@@ -210,13 +199,46 @@ return
         },
     },
     {
+        -- 这个插件也不错
         "OXY2DEV/markview.nvim",
         event = "VeryLazy",
+        enabled = false,
         opts = {
             preview = {
                 filetypes = { "markdown", "codecompanion" },
                 ignore_buftypes = {},
             },
         },
+    },
+    {
+        "MeanderingProgrammer/render-markdown.nvim",
+        dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
+        ft = { "markdown", "codecompanion" },
+        ---@module 'render-markdown'
+        ---@type render.md.UserConfig
+        opts = {
+            checkbox = {
+                unchecked = { icon = "✘ " },
+                checked = { icon = "✔ " },
+                custom = { todo = { rendered = "◯ " } },
+            },
+            code = {
+                width = "block",
+                left_pad = 2,
+                right_pad = 4,
+            },
+        },
+    },
+    {
+        "hat0uma/csvview.nvim",
+        cmd = { "CsvViewEnable", "CsvViewDisable", "CsvViewToggle" },
+        opts = {},
+    },
+    {
+        "yorickpeterse/nvim-window",
+        keys = {
+            { "<leader>wj", "<cmd>lua require('nvim-window').pick()<cr>", desc = "nvim-window: Jump to window" },
+        },
+        config = true,
     },
 }

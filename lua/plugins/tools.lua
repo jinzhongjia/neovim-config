@@ -35,6 +35,10 @@ return
     {
         "simnalamburt/vim-mundo",
         event = "VeryLazy",
+        keys = {
+            -- stylua: ignore
+            { "<leader>ud", "<CMD>MundoToggle<CR>", mode = { "n" }, desc = "Toggle Mundo" },
+        },
     },
     {
         "stevearc/stickybuf.nvim",
@@ -44,7 +48,16 @@ return
     {
         "max397574/better-escape.nvim",
         event = "VeryLazy",
-        opts = {},
+        opts = {
+            default_mappings = false,
+            mappings = {
+                i = { j = { k = "<Esc>" } },
+                c = { j = { k = "<Esc>" } },
+                t = { j = { k = "<C-\\><C-n>" } },
+                v = { j = { k = "<Esc>" } },
+                s = { j = { k = "<Esc>" } },
+            },
+        },
     },
     {
         "chrishrb/gx.nvim",
@@ -146,5 +159,20 @@ return
         opts = {
             -- Override default configuration here
         },
+    },
+    {
+        "ellisonleao/dotenv.nvim",
+        event = "VeryLazy",
+        opts = {
+            {
+                enable_on_load = false,
+            },
+        },
+    },
+    -- lazy.nvim
+    {
+        "csessh/stopinsert.nvim",
+        event = "VeryLazy",
+        opts = {},
     },
 }

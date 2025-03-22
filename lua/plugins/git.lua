@@ -2,8 +2,7 @@ return
 --- @type LazySpec
 {
     {
-        "echasnovski/mini.diff",
-        version = "*",
+        "lewis6991/gitsigns.nvim",
         event = "VeryLazy",
         opts = {},
     },
@@ -40,5 +39,10 @@ return
         keys = {
             { "<leader>bt", "<cmd>BlameToggle<cr>", desc = "Blame toogle" },
         },
+    },
+    {
+        "akinsho/git-conflict.nvim",
+        version = "*",
+        config = true,
     },
 }

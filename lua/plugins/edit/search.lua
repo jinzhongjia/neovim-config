@@ -98,6 +98,7 @@ return
             { "<leader>tb", "<cmd>Telescope buffers<cr>", desc = "Telescope buffers" },
             { "<leader>tg", "<cmd>Telescope git_branches<cr>", desc = "Telescope git branches" },
             { "<leader>tc", "<cmd>Telescope git_commits<cr>", desc = "Telescope git commits" },
+            { "<leader>tt", "<cmd>Telescope<cr>", desc = "Telescope" },
         },
     },
     {
