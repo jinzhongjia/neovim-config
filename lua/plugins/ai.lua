@@ -196,19 +196,8 @@ return
                                         { title = "CodeCompanion" }
                                     )
                                 end
+                                print(result.stdout)
                                 chat:add_reference({ content = result.stdout }, "git", "<git_files>")
-                                -- local handle = io.popen("git ls-files")
-                                -- if handle ~= nil then
-                                --     local result = handle:read("*a")
-                                --     handle:close()
-                                --     chat:add_reference({ content = result }, "git", "<git_files>")
-                                -- else
-                                --     return vim.notify(
-                                --         "No git files available",
-                                --         vim.log.levels.INFO,
-                                --         { title = "CodeCompanion" }
-                                --     )
-                                -- end
                             end,
                             opts = {
                                 contains_code = false,
