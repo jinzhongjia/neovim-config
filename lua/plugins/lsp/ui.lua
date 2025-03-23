@@ -10,6 +10,7 @@ return
     },
     {
         "jinzhongjia/LspUI.nvim",
+        branch = "v3",
         dev = true,
         event = "VeryLazy",
         opts = {
