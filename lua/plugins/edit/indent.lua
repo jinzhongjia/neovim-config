@@ -37,7 +37,10 @@ return
 
             vim.g.rainbow_delimiters = { highlight = highlight }
             require("ibl").setup({
-                scope = { highlight = highlight },
+                scope = {
+                    highlight = highlight,
+                    show_exact_scope = true,
+                },
                 exclude = {
                     filetypes = { "dashboard", "mason" },
                     buftypes = { "terminal", "nofile" },
