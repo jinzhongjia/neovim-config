@@ -85,11 +85,11 @@ return
                                 if not signature then
                                     return ""
                                 end
-                                if not signature.hint then
+                                if not signature.active_parameter then
                                     return signature.label
                                 end
 
-                                return signature.parameters[signature.hint].label
+                                return signature.parameters[signature.active_parameter].label
                             elseif is_blame then
                                 return require("gitblame").get_current_blame_text()
                             end
