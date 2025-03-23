@@ -112,11 +112,7 @@ return
             adapters = {
                 copilot = function()
                     return require("codecompanion.adapters").extend("copilot", {
-                        schema = {
-                            model = {
-                                default = "claude-3.7-sonnet-thought",
-                            },
-                        },
+                        schema = { model = { default = "claude-3.7-sonnet-thought" } },
                     })
                 end,
             },
@@ -147,7 +143,7 @@ return
                     adapter = "copilot",
                     keymaps = {
                         send = {
-                            modes = { n = "<CR>", i = "C-CR" },
+                            modes = { n = "<CR>" },
                         },
                         close = {
                             modes = { n = "<leader>c", i = "<C-c>" },
@@ -196,8 +192,12 @@ return
                                         { title = "CodeCompanion" }
                                     )
                                 end
-                                print(result.stdout)
-                                chat:add_reference({ content = result.stdout }, "git", "<git_files>")
+                                --- @type string
+                                local str = string.format(
+                                    "Here is the result of running command `git ls-files` locally, you can use it as a data: \n```sh\n%s\n```",
+                                    result.stdout
+                                )
+                                chat:add_reference({ role = "user", content = str }, "git", "<git_files>")
                             end,
                             opts = {
                                 contains_code = false,
