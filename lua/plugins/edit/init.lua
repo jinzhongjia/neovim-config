@@ -2,10 +2,8 @@
 local M = {
 
     {
-        "jinzhongjia/hlargs.nvim",
-        branch = "fix-get-bufferline",
+        "m-demare/hlargs.nvim",
         event = "VeryLazy",
-        dev = true,
         config = function()
             require("hlargs").setup()
             vim.api.nvim_create_augroup("LspAttach_hlargs", { clear = true })
