@@ -215,7 +215,8 @@ return
                 desc = "Toggle CodeCompanionChat",
             },
         },
-        init = function()
+        config = function(_, opts)
+            require("codecompanion").setup(opts)
             local spin = spinner()
             spin:init()
         end,
