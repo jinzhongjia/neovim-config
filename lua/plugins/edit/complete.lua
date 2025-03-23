@@ -26,18 +26,37 @@ return
                 default = { "lsp", "copilot", "lazydev", "path", "snippets", "buffer", "ripgrep" },
                 per_filetype = { codecompanion = { "codecompanion" } },
                 providers = {
+                    lsp = { score_offset = 10 },
+                    buffer = { score_offset = 8 },
+                    path = { score_offset = 8 },
+                    snippets = { opts = { search_paths = { my_snippets_path } }, score_offset = 9 },
                     lazydev = {
                         name = "LazyDev",
                         module = "lazydev.integrations.blink",
                         -- make lazydev completions top priority (see `:h blink.cmp`)
-                        score_offset = 100,
+                        score_offset = 10,
                     },
-                    copilot = { name = "copilot", module = "blink-copilot", score_offset = 100, async = true },
-                    ripgrep = { module = "blink-ripgrep", name = "Ripgrep" },
-                    snippets = { opts = { search_paths = { my_snippets_path } } },
+                    copilot = { name = "copilot", module = "blink-copilot", score_offset = 9, async = true },
+                    ripgrep = { module = "blink-ripgrep", name = "Ripgrep", score_offset = 7 },
                 },
             },
-            fuzzy = { implementation = "prefer_rust_with_warning" },
+            fuzzy = {
+                implementation = "prefer_rust_with_warning",
+                sorts = {
+                    -- compare with the score
+                    "score",
+                    -- always prioritize exact matches
+                    "exact",
+                    -- low deprecated items
+                    function(item_a, item_b)
+                        if item_a.deprecated then
+                            return false
+                        end
+                    end,
+                    -- sort by the text of the completion
+                    "sort_text",
+                },
+            },
             completion = {
                 accept = { auto_brackets = { enabled = true, default_brackets = { "(", ")" } } },
                 list = { max_items = 500, selection = { preselect = false, auto_insert = false } },
