@@ -61,9 +61,7 @@ o.background = "dark"
 
 o.termguicolors = true
 
-o.list = true
--- o.listchars = "space:·,tab:··,eol:↴"
-o.listchars = "eol:↴"
+o.list = false
 
 o.wildmenu = true
 

@@ -1,5 +1,5 @@
 ---@diagnostic disable-next-line: param-type-mismatch
-local my_snippets = vim.fs.normalize(vim.fs.joinpath(vim.fn.stdpath("config"), "/snippets"))
+_G.my_snippets_path = vim.fs.normalize(vim.fs.joinpath(vim.fn.stdpath("config"), "/snippets"))
 
 return
 --- @type LazySpec
@@ -9,12 +9,8 @@ return
         event = "VeryLazy",
         dependencies = {
             "nvim-telescope/telescope.nvim",
-            {
-                "garymjr/nvim-snippets",
-                opts = { search_paths = { my_snippets } },
-            },
         },
-        opts = { snippetDir = my_snippets },
+        opts = { snippetDir = my_snippets_path },
         keys = {
             {
                 "<leader>se",

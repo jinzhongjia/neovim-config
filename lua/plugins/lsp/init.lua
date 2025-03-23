@@ -1,8 +1,6 @@
 --- @param opt table?
 local function config(opt)
-    local cmp_nvim_lsp = require("cmp_nvim_lsp")
-
-    local capabilities = cmp_nvim_lsp.default_capabilities()
+    local capabilities = require("blink.cmp").get_lsp_capabilities()
 
     -- for ufo
     capabilities.textDocument.foldingRange = {
@@ -94,7 +92,7 @@ local M = {
                 end,
             },
             { "neovim/nvim-lspconfig" },
-            { "hrsh7th/cmp-nvim-lsp" },
+            { "saghen/blink.cmp" },
         },
         opts = {
             ensure_installed = servers,
