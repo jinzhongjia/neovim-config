@@ -38,7 +38,16 @@ return
         keys = {
             { "<leader>rn", "<cmd>LspUI rename<cr>", desc = "LspUI rename" },
             { "<leader>ca", "<cmd>LspUI code_action<cr>", desc = "LspUI code action" },
-            { "K", "<cmd>LspUI hover<cr>", desc = "LspUI hover" },
+            {
+                "K",
+                function()
+                    local winid = require("ufo").peekFoldedLinesUnderCursor()
+                    if not winid then
+                        vim.cmd("LspUI hover")
+                    end
+                end,
+                desc = "LspUI hover",
+            },
             -- { "gd", "<cmd>LspUI definition<cr>", desc = "LspUI definition" },
             -- { "gD", "<cmd>LspUI declaration<cr>", desc = "LspUI declaration" },
             -- { "gi", "<cmd>LspUI implementation<cr>", desc = "LspUI implementation" },
