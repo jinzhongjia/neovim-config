@@ -44,6 +44,7 @@ return
     },
     {
         "francescarpi/buffon.nvim",
+        enabled = false,
         ---@type BuffonConfig
         opts = {
             --- Add your config here
