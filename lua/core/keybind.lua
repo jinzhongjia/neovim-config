@@ -1,16 +1,14 @@
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
 
--- Cancel s default function
-__key_bind("n", "s", "")
 
 -- Windows split screen shortcuts
-__key_bind("n", "sv", "<CMD>vsp<CR>")
-__key_bind("n", "sh", "<CMD>sp<CR>")
+__key_bind("n", "<leader>sv", "<CMD>vsp<CR>")
+__key_bind("n", "<leader>sh", "<CMD>sp<CR>")
 -- Close current
-__key_bind("n", "sc", "<C-w>c")
+__key_bind("n", "<leader>sc", "<C-w>c")
 -- Close other
-__key_bind("n", "so", "<C-w>o")
+__key_bind("n", "<leader>so", "<C-w>o")
 
 -- Alt + hjkl jump between windows
 __key_bind("n", "wh", "<C-w>h")
@@ -21,15 +19,15 @@ __key_bind("n", "wl", "<C-w>l")
 -- Left and right proportional control
 __key_bind("n", "<C-Left>", "<CMD>vertical resize -2<CR>")
 __key_bind("n", "<C-Right>", "<CMD>vertical resize +2<CR>")
-__key_bind("n", "s,", "<CMD>vertical resize -2<CR>")
-__key_bind("n", "s.", "<CMD>vertical resize +2<CR>")
+__key_bind("n", "<leader>s,", "<CMD>vertical resize -2<CR>")
+__key_bind("n", "<leader>s.", "<CMD>vertical resize +2<CR>")
 -- Up and down ratio
-__key_bind("n", "sj", "<CMD>resize +2<CR>")
-__key_bind("n", "sk", "<CMD>resize -2<CR>")
+__key_bind("n", "<leader>sj", "<CMD>resize +2<CR>")
+__key_bind("n", "<leader>sk", "<CMD>resize -2<CR>")
 __key_bind("n", "<C-Down>", "<CMD>resize +2<CR>")
 __key_bind("n", "<C-Up>", "<CMD>resize -2<CR>")
 -- Ratio
-__key_bind("n", "s=", "<C-w>=")
+__key_bind("n", "<leader>s=", "<C-w>=")
 
 -- Indent code in visual mode
 __key_bind("v", "<", "<gv")
