@@ -43,6 +43,17 @@ return
         },
     },
     {
+        "francescarpi/buffon.nvim",
+        ---@type BuffonConfig
+        opts = {
+            --- Add your config here
+        },
+        dependencies = {
+            "nvim-tree/nvim-web-devicons",
+            "nvim-lua/plenary.nvim",
+        },
+    },
+    {
         "leath-dub/snipe.nvim",
         enabled = false,
         event = "VeryLazy",
