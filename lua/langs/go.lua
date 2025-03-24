@@ -31,11 +31,6 @@ return
             end,
         },
         {
-            "maxandron/goplements.nvim",
-            event = "VeryLazy",
-            opts = {},
-        },
-        {
             "olexsmir/gopher.nvim",
             event = "VeryLazy",
             -- branch = "develop", -- if you want develop branch
