@@ -135,9 +135,9 @@ return
                 ["<C-j>"] = { "select_next", "fallback" },
 
                 -- show
-                ["<A-.>"] = { "show", "fallback" },
+                ["<A-.>"] = { "show" },
                 -- hide
-                ["<A-,>"] = { "hide", "fallback" },
+                ["<A-,>"] = { "hide" },
 
                 -- accept
                 ["<CR>"] = { "accept", "fallback" },
