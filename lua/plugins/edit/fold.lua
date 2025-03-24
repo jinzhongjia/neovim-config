@@ -1,5 +1,5 @@
 -- this is not equal to offical handler!!!
-local handler = function(virtText, lnum, endLnum, width, truncate)
+local function handler(virtText, lnum, endLnum, width, truncate)
     local newVirtText = {}
     local totalLines = vim.api.nvim_buf_line_count(0)
     local foldedLines = endLnum - lnum
@@ -62,9 +62,6 @@ return
         },
         event = "VeryLazy",
         opts = {
-            provider_selector = function(_, _, _)
-                return { "treesitter", "indent" }
-            end,
             fold_virt_text_handler = handler,
         },
         -- stylua: ignore
