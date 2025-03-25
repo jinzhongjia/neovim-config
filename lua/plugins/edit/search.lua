@@ -90,24 +90,39 @@ return
                     results_title = false,
                 },
             },
-            extensions = {},
+            extensions = {
+                frecency = {
+                    hidden = true,
+                    border = true,
+                    borderchars = {
+                        { "─", "│", "─", "│", "┌", "┐", "┘", "└" },
+                        prompt = { "─", "│", "─", "│", "┌", "┐", "┘", "└" },
+                        results = { "─", "│", "─", "│", "┌", "┐", "┘", "└" },
+                    },
+                    layout_config = {
+                        width = 0.75,
+                        height = 0.55,
+                    },
+                    layout_strategy = "center",
+                    previewer = false,
+                    prompt_title = "frecency files",
+                    results_title = false,
+                    db_validate_threshold = 30,
+                    db_version = "v2",
+                    enable_prompt_mappings = false,
+                    matcher = "fuzzy",
+                    show_scores = true,
+                },
+            },
         },
         keys = {
             { "<C-f>", "<cmd>Telescope live_grep<cr>", desc = "Telescope live grep" },
+            { "<C-p>", "<cmd>Telescope find_files<cr>", desc = "Telescope find files" },
             { "<leader>tb", "<cmd>Telescope buffers<cr>", desc = "Telescope buffers" },
             { "<leader>tg", "<cmd>Telescope git_branches<cr>", desc = "Telescope git branches" },
             { "<leader>tc", "<cmd>Telescope git_commits<cr>", desc = "Telescope git commits" },
             { "<leader>tt", "<cmd>Telescope<cr>", desc = "Telescope" },
         },
-    },
-    {
-        "nvim-telescope/telescope-fzf-native.nvim",
-        dependencies = "nvim-telescope/telescope.nvim",
-        event = "VeryLazy",
-        build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build",
-        config = function()
-            require("telescope").load_extension("fzf")
-        end,
     },
     {
         "nvim-telescope/telescope-frecency.nvim",
@@ -118,9 +133,6 @@ return
         config = function()
             require("telescope").load_extension("frecency")
         end,
-        keys = {
-            { "<C-p>", "<cmd>Telescope frecency<cr>", desc = "Telescope find files" },
-        },
     },
     {
         "debugloop/telescope-undo.nvim",
