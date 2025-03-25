@@ -242,7 +242,7 @@ api.nvim_create_user_command("GoplementsEnable", enable, { desc = "Enable Goplem
 api.nvim_create_user_command("GoplementsDisable", disable, { desc = "Disable Goplements" })
 api.nvim_create_user_command("GoplementsToggle", toggle, { desc = "Toggle Goplements" })
 
-api.nvim_create_autocmd({ "TextChanged", "InsertLeave", "LspAttach" }, {
+api.nvim_create_autocmd({ "TextChanged", "LspAttach" }, {
     pattern = { "*.go" },
     callback = debounce(function(args)
         annotate_structs_interfaces(args.buf)
