@@ -44,7 +44,7 @@ return
     },
     {
         "francescarpi/buffon.nvim",
-        branch = "develop",
+        enabled = false,
         ---@type BuffonConfig
         opts = {
             keybindings = {
