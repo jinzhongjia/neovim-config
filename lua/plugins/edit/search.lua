@@ -93,7 +93,6 @@ return
             extensions = {},
         },
         keys = {
-            { "<C-p>", "<cmd>Telescope find_files<cr>", desc = "Telescope find files" },
             { "<C-f>", "<cmd>Telescope live_grep<cr>", desc = "Telescope live grep" },
             { "<leader>tb", "<cmd>Telescope buffers<cr>", desc = "Telescope buffers" },
             { "<leader>tg", "<cmd>Telescope git_branches<cr>", desc = "Telescope git branches" },
@@ -119,6 +118,9 @@ return
         config = function()
             require("telescope").load_extension("frecency")
         end,
+        keys = {
+            { "<C-p>", "<cmd>Telescope frecency<cr>", desc = "Telescope find files" },
+        },
     },
     {
         "debugloop/telescope-undo.nvim",
