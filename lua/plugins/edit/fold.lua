@@ -56,6 +56,9 @@ return
                             { text = { "%s" }, click = "v:lua.ScSa" },
                             { text = { builtin.lnumfunc, " " }, click = "v:lua.ScLa" },
                         },
+                        provider_selector = function(bufnr, filetype, buftype)
+                            return { "lsp", "treesitter", "indent" }
+                        end,
                     })
                 end,
             },
