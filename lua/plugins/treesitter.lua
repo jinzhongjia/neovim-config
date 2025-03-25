@@ -81,4 +81,16 @@ return
             require("nvim-treesitter.configs").setup(opts)
         end,
     },
+    {
+        "nvim-treesitter/nvim-treesitter-context",
+        dependencies = "nvim-treesitter/nvim-treesitter-context",
+        event = { "VeryLazy" },
+        opts = {
+            multiline_threshold = 5,
+        },
+        keys = {
+            -- stylua: ignore
+            { "[c", function() require("treesitter-context").go_to_context(vim.v.count1) end, desc = "jumping to context(upwards)" },
+        },
+    },
 }
