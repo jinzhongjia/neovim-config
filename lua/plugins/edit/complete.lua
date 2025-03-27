@@ -30,7 +30,7 @@ return
         ---@type blink.cmp.Config
         opts = {
             sources = {
-                default = { "lsp", "copilot", "lazydev", "path", "snippets", "buffer", "ripgrep" },
+                default = { "lsp", "copilot", "lazydev", "path", "snippets", "buffer" },
                 per_filetype = { codecompanion = { "codecompanion" } },
                 providers = {
                     lsp = { score_offset = 11 },
@@ -44,7 +44,7 @@ return
                         score_offset = 10,
                     },
                     copilot = { name = "copilot", module = "blink-copilot", score_offset = 10, async = true },
-                    ripgrep = { module = "blink-ripgrep", name = "Ripgrep", score_offset = 7 },
+                    -- ripgrep = { module = "blink-ripgrep", name = "Ripgrep", score_offset = 7 },
                 },
             },
             fuzzy = {
