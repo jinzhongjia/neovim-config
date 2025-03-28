@@ -15,7 +15,7 @@ return
         },
     },
     lint = {},
-    others = { "golangci-lint" },
+    -- others = { "golangci-lint" },
     before_set = nil,
     after_set = nil,
     plugins = {},
