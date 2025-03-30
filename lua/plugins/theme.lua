@@ -37,6 +37,7 @@ return {
         priority = 1000,
         config = function()
             require("catppuccin").setup({
+                transparent_background = false,
                 dim_inactive = {
                     enabled = true, -- dims the background color of inactive window
                     shade = "dark",
