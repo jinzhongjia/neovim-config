@@ -18,10 +18,16 @@ return
             },
             { "xzbdmw/colorful-menu.nvim", opts = {} },
             {
-                "echasnovski/mini.pairs",
-                version = "*",
-                event = "VeryLazy",
-                opts = {},
+                "saghen/blink.pairs",
+                version = "*", -- (recommended) only required with prebuilt binaries
+                dependencies = "saghen/blink.download",
+                --- @module 'blink.pairs'
+                --- @type blink.pairs.Config
+                opts = {
+                    highlights = {
+                        enabled = true,
+                    },
+                },
             },
         },
         event = "VeryLazy",
@@ -53,7 +59,7 @@ return
                     -- compare with the score
                     "score",
                     -- always prioritize exact matches
-                    "exact",
+                    -- "exact",
                     -- low deprecated items
                     function(item_a, _)
                         if item_a.deprecated then
