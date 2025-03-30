@@ -74,6 +74,7 @@ return {
                         lsp = true,
                     },
                     which_key = true,
+                    symbols_outline = true,
                 },
             })
             vim.cmd.colorscheme("catppuccin-macchiato")
