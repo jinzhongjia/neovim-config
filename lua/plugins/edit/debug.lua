@@ -20,8 +20,10 @@ return
 --- @type LazySpec
 {
     {
-        "mfussenegger/nvim-dap",
+        "jinzhongjia/nvim-dap",
         event = "VeryLazy",
+        branch = "fix_pick_files",
+        dev = true,
         dependencies = {
             {
                 "Weissle/persistent-breakpoints.nvim",
