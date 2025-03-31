@@ -186,8 +186,7 @@ local function set_virt_text(bufnr, line, _prefix, names)
     if #marks > 0 then
         opts.id = marks[1][1]
     end
-
-    vim.api.nvim_buf_set_extmark(bufnr, namespace, line, 0, opts)
+    pcall(vim.api.nvim_buf_set_extmark, bufnr, namespace, line, 0, opts)
 end
 
 --- Searches for structs and interfaces in the current buffer
