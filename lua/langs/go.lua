@@ -27,7 +27,11 @@ return
             event = "VeryLazy",
             dev = true,
             config = function()
-                require("dap-go").setup()
+                require("dap-go").setup({
+                    delve = {
+                        initialize_timeout_sec = false,
+                    },
+                })
             end,
         },
         {
