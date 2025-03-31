@@ -75,10 +75,10 @@ return
             "nvim-tree/nvim-web-devicons",
             "f-person/git-blame.nvim",
             "jinzhongjia/LspUI.nvim",
-            -- {
-            --     "AndreM222/copilot-lualine",
-            --     dependencies = "zbirenbaum/copilot.lua",
-            -- },
+            {
+                "AndreM222/copilot-lualine",
+                dependencies = "zbirenbaum/copilot.lua",
+            },
         },
         event = "UIEnter",
         opts = {
@@ -92,7 +92,7 @@ return
                         cond = require("lazy.status").has_updates,
                         color = { fg = "#ff9e64" },
                     },
-                    -- "copilot",
+                    "copilot",
                     "encoding",
                     "fileformat",
                     "filetype",
