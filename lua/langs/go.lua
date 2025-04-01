@@ -31,6 +31,7 @@ return
                     delve = {
                         initialize_timeout_sec = false,
                     },
+                    filter_main_entrance = false,
                 })
             end,
         },
