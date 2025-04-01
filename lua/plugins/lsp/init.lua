@@ -30,6 +30,7 @@ local function config(opt)
 end
 
 -- lang servers, server handlers, other tools
+--- @type string[], table, (string|{ name: string, version: string })[]
 local servers, handlers, others = {}, {}, {}
 
 --- @type LazySpec[]
@@ -85,10 +86,17 @@ local M = {
                     local mason_registry = require("mason-registry")
 
                     local ensure_installed = function()
-                        for _, name in pairs(others) do
-                            if not mason_registry.is_installed(name) then
-                                local package = mason_registry.get_package(name)
-                                package:install()
+                        for _, pkg in pairs(others) do
+                            if type(pkg) == "string" then
+                                if not mason_registry.is_installed(pkg) then
+                                    local package = mason_registry.get_package(pkg)
+                                    package:install()
+                                end
+                            elseif type(pkg) == "table" then
+                                if pkg.name and not mason_registry.is_installed(pkg.name) then
+                                    local package = mason_registry.get_package(pkg.name)
+                                    package:install({ version = pkg.version })
+                                end
                             end
                         end
                     end
