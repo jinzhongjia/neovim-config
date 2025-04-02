@@ -11,13 +11,13 @@ return
                     -- 检查未使用的参数
                     unusedparams = true,
                     -- 检查变量遮蔽问题
-                    shadow = true,
+                    shadow = false,
                     -- nil 指针检查
                     nilness = true,
                     -- 未使用的写入操作检查
                     unusedwrite = true,
                     -- 检查是否可以使用更具体的类型替代 interface{}
-                    useany = true,
+                    useany = false,
                     -- 简化复合字面量
                     simplifycompositelit = true,
                     -- 简化 range 语句
