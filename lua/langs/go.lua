@@ -7,7 +7,7 @@ return
             gopls = {
                 analyses = {
                     -- 变量命名规范检查
-                    ST1003 = true,
+                    ST1003 = false,
                     -- 检查未使用的参数
                     unusedparams = true,
                     -- 检查变量遮蔽问题
