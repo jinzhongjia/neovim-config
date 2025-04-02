@@ -106,7 +106,6 @@ return
             event = "VeryLazy",
             dependencies = {
                 { "nvim-lua/plenary.nvim" },
-                { "nvim-lua/popup.nvim" },
                 { "nvim-telescope/telescope.nvim" },
                 { "nvim-treesitter/nvim-treesitter" },
             },
