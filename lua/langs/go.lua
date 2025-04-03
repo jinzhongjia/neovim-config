@@ -31,11 +31,9 @@ return
                 },
 
                 -- 代码完成和导入设置
-                importShortcut = "Definition",
                 usePlaceholders = true,
                 completeUnimported = true,
                 staticcheck = true,
-                diagnosticsDelay = "500ms",
 
                 -- 代码模板设置
                 templateExtensions = { ".tmpl", ".html" },
