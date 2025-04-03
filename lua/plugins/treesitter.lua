@@ -32,6 +32,7 @@ return
                 "gowork",
                 "hjson",
                 "html",
+                "http",
                 "ini",
                 "javascript",
                 "json",

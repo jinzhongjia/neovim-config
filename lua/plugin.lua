@@ -33,4 +33,7 @@ require("lazy").setup({
         enabled = false,
         notify = false, -- get a notification when changes are found
     },
+    rocks = {
+        hererocks = true, -- you should enable this to get hererocks support
+    },
 })
