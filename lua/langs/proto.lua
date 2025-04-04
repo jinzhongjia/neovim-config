@@ -1,7 +1,7 @@
 return
 --- @type LangSpec
 {
-    lsp = "protols",
+    lsp = "buf_ls",
     opt = {},
     others = { "buf" },
     before_set = nil,
