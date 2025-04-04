@@ -88,7 +88,7 @@ return
         event = "VeryLazy",
         dependencies = {
             "nvim-neotest/nvim-nio",
-            "mfussenegger/nvim-dap",
+            "jinzhongjia/nvim-dap",
         },
         config = function()
             local dap, dapui = require("dap"), require("dapui")
@@ -139,7 +139,7 @@ return
         event = "VeryLazy",
         dependencies = {
             "nvim-treesitter/nvim-treesitter",
-            "mfussenegger/nvim-dap",
+            "jinzhongjia/nvim-dap",
         },
         opts = { commented = true },
     },
