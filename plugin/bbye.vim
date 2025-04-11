@@ -1,3 +1,6 @@
+if exists('g:vscode')
+	finish
+endif
 if exists("g:loaded_bbye") || &cp | finish | endif
 let g:loaded_bbye = 1
 

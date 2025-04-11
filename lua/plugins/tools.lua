@@ -169,4 +169,7 @@ return
             },
         },
     },
+    {
+        "tpope/vim-repeat",
+    },
 }

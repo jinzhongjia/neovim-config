@@ -15,7 +15,7 @@ o.cursorline = true
 
 o.signcolumn = "yes"
 
-o.colorcolumn = "80"
+o.colorcolumn = "120"
 
 o.tabstop = 4
 o.softtabstop = 4

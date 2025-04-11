@@ -1,3 +1,6 @@
+if vim.g.vscode then
+    return
+end
 -- replace default diagnostic signs
 -- more:https://neovim.io/doc/user/diagnostic.html#diagnostic-signs
 -- local signs = { Error = "󰅚", Warn = "", Hint = "", Info = "" }

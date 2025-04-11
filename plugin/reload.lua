@@ -1,3 +1,6 @@
+if vim.g.vscode then
+    return
+end
 -- reload buffer on focus
 vim.api.nvim_create_autocmd({
     "FocusGained",
