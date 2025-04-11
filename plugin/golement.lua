@@ -154,7 +154,7 @@ end
 --- @param character integer The character position of the struct/interface name
 --- @param callback fun(names: string[])
 local function get_implementation_names(client, line, character, callback)
-    client.request(vim.lsp.protocol.Methods.textDocument_implementation, {
+    client:request(vim.lsp.protocol.Methods.textDocument_implementation, {
         textDocument = vim.lsp.util.make_text_document_params(),
         position = { line = line, character = character },
     }, function(err, result, _, _)
