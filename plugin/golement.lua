@@ -1,6 +1,3 @@
-if vim.g.vscode then
-    return
-end
 local api = vim.api
 
 local is_enable = true
@@ -148,6 +145,66 @@ local function implementation_callback(result)
     return names
 end
 
+local function vscode_implementation_callback(result)
+    --- @type {[string]: string[]}
+    local fcache = {}
+    local display_package = true
+    if vim.g.goplements and vim.g.goplements.display_package ~= nil then
+        display_package = vim.g.goplements.display_package
+    end
+
+    --- @type string[]
+    local names = {}
+
+    --- @param impl table
+    local function _tmp(impl)
+        local uri = impl.uri.path
+        local impl_line = impl.range[1].line
+        local impl_start = impl.range[1].character
+        local impl_end = impl.range[2].character
+
+        -- Read the line of the implementation to get the name
+        local data = {}
+
+        local buf = vim.uri_to_bufnr("file://" .. uri)
+        if vim.api.nvim_buf_is_loaded(buf) then
+            data = vim.api.nvim_buf_get_lines(buf, 0, impl_line + 1, false)
+        else
+            local file = vim.uri_to_fname("file://" .. uri)
+            data = fcache[file]
+            if not data then
+                data = vim.fn.readfile(file)
+                fcache[file] = data
+            end
+        end
+
+        local package_name = ""
+        if display_package then
+            package_name = get_package_name(data)
+            if package_name ~= "" then
+                package_name = package_name .. "."
+            end
+        end
+        local impl_text = data[impl_line + 1]
+        local name = package_name .. impl_text:sub(impl_start + 1, impl_end)
+
+        table.insert(names, name)
+    end
+
+    -- stylua: ignore
+    if not result then return names end
+
+    if result[1] and result[1].uri then
+        _tmp(result[1])
+        return names
+    end
+
+    -- stylua: ignore
+    for _, impl in pairs(result) do _tmp(impl) end
+
+    return names
+end
+
 --- Add virtual text to the struct/interface at the given line and character position
 --- @param client vim.lsp.Client The LSP client
 --- @param line integer The line number of the struct/interface
@@ -192,6 +249,42 @@ local function set_virt_text(bufnr, line, _prefix, names)
     pcall(vim.api.nvim_buf_set_extmark, bufnr, namespace, line, 0, opts)
 end
 
+-- 获取指定位置的实现
+-- @param line 行号 (0-based)
+-- @param character 字符位置 (0-based)
+-- @return 原始 LSP 实现结果
+function get_implementations_at_position(line, character)
+    local vscode = require("vscode")
+    local result = vscode.eval(
+        [[
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) return null;
+    
+    const document = editor.document;
+    
+    // 检查是否为 Go 文件
+    if (document.languageId !== 'go') return null;
+    
+    const position = new vscode.Position(args.line, args.character);
+    
+    // 直接返回原始响应
+    return vscode.commands.executeCommand(
+      'vscode.executeImplementationProvider', 
+      document.uri, 
+      position
+    );
+  ]],
+        {
+            args = {
+                line = line,
+                character = character,
+            },
+        }
+    )
+
+    return result
+end
+
 --- Searches for structs and interfaces in the current buffer
 --- and adds virtual text with implementations details next to them
 --- Called from autocmd
@@ -202,6 +295,24 @@ local function annotate_structs_interfaces(bufnr)
     end
 
     clean_render(bufnr)
+
+    -- in vsocde
+    if vim.g.vscode then
+        local nodes = find_types(bufnr)
+        for _, node in ipairs(nodes) do
+            local result = get_implementations_at_position(node.line, node.character + 1)
+            if result == nil then
+                return
+            end
+            local _prefix = prefix[node.type]
+            set_virt_text(bufnr, node.line, _prefix, vscode_implementation_callback(result))
+        end
+        return
+    end
+
+    -- 使用方法：
+    -- local implementations = get_implementations_raw()
+    -- 然后您可以使用这个结果进行后续处理
 
     local clients = vim.lsp.get_clients({ name = "gopls" })
     -- stylua: ignore
@@ -244,7 +355,11 @@ api.nvim_create_user_command("GoplementsEnable", enable, { desc = "Enable Goplem
 api.nvim_create_user_command("GoplementsDisable", disable, { desc = "Disable Goplements" })
 api.nvim_create_user_command("GoplementsToggle", toggle, { desc = "Toggle Goplements" })
 
-api.nvim_create_autocmd({ "TextChanged", "LspAttach" }, {
+local events = { "TextChanged", "LspAttach" }
+if vim.g.vscode then
+    table.insert(events, "BufEnter")
+end
+api.nvim_create_autocmd(events, {
     pattern = { "*.go" },
     callback = debounce(function(args)
         annotate_structs_interfaces(args.buf)

@@ -101,6 +101,7 @@ return
         },
         {
             "edolphin-ydf/goimpl.nvim",
+            enabled = false,
             event = "VeryLazy",
             dependencies = {
                 { "nvim-lua/plenary.nvim" },

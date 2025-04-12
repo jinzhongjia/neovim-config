@@ -60,8 +60,9 @@ return {
                 "zig",
             },
             auto_install = true,
+            -- not enable treesitter hightlight
             highlight = {
-                enable = true,
+                enable = false,
                 additional_vim_regex_highlighting = false,
             },
             indent = { enable = true },
