@@ -21,5 +21,7 @@ g.zig_fmt_autosave = false
 g.loaded_perl_provider = false
 g.editorconfig = false
 
+o.updatetime = 300
+o.timeoutlen = 400
 
 o.mouse = "a"

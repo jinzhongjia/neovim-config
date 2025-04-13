@@ -17,3 +17,7 @@ end)
 key_bind("n", "gi", function()
     vim.lsp.buf.implementation()
 end)
+
+key_bind("n", "<leader>f", function()
+    vscode.action("editor.action.formatDocument")
+end)

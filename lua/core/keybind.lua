@@ -35,8 +35,6 @@ __key_bind("v", ">", ">gv")
 -- Move selected text up and down
 __key_bind("v", "J", "<CMD>move '>+1<CR>gv-gv")
 __key_bind("v", "K", "<CMD>move '<-2<CR>gv-gv")
-__key_bind("n", "<C-s>", "<CMD>w<CR>")
-__key_bind("i", "<C-s>", "<ESC><CMD>w<CR>")
 
 -- Configure Copy Shortcuts
 __key_bind("v", "<C-c>", '"+y') -- copy
