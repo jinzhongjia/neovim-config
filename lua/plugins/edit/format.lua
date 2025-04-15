@@ -13,7 +13,7 @@ return
             formatters_by_ft = {
                 c = { "clang_format" },
                 cpp = { "clang_format" },
-                go = { "goimports", "gofumpt", "golines", "goimports-reviser" },
+                go = { "goimports", "gofumpt", "goimports-reviser" },
                 html = { "prettierd" },
                 json = { "prettierd" },
                 jsonc = { "prettierd" },
