@@ -41,6 +41,7 @@ git clone https://github.com/jinzhongjia/neovim-config.git ~/AppData/Local/nvim
 - unzip 
 - Cmake 
 - Microsoft C++ Build Tools (For MS Windows)
+- VectorCode
 
 For GUI, you can install [Neovide](https://neovide.dev/) or [Nvy](https://github.com/RMichelsen/Nvy), they are great GUI client!
 

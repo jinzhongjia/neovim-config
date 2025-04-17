@@ -104,114 +104,124 @@ return
                     },
                 },
             },
+            "Davidyz/VectorCode",
         },
-        opts = {
-            opts = {
-                language = "Chinese",
-            },
-            adapters = {
-                copilot = function()
-                    return require("codecompanion.adapters").extend("copilot", {
-                        schema = { model = { default = "claude-3.7-sonnet" } },
-                    })
-                end,
-            },
-            display = {
-                chat = {
-                    intro_message = "欢迎使用 CodeCompanion ✨! 按下 ? 查看快捷键", -- 欢迎信息
-                    window = {
-                        opts = {
-                            relativenumber = false,
-                            number = false,
-                            winbar = "",
-                        },
-                    },
-                    ---Customize how tokens are displayed
-                    ---@param tokens number
-                    ---@param _ CodeCompanion.Adapter
-                    ---@return string
-                    token_count = function(tokens, _)
-                        return " (" .. tokens .. " tokens)"
+        opts = function()
+            return {
+                opts = {
+                    language = "Chinese",
+                },
+                adapters = {
+                    copilot = function()
+                        return require("codecompanion.adapters").extend("copilot", {
+                            schema = { model = { default = "claude-3.7-sonnet" } },
+                        })
                     end,
                 },
-                -- default|mini_diff
-                diff = { provider = "mini_diff" },
-            },
-            strategies = {
-                -- Change the default chat adapter
-                chat = {
-                    adapter = "copilot",
-                    keymaps = {
-                        send = {
-                            modes = { n = "<CR>" },
+                display = {
+                    chat = {
+                        intro_message = "欢迎使用 CodeCompanion ✨! 按下 ? 查看快捷键", -- 欢迎信息
+                        window = {
+                            opts = {
+                                relativenumber = false,
+                                number = false,
+                                winbar = "",
+                            },
                         },
-                        close = {
-                            modes = { n = "<leader>c", i = "<C-c>" },
-                        },
-                    },
-                    roles = {
-                        ---The header name for the LLM's messages
-                        ---@type string|fun(adapter: CodeCompanion.Adapter): string
-                        llm = function(adapter)
-                            return "CodeCompanion (" .. adapter.formatted_name .. ")"
+                        ---Customize how tokens are displayed
+                        ---@param tokens number
+                        ---@param _ CodeCompanion.Adapter
+                        ---@return string
+                        token_count = function(tokens, _)
+                            return " (" .. tokens .. " tokens)"
                         end,
-
-                        ---The header name for your messages
-                        ---@type string
-                        user = "我",
                     },
-                    slash_commands = {
-                        ["buffer"] = {
-                            opts = {
-                                contains_code = true,
-                                provider = "telescope", -- default|telescope|mini_pick|fzf_lua
-                            },
-                        },
-                        ["file"] = {
-                            opts = {
-                                provider = "default", -- Other options include 'default', 'mini_pick', 'fzf_lua', snacks
-                                contains_code = true,
-                            },
-                        },
-                        ["symbols"] = {
-                            opts = {
-                                contains_code = true,
-                                provider = "telescope", -- default|telescope|mini_pick|fzf_lua
-                            },
-                        },
-                        ["git_files"] = {
-                            description = "List git files",
-                            ---@param chat CodeCompanion.Chat
-                            callback = function(chat)
-                                local handle = vim.system({ "git", "ls-files" }, { text = true })
-                                local result = handle:wait()
-                                if result.code ~= 0 then
-                                    return vim.notify(
-                                        "No git files available",
-                                        vim.log.levels.INFO,
-                                        { title = "CodeCompanion" }
-                                    )
-                                end
-                                --- @type string
-                                local str = string.format(
-                                    "Here is the result of running command `git ls-files` locally, you can use it as a data: \n```sh\n%s\n```",
-                                    result.stdout
-                                )
-                                chat:add_reference({ role = "user", content = str }, "git", "<git_files>")
-                            end,
-                            opts = {
-                                contains_code = false,
-                            },
-                        },
-                    },
+                    -- default|mini_diff
+                    diff = { provider = "mini_diff" },
                 },
-                inline = { adapter = "copilot" },
-            },
-        },
+                strategies = {
+                    -- Change the default chat adapter
+                    chat = {
+                        adapter = "copilot",
+                        keymaps = {
+                            send = {
+                                modes = { n = "<CR>" },
+                            },
+                            close = {
+                                modes = { n = "<leader>c", i = "<C-c>" },
+                            },
+                        },
+                        roles = {
+                            ---The header name for the LLM's messages
+                            ---@type string|fun(adapter: CodeCompanion.Adapter): string
+                            llm = function(adapter)
+                                return "CodeCompanion (" .. adapter.formatted_name .. ")"
+                            end,
+
+                            ---The header name for your messages
+                            ---@type string
+                            user = "我",
+                        },
+                        slash_commands = {
+                            ["buffer"] = {
+                                opts = {
+                                    contains_code = true,
+                                    provider = "telescope", -- default|telescope|mini_pick|fzf_lua
+                                },
+                            },
+                            ["file"] = {
+                                opts = {
+                                    provider = "snacks", -- Other options include 'default', 'mini_pick', 'fzf_lua', snacks
+                                    contains_code = true,
+                                },
+                            },
+                            ["symbols"] = {
+                                opts = {
+                                    contains_code = true,
+                                    provider = "telescope", -- default|telescope|mini_pick|fzf_lua
+                                },
+                            },
+                            ["git_files"] = {
+                                description = "List git files",
+                                ---@param chat CodeCompanion.Chat
+                                callback = function(chat)
+                                    local handle = vim.system({ "git", "ls-files" }, { text = true })
+                                    local result = handle:wait()
+                                    if result.code ~= 0 then
+                                        return vim.notify(
+                                            "No git files available",
+                                            vim.log.levels.INFO,
+                                            { title = "CodeCompanion" }
+                                        )
+                                    end
+                                    --- @type string
+                                    local str = string.format(
+                                        "Here is the result of running command `git ls-files` locally, you can use it as a data: \n```sh\n%s\n```",
+                                        result.stdout
+                                    )
+                                    chat:add_reference({ role = "user", content = str }, "git", "<git_files>")
+                                end,
+                                opts = {
+                                    contains_code = false,
+                                },
+                            },
+                            codebase = require("vectorcode.integrations").codecompanion.chat.make_slash_command(),
+                        },
+                    },
+                    inline = { adapter = "copilot" },
+                },
+            }
+        end,
         keys = {
             {
                 "<leader>cc",
                 ":CodeCompanionChat Toggle<CR>",
+                desc = "Toggle CodeCompanionChat",
+            },
+            {
+                "<leader>cc",
+                ":CodeCompanionChat Add<CR>",
+                mode = "v",
                 desc = "Toggle CodeCompanionChat",
             },
         },
@@ -220,5 +230,10 @@ return
             local spin = spinner()
             spin:init()
         end,
+    },
+    {
+        "Davidyz/VectorCode",
+        dependencies = { "nvim-lua/plenary.nvim" },
+        cmd = "VectorCode", -- if you're lazy-loading VectorCode
     },
 }

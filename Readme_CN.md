@@ -35,6 +35,7 @@ git clone -b hybrid https://github.com/jinzhongjia/neovim-config.git ~/AppData/L
 - unzip 
 - Cmake 
 - Microsoft C++ Build Tools (MS Windows)
+- VectorCode
 
 关于 GUI，建议使用 [Neovide](https://neovide.dev/)或者[Nvy](https://github.com/RMichelsen/Nvy)，非常棒的客户端，我的配置已经包含它们的设置。
 
