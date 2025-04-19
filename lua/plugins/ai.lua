@@ -203,12 +203,12 @@ return
         keys = {
             {
                 "<leader>cc",
-                ":CodeCompanionChat Toggle<CR>",
+                "<CMD>CodeCompanionChat Toggle<CR>",
                 desc = "Toggle CodeCompanionChat",
             },
             {
                 "<leader>cc",
-                ":CodeCompanionChat Add<CR>",
+                "<CMD>CodeCompanionChat Add<CR>",
                 mode = "v",
                 desc = "Toggle CodeCompanionChat",
             },
@@ -229,22 +229,6 @@ return
     {
         "zbirenbaum/copilot.lua",
         event = "VeryLazy",
-        init = function()
-            vim.api.nvim_create_autocmd("User", {
-                pattern = "BlinkCmpMenuOpen",
-                callback = function()
-                    require("copilot.suggestion").dismiss()
-                    vim.b.copilot_suggestion_hidden = true
-                end,
-            })
-
-            vim.api.nvim_create_autocmd("User", {
-                pattern = "BlinkCmpMenuClose",
-                callback = function()
-                    vim.b.copilot_suggestion_hidden = false
-                end,
-            })
-        end,
         opts = {
             suggestion = {
                 enabled = true,
@@ -265,6 +249,8 @@ return
                 c = true,
                 cpp = true,
                 proto = true,
+                markdown = true,
+                yaml = true,
             },
         },
     },
