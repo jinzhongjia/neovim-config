@@ -85,25 +85,7 @@ return
             "nvim-treesitter/nvim-treesitter",
             "nvim-telescope/telescope.nvim",
             "j-hui/fidget.nvim",
-            {
-                "zbirenbaum/copilot.lua",
-                opts = {
-                    suggestion = { enabled = false },
-                    panel = { enabled = false },
-                    filetypes = {
-                        ["*"] = false, -- disable for all other filetypes and ignore default `filetypes`
-                        lua = true,
-                        go = true,
-                        zig = true,
-                        typescript = true,
-                        javascript = true,
-                        vue = true,
-                        c = true,
-                        cpp = true,
-                        proto = true,
-                    },
-                },
-            },
+            "zbirenbaum/copilot.lua",
             "Davidyz/VectorCode",
         },
         opts = function()
@@ -240,7 +222,50 @@ return
     {
         "Davidyz/VectorCode",
         dependencies = { "nvim-lua/plenary.nvim" },
+        event = "VeryLazy",
         cmd = "VectorCode", -- if you're lazy-loading VectorCode
         opts = {},
+    },
+    {
+        "zbirenbaum/copilot.lua",
+        event = "VeryLazy",
+        init = function()
+            vim.api.nvim_create_autocmd("User", {
+                pattern = "BlinkCmpMenuOpen",
+                callback = function()
+                    require("copilot.suggestion").dismiss()
+                    vim.b.copilot_suggestion_hidden = true
+                end,
+            })
+
+            vim.api.nvim_create_autocmd("User", {
+                pattern = "BlinkCmpMenuClose",
+                callback = function()
+                    vim.b.copilot_suggestion_hidden = false
+                end,
+            })
+        end,
+        opts = {
+            suggestion = {
+                enabled = true,
+                auto_trigger = true,
+            },
+            panel = {
+                enabled = true,
+                auto_refresh = true,
+            },
+            filetypes = {
+                ["*"] = false, -- disable for all other filetypes and ignore default `filetypes`
+                lua = true,
+                go = true,
+                zig = true,
+                typescript = true,
+                javascript = true,
+                vue = true,
+                c = true,
+                cpp = true,
+                proto = true,
+            },
+        },
     },
 }

@@ -8,7 +8,7 @@ return
             "rafamadriz/friendly-snippets",
             "onsails/lspkind.nvim",
             "folke/lazydev.nvim",
-            "fang2hou/blink-copilot",
+            -- "fang2hou/blink-copilot",
             "mikavilpas/blink-ripgrep.nvim",
             "hrisgrieser/nvim-scissors",
             { "Kaiser-Yang/blink-cmp-git", dependencies = { "nvim-lua/plenary.nvim" } },
@@ -28,7 +28,14 @@ return
         ---@type blink.cmp.Config
         opts = {
             sources = {
-                default = { "lsp", "copilot", "lazydev", "path", "snippets", "buffer" },
+                default = {
+                    "lsp",
+                    -- "copilot",
+                    "lazydev",
+                    "path",
+                    "snippets",
+                    "buffer",
+                },
                 per_filetype = {
                     codecompanion = { "codecompanion" },
                     sql = { "snippets", "dadbod" },
@@ -44,7 +51,7 @@ return
                         -- make lazydev completions top priority (see `:h blink.cmp`)
                         score_offset = 10,
                     },
-                    copilot = { name = "copilot", module = "blink-copilot", score_offset = 10, async = true },
+                    -- copilot = { name = "copilot", module = "blink-copilot", score_offset = 10, async = true },
                     dadbod = { name = "Dadbod", module = "vim_dadbod_completion.blink" },
                     -- ripgrep = { module = "blink-ripgrep", name = "Ripgrep", score_offset = 7 },
                 },
@@ -147,6 +154,22 @@ return
                 ["<A-.>"] = { "show" },
                 -- hide
                 ["<A-,>"] = { "hide" },
+                ["<A-;>"] = {
+                    function(cmp)
+                        local copilot_suggestion = require("copilot.suggestion")
+                        copilot_suggestion.toggle_auto_trigger()
+                    end,
+                },
+                ["<A-'>"] = {
+                    function(cmp)
+                        local copilot_suggestion = require("copilot.suggestion")
+                        if copilot_suggestion.is_visible() then
+                            copilot_suggestion.dismiss()
+                        else
+                            copilot_suggestion.next()
+                        end
+                    end,
+                },
 
                 -- accept
                 ["<CR>"] = { "accept", "fallback" },
@@ -162,7 +185,23 @@ return
                 ["<C-h>"] = { "snippet_backward", "fallback" },
 
                 -- tab
-                ["<Tab>"] = { "select_next", "snippet_forward", "fallback" },
+                ["<Tab>"] = {
+                    function(cmp)
+                        local copilot_suggestion = require("copilot.suggestion")
+                        if cmp.is_visible() then
+                            return cmp.select_next()
+                        elseif cmp.snippet_active({ direction = 1 }) then
+                            return cmp.snippet_forward()
+                        elseif copilot_suggestion.is_visible() then
+                            copilot_suggestion.accept()
+                            return true
+                        end
+                        return false
+                    end,
+                    -- "select_next",
+                    -- "snippet_forward",
+                    "fallback",
+                },
                 -- shift tab
                 ["<S-Tab>"] = { "select_prev", "snippet_backward", "fallback" },
             },
