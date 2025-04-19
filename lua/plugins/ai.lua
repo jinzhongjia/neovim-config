@@ -207,6 +207,12 @@ return
                             },
                             codebase = require("vectorcode.integrations").codecompanion.chat.make_slash_command(),
                         },
+                        tools = {
+                            vectorcode = {
+                                description = "Run VectorCode to retrieve the project context.",
+                                callback = require("vectorcode.integrations").codecompanion.chat.make_tool(),
+                            },
+                        },
                     },
                     inline = { adapter = "copilot" },
                 },
@@ -235,5 +241,6 @@ return
         "Davidyz/VectorCode",
         dependencies = { "nvim-lua/plenary.nvim" },
         cmd = "VectorCode", -- if you're lazy-loading VectorCode
+        opts = {},
     },
 }
