@@ -21,3 +21,11 @@ end)
 key_bind("n", "<leader>f", function()
     vscode.action("editor.action.formatDocument")
 end)
+
+key_bind("n", "<leader>rn", function()
+    vim.lsp.buf.rename()
+end)
+
+key_bind("n", "<leader>ca", function()
+    vim.lsp.buf.code_action()
+end)
