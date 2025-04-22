@@ -5,4 +5,3 @@ lua/.luarc.json
 .direnv
 lua/plugins/__test.lua
 chroma.log
-mcphub_servers.json
