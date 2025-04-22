@@ -191,6 +191,9 @@ return
                         if cmp.is_visible() then
                             return cmp.select_next()
                         elseif copilot_suggestion.is_visible() then
+                            if cmp.snippet_active() then
+                                vim.snippet.stop()
+                            end
                             copilot_suggestion.accept()
                             return true
                         elseif cmp.snippet_active({ direction = 1 }) then

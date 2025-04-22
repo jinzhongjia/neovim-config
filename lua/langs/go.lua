@@ -31,7 +31,7 @@ return
                 },
 
                 -- 代码完成和导入设置
-                usePlaceholders = true,
+                usePlaceholders = false,
                 completeUnimported = true,
                 staticcheck = true,
 
