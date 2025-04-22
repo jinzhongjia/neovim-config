@@ -190,11 +190,11 @@ return
                         local copilot_suggestion = require("copilot.suggestion")
                         if cmp.is_visible() then
                             return cmp.select_next()
-                        elseif cmp.snippet_active({ direction = 1 }) then
-                            return cmp.snippet_forward()
                         elseif copilot_suggestion.is_visible() then
                             copilot_suggestion.accept()
                             return true
+                        elseif cmp.snippet_active({ direction = 1 }) then
+                            return cmp.snippet_forward()
                         end
                         return false
                     end,
