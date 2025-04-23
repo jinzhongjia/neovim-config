@@ -273,7 +273,12 @@ return
         build = "bundled_build.lua", -- Use this and set use_bundled_binary = true in opts  (see Advanced configuration)
         config = function()
             require("mcphub").setup({
-                config = vim.fn.expand(vim.fn.stdpath("config") .. "/mcphub_servers.json"),
+                config = (function()
+                    if vim.fn.has("mac") then
+                        return vim.fn.expand(vim.fn.stdpath("config") .. "/mac_mcphub_servers.json")
+                    end
+                    return vim.fn.expand(vim.fn.stdpath("config") .. "/mcphub_servers.json")
+                end)(),
                 use_bundled_binary = true, -- Use the bundled binary
                 extensions = {
                     codecompanion = {
