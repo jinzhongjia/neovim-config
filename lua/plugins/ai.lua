@@ -260,6 +260,7 @@ return
                 markdown = true,
                 yaml = true,
             },
+            copilot_model = "gpt-4o-copilot",
         },
     },
     {
