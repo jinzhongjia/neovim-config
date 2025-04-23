@@ -24,7 +24,14 @@ return
             "nvim-telescope/telescope.nvim", -- optional
         },
         event = "VeryLazy",
-        config = true,
+        opts = {
+            mappings = {
+                finder = {
+                    ["<C-j>"] = "Next",
+                    ["<C-k>"] = "Previous",
+                },
+            },
+        },
         keys = {
             { "<leader>ng", "<cmd>Neogit<cr>", desc = "NeoGit" },
         },
