@@ -97,7 +97,7 @@ return
                 adapters = {
                     copilot = function()
                         return require("codecompanion.adapters").extend("copilot", {
-                            schema = { model = { default = "claude-3.7-sonnet" } },
+                            schema = { model = { default = "gemini-2.5-pro" } },
                         })
                     end,
                 },
