@@ -190,21 +190,21 @@ return
                             },
                             codebase = require("vectorcode.integrations").codecompanion.chat.make_slash_command(),
                         },
-                        tools = {
-                            vectorcode = {
-                                description = "Run VectorCode to retrieve the project context.",
-                                callback = require("vectorcode.integrations").codecompanion.chat.make_tool(),
-                            },
-                            ["mcp"] = {
-                                -- Prevent mcphub from loading before needed
-                                callback = function()
-                                    return require("mcphub.extensions.codecompanion")
-                                end,
-                                description = "Call tools and resources from the MCP Servers",
-                            },
-                        },
                     },
                     inline = { adapter = "copilot" },
+                },
+                extensions = {
+                    vectorcode = {
+                        opts = { add_tool = true, add_slash_command = true, tool_opts = {} },
+                    },
+                    mcphub = {
+                        callback = "mcphub.extensions.codecompanion",
+                        opts = {
+                            show_result_in_chat = true, -- Show the mcp tool result in the chat buffer
+                            make_vars = true, -- make chat #variables from MCP server resources
+                            make_slash_commands = true, -- make /slash_commands from MCP server prompts
+                        },
+                    },
                 },
             }
         end,
@@ -243,8 +243,7 @@ return
                 auto_trigger = true,
             },
             panel = {
-                enabled = true,
-                auto_refresh = true,
+                enabled = false,
             },
             filetypes = {
                 ["*"] = false, -- disable for all other filetypes and ignore default `filetypes`
