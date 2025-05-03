@@ -149,7 +149,7 @@ return
                             ["buffer"] = {
                                 opts = {
                                     contains_code = true,
-                                    provider = "telescope", -- default|telescope|mini_pick|fzf_lua
+                                    provider = "snacks", -- default|telescope|mini_pick|fzf_lua
                                 },
                             },
                             ["file"] = {
@@ -161,7 +161,7 @@ return
                             ["symbols"] = {
                                 opts = {
                                     contains_code = true,
-                                    provider = "telescope", -- default|telescope|mini_pick|fzf_lua
+                                    provider = "snacks", -- default|telescope|mini_pick|fzf_lua
                                 },
                             },
                             ["git_files"] = {
