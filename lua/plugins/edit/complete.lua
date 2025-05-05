@@ -11,7 +11,6 @@ return
             -- "fang2hou/blink-copilot",
             "mikavilpas/blink-ripgrep.nvim",
             "hrisgrieser/nvim-scissors",
-            { "Kaiser-Yang/blink-cmp-git", dependencies = { "nvim-lua/plenary.nvim" } },
             { "xzbdmw/colorful-menu.nvim", opts = {} },
             -- { "echasnovski/mini.pairs", version = "*" },
             {
