@@ -102,6 +102,9 @@ return
                     end,
                 },
                 display = {
+                    action_palette = {
+                        provider = "snacks", -- Can be "default", "telescope", "mini_pick" or "snacks". If not specified, the plugin will autodetect installed providers.
+                    },
                     chat = {
                         intro_message = "欢迎使用 CodeCompanion ✨! 按下 ? 查看快捷键", -- 欢迎信息
                         window = {
