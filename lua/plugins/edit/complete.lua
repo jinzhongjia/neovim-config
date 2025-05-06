@@ -2,6 +2,15 @@ return
 --- @type LazySpec
 {
     {
+        "saghen/blink.compat",
+        -- use the latest release, via version = '*', if you also use the latest release for blink.cmp
+        version = "*",
+        -- lazy.nvim will automatically load the plugin when it's required by blink.cmp
+        lazy = true,
+        -- make sure to set opts so that lazy.nvim calls blink.compat's setup
+        opts = {},
+    },
+    {
         "saghen/blink.cmp",
         -- optional: provides snippets for the snippet source
         dependencies = {
@@ -19,7 +28,8 @@ return
                 build = "cargo build --release",
                 opts = {},
             },
-            { "kristijanhusak/vim-dadbod-completion" },
+            "kristijanhusak/vim-dadbod-completion",
+            "MattiasMTS/cmp-dbee",
         },
         event = "VeryLazy",
         version = "*",
@@ -37,7 +47,7 @@ return
                 },
                 per_filetype = {
                     codecompanion = { "codecompanion" },
-                    sql = { "snippets", "dadbod" },
+                    sql = { "snippets", "dadbod", "dbee", "buffer" },
                 },
                 providers = {
                     lsp = { score_offset = 11 },
@@ -52,6 +62,7 @@ return
                     },
                     -- copilot = { name = "copilot", module = "blink-copilot", score_offset = 10, async = true },
                     dadbod = { name = "Dadbod", module = "vim_dadbod_completion.blink" },
+                    dbee = { name = "cmp-dbee", module = "blink.compat.source" },
                     -- ripgrep = { module = "blink-ripgrep", name = "Ripgrep", score_offset = 7 },
                 },
             },
