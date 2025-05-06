@@ -1,3 +1,3 @@
 require("code.core")
 
-require("code.plugin")
+-- require("code.plugin")
