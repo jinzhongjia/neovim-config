@@ -220,8 +220,8 @@ return
                             continue_last_chat = false,
                             ---When chat is cleared with `gx` delete the chat from history
                             delete_on_clearing_chat = false,
-                            -- Picker interface ("telescope" or "default")
-                            picker = "telescope",
+                            -- Picker interface ("telescope", "snacks" or "default")
+                            picker = "snacks",
                             ---Enable detailed logging for history extension
                             enable_logging = false,
                             ---Directory path to save the chats
