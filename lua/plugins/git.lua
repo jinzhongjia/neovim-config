@@ -21,7 +21,7 @@ return
             "sindrets/diffview.nvim", -- optional - Diff integration
 
             -- Only one of these is needed.
-            "nvim-telescope/telescope.nvim", -- optional
+            "folke/snacks.nvim",
         },
         event = "VeryLazy",
         opts = {
@@ -30,6 +30,9 @@ return
                     ["<C-j>"] = "Next",
                     ["<C-k>"] = "Previous",
                 },
+            },
+            integrations = {
+                snacks = true,
             },
         },
         keys = {
