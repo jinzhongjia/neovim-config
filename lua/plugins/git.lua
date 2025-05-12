@@ -34,6 +34,7 @@ return
             integrations = {
                 snacks = true,
             },
+            graph_style = "unicode",
         },
         keys = {
             { "<leader>ng", "<cmd>Neogit<cr>", desc = "NeoGit" },
