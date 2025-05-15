@@ -81,6 +81,41 @@ return
                 "DapStopped",
                 { text = "", texthl = "DapStopped", linehl = "DapStopped", numhl = "DapStopped" }
             )
+
+            vim.api.nvim_create_autocmd({ "CursorHold" }, {
+                callback = function()
+                    if require("dap").session() then
+                        require("dap.ui.widgets").hover()
+                    end
+                end,
+            })
+
+            -- 所有按键映射都添加调试会话检查
+            vim.keymap.set({ "n", "v" }, "<Leader>dp", function()
+                if require("dap").session() then
+                    require("dap.ui.widgets").preview()
+                else
+                    vim.notify("没有活动的调试会话", vim.log.levels.WARN)
+                end
+            end)
+
+            vim.keymap.set("n", "<Leader>df", function()
+                if require("dap").session() then
+                    local widgets = require("dap.ui.widgets")
+                    widgets.centered_float(widgets.frames)
+                else
+                    vim.notify("没有活动的调试会话", vim.log.levels.WARN)
+                end
+            end)
+
+            vim.keymap.set("n", "<Leader>ds", function()
+                if require("dap").session() then
+                    local widgets = require("dap.ui.widgets")
+                    widgets.centered_float(widgets.scopes)
+                else
+                    vim.notify("没有活动的调试会话", vim.log.levels.WARN)
+                end
+            end)
         end,
     },
     {
@@ -123,15 +158,39 @@ return
                 },
             })
 
+            -- 调试会话开始时自动打开 UI
             dap.listeners.after.event_initialized["dapui_config"] = function()
                 dapui.open()
             end
+
+            -- 调试会话结束时自动关闭 UI
             dap.listeners.before.event_terminated["dapui_config"] = function()
                 dapui.close()
             end
+
             dap.listeners.before.event_exited["dapui_config"] = function()
                 dapui.close()
             end
+
+            -- 添加额外的断开连接监听器
+            dap.listeners.before.disconnect["dapui_config"] = function()
+                dapui.close()
+            end
+
+            -- 添加会话变化监听器
+            vim.api.nvim_create_autocmd("User", {
+                pattern = "DapSessionChanged",
+                callback = function()
+                    if dap.session() == nil then
+                        dapui.close()
+                    end
+                end,
+            })
+
+            -- 添加一个命令用于手动关闭UI
+            vim.api.nvim_create_user_command("DapUIClose", function()
+                dapui.close()
+            end, {})
         end,
     },
     {
