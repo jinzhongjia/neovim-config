@@ -82,13 +82,13 @@ return
                 { text = "", texthl = "DapStopped", linehl = "DapStopped", numhl = "DapStopped" }
             )
 
-            vim.api.nvim_create_autocmd({ "CursorHold" }, {
-                callback = function()
-                    if require("dap").session() then
-                        require("dap.ui.widgets").hover()
-                    end
-                end,
-            })
+            vim.keymap.set({ "n", "v" }, "<Leader>dh", function()
+                if require("dap").session() then
+                    require("dap.ui.widgets").hover()
+                else
+                    vim.notify("没有活动的调试会话", vim.log.levels.WARN)
+                end
+            end)
 
             -- 所有按键映射都添加调试会话检查
             vim.keymap.set({ "n", "v" }, "<Leader>dp", function()
@@ -196,10 +196,25 @@ return
     {
         "theHamsta/nvim-dap-virtual-text",
         event = "VeryLazy",
+        enabled = false,
         dependencies = {
             "nvim-treesitter/nvim-treesitter",
             "jinzhongjia/nvim-dap",
         },
         opts = { commented = true },
+    },
+    {
+        "miroshQa/debugmaster.nvim",
+        enabled = false,
+        config = function()
+            local dm = require("debugmaster")
+            -- 确保没有其他以 "<leader>d" 开头的键映射，以避免延迟
+            -- "<leader>d" 的替代键绑定可以是: "<leader>m", "<leader>;"
+            vim.keymap.set({ "n", "v" }, "<leader>d", dm.mode.toggle, { nowait = true })
+            -- 如果你想除了 leader+d 外，还使用 Escape 键禁用调试模式:
+            -- vim.keymap.set("n", "<Esc>", dm.mode.disable)
+            -- 如果你已经使用 Esc 来执行 ":noh"，这可能不是你想要的
+            vim.keymap.set("t", "<C-/>", "<C-\\><C-n>", { desc = "Exit terminal mode" })
+        end,
     },
 }
