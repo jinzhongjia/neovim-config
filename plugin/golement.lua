@@ -49,12 +49,28 @@ end
 --- @param bufnr integer The buffer number to parse
 --- @return goplements.Typedef[]
 local function find_types(bufnr)
-    local parser = vim.treesitter.get_parser(bufnr, "go")
+    -- 保护TreeSitter解析，确保go解析器存在
+    local ok, parser = pcall(function()
+        return vim.treesitter.get_parser(bufnr, "go")
+    end)
+    
+    if not ok or not parser then
+        vim.notify("Go TreeSitter parser not found", vim.log.levels.DEBUG)
+        return {}
+    end
 
-    local query = vim.treesitter.query.parse("go", query_str)
+    local ok_query, query = pcall(vim.treesitter.query.parse, "go", query_str)
+    if not ok_query or not query then
+        vim.notify("Failed to parse treesitter query", vim.log.levels.DEBUG)
+        return {}
+    end
 
-    local root = parser:parse()[1]:root()
+    local parse_results = parser:parse()
+    if not parse_results or #parse_results == 0 then
+        return {}
+    end
 
+    local root = parse_results[1]:root()
     local nodes = {} --- @type goplements.Typedef[]
 
     for id, node in query:iter_captures(root, 0) do
@@ -213,7 +229,7 @@ end
 --- @param line integer The line number of the struct/interface
 --- @param character integer The character position of the struct/interface name
 --- @param callback fun(names: string[])
-local function get_implementation_names(client, line, character, callback)
+local function get_implementation_names(client, line, character, callback, bufnr)
     client:request(vim.lsp.protocol.Methods.textDocument_implementation, {
         textDocument = vim.lsp.util.make_text_document_params(),
         position = { line = line, character = character },
@@ -221,6 +237,9 @@ local function get_implementation_names(client, line, character, callback)
         -- This can happen if the Go file structure is ruined (e.g. the "package" is deleted)
         -- stylua: ignore
         if err then return end
+        
+        -- 确保缓冲区仍然有效，避免异步回调时buffer已被关闭
+        if not api.nvim_buf_is_valid(bufnr) then return end
 
         local names = implementation_callback(result)
         callback(names)
@@ -235,9 +254,14 @@ end
 local function set_virt_text(bufnr, line, _prefix, names)
     -- stylua: ignore
     if #names < 1 then return end
-    -- stylua: ignore
-    -- Avoid the bufnr not exist due to asynchronous
-    if not api.nvim_buf_is_valid(bufnr) then return end
+    
+    -- 确保buffer仍然有效，避免在异步操作时buffer已经被关闭
+    if not bufnr or not api.nvim_buf_is_valid(bufnr) then return end
+    
+    -- 确保buffer仍然存在该行
+    local line_count = api.nvim_buf_line_count(bufnr)
+    if line >= line_count then return end
+    
     local impl_text = _prefix .. table.concat(names, ", ")
     local opts = {
         virt_text = { { impl_text, "Goplements" } },
@@ -245,10 +269,11 @@ local function set_virt_text(bufnr, line, _prefix, names)
     }
 
     -- insurance that we don't create multiple extmarks on the same line
-    local marks = vim.api.nvim_buf_get_extmarks(bufnr, namespace, { line, 0 }, { line, -1 }, {})
-    if #marks > 0 then
+    local ok, marks = pcall(vim.api.nvim_buf_get_extmarks, bufnr, namespace, { line, 0 }, { line, -1 }, {})
+    if ok and marks and #marks > 0 then
         opts.id = marks[1][1]
     end
+    
     pcall(vim.api.nvim_buf_set_extmark, bufnr, namespace, line, 0, opts)
 end
 
@@ -296,6 +321,17 @@ local function annotate_structs_interfaces(bufnr)
     if not is_enable then
         return
     end
+    
+    -- 检查buffer是否有效
+    if not bufnr or not api.nvim_buf_is_valid(bufnr) then
+        return
+    end
+
+    -- 检查文件类型是否为Go
+    local ft = vim.bo[bufnr].filetype
+    if ft ~= "go" then
+        return
+    end
 
     clean_render(bufnr)
 
@@ -327,8 +363,11 @@ local function annotate_structs_interfaces(bufnr)
     for _, node in ipairs(nodes) do
         get_implementation_names(gopls, node.line, node.character + 1, function(names)
             local _prefix = prefix[node.type]
-            set_virt_text(bufnr, node.line, _prefix, names)
-        end)
+            -- 传递当前bufnr确保在回调时仍然使用正确的buffer
+            if api.nvim_buf_is_valid(bufnr) then
+                set_virt_text(bufnr, node.line, _prefix, names)
+            end
+        end, bufnr)
     end
 end
 
@@ -368,3 +407,4 @@ api.nvim_create_autocmd(events, {
         annotate_structs_interfaces(args.buf)
     end, 500),
 })
+
