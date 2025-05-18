@@ -11,6 +11,7 @@ return
     {
         "jinzhongjia/LspUI.nvim",
         dev = true,
+        branch = "v3-more-featrue",
         event = "VeryLazy",
         opts = {
             hover = {
