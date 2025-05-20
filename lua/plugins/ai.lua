@@ -80,6 +80,7 @@ return
     {
         "olimorris/codecompanion.nvim",
         event = "VeryLazy",
+        commit = "34d45b0790719e6c5b437d609cf583f87a4e2edb",
         dependencies = {
             "nvim-lua/plenary.nvim",
             "nvim-treesitter/nvim-treesitter",
