@@ -69,12 +69,11 @@ end
 --- @type LazySpec
 local M = {
     {
-        "jinzhongjia/mason-lspconfig.nvim",
-        branch = "protols",
+        "mason-org/mason-lspconfig.nvim",
         event = "VeryLazy",
         dependencies = {
             {
-                "williamboman/mason.nvim",
+                "mason-org/mason.nvim",
                 config = function()
                     local mason = require("mason")
                     local mason_registry = require("mason-registry")
