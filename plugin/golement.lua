@@ -53,7 +53,7 @@ local function find_types(bufnr)
     local ok, parser = pcall(function()
         return vim.treesitter.get_parser(bufnr, "go")
     end)
-    
+
     if not ok or not parser then
         vim.notify("Go TreeSitter parser not found", vim.log.levels.DEBUG)
         return {}
@@ -237,9 +237,11 @@ local function get_implementation_names(client, line, character, callback, bufnr
         -- This can happen if the Go file structure is ruined (e.g. the "package" is deleted)
         -- stylua: ignore
         if err then return end
-        
+
         -- 确保缓冲区仍然有效，避免异步回调时buffer已被关闭
-        if not api.nvim_buf_is_valid(bufnr) then return end
+        if not api.nvim_buf_is_valid(bufnr) then
+            return
+        end
 
         local names = implementation_callback(result)
         callback(names)
@@ -254,14 +256,18 @@ end
 local function set_virt_text(bufnr, line, _prefix, names)
     -- stylua: ignore
     if #names < 1 then return end
-    
+
     -- 确保buffer仍然有效，避免在异步操作时buffer已经被关闭
-    if not bufnr or not api.nvim_buf_is_valid(bufnr) then return end
-    
+    if not bufnr or not api.nvim_buf_is_valid(bufnr) then
+        return
+    end
+
     -- 确保buffer仍然存在该行
     local line_count = api.nvim_buf_line_count(bufnr)
-    if line >= line_count then return end
-    
+    if line >= line_count then
+        return
+    end
+
     local impl_text = _prefix .. table.concat(names, ", ")
     local opts = {
         virt_text = { { impl_text, "Goplements" } },
@@ -273,7 +279,7 @@ local function set_virt_text(bufnr, line, _prefix, names)
     if ok and marks and #marks > 0 then
         opts.id = marks[1][1]
     end
-    
+
     pcall(vim.api.nvim_buf_set_extmark, bufnr, namespace, line, 0, opts)
 end
 
@@ -281,7 +287,7 @@ end
 -- @param line 行号 (0-based)
 -- @param character 字符位置 (0-based)
 -- @return 原始 LSP 实现结果
-function get_implementations_at_position(line, character)
+local function get_implementations_at_position(line, character)
     local vscode = require("vscode")
     local result = vscode.eval(
         [[
@@ -321,7 +327,7 @@ local function annotate_structs_interfaces(bufnr)
     if not is_enable then
         return
     end
-    
+
     -- 检查buffer是否有效
     if not bufnr or not api.nvim_buf_is_valid(bufnr) then
         return
@@ -407,4 +413,3 @@ api.nvim_create_autocmd(events, {
         annotate_structs_interfaces(args.buf)
     end, 500),
 })
-
