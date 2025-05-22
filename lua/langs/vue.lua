@@ -1,7 +1,7 @@
 return
 --- @type LangSpec
 {
-    lsp = "volar",
+    lsp = "vue_ls",
     opt = {},
     others = {},
     before_set = nil,
