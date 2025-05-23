@@ -98,7 +98,7 @@ local M = {
             -- 安装所有语言服务器
             require("mason-lspconfig").setup({
                 ensure_installed = servers,
-                automatic_enable = true,
+                automatic_enable = false,
             })
         end,
     },
