@@ -1,12 +1,12 @@
 return
 --- @type LangSpec
 {
-    lsp = "ts_ls",
+    lsp = "vtsls",
     opt = {},
     others = { "prettierd" },
     before_set = nil,
     after_set = nil,
-    lint = { "ts-standard" },
+    lint = {},
     plugins = {
         {
             "dmmulroy/tsc.nvim",
