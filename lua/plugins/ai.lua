@@ -98,7 +98,17 @@ return
                 adapters = {
                     copilot = function()
                         return require("codecompanion.adapters").extend("copilot", {
-                            schema = { model = { default = "claude-sonnet-4" } },
+                            schema = { model = {
+                                default = "claude-sonnet-4",
+                            } },
+                        })
+                    end,
+                    copilot_4o = function()
+                        return require("codecompanion.adapters").extend("copilot", {
+                            schema = { model = {
+                                -- default = "gpt-4o",
+                                default = "claude-sonnet-4",
+                            } },
                         })
                     end,
                 },
@@ -195,7 +205,7 @@ return
                             codebase = require("vectorcode.integrations").codecompanion.chat.make_slash_command(),
                         },
                     },
-                    inline = { adapter = "copilot" },
+                    inline = { adapter = "copilot_4o" },
                 },
                 extensions = {
                     vectorcode = {
