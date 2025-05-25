@@ -100,10 +100,9 @@ return
             opts = {},
         },
         {
-            "edolphin-ydf/goimpl.nvim",
+            "jinzhongjia/goimpl.nvim",
             event = "VeryLazy",
             dependencies = {
-                { "nvim-lua/plenary.nvim" },
                 { "nvim-telescope/telescope.nvim" },
                 { "nvim-treesitter/nvim-treesitter" },
             },
