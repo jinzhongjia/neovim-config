@@ -7,7 +7,7 @@ local o, g, fn, api = vim.o, vim.g, vim.fn, vim.api
 fn.chdir(fn.expand("~"))
 
 o.pumblend = 45
-o.guifont = "Maple Mono NF:h15"
+o.guifont = "Maple Mono NF:h12"
 
 -- disable input ime
 g.neovide_input_ime = false
@@ -42,7 +42,8 @@ g.neovide_padding_left = 0
 g.neovide_floating_blur_amount_x = 2.0
 g.neovide_floating_blur_amount_y = 2.0
 
-g.neovide_transparency = 0.9
+g.neovide_opacity = 0.9
+g.transparency = 0.9
 
 g.neovide_hide_mouse_when_typing = true
 
