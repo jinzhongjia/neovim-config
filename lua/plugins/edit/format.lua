@@ -29,7 +29,11 @@ return
                 javascriptreact = { "prettierd" },
                 typescriptreact = { "prettierd" },
                 vue = { "prettierd" },
-                python = { "isort", "black" },
+                python = {
+                    -- "isort",
+                    -- "black",
+                    "yapf",
+                },
                 zig = { "zigfmt" },
                 markdown = { "prettierd" },
                 yaml = { "yamlfmt" },
