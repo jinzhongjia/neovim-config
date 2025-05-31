@@ -98,17 +98,23 @@ return
                 adapters = {
                     copilot = function()
                         return require("codecompanion.adapters").extend("copilot", {
-                            schema = { model = {
-                                default = "claude-sonnet-4",
-                            } },
+                            schema = {
+                                model = {
+                                    -- default = "gpt-4.1",
+                                    default = "claude-sonnet-4",
+                                },
+                            },
                         })
                     end,
                     copilot_4o = function()
                         return require("codecompanion.adapters").extend("copilot", {
-                            schema = { model = {
-                                -- default = "gpt-4o",
-                                default = "claude-sonnet-4",
-                            } },
+                            schema = {
+                                model = {
+                                    -- default = "gpt-4o",
+                                    default = "gpt-4.1",
+                                    -- default = "claude-sonnet-4",
+                                },
+                            },
                         })
                     end,
                 },
