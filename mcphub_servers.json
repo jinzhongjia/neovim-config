@@ -1,29 +1,33 @@
 {
   "mcpServers": {
     "git": {
-      "args": ["mcp-server-git"],
-      "command": "uvx"
-    },
-    "time": {
-      "args": ["mcp-server-time", "--local-timezone=Asia/Shanghai"],
-      "command": "uvx"
-    },
-    "fetch": {
-      "env": {
-        "DEBUG": "true",
-        "SERVER_URL": null,
-        "API_KEY": ""
-      },
       "command": "uvx",
-      "args": ["mcp-server-fetch"]
-    },
-    "sequentialthinking": {
-      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
-      "command": "npx"
+      "args": ["mcp-server-git"]
     },
     "context7": {
       "command": "npx",
       "args": ["-y", "@upstash/context7-mcp@latest"]
+    },
+    "time": {
+      "command": "uvx",
+      "args": ["mcp-server-time", "--local-timezone=Asia/Shanghai"]
+    },
+    "fetch": {
+      "env": {
+        "SERVER_URL": null,
+        "DEBUG": "true",
+        "API_KEY": ""
+      },
+      "args": ["mcp-server-fetch"],
+      "command": "uvx"
+    },
+    "duckduckgo": {
+      "command": "uvx",
+      "args": ["duckduckgo-mcp-server"]
+    },
+    "sequentialthinking": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
     }
   },
   "nativeMCPServers": []
