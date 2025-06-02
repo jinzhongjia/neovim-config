@@ -89,6 +89,10 @@ return
             "Davidyz/VectorCode",
             "ravitemer/mcphub.nvim",
             "ravitemer/codecompanion-history.nvim",
+            {
+                "jinzhongjia/codecompanion-gitcommit.nvim",
+                dev = true,
+            },
         },
         opts = function()
             return {
@@ -242,6 +246,21 @@ return
                             enable_logging = false,
                             ---Directory path to save the chats
                             dir_to_save = vim.fn.stdpath("data") .. "/codecompanion-history",
+                            title_generation_opts = {
+                                ---Adapter for generating titles (defaults to current chat adapter)
+                                adapter = "copilot", -- "copilot"
+                                ---Model for generating titles (defaults to current chat model)
+                                model = "gpt-4.1", -- "gpt-4o"
+                            },
+                        },
+                    },
+                    gitcommit = {
+                        enabled = true,
+                        opts = {
+                            add_slash_command = true,
+                            adapter = "copilot",
+                            model = "gpt-4.1", -- default model for gitcommit
+                            languages = { "English", "Chinese" }, -- languages to use for git commit messages
                         },
                     },
                 },
