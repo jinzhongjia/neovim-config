@@ -261,6 +261,12 @@ return
                             adapter = "copilot",
                             model = "gpt-4.1", -- default model for gitcommit
                             languages = { "English", "Chinese" }, -- languages to use for git commit messages
+                            exclude_files = {
+                                "*.pb.go", -- 排除所有 .pb.go 文件
+                                "*.generated.*", -- 排除所有包含 .generated. 的文件
+                                "vendor/*", -- 排除 vendor 目录下所有文件
+                                "*.lock", -- 排除所有 .lock 文件
+                            },
                         },
                     },
                 },
