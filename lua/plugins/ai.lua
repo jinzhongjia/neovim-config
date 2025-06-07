@@ -266,6 +266,7 @@ return
                                 "*.generated.*", -- 排除所有包含 .generated. 的文件
                                 "vendor/*", -- 排除 vendor 目录下所有文件
                                 "*.lock", -- 排除所有 .lock 文件
+                                "*gen.go", -- 排除所有 gen.go 文件
                             },
                         },
                     },
