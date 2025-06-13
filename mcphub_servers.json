@@ -34,7 +34,9 @@
       "args": [
         "--from",
         "git+https://github.com/oraios/serena",
-        "serena-mcp-server"
+        "serena-mcp-server",
+        "--context",
+        "ide-assistant"
       ]
     }
   },
