@@ -12,15 +12,6 @@
       "command": "uvx",
       "args": ["mcp-server-time", "--local-timezone=Asia/Shanghai"]
     },
-    "fetch": {
-      "env": {
-        "SERVER_URL": null,
-        "DEBUG": "true",
-        "API_KEY": ""
-      },
-      "args": ["mcp-server-fetch"],
-      "command": "uvx"
-    },
     "duckduckgo": {
       "command": "uvx",
       "args": ["duckduckgo-mcp-server"]
@@ -37,6 +28,25 @@
         "serena-mcp-server",
         "--context",
         "ide-assistant"
+      ]
+    },
+    "memory": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-memory"]
+    },
+    "allpepper-memory-bank": {
+      "command": "npx",
+      "args": ["-y", "@allpepper/memory-bank-mcp"],
+      "env": {
+        "MEMORY_BANK_ROOT": "~/.config/memory-bank"
+      },
+      "disabled": false,
+      "autoApprove": [
+        "memory_bank_read",
+        "memory_bank_write",
+        "memory_bank_update",
+        "list_projects",
+        "list_project_files"
       ]
     }
   },
