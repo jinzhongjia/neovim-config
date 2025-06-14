@@ -219,7 +219,21 @@ return
                 },
                 extensions = {
                     vectorcode = {
-                        opts = { add_tool = true, add_slash_command = true, tool_opts = {} },
+                        opts = {
+                            add_tool = true,
+                            add_slash_command = true,
+                            ---@type VectorCode.CodeCompanion.ToolOpts
+                            tool_opts = {
+                                max_num = { chunk = -1, document = -1 },
+                                default_num = { chunk = 50, document = 10 },
+                                include_stderr = false,
+                                use_lsp = false,
+                                auto_submit = { ls = false, query = false },
+                                ls_on_start = true,
+                                no_duplicate = true,
+                                chunk_mode = true,
+                            },
+                        },
                     },
                     mcphub = {
                         callback = "mcphub.extensions.codecompanion",
