@@ -143,4 +143,11 @@ return
     {
         "tpope/vim-repeat",
     },
+    {
+        "MonsieurTib/package-ui.nvim",
+        event = "VeryLazy",
+        config = function()
+            require("package-ui").setup()
+        end,
+    },
 }
