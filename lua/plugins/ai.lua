@@ -227,7 +227,7 @@ return
                                 max_num = { chunk = -1, document = -1 },
                                 default_num = { chunk = 50, document = 10 },
                                 include_stderr = false,
-                                use_lsp = false,
+                                use_lsp = true,
                                 auto_submit = { ls = false, query = false },
                                 ls_on_start = true,
                                 no_duplicate = true,
@@ -311,7 +311,12 @@ return
         dependencies = { "nvim-lua/plenary.nvim" },
         event = "VeryLazy",
         cmd = "VectorCode", -- if you're lazy-loading VectorCode
-        opts = {},
+        opts = {
+            on_setup = {
+                update = false, -- set to true to enable update when `setup` is called.
+                lsp = true,
+            },
+        },
     },
     {
         "zbirenbaum/copilot.lua",
