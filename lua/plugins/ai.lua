@@ -224,12 +224,8 @@ return
                             add_slash_command = true,
                             ---@type VectorCode.CodeCompanion.ToolOpts
                             tool_opts = {
-                                max_num = { chunk = -1, document = -1 },
-                                default_num = { chunk = 50, document = 10 },
-                                include_stderr = false,
                                 use_lsp = true,
-                                auto_submit = { ls = false, query = false },
-                                ls_on_start = true,
+                                ls_on_start = false,
                                 no_duplicate = true,
                                 chunk_mode = true,
                             },
@@ -309,6 +305,7 @@ return
     {
         "Davidyz/VectorCode",
         dependencies = { "nvim-lua/plenary.nvim" },
+        commit = "91d0d8db26293311e88265eab275ebf37c1e793e",
         event = "VeryLazy",
         cmd = "VectorCode", -- if you're lazy-loading VectorCode
         opts = {
