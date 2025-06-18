@@ -43,8 +43,12 @@ local function spinner()
     end
 
     function M:create_progress_handle(request)
+        local title = " Requesting assistance "
+        if request.data.adapter and request.data.adapter.formatted_name then
+            title = title .. "(" .. request.data.strategy .. ")"
+        end
         return progress.handle.create({
-            title = " Requesting assistance (" .. request.data.strategy .. ")",
+            title = title,
             message = "In progress...",
             lsp_client = {
                 name = M:llm_role_title(request.data.adapter),
@@ -80,6 +84,7 @@ return
     {
         "olimorris/codecompanion.nvim",
         event = "VeryLazy",
+        dev = true,
         dependencies = {
             "nvim-lua/plenary.nvim",
             "nvim-treesitter/nvim-treesitter",
@@ -278,6 +283,11 @@ return
                                 "vendor/*", -- 排除 vendor 目录下所有文件
                                 "*.lock", -- 排除所有 .lock 文件
                                 "*gen.go", -- 排除所有 gen.go 文件
+                            },
+                            buffer = {
+                                enabled = true, -- Enable gitcommit buffer keymaps
+                                keymap = "<leader>gc", -- Keymap for generating commit message in gitcommit buffer
+                                auto_generate = true,
                             },
                         },
                     },
