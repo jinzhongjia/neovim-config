@@ -105,7 +105,8 @@ return
                             schema = {
                                 model = {
                                     -- default = "gpt-4.1",
-                                    default = "claude-sonnet-4",
+                                    -- default = "claude-sonnet-4",
+                                    default = "gemini-2.5-pro-preview-06-05",
                                 },
                             },
                         })
