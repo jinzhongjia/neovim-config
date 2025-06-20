@@ -220,6 +220,42 @@ return
                             },
                             codebase = require("vectorcode.integrations").codecompanion.chat.make_slash_command(),
                         },
+                        tools = {
+                            groups = {
+                                ["agent_mcp"] = {
+                                    description = "agent mode with mcp support, automatically run tools",
+                                    tools = {
+                                        "cmd_runner",
+                                        "create_file",
+                                        "file_search",
+                                        "grep_search",
+                                        "insert_edit_into_file",
+                                        "read_file",
+                                        -- "web_search",
+                                        "mcp",
+                                    },
+                                    opts = {
+                                        collapse_tools = true,
+                                    },
+                                },
+                                ["agent"] = {
+                                    description = "agent mode, automatically run tools",
+                                    tools = {
+                                        "cmd_runner",
+                                        "create_file",
+                                        "file_search",
+                                        "grep_search",
+                                        "insert_edit_into_file",
+                                        "read_file",
+                                        -- "web_search",
+                                        -- "mcp",
+                                    },
+                                    opts = {
+                                        collapse_tools = true,
+                                    },
+                                },
+                            },
+                        },
                     },
                     inline = { adapter = "copilot_4o" },
                 },
