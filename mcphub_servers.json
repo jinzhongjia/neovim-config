@@ -1,27 +1,16 @@
 {
+  "nativeMCPServers": {
+    "neovim": {
+      "disabled": false
+    },
+    "mcphub": {
+      "disabled": true
+    }
+  },
   "mcpServers": {
-    "git": {
-      "command": "uvx",
-      "args": ["mcp-server-git"]
-    },
-    "context7": {
-      "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp@latest"]
-    },
-    "time": {
-      "command": "uvx",
-      "args": ["mcp-server-time", "--local-timezone=Asia/Shanghai"]
-    },
-    "duckduckgo": {
-      "command": "uvx",
-      "args": ["duckduckgo-mcp-server"]
-    },
-    "sequentialthinking": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
-    },
     "serena": {
       "command": "uvx",
+      "disabled": true,
       "args": [
         "--from",
         "git+https://github.com/oraios/serena",
@@ -30,25 +19,69 @@
         "ide-assistant"
       ]
     },
+    "duckduckgo": {
+      "command": "uvx",
+      "disabled": true,
+      "args": [
+        "duckduckgo-mcp-server"
+      ]
+    },
     "memory": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-memory"]
+      "disabled": true,
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-memory"
+      ]
+    },
+    "git": {
+      "command": "uvx",
+      "disabled": true,
+      "args": [
+        "mcp-server-git"
+      ]
+    },
+    "time": {
+      "command": "uvx",
+      "disabled": true,
+      "args": [
+        "mcp-server-time",
+        "--local-timezone=Asia/Shanghai"
+      ]
+    },
+    "sequentialthinking": {
+      "command": "npx",
+      "disabled": false,
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-sequential-thinking"
+      ]
     },
     "allpepper-memory-bank": {
-      "command": "npx",
-      "args": ["-y", "@allpepper/memory-bank-mcp"],
+      "args": [
+        "-y",
+        "@allpepper/memory-bank-mcp"
+      ],
       "env": {
         "MEMORY_BANK_ROOT": "~/.config/memory-bank"
       },
-      "disabled": false,
+      "command": "npx",
       "autoApprove": [
         "memory_bank_read",
         "memory_bank_write",
         "memory_bank_update",
         "list_projects",
         "list_project_files"
+      ],
+      "disabled": true
+    },
+    "context7": {
+      "command": "npx",
+      "disabled": true,
+      "args": [
+        "-y",
+        "@upstash/context7-mcp@latest"
       ]
     }
-  },
-  "nativeMCPServers": []
+  }
 }
