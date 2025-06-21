@@ -120,9 +120,7 @@ return
                         return require("codecompanion.adapters").extend("copilot", {
                             schema = {
                                 model = {
-                                    -- default = "gpt-4o",
                                     default = "gpt-4.1",
-                                    -- default = "claude-sonnet-4",
                                 },
                             },
                         })
@@ -194,31 +192,30 @@ return
                                     provider = "snacks", -- default|telescope|mini_pick|fzf_lua
                                 },
                             },
-                            ["git_files"] = {
-                                description = "List git files",
-                                ---@param chat CodeCompanion.Chat
-                                callback = function(chat)
-                                    local handle = vim.system({ "git", "ls-files" }, { text = true })
-                                    local result = handle:wait()
-                                    if result.code ~= 0 then
-                                        return vim.notify(
-                                            "No git files available",
-                                            vim.log.levels.INFO,
-                                            { title = "CodeCompanion" }
-                                        )
-                                    end
-                                    --- @type string
-                                    local str = string.format(
-                                        "Here is the result of running command `git ls-files` locally, you can use it as a data: \n```sh\n%s\n```",
-                                        result.stdout
-                                    )
-                                    chat:add_reference({ role = "user", content = str }, "git", "<git_files>")
-                                end,
-                                opts = {
-                                    contains_code = false,
-                                },
-                            },
-                            codebase = require("vectorcode.integrations").codecompanion.chat.make_slash_command(),
+                            -- ["git_files"] = {
+                            --     description = "List git files",
+                            --     ---@param chat CodeCompanion.Chat
+                            --     callback = function(chat)
+                            --         local handle = vim.system({ "git", "ls-files" }, { text = true })
+                            --         local result = handle:wait()
+                            --         if result.code ~= 0 then
+                            --             return vim.notify(
+                            --                 "No git files available",
+                            --                 vim.log.levels.INFO,
+                            --                 { title = "CodeCompanion" }
+                            --             )
+                            --         end
+                            --         --- @type string
+                            --         local str = string.format(
+                            --             "Here is the result of running command `git ls-files` locally, you can use it as a data: \n```sh\n%s\n```",
+                            --             result.stdout
+                            --         )
+                            --         chat:add_reference({ role = "user", content = str }, "git", "<git_files>")
+                            --     end,
+                            --     opts = {
+                            --         contains_code = false,
+                            --     },
+                            -- },
                         },
                         tools = {
                             groups = {
@@ -261,15 +258,31 @@ return
                 },
                 extensions = {
                     vectorcode = {
+                        ---@type VectorCode.CodeCompanion.ExtensionOpts
                         opts = {
-                            add_tool = true,
-                            add_slash_command = true,
-                            ---@type VectorCode.CodeCompanion.ToolOpts
+                            tool_group = {
+                                -- this will register a tool group called `@vectorcode_toolbox` that contains all 3 tools
+                                enabled = true,
+                                -- a list of extra tools that you want to include in `@vectorcode_toolbox`.
+                                -- if you use @vectorcode_vectorise, it'll be very handy to include
+                                -- `file_search` here.
+                                extras = {},
+                                collapse = true, -- whether the individual tools should be shown in the chat
+                            },
                             tool_opts = {
-                                use_lsp = true,
-                                ls_on_start = false,
-                                no_duplicate = true,
-                                chunk_mode = true,
+                                ---@type VectorCode.CodeCompanion.LsToolOpts
+                                ls = {},
+                                ---@type VectorCode.CodeCompanion.VectoriseToolOpts
+                                vectorise = {},
+                                ---@type VectorCode.CodeCompanion.QueryToolOpts
+                                query = {
+                                    max_num = { chunk = -1, document = -1 },
+                                    default_num = { chunk = 50, document = 10 },
+                                    include_stderr = false,
+                                    use_lsp = true,
+                                    no_duplicate = true,
+                                    chunk_mode = true,
+                                },
                             },
                         },
                     },
@@ -352,7 +365,6 @@ return
     {
         "Davidyz/VectorCode",
         dependencies = { "nvim-lua/plenary.nvim" },
-        commit = "91d0d8db26293311e88265eab275ebf37c1e793e",
         event = "VeryLazy",
         cmd = "VectorCode", -- if you're lazy-loading VectorCode
         opts = {
