@@ -66,7 +66,15 @@ local M = {
                 end,
             })
 
-            -- 从 langs 目录加载所有语言特定的配置
+            local mason_lspconfig = require("mason-lspconfig")
+            local mappings = mason_lspconfig.get_mappings()
+            local supported_set = mappings.package_to_lspconfig
+            
+            -- 也包含直接的 lspconfig 名称映射
+            for lspconfig_name, _ in pairs(mappings.lspconfig_to_package) do
+                supported_set[lspconfig_name] = true
+            end
+
             local langs_path = vim.fs.normalize(vim.fs.joinpath(vim.fn.stdpath("config"), "lua", "langs"))
             local servers = {}
 
@@ -74,7 +82,7 @@ local M = {
                 local file_name = vim.fn.fnamemodify(file, ":t:r")
                 local lang = require("langs." .. file_name)
 
-                if lang.lsp then
+                if lang.lsp and supported_set[lang.lsp] then
                     table.insert(servers, lang.lsp)
 
                     -- 为每个语言服务器应用特定配置
@@ -96,7 +104,7 @@ local M = {
             end
 
             -- 安装所有语言服务器
-            require("mason-lspconfig").setup({
+            mason_lspconfig.setup({
                 ensure_installed = servers,
                 automatic_enable = false,
             })
