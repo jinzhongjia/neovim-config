@@ -78,6 +78,33 @@ local function spinner()
     return M
 end
 
+local function get_adapters()
+    local API_KEY = os.getenv("AI_KEY")
+
+    local default_adpters = {
+        copilot = function()
+            return require("codecompanion.adapters").extend("copilot", {
+                schema = { model = { default = "claude-sonnet-4" } },
+            })
+        end,
+        copilot_4o = function()
+            return require("codecompanion.adapters").extend("copilot", {
+                schema = { model = { default = "gpt-4.1" } },
+            })
+        end,
+    }
+    if API_KEY and API_KEY ~= "" then
+        default_adpters.LaoZhang = function()
+            return require("codecompanion.adapters").extend("openai_compatible", {
+                env = { url = "https://api.laozhang.ai", api_key = API_KEY },
+                schema = { model = { default = "gemini-2.5-pro" } },
+            })
+        end
+    end
+
+    return default_adpters
+end
+
 return
 --- @type LazySpec
 {
@@ -104,28 +131,7 @@ return
                 opts = {
                     language = "Chinese",
                 },
-                adapters = {
-                    copilot = function()
-                        return require("codecompanion.adapters").extend("copilot", {
-                            schema = {
-                                model = {
-                                    -- default = "gpt-4.1",
-                                    -- default = "claude-sonnet-4",
-                                    default = "gemini-2.5-pro-preview-06-05",
-                                },
-                            },
-                        })
-                    end,
-                    copilot_4o = function()
-                        return require("codecompanion.adapters").extend("copilot", {
-                            schema = {
-                                model = {
-                                    default = "gpt-4.1",
-                                },
-                            },
-                        })
-                    end,
-                },
+                adapters = get_adapters(),
                 display = {
                     action_palette = {
                         provider = "snacks", -- Can be "default", "telescope", "mini_pick" or "snacks". If not specified, the plugin will autodetect installed providers.
