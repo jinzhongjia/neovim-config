@@ -84,7 +84,12 @@ local function get_adapters()
     local default_adpters = {
         copilot = function()
             return require("codecompanion.adapters").extend("copilot", {
-                schema = { model = { default = "claude-sonnet-4" } },
+                schema = {
+                    model = {
+                        -- default = "claude-sonnet-4",
+                        default = "gpt-4.1",
+                    },
+                },
             })
         end,
         copilot_4o = function()
