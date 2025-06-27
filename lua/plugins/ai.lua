@@ -44,7 +44,7 @@ local function spinner()
 
     function M:create_progress_handle(request)
         local title = " Requesting assistance "
-        if request.data.adapter and request.data.adapter.formatted_name then
+        if request.data.strategy then
             title = title .. "(" .. request.data.strategy .. ")"
         end
         return progress.handle.create({
@@ -80,6 +80,7 @@ end
 
 local function get_adapters()
     local API_KEY = os.getenv("AI_KEY")
+    local TAVILY_KEY = os.getenv("TAVILY_KEY")
 
     local default_adpters = {
         copilot = function()
@@ -99,10 +100,28 @@ local function get_adapters()
         end,
     }
     if API_KEY and API_KEY ~= "" then
-        default_adpters.LaoZhang = function()
+        default_adpters.OpenRouter = function()
             return require("codecompanion.adapters").extend("openai_compatible", {
-                env = { url = "https://api.laozhang.ai", api_key = API_KEY },
-                schema = { model = { default = "gemini-2.5-pro" } },
+                env = {
+                    url = "https://openrouter.ai/api",
+                    api_key = API_KEY,
+                    chat_url = "/v1/chat/completions",
+                },
+                schema = {
+                    model = {
+                        default = "google/gemini-2.5-flash",
+                    },
+                },
+            })
+        end
+    end
+
+    if TAVILY_KEY and TAVILY_KEY ~= "" then
+        default_adpters.tavily = function()
+            return require("codecompanion.adapters").extend("tavily", {
+                env = {
+                    api_key = TAVILY_KEY,
+                },
             })
         end
     end
