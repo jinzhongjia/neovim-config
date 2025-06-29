@@ -8,19 +8,23 @@
 
 ## ✨ 核心特性
 
-- 🧠 **AI 集成**: 内置 AI 助手（CodeCompanion）和可定制的系统提示
-- 🔧 **内置 LSP**: 原生 Neovim LSP，支持多种编程语言
-- 🎨 **现代化界面**: 精美主题（Catppuccin、Kanagawa、Arctic）和增强状态栏
-- 🔍 **高级搜索**: Telescope 模糊搜索、实时搜索和基于频率的结果
-- 📁 **文件管理**: NvimTree 文件浏览器，支持预览和高级文件操作
-- 🐛 **调试工具**: 完整的 DAP 集成，包含虚拟文本和调试界面
-- 📊 **数据库工具**: 内置数据库客户端和智能补全
-- 🎯 **代码导航**: Treesitter 语法高亮、大纲视图和智能代码折叠
-- 🚀 **性能优化**: 启动优化，懒加载和智能退出
+- 🧠 **AI 集成**: 内置 AI 助手（CodeCompanion）和可定制的系统提示。
+- 🔧 **内置 LSP**: 原生 Neovim LSP，支持多种编程语言。
+- 🎨 **现代化界面**: 精美主题（Catppuccin、Kanagawa、Arctic）和增强状态栏。
+- 🔍 **高级搜索**: Telescope 模糊搜索、实时搜索和基于频率的结果。
+- 📁 **文件管理**: NvimTree 文件浏览器，支持预览和高级文件操作。
+- 🐛 **调试工具**: 完整的 DAP 集成，包含虚拟文本和调试界面。
+- 📊 **数据库工具**: 内置数据库客户端和智能补全。
+- 🎯 **代码导航**: Treesitter 语法高亮、大纲视图和智能代码折叠。
+- 🚀 **性能优化**: 启动优化，懒加载和智能退出。
 
-## 概览
+## 📸 截图
 
 ![概览](https://github.com/jinzhongjia/neovim-config/blob/main/pic/overview.png?raw=true)
+![仪表板](https://github.com/jinzhongjia/neovim-config/blob/main/pic/dash.png?raw=true)
+![定义跳转](https://github.com/jinzhongjia/neovim-config/blob/main/pic/definition.png?raw=true)
+![悬停提示](https://github.com/jinzhongjia/neovim-config/blob/main/pic/hover.png?raw=true)
+![代码操作](https://github.com/jinzhongjia/neovim-config/blob/main/pic/code_action.png?raw=true)
 
 ## 📦 安装
 
@@ -91,10 +95,3 @@ git clone https://github.com/jinzhongjia/neovim-config.git ~/AppData/Local/nvim
 - `<leader>e` - 文件浏览器
 - `<leader>xx` - 诊断信息
 - `<leader>ai` - AI 助手
-
-## 📸 更多截图
-
-![仪表板](https://github.com/jinzhongjia/neovim-config/blob/main/pic/dash.png?raw=true)
-![定义跳转](https://github.com/jinzhongjia/neovim-config/blob/main/pic/definition.png?raw=true)
-![悬停提示](https://github.com/jinzhongjia/neovim-config/blob/main/pic/hover.png?raw=true)
-![代码操作](https://github.com/jinzhongjia/neovim-config/blob/main/pic/code_action.png?raw=true)

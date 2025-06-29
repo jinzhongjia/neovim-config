@@ -8,26 +8,30 @@ A comprehensive Neovim configuration featuring built-in LSP, AI assistance, and 
 
 ## ✨ Key Features
 
-- 🧠 **AI Integration**: Built-in AI assistance with CodeCompanion and customizable system prompts
-- 🔧 **Built-in LSP**: Native Neovim LSP with comprehensive language support
-- 🎨 **Modern UI**: Beautiful themes (Catppuccin, Kanagawa, Arctic) with enhanced statusline
-- 🔍 **Advanced Search**: Telescope with fuzzy finding, live grep, and frequency-based results
-- 📁 **File Management**: NvimTree with preview and advanced file operations
-- 🐛 **Debugging**: Full DAP integration with virtual text and UI
-- 📊 **Database Tools**: Built-in database client with completion
-- 🎯 **Code Navigation**: Treesitter, outline view, and intelligent code folding
-- 🚀 **Performance**: Optimized startup with lazy loading and early retirement
+- 🧠 **AI Integration**: Built-in AI assistance with CodeCompanion and customizable system prompts.
+- 🔧 **Built-in LSP**: Native Neovim LSP with comprehensive language support.
+- 🎨 **Modern UI**: Beautiful themes (Catppuccin, Kanagawa, Arctic) with enhanced statusline.
+- 🔍 **Advanced Search**: Telescope with fuzzy finding, live grep, and frequency-based results.
+- 📁 **File Management**: NvimTree with preview and advanced file operations.
+- 🐛 **Debugging**: Full DAP integration with virtual text and UI.
+- 📊 **Database Tools**: Built-in database client with completion.
+- 🎯 **Code Navigation**: Treesitter, outline view, and intelligent code folding.
+- 🚀 **Performance**: Optimized startup with lazy loading and early retirement.
 
-## Overview
+## 📸 Screenshots
 
 ![overview](https://github.com/jinzhongjia/neovim-config/blob/main/pic/overview.png?raw=true)
+![dash](https://github.com/jinzhongjia/neovim-config/blob/main/pic/dash.png?raw=true)
+![definition](https://github.com/jinzhongjia/neovim-config/blob/main/pic/definition.png?raw=true)
+![hover](https://github.com/jinzhongjia/neovim-config/blob/main/pic/hover.png?raw=true)
+![code_action](https://github.com/jinzhongjia/neovim-config/blob/main/pic/code_action.png?raw=true)
 
 ## 📦 Installation
 
 ### Requirements
 - Neovim `>= 0.10`
 - Git
-- A [Nerd Font](https://www.nerdfonts.com/) (recommended: JetBrainsMono Nerd Font)
+- A [Nerd Font](https.www.nerdfonts.com/) (recommended: JetBrainsMono Nerd Font)
 
 ### Quick Install
 
@@ -91,10 +95,3 @@ All LSP servers and development tools are managed through Mason:
 - `<leader>e` - File explorer
 - `<leader>xx` - Diagnostics
 - `<leader>ai` - AI assistant
-
-## 📸 More Screenshots
-
-![dash](https://github.com/jinzhongjia/neovim-config/blob/main/pic/dash.png?raw=true)
-![definition](https://github.com/jinzhongjia/neovim-config/blob/main/pic/definition.png?raw=true)
-![hover](https://github.com/jinzhongjia/neovim-config/blob/main/pic/hover.png?raw=true)
-![code_action](https://github.com/jinzhongjia/neovim-config/blob/main/pic/code_action.png?raw=true)
