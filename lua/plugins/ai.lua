@@ -508,7 +508,8 @@ return
     {
         "coder/claudecode.nvim",
         dependencies = { "folke/snacks.nvim" },
-        enabled = not (vim.fn.has("win32") == 1),
+        enabled = not is_windows(),
+        event = "VeryLazy",
         config = true,
         keys = {
             { "<leader>a", nil, desc = "AI/Claude Code" },
