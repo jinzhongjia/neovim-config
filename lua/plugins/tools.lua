@@ -150,4 +150,17 @@ return
             require("package-ui").setup()
         end,
     },
+    {
+        "bassamsdata/namu.nvim",
+        opts = {
+            global = {},
+            namu_symbols = { -- Specific Module options
+                options = {},
+            },
+        },
+        keys = {
+            { "<leader>ss", ":Namu symbols<cr>", mode = { "n" }, desc = "Jump to LSP symbol" },
+            { "<leader>sw", ":Namu workspace<cr>", mode = { "n" }, desc = "LSP Symbols - Workspace" },
+        },
+    },
 }
