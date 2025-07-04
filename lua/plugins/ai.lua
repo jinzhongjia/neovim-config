@@ -87,8 +87,8 @@ local function get_adapters()
             return require("codecompanion.adapters").extend("copilot", {
                 schema = {
                     model = {
-                        -- default = "claude-sonnet-4",
-                        default = "gpt-4.1",
+                        default = "claude-sonnet-4",
+                        -- default = "gpt-4.1",
                     },
                 },
             })
@@ -200,9 +200,9 @@ return
                 opts = {
                     language = "Chinese",
                 },
-                system_prompt = function(opts)
-                    return string.format(Prompt, opts.language)
-                end,
+                -- system_prompt = function(opts)
+                --     return string.format(Prompt, opts.language)
+                -- end,
                 adapters = get_adapters(),
                 display = {
                     action_palette = {
