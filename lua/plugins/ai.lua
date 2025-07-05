@@ -109,7 +109,8 @@ local function get_adapters()
                 },
                 schema = {
                     model = {
-                        default = "openrouter/cypher-alpha:free",
+                        -- default = "openrouter/cypher-alpha:free",
+                        default = "google/gemini-2.5-flash",
                     },
                 },
             })
@@ -129,7 +130,7 @@ local function get_adapters()
     return default_adpters
 end
 
-local  function default_adapter ()
+local function default_adapter()
     local API_KEY = os.getenv("AI_KEY")
     if API_KEY and API_KEY ~= "" then
         return "OpenRouter"
@@ -281,7 +282,7 @@ return
                         },
                         tools = {
                             groups = {
-                                ["agent_mcp"] = {
+                                ["agent"] = {
                                     description = "agent mode with mcp support, automatically run tools",
                                     tools = {
                                         "cmd_runner",
@@ -290,24 +291,8 @@ return
                                         "grep_search",
                                         "insert_edit_into_file",
                                         "read_file",
-                                        -- "web_search",
+                                        "web_search",
                                         "mcp",
-                                    },
-                                    opts = {
-                                        collapse_tools = true,
-                                    },
-                                },
-                                ["agent"] = {
-                                    description = "agent mode, automatically run tools",
-                                    tools = {
-                                        "cmd_runner",
-                                        "create_file",
-                                        "file_search",
-                                        "grep_search",
-                                        "insert_edit_into_file",
-                                        "read_file",
-                                        -- "web_search",
-                                        -- "mcp",
                                     },
                                     opts = {
                                         collapse_tools = true,
