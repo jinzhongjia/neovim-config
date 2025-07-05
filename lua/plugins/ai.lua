@@ -109,7 +109,7 @@ local function get_adapters()
                 },
                 schema = {
                     model = {
-                        default = "google/gemini-2.5-flash",
+                        default = "openrouter/cypher-alpha:free",
                     },
                 },
             })
@@ -127,6 +127,14 @@ local function get_adapters()
     end
 
     return default_adpters
+end
+
+local  function default_adapter ()
+    local API_KEY = os.getenv("AI_KEY")
+    if API_KEY and API_KEY ~= "" then
+        return "OpenRouter"
+    end
+    return "copilot"
 end
 
 local Prompt = [[
@@ -231,7 +239,7 @@ return
                 strategies = {
                     -- Change the default chat adapter
                     chat = {
-                        adapter = "copilot",
+                        adapter = default_adapter(),
                         keymaps = {
                             send = {
                                 modes = { n = "<CR>" },
@@ -270,30 +278,6 @@ return
                                     provider = "snacks", -- default|telescope|mini_pick|fzf_lua
                                 },
                             },
-                            -- ["git_files"] = {
-                            --     description = "List git files",
-                            --     ---@param chat CodeCompanion.Chat
-                            --     callback = function(chat)
-                            --         local handle = vim.system({ "git", "ls-files" }, { text = true })
-                            --         local result = handle:wait()
-                            --         if result.code ~= 0 then
-                            --             return vim.notify(
-                            --                 "No git files available",
-                            --                 vim.log.levels.INFO,
-                            --                 { title = "CodeCompanion" }
-                            --             )
-                            --         end
-                            --         --- @type string
-                            --         local str = string.format(
-                            --             "Here is the result of running command `git ls-files` locally, you can use it as a data: \n```sh\n%s\n```",
-                            --             result.stdout
-                            --         )
-                            --         chat:add_reference({ role = "user", content = str }, "git", "<git_files>")
-                            --     end,
-                            --     opts = {
-                            --         contains_code = false,
-                            --     },
-                            -- },
                         },
                         tools = {
                             groups = {
