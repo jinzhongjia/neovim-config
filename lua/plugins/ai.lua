@@ -146,6 +146,30 @@ return
                                     provider = "snacks", -- default|telescope|mini_pick|fzf_lua
                                 },
                             },
+                            ["help"] = {
+                                opts = {
+                                    contains_code = true,
+                                    provider = "snacks", -- default|telescope|mini_pick|fzf_lua
+                                },
+                            },
+                            ["buffer"] = {
+                                opts = {
+                                    contains_code = true,
+                                    provider = "snacks", -- default|telescope|mini_pick|fzf_lua
+                                },
+                            },
+                            ["workspace"] = {
+                                opts = {
+                                    contains_code = true,
+                                    provider = "snacks", -- default|telescope|mini_pick|fzf_lua
+                                },
+                            },
+                            ["terminal"] = {
+                                opts = {
+                                    contains_code = true,
+                                    provider = "snacks", -- default|telescope|mini_pick|fzf_lua
+                                },
+                            },
                         },
                         tools = {
                             groups = {
