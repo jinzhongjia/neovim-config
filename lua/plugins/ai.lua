@@ -66,10 +66,8 @@ return
             "Davidyz/VectorCode",
             "ravitemer/mcphub.nvim",
             "ravitemer/codecompanion-history.nvim",
-            {
-                "jinzhongjia/codecompanion-gitcommit.nvim",
-                dev = true,
-            },
+            { "jinzhongjia/codecompanion-gitcommit.nvim", dev = true },
+            { "jinzhongjia/codecompanion-tools.nvim", dev = true },
         },
         opts = function()
             return {
@@ -217,7 +215,7 @@ return
                                     max_num = { chunk = -1, document = -1 },
                                     default_num = { chunk = 50, document = 10 },
                                     include_stderr = false,
-                                    use_lsp = true,
+                                    use_lsp = false,
                                     no_duplicate = true,
                                     chunk_mode = true,
                                 },
@@ -278,6 +276,21 @@ return
                             },
                         },
                     },
+                    ["codecompanion-tools"] = {
+                        opts = {
+                            rules = {
+                                enabled = true,
+                                debug = false,
+                            },
+                            model_toggle = {
+                                enabled = true,
+                                keymap = "<S-Tab>",
+                                sequence = {
+                                    { adapter = "copilot", model = "gpt-4.1" },
+                                },
+                            },
+                        },
+                    },
                 },
             }
         end,
@@ -308,7 +321,7 @@ return
         opts = {
             on_setup = {
                 update = false, -- set to true to enable update when `setup` is called.
-                lsp = true,
+                lsp = false,
             },
         },
     },
