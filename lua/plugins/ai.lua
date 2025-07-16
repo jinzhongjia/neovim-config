@@ -289,6 +289,18 @@ return
                                     { adapter = "copilot", model = "gpt-4.1" },
                                 },
                             },
+                            dag = {
+                                enabled = true,
+                            },
+                            context_compression = {
+                                enabled = true,
+                                auto_trigger = true,
+                                token_threshold = 8000,
+                                ui = {
+                                    keymap = "<leader>cc",
+                                    auto_notify = true,
+                                },
+                            },
                         },
                     },
                 },
