@@ -67,7 +67,7 @@ return
             "ravitemer/mcphub.nvim",
             "ravitemer/codecompanion-history.nvim",
             { "jinzhongjia/codecompanion-gitcommit.nvim", dev = true },
-            { "jinzhongjia/codecompanion-tools.nvim", dev = true },
+            -- { "jinzhongjia/codecompanion-tools.nvim", dev = true },
         },
         opts = function()
             return {
@@ -287,33 +287,33 @@ return
                             },
                         },
                     },
-                    ["codecompanion-tools"] = {
-                        opts = {
-                            rules = {
-                                enabled = true,
-                                debug = false,
-                            },
-                            model_toggle = {
-                                enabled = true,
-                                keymap = "<S-Tab>",
-                                sequence = {
-                                    { adapter = "copilot", model = "gpt-4.1" },
-                                },
-                            },
-                            dag = {
-                                enabled = true,
-                            },
-                            context_compression = {
-                                enabled = true,
-                                auto_trigger = true,
-                                token_threshold = 8000,
-                                ui = {
-                                    keymap = "<leader>cc",
-                                    auto_notify = true,
-                                },
-                            },
-                        },
-                    },
+                    -- ["codecompanion-tools"] = {
+                    --     opts = {
+                    --         rules = {
+                    --             enabled = true,
+                    --             debug = false,
+                    --         },
+                    --         model_toggle = {
+                    --             enabled = true,
+                    --             keymap = "<S-Tab>",
+                    --             sequence = {
+                    --                 { adapter = "copilot", model = "gpt-4.1" },
+                    --             },
+                    --         },
+                    --         dag = {
+                    --             enabled = true,
+                    --         },
+                    --         context_compression = {
+                    --             enabled = true,
+                    --             auto_trigger = true,
+                    --             token_threshold = 8000,
+                    --             ui = {
+                    --                 keymap = "<leader>cc",
+                    --                 auto_notify = true,
+                    --             },
+                    --         },
+                    --     },
+                    -- },
                 },
             }
         end,
