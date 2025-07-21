@@ -320,12 +320,12 @@ return
         keys = {
             {
                 "<leader>cc",
-                "<CMD>CodeCompanionChat Toggle<CR>",
+                ":CodeCompanionChat Toggle<CR>",
                 desc = "Toggle CodeCompanionChat",
             },
             {
                 "<leader>cc",
-                "<CMD>CodeCompanionChat Add<CR>",
+                ":CodeCompanionChat Add<CR>",
                 mode = "v",
                 desc = "Toggle CodeCompanionChat",
             },
