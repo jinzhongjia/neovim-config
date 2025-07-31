@@ -20,17 +20,18 @@ local function get_adapters()
         end,
     }
     if API_KEY and API_KEY ~= "" then
-        default_adpters.OpenRouter = function()
+        default_adpters.BigModel = function()
             return require("codecompanion.adapters").extend("openai_compatible", {
                 env = {
-                    url = "https://openrouter.ai/api",
+                    url = "https://open.bigmodel.cn/api/paas/",
                     api_key = API_KEY,
-                    chat_url = "/v1/chat/completions",
+                    chat_url = "/v4/chat/completions",
+                    completion_url = "/v4/models",
                 },
                 schema = {
                     model = {
                         -- default = "openrouter/cypher-alpha:free",
-                        default = "google/gemini-2.5-flash",
+                        default = "glm-4.5",
                     },
                 },
             })
@@ -105,7 +106,7 @@ return
                 strategies = {
                     -- Change the default chat adapter
                     chat = {
-                        adapter = "copilot",
+                        adapter = "BigModel",
                         keymaps = {
                             send = {
                                 modes = { n = "<CR>" },
