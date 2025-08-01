@@ -1,5 +1,6 @@
 local function get_adapters()
     local API_KEY = os.getenv("AI_KEY")
+    local OPENROUTER_KEY = os.getenv("OPENROUTER_KEY")
     local TAVILY_KEY = os.getenv("TAVILY_KEY")
 
     local default_adpters = {
@@ -20,7 +21,7 @@ local function get_adapters()
         end,
     }
     if API_KEY and API_KEY ~= "" then
-        default_adpters.BigModel = function()
+        default_adpters.bigmodel = function()
             return require("codecompanion.adapters").extend("openai_compatible", {
                 env = {
                     url = "https://open.bigmodel.cn/api/paas/",
@@ -32,6 +33,23 @@ local function get_adapters()
                     model = {
                         -- default = "openrouter/cypher-alpha:free",
                         default = "glm-4.5",
+                    },
+                },
+            })
+        end
+    end
+
+    if OPENROUTER_KEY and OPENROUTER_KEY ~= "" then
+        default_adpters.openrouter = function()
+            require("codecompanion.adapters").extend("openai_compatible", {
+                env = {
+                    url = "https://openrouter.ai/api",
+                    api_key = OPENROUTER_KEY,
+                    chat_url = "/v1/chat/completions",
+                },
+                schema = {
+                    model = {
+                        default = "anthropic/claude-3.7-sonnet",
                     },
                 },
             })
