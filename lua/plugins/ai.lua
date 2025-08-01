@@ -27,11 +27,9 @@ local function get_adapters()
                     url = "https://open.bigmodel.cn/api/paas/",
                     api_key = API_KEY,
                     chat_url = "/v4/chat/completions",
-                    completion_url = "/v4/models",
                 },
                 schema = {
                     model = {
-                        -- default = "openrouter/cypher-alpha:free",
                         default = "glm-4.5",
                     },
                 },
@@ -41,7 +39,7 @@ local function get_adapters()
 
     if OPENROUTER_KEY and OPENROUTER_KEY ~= "" then
         default_adpters.openrouter = function()
-            require("codecompanion.adapters").extend("openai_compatible", {
+            return require("codecompanion.adapters").extend("openai_compatible", {
                 env = {
                     url = "https://openrouter.ai/api",
                     api_key = OPENROUTER_KEY,
