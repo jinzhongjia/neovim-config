@@ -49,7 +49,7 @@ local function get_adapters()
                 },
                 schema = {
                     model = {
-                        default = "anthropic/claude-3.7-sonnet",
+                        default = "openrouter/horizon-alpha",
                     },
                 },
             })
@@ -124,7 +124,7 @@ return
                 strategies = {
                     -- Change the default chat adapter
                     chat = {
-                        adapter = "BigModel",
+                        adapter = "openrouter",
                         keymaps = {
                             send = {
                                 modes = { n = "<CR>" },
