@@ -72,6 +72,7 @@ return
 {
     {
         "olimorris/codecompanion.nvim",
+        version = "*",
         event = "VeryLazy",
         dev = true,
         dependencies = {
@@ -121,7 +122,7 @@ return
                 strategies = {
                     -- Change the default chat adapter
                     chat = {
-                        adapter = "openrouter",
+                        adapter = "copilot",
                         keymaps = {
                             send = {
                                 modes = { n = "<CR>" },
@@ -258,7 +259,7 @@ return
                         },
                     },
                     history = {
-                        enabled = true,
+                        enabled = false,
                         opts = {
                             -- Keymap to open history from chat buffer (default: gh)
                             keymap = "gh",
