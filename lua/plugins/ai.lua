@@ -8,8 +8,8 @@ local function get_adapters()
             return require("codecompanion.adapters").extend("copilot", {
                 schema = {
                     model = {
-                        default = "claude-sonnet-4",
-                        -- default = "gpt-4.1",
+                        -- default = "claude-sonnet-4",
+                        default = "gpt-4.1",
                     },
                 },
             })
@@ -259,7 +259,7 @@ return
                         },
                     },
                     history = {
-                        enabled = false,
+                        enabled = true,
                         opts = {
                             -- Keymap to open history from chat buffer (default: gh)
                             keymap = "gh",
@@ -390,5 +390,20 @@ return
                 },
             })
         end,
+    },
+    {
+        "jinzhongjia/codecompanion-spinner.nvim",
+        dev = true,
+        enabled = false,
+        event = "VeryLazy",
+        dependencies = {
+            "olimorris/codecompanion.nvim",
+            "nvim-lua/plenary.nvim",
+            "j-hui/fidget.nvim", -- Optional: for fidget integration
+        },
+        opts = {
+            log_level = "info",
+            style = "fidget", -- "spinner", "fidget", or "none"
+        },
     },
 }
