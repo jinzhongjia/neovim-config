@@ -74,7 +74,6 @@ return
         "olimorris/codecompanion.nvim",
         event = "VeryLazy",
         dev = true,
-        version = "v17.11.0",
         dependencies = {
             "nvim-lua/plenary.nvim",
             "nvim-treesitter/nvim-treesitter",
@@ -83,14 +82,10 @@ return
             "zbirenbaum/copilot.lua",
             "Davidyz/VectorCode",
             "ravitemer/mcphub.nvim",
-            {
-                "ravitemer/codecompanion-history.nvim",
-                commit = "c54e907ac615d4bc2e909abb498739e5d7166729",
-            },
+            "ravitemer/codecompanion-history.nvim",
             {
                 "jinzhongjia/codecompanion-gitcommit.nvim",
                 dev = true,
-                branch = "17_11_0",
             },
         },
         opts = function()
