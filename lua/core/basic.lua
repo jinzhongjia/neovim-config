@@ -50,7 +50,7 @@ o.writebackup = false
 o.swapfile = false
 
 o.updatetime = 300
-o.timeoutlen = 400
+o.timeoutlen = 300
 
 o.splitbelow = true
 o.splitright = true
