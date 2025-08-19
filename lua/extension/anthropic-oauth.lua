@@ -472,7 +472,7 @@ local adapter = vim.tbl_deep_extend("force", vim.deepcopy(anthropic), {
             mapping = "parameters",
             type = "enum",
             desc = "The model that will complete your prompt. See https://docs.anthropic.com/claude/docs/models-overview for additional details and options.",
-            default = "claude-sonnet-4-20250514",
+            default = "claude-opus-4-1-20250805",
             choices = {
                 ["claude-opus-4-1-20250805"] = { opts = { can_reason = true, has_vision = true } },
                 ["claude-opus-4-20250514"] = { opts = { can_reason = true, has_vision = true } },
