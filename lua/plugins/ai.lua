@@ -124,7 +124,7 @@ return
                 strategies = {
                     -- Change the default chat adapter
                     chat = {
-                        adapter = "copilot",
+                        adapter = "anthropic_oauth",
                         keymaps = {
                             send = {
                                 modes = { n = "<CR>" },
