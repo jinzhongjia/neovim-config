@@ -64,6 +64,8 @@ local function get_adapters()
         end
     end
 
+    default_adpters.anthropic_oauth = require("extension.anthropic-oauth")
+
     return default_adpters
 end
 
