@@ -3,7 +3,7 @@ return
 {
     -- lsp = "kulala_ls",
     opt = {},
-    others = { "kulala-fmt" ,"jq"},
+    others = { "kulala-fmt", "jq" },
     before_set = nil,
     after_set = nil,
 }

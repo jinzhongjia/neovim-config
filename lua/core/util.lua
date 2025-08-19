@@ -53,6 +53,6 @@ function _G.__arr_concat(arr1, arr2)
     return arr1
 end
 
- function _G.is_windows()
-     return vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1
- end
+function _G.is_windows()
+    return vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1
+end

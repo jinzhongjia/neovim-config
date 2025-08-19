@@ -69,7 +69,7 @@ local M = {
             local mason_lspconfig = require("mason-lspconfig")
             local mappings = mason_lspconfig.get_mappings()
             local supported_set = mappings.package_to_lspconfig
-            
+
             -- 也包含直接的 lspconfig 名称映射
             for lspconfig_name, _ in pairs(mappings.lspconfig_to_package) do
                 supported_set[lspconfig_name] = true
