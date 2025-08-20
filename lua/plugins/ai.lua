@@ -24,6 +24,8 @@ local function get_adapters()
     if API_KEY and API_KEY ~= "" then
         default_adpters.bigmodel = function()
             return require("codecompanion.adapters").extend("openai_compatible", {
+                name = "bigmodel",
+                formatted_name = "BigModel",
                 env = {
                     url = "https://open.bigmodel.cn/api/paas/",
                     api_key = API_KEY,
@@ -41,6 +43,8 @@ local function get_adapters()
     if OPENROUTER_KEY and OPENROUTER_KEY ~= "" then
         default_adpters.openrouter = function()
             return require("codecompanion.adapters").extend("openai_compatible", {
+                name = "openrouter",
+                formatted_name = "OpenRouter",
                 env = {
                     url = "https://openrouter.ai/api",
                     api_key = OPENROUTER_KEY,
@@ -68,6 +72,8 @@ local function get_adapters()
     if LLM_ROUTER_URL and LLM_ROUTER_URL ~= "" then
         default_adpters.llm_router = function()
             return require("codecompanion.adapters").extend("openai_compatible", {
+                name = "llm_router",
+                formatted_name = "LLM Router",
                 env = {
                     url = LLM_ROUTER_URL,
                     api_key = "*******",
