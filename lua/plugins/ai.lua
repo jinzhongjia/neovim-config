@@ -2,6 +2,7 @@ local function get_adapters()
     local API_KEY = os.getenv("AI_KEY")
     local OPENROUTER_KEY = os.getenv("OPENROUTER_KEY")
     local TAVILY_KEY = os.getenv("TAVILY_KEY")
+    local LLM_ROUTER_URL = os.getenv("LLM_ROUTER_URL")
 
     local default_adpters = {
         copilot = function()
@@ -64,9 +65,33 @@ local function get_adapters()
         end
     end
 
+    if LLM_ROUTER_URL and LLM_ROUTER_URL ~= "" then
+        default_adpters.llm_router = function()
+            return require("codecompanion.adapters").extend("openai_compatible", {
+                env = {
+                    url = LLM_ROUTER_URL,
+                    api_key = "*******",
+                },
+                schema = {
+                    model = {
+                        default = "gpt-5",
+                    },
+                },
+            })
+        end
+    end
+
     default_adpters.anthropic_oauth = require("extension.anthropic-oauth")
 
     return default_adpters
+end
+
+local get_default_adapter = function()
+    local LLM_ROUTER_URL = os.getenv("LLM_ROUTER_URL")
+    if LLM_ROUTER_URL and LLM_ROUTER_URL ~= "" then
+        return "llm_router"
+    end
+    return "anthropic_oauth"
 end
 
 return
@@ -126,7 +151,7 @@ return
                 strategies = {
                     -- Change the default chat adapter
                     chat = {
-                        adapter = "anthropic_oauth",
+                        adapter = get_default_adapter(),
                         keymaps = {
                             send = {
                                 modes = { n = "<CR>" },
