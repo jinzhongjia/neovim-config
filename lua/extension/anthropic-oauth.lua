@@ -43,7 +43,7 @@ local function generate_random_string(length)
     -- 使用更好的跨平台随机种子生成方法
     -- 结合多个熵源以提高随机性
     local seed = os.time() -- 基础时间戳
-    
+
     -- 使用 vim.loop (libuv) 获取高精度时间，跨平台兼容
     if vim.loop then
         -- 获取高精度时间戳（微秒）
@@ -52,20 +52,20 @@ local function generate_random_string(length)
             -- 取低32位作为额外的熵
             seed = seed + (hrtime % 2147483647)
         end
-        
+
         -- 获取进程ID作为额外的熵
         local pid = vim.loop.os_getpid()
         if pid then
             seed = seed + pid
         end
     end
-    
+
     -- 添加一些运行时信息作为熵
     local runtime_entropy = tostring({}):match("0x(%x+)") -- 从新对象地址获取熵
     if runtime_entropy then
         seed = seed + (tonumber(runtime_entropy, 16) % 1000000)
     end
-    
+
     math.randomseed(seed)
     -- 预热随机数生成器
     for _ = 1, 10 do
@@ -323,11 +323,7 @@ local function exchange_code_for_api_key(code, verifier)
     end
 
     if response.status >= 400 then
-        log:error(
-            "Anthropic OAuth: 令牌交换失败，状态码 %d: %s",
-            response.status,
-            response.body or "no body"
-        )
+        log:error("Anthropic OAuth: 令牌交换失败，状态码 %d: %s", response.status, response.body or "no body")
         return nil
     end
 
@@ -412,19 +408,19 @@ local function setup_oauth()
         end
     elseif vim.fn.has("win32") == 1 then
         -- Windows 需要特殊处理，使用 cmd /c start
-        open_cmd = "cmd /c start \"\""
+        open_cmd = 'cmd /c start ""'
     end
 
     if open_cmd then
         local cmd
         if vim.fn.has("win32") == 1 then
             -- Windows: 使用双引号，并转义特殊字符
-            cmd = open_cmd .. " \"" .. auth_data.url:gsub("&", "^&") .. "\""
+            cmd = open_cmd .. ' "' .. auth_data.url:gsub("&", "^&") .. '"'
         else
             -- Unix/Mac: 使用单引号
             cmd = open_cmd .. " '" .. auth_data.url .. "'"
         end
-        
+
         local success = pcall(vim.fn.system, cmd)
         if not success then
             vim.notify(
@@ -452,10 +448,7 @@ local function setup_oauth()
         if api_key then
             vim.notify("Anthropic OAuth 认证成功！API 密钥已创建并保存。", vim.log.levels.INFO)
         else
-            vim.notify(
-                "Anthropic OAuth 认证失败。请检查日志并重试。",
-                vim.log.levels.ERROR
-            )
+            vim.notify("Anthropic OAuth 认证失败。请检查日志并重试。", vim.log.levels.ERROR)
         end
     end)
 
@@ -549,7 +542,10 @@ adapter.handlers = vim.tbl_extend("force", anthropic.handlers, {
         -- 获取并验证 API 密钥
         local api_key = get_api_key()
         if not api_key then
-            vim.notify("未找到 Anthropic API 密钥。运行 :AnthropicOAuthSetup 进行认证。", vim.log.levels.ERROR)
+            vim.notify(
+                "未找到 Anthropic API 密钥。运行 :AnthropicOAuthSetup 进行认证。",
+                vim.log.levels.ERROR
+            )
             return false
         end
 

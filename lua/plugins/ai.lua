@@ -16,7 +16,7 @@ local function get_adapters()
                 },
             })
         end,
-        copilot_4o = function()
+        copilot_4_1 = function()
             return require("codecompanion.adapters").extend("copilot", {
                 schema = { model = { default = "gpt-4.1" } },
             })
@@ -57,7 +57,9 @@ local function get_adapters()
                         default = "gpt-5",
                         choices = {
                             ["gpt-5"] = { opts = { has_vision = true, can_reason = false, stream = false } },
-                            ["claude-sonnet-4-20250514"] = { opts = { has_vision = true, can_reason = false, stream = false } },
+                            ["claude-sonnet-4-20250514"] = {
+                                opts = { has_vision = true, can_reason = false, stream = false },
+                            },
                             ["gemini-2.5-pro"] = { opts = { has_vision = true, can_reason = false, stream = false } },
                         },
                     },
@@ -114,6 +116,10 @@ local function get_adapters()
     end
 
     default_adpters.anthropic_oauth = require("extension.anthropic-oauth")
+
+    default_adpters.opts = {
+        show_defaults = false,
+    }
 
     return default_adpters
 end
@@ -272,7 +278,7 @@ return
                             },
                         },
                     },
-                    inline = { adapter = "copilot_4o" },
+                    inline = { adapter = "copilot_4_1" },
                 },
                 extensions = {
                     vectorcode = {
