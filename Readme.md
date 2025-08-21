@@ -8,16 +8,21 @@ A comprehensive Neovim configuration featuring built-in LSP, AI assistance, and 
 
 ## ✨ Key Features
 
-- 🧠 **AI Integration**: Multiple AI assistants including CodeCompanion, Claude Code, and GitHub Copilot with MCP support.
-- 🔧 **Built-in LSP**: Native Neovim LSP with comprehensive language support via Mason.
-- 🎨 **Modern UI**: Beautiful themes (Catppuccin) with enhanced statusline and UI components.
-- 🔍 **Advanced Search**: Telescope with fuzzy finding, live grep, ripgrep integration, and frequency-based results.
-- 📁 **File Management**: NvimTree with preview, advanced operations, and floating windows.
-- 🐛 **Debugging**: Full DAP integration with UI, persistent breakpoints, and Go support.
-- 📊 **Database Tools**: Built-in database client with SQL completion and UI.
-- 🎯 **Code Navigation**: Treesitter-based highlighting, outline view, and intelligent code folding.
-- ✏️ **Smart Editing**: Blink.cmp completion, auto-pairs, surround, and multi-cursor support.
-- 🚀 **Performance**: Optimized startup with lazy loading, early retirement, and efficient plugin management.
+> Fast, batteries‑included, opinionated — but intentionally easy to fork & trim.
+
+- 🧠 **AI Integration**: CodeCompanion, Claude Code, GitHub Copilot (MCP aware), extensible system prompts.
+- 🔧 **Fully Managed LSP**: Mason driven install/update, sensible defaults, per‑language overrides.
+- ✏️ **Smart Editing**: Blink.cmp, snippets, autopairs, surround, multi‑cursor, structural text objects.
+- 🎯 **Navigation & Code Intelligence**: Treesitter, symbols outline, peek & preview, intelligent folding.
+- 🐛 **First‑Class Debugging**: nvim-dap + UI, persistent breakpoints, inline virtual text, Go / JS / Python helpers.
+- 🔍 **Search & Fuzzy Workflow**: Telescope (files, live grep, frecency, symbols), ripgrep & fd integration.
+- 📁 **File & Project Ops**: NvimTree (floating / preview), project root detection, recent & pinned files.
+- 📊 **Database Toolkit**: SQL client + completion + UI integration.
+- 🎨 **Modern UI**: Catppuccin theme, animated statusline, notifications, command palette, snacks.
+- 🌀 **Git & Collaboration**: Gitsigns, Fugitive, Neogit, Lazygit integration, diff & blame helpers.
+- 🧩 **Extensible Plugin Layout**: Clear module boundaries, lazy loading patterns, override hooks.
+- 🚀 **Performance Focus**: Aggressive lazy spec, startup profiling helpers, cache & GC tuning.
+- 🛡️ **Safe Defaults**: Opinionated keymaps, guarded autocmds, defensive plugin loading.
 
 ## 📸 Screenshots
 
@@ -44,46 +49,28 @@ git clone https://github.com/jinzhongjia/neovim-config.git ~/.config/nvim
 git clone https://github.com/jinzhongjia/neovim-config.git ~/AppData/Local/nvim
 ```
 
+### TL;DR Quick Start
+```bash
+# clone
+git clone https://github.com/jinzhongjia/neovim-config.git ~/.config/nvim
+cd ~/.config/nvim
+
+# first open (downloads plugins)
+nvim
+
+# inside Neovim (after install finishes)
+:Mason         # install language servers / linters / formatters
+:checkhealth   # verify environment
+
+# optional helpers
+:Lazy update   # keep plugins fresh
+```
+
 ### First Launch
 1. Open Neovim and wait for Lazy.nvim to install all plugins automatically
 2. Run `:checkhealth` to verify your environment
 3. Run `:Mason` to install LSP servers, formatters, and linters
 4. Restart Neovim to ensure all configurations are loaded
-
-### Installing Dependencies
-
-#### Quick Install Commands
-
-**Windows (with Scoop)**:
-```powershell
-scoop install git ripgrep fd neovim
-scoop install nodejs python go rust zig
-scoop install lazygit cmake make
-```
-
-**macOS (with Homebrew)**:
-```bash
-brew install neovim git ripgrep fd
-brew install node python go rust zig
-brew install lazygit cmake
-```
-
-**Ubuntu/Debian**:
-```bash
-sudo apt update
-sudo apt install neovim git ripgrep fd-find
-sudo apt install nodejs npm python3 python3-pip
-sudo apt install golang rustc cargo
-sudo apt install cmake build-essential
-```
-
-**Arch Linux**:
-```bash
-sudo pacman -S neovim git ripgrep fd
-sudo pacman -S nodejs npm python python-pip
-sudo pacman -S go rust zig
-sudo pacman -S cmake base-devel
-```
 
 ## 🛠️ Dependencies
 
@@ -124,20 +111,10 @@ sudo pacman -S cmake base-devel
 - **GitHub CLI** (`gh`) - GitHub integration
 - **jq** - JSON processor (for some plugins)
 
-### Platform-Specific
-
-#### Windows
-- **PowerShell** `>= 7.0` - Modern shell (recommended)
-- **Microsoft C++ Build Tools** - Required for native modules
-- **Windows Terminal** - Better terminal experience
-
-#### macOS
-- **Homebrew** - Package manager (simplifies dependency installation)
-- **Xcode Command Line Tools** - Development tools
-
-#### Linux
-- **build-essential** (Debian/Ubuntu) or **base-devel** (Arch) - Compilation tools
-- **libssl-dev** - SSL development libraries
+### Optional System Libraries
+- Compilation toolchain (gcc/clang, make, cmake) for building native extensions & Treesitter
+- unzip / tar utilities for extracting packages
+- SSL development libs (e.g. libssl) if certain tools require HTTPS features
 
 ### GUI Clients (Optional)
 - [**Neovide**](https://neovide.dev/) - GPU-accelerated Neovim GUI with smooth animations
@@ -215,3 +192,73 @@ All LSP servers and development tools are managed through Mason:
 - `<leader>gg` - Lazygit
 - `<leader>gd` - Git diff view
 - `<leader>gb` - Git blame
+
+## 🧩 Customization
+
+Directory layout (core parts only):
+```
+lua/
+  core/       -> options, autocmds, keymaps
+  plugins/    -> lazy.nvim specs (grouped by domain)
+  lsp/        -> server setups, capabilities, on_attach
+  ui/         -> theme & statusline helpers
+``` 
+
+Recommended ways to extend:
+1. Create `lua/custom/` and add your own lazy specs (auto‑loaded if you require them in `init.lua`).
+2. Override plugin opts using lazy's `opts = function(_, opts) ... end` pattern in a new spec with same `name`.
+3. Disable what you do not need:
+```lua
+return {
+  { "nvim-neo-tree/neo-tree.nvim", enabled = false },
+}
+```
+4. Add per‑language tweaks in `after/ftplugin/<filetype>.lua`.
+
+Minimal bootstrap example (if you want to start trimming):
+```lua
+-- init.lua
+require("core").setup()
+require("lazy").setup({
+  { import = "plugins.core" },
+  { import = "plugins.lsp" },
+})
+```
+
+## 🐞 Troubleshooting & FAQ
+
+Q: Plugins stuck on first install?  
+A: Check network / proxy, then run `:Lazy sync` or delete `lazy-lock.json` and reopen.
+
+Q: LSP server not attaching?  
+A: Run `:LspInfo` to see status, ensure tool installed in `:Mason`, check filetype detection via `:set ft?`.
+
+Q: Formatting not working?  
+A: Run `:ConformInfo`, confirm formatter installed, ensure no conflicting formatter running (e.g. null-ls remnants).
+
+Q: High CPU / lag?  
+A: Use `:Lazy profile` to inspect startup cost; temporarily disable heavy UI plugins to isolate.
+
+Q: AI popup noisy?  
+A: Toggle / scope suggestions with provided AI keymaps or disable corresponding spec.
+
+Common commands cheat:
+```
+:Lazy sync    # install/clean plugins
+:Lazy profile # measure startup
+:Mason        # manage external tools
+:LspInfo      # active servers
+:checkhealth  # diagnostics
+```
+
+## ⚡ Performance Tips
+
+- Remove languages you do not use from Treesitter & Mason ensure lists.
+- Disable large providers: `vim.g.loaded_perl_provider = 0`, etc. (already handled, keep if trimming).
+- Use ripgrep + fd (already leveraged) for fastest Telescope experience.
+- Run `:Lazy restore` if lockfile drift causes slow cold startups.
+- Consider pinning fewer plugins or pruning UI niceties for headless / remote sessions.
+
+## 📄 License / Usage
+
+Personal configuration shared for learning. Feel free to copy excerpts with attribution; avoid filing broad feature requests unless you contribute a PR.
