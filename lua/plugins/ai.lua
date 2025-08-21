@@ -3,6 +3,7 @@ local function get_adapters()
     local OPENROUTER_KEY = os.getenv("OPENROUTER_KEY")
     local TAVILY_KEY = os.getenv("TAVILY_KEY")
     local LLM_ROUTER_URL = os.getenv("LLM_ROUTER_URL")
+    local MONICA_KEY = os.getenv("MONICA_KEY")
 
     local default_adpters = {
         copilot = function()
@@ -34,6 +35,31 @@ local function get_adapters()
                 schema = {
                     model = {
                         default = "glm-4.5",
+                    },
+                },
+            })
+        end
+    end
+
+    if MONICA_KEY and MONICA_KEY ~= "" then
+        default_adpters.monica = function()
+            return require("codecompanion.adapters").extend("openai_compatible", {
+                name = "monica",
+                formatted_name = "Monica",
+                env = {
+                    url = "https://openapi.monica.im",
+                    api_key = MONICA_KEY,
+                    chat_url = "/v1/chat/completions",
+                },
+                schema = {
+                    model = {
+                        ---@type string|fun(): string
+                        default = "gpt-5",
+                        choices = {
+                            ["gpt-5"] = { opts = { has_vision = true, can_reason = false, stream = false } },
+                            ["claude-sonnet-4-20250514"] = { opts = { has_vision = true, can_reason = false, stream = false } },
+                            ["gemini-2.5-pro"] = { opts = { has_vision = true, can_reason = false, stream = false } },
+                        },
                     },
                 },
             })
