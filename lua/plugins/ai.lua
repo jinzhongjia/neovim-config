@@ -467,4 +467,25 @@ return
             { "<leader>ad", "<cmd>ClaudeCodeDiffDeny<cr>", desc = "Deny diff" },
         },
     },
+    {
+        "jinzhongjia/codecompanion-tools.nvim",
+        dev = true,
+        event = "VeryLazy",
+        opts = {
+            translator = {
+                default_adapter = "copilot", -- 默认使用的 adapter
+                default_model = "gpt-4.1", -- 默认使用的模型
+                default_target_lang = "zh", -- 默认翻译目标语言
+                debug = {
+                    enabled = false, -- 是否启用调试日志
+                    log_level = "INFO", -- 日志级别
+                },
+                output = {
+                    show_original = true, -- 是否显示原文
+                    notification_timeout = 5000, -- 通知显示时间（毫秒）
+                    copy_to_clipboard = false, -- 是否自动复制到剪贴板
+                },
+            },
+        },
+    },
 }
