@@ -32,14 +32,6 @@
       "command": "uvx",
       "disabled": false
     },
-    "filesystem": {
-      "args": [
-        "mcp-server-filesystem",
-        "${CWD}"
-      ],
-      "command": "npx",
-      "disabled": false
-    },
     "git": {
       "args": [
         "mcp-server-git"
