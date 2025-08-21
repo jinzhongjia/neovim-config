@@ -150,9 +150,13 @@ return
                         token_count = function(tokens, _)
                             return " (" .. tokens .. " tokens)"
                         end,
+                        icons = {
+                            chat_context = "📎️", -- You can also apply an icon to the fold
+                        },
+                        fold_context = true,
                     },
                     -- default|mini_diff
-                    diff = { provider = "mini_diff" },
+                    diff = { provider = "inline" },
                 },
                 strategies = {
                     -- Change the default chat adapter
