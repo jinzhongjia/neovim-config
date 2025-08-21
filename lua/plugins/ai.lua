@@ -473,8 +473,8 @@ return
         event = "VeryLazy",
         opts = {
             translator = {
-                default_adapter = "copilot", -- 默认使用的 adapter
-                default_model = "gpt-4.1", -- 默认使用的模型
+                adapter = "copilot", -- 默认使用的 adapter
+                model = "gpt-4.1", -- 默认使用的模型
                 default_target_lang = "zh", -- 默认翻译目标语言
                 debug = {
                     enabled = false, -- 是否启用调试日志
