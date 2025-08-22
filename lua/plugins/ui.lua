@@ -22,6 +22,7 @@ return
                 offsets = {
                     { filetype = "NvimTree", text = "EXPLORER", text_align = "center" },
                     { filetype = "Outline", text = "OUTLINE", text_align = "center" },
+                    { filetype = "codecompanion", text = "CodeCompanion", text_align = "center" },
                 },
                 show_tab_indicators = true,
                 -- To close the Tab command, use moll/vim-bbye's :Bdelete command here
