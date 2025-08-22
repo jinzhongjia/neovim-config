@@ -1,5 +1,6 @@
 -- codecompanion auto tool mode
 vim.g.codecompanion_auto_tool_mode = true
+
 local function get_adapters()
     local API_KEY = os.getenv("AI_KEY")
     local OPENROUTER_KEY = os.getenv("OPENROUTER_KEY")
@@ -257,23 +258,8 @@ return
                             },
                         },
                         tools = {
-                            groups = {
-                                ["agent"] = {
-                                    description = "agent mode with mcp support, automatically run tools",
-                                    tools = {
-                                        "cmd_runner",
-                                        "create_file",
-                                        "file_search",
-                                        "grep_search",
-                                        "insert_edit_into_file",
-                                        "read_file",
-                                        "web_search",
-                                        "mcp",
-                                    },
-                                    opts = {
-                                        collapse_tools = true,
-                                    },
-                                },
+                            opts = {
+                                default_tools = { "full_stack_dev" },
                             },
                         },
                     },
