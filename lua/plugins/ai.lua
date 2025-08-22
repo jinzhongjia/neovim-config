@@ -1,3 +1,5 @@
+-- codecompanion auto tool mode
+vim.g.codecompanion_auto_tool_mode = true
 local function get_adapters()
     local API_KEY = os.getenv("AI_KEY")
     local OPENROUTER_KEY = os.getenv("OPENROUTER_KEY")
