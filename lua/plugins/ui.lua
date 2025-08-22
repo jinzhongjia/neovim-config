@@ -15,6 +15,15 @@ return
         event = "UIEnter",
         opts = {
             options = {
+                indicator = {
+                    style = "icon",
+                    icon = " ",
+                },
+                offsets = {
+                    { filetype = "NvimTree", text = "EXPLORER", text_align = "center" },
+                    { filetype = "Outline", text = "OUTLINE", text_align = "center" },
+                },
+                show_tab_indicators = true,
                 -- To close the Tab command, use moll/vim-bbye's :Bdelete command here
                 close_command = "Bdelete! %d",
                 right_mouse_command = "Bdelete! %d",
@@ -83,7 +92,7 @@ return
         event = "UIEnter",
         opts = {
             options = {
-                theme = "catppuccin",
+                theme = "vscode",
             },
             sections = {
                 lualine_x = {

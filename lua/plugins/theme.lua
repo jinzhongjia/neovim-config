@@ -3,6 +3,7 @@ return {
         "catppuccin/nvim",
         name = "catppuccin",
         priority = 1000,
+        enabled = false,
         config = function()
             require("catppuccin").setup({
                 transparent_background = false,
@@ -47,6 +48,39 @@ return {
                 },
             })
             vim.cmd.colorscheme("catppuccin-macchiato")
+        end,
+    },
+    {
+        "Mofiqul/vscode.nvim",
+        priority = 1000,
+        config = function()
+            local c = require("vscode.colors").get_colors()
+            require("vscode").setup({
+                -- Alternatively set style in setup
+                -- style = 'light'
+
+                -- Enable transparent background
+                -- transparent = true,
+
+                -- Enable italic comment
+                italic_comments = true,
+
+                -- Enable italic inlay type hints
+                italic_inlayhints = true,
+
+                -- Underline `@markup.link.*` variants
+                underline_links = true,
+
+                -- Disable nvim-tree background color
+                disable_nvimtree_bg = true,
+
+                -- Apply theme colors to terminal
+                terminal_colors = true,
+            })
+            require('vscode').load()
+
+            -- load the theme without affecting devicon colors.
+            -- vim.cmd.colorscheme("vscode")
         end,
     },
 }
