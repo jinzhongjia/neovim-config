@@ -57,7 +57,7 @@ local function get_adapters()
                         default = "gpt-5",
                         choices = {
                             ["gpt-5"] = { opts = { has_vision = true, can_reason = false, stream = false } },
-                            ["claude-sonnet-4-20250514"] = {
+                            ["claude-4-sonnet"] = {
                                 opts = { has_vision = true, can_reason = false, stream = false },
                             },
                             ["gemini-2.5-pro"] = { opts = { has_vision = true, can_reason = false, stream = false } },
