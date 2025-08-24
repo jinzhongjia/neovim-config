@@ -77,7 +77,7 @@ return {
                 -- Apply theme colors to terminal
                 terminal_colors = true,
             })
-            require('vscode').load()
+            require("vscode").load()
 
             -- load the theme without affecting devicon colors.
             -- vim.cmd.colorscheme("vscode")

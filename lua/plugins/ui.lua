@@ -91,57 +91,149 @@ return
             },
         },
         event = "UIEnter",
-        opts = {
-            options = {
-                theme = "vscode",
-            },
-            sections = {
-                lualine_x = {
-                    {
-                        require("lazy.status").updates,
-                        cond = require("lazy.status").has_updates,
-                        color = { fg = "#ff9e64" },
-                    },
-                    "copilot",
-                    "encoding",
-                    "fileformat",
-                    "filetype",
-                },
-                lualine_c = {
-                    {
-                        function()
-                            if is_insert then
-                                local signature = require("LspUI").api.signature()
-                                if not signature then
-                                    return ""
-                                end
-                                if not signature.active_parameter then
-                                    return signature.label
-                                end
+        opts = function()
+            local special_filetypes = { "NvimTree", "Outline", "grug-far", "codecompanion" }
 
-                                return signature.parameters[signature.active_parameter].label
-                            elseif is_blame then
-                                return require("gitblame").get_current_blame_text()
-                            end
-                        end,
-                        cond = function()
-                            local mode_info = vim.api.nvim_get_mode()
-                            local mode = mode_info["mode"]
-                            is_insert = mode:find("i") ~= nil or mode:find("ic") ~= nil
+            -- 检查当前 buffer 是否是特殊 filetype
+            local function is_special_filetype()
+                local ft = vim.bo.filetype
+                for _, special_ft in ipairs(special_filetypes) do
+                    if ft == special_ft then
+                        return true
+                    end
+                end
+                return false
+            end
 
-                            local text = require("gitblame").get_current_blame_text()
-                            if text then
-                                is_blame = text ~= ""
-                            else
-                                is_blame = false
-                            end
-
-                            return is_insert or is_blame
-                        end,
+            return {
+                options = {
+                    theme = "vscode",
+                    disabled_filetypes = {
+                        statusline = {}, -- 不再禁用任何 filetype
+                        winbar = {},
                     },
                 },
-            },
-        },
+                sections = {
+                    lualine_a = {
+                        {
+                            "mode",
+                            -- mode 组件始终显示
+                        },
+                    },
+                    lualine_b = {
+                        {
+                            "branch",
+                            cond = function()
+                                return not is_special_filetype()
+                            end,
+                        },
+                        {
+                            "diff",
+                            cond = function()
+                                return not is_special_filetype()
+                            end,
+                        },
+                        {
+                            "diagnostics",
+                            cond = function()
+                                return not is_special_filetype()
+                            end,
+                        },
+                    },
+                    lualine_c = {
+                        {
+                            function()
+                                if is_insert then
+                                    local signature = require("LspUI").api.signature()
+                                    if not signature then
+                                        return ""
+                                    end
+                                    if not signature.active_parameter then
+                                        return signature.label
+                                    end
+
+                                    return signature.parameters[signature.active_parameter].label
+                                elseif is_blame then
+                                    return require("gitblame").get_current_blame_text()
+                                end
+                            end,
+                            cond = function()
+                                -- 特殊 filetype 不显示这个组件
+                                if is_special_filetype() then
+                                    return false
+                                end
+
+                                local mode_info = vim.api.nvim_get_mode()
+                                local mode = mode_info["mode"]
+                                is_insert = mode:find("i") ~= nil or mode:find("ic") ~= nil
+
+                                local text = require("gitblame").get_current_blame_text()
+                                if text then
+                                    is_blame = text ~= ""
+                                else
+                                    is_blame = false
+                                end
+
+                                return is_insert or is_blame
+                            end,
+                        },
+                        {
+                            "filename",
+                            cond = function()
+                                return not is_special_filetype()
+                            end,
+                        },
+                    },
+                    lualine_x = {
+                        {
+                            require("lazy.status").updates,
+                            cond = function()
+                                return require("lazy.status").has_updates() and not is_special_filetype()
+                            end,
+                            color = { fg = "#ff9e64" },
+                        },
+                        {
+                            "copilot",
+                            cond = function()
+                                return not is_special_filetype()
+                            end,
+                        },
+                        {
+                            "encoding",
+                            cond = function()
+                                return not is_special_filetype()
+                            end,
+                        },
+                        {
+                            "fileformat",
+                            cond = function()
+                                return not is_special_filetype()
+                            end,
+                        },
+                        {
+                            "filetype",
+                            -- filetype 组件始终显示
+                        },
+                    },
+                    lualine_y = {
+                        {
+                            "progress",
+                            cond = function()
+                                return not is_special_filetype()
+                            end,
+                        },
+                    },
+                    lualine_z = {
+                        {
+                            "location",
+                            cond = function()
+                                return not is_special_filetype()
+                            end,
+                        },
+                    },
+                },
+            }
+        end,
     },
     {
         "anuvyklack/windows.nvim",
