@@ -95,6 +95,7 @@ return
                 element_mappings = {
                     scopes = { open = "<CR>", edit = "e", expand = "o", repl = "r" },
                 },
+               force_buffers = true, -- 防止其他缓冲区被加载到 dap-ui 窗口中
                 layouts = {
                     {
                         elements = {
@@ -122,17 +123,32 @@ return
                 },
             })
 
-            dap.listeners.before.attach.dapui_config = function()
-                dapui.open()
-            end
-            dap.listeners.before.launch.dapui_config = function()
-                dapui.open()
-            end
             dap.listeners.before.event_terminated.dapui_config = function()
                 dapui.close()
             end
             dap.listeners.before.event_exited.dapui_config = function()
                 dapui.close()
+            end
+
+            -- 监听初始化完成事件，确保只在成功连接后打开 UI
+            dap.listeners.after.event_initialized.dapui_config = function()
+                dapui.open({ reset = true })
+            end
+
+            -- 监听断开连接事件
+            dap.listeners.before.disconnect.dapui_config = function()
+                dapui.close()
+            end
+
+            -- 监听错误事件，如果启动失败则关闭 UI
+            dap.listeners.after.event_output.dapui_config = function(_, body)
+                if body.category == "stderr" and body.output:match("Error") then
+                    vim.defer_fn(function()
+                        if not dap.session() then
+                            dapui.close()
+                        end
+                    end, 500)
+                end
             end
         end,
     },
