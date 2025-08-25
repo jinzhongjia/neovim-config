@@ -104,7 +104,7 @@ return
                             "stacks",
                             "watches",
                             "breakpoints",
-                            "console",
+                            -- "console",
                         },
                         size = 0.3, -- 40 columns
                         position = "left",
@@ -114,6 +114,11 @@ return
                     --     size = 0.25, -- 25% of total lines
                     --     position = "bottom",
                     -- },
+                    {
+                        elements = { "repl" },
+                        size = 0.25, -- 25% of total lines
+                        position = "bottom",
+                    },
                 },
                 floating = {
                     max_height = nil, -- These can be integers or a float between 0 and 1.
