@@ -225,7 +225,7 @@ return
             return {
                 opts = {
                     system_prompt = function(opts)
-                        return system_rpompt
+                        return string.format(system_rpompt, opts.language or "English")
                     end,
                     language = "Chinese",
                 },

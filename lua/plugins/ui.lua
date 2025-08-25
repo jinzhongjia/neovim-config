@@ -92,7 +92,7 @@ return
         },
         event = "UIEnter",
         opts = function()
-            local special_filetypes = { "NvimTree", "Outline", "grug-far", "codecompanion" }
+              local special_filetypes = { "NvimTree", "Outline", "grug-far", "codecompanion", "snacks_terminal" }
 
             -- 检查当前 buffer 是否是特殊 filetype
             local function is_special_filetype()
