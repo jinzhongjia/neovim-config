@@ -251,6 +251,13 @@ return
                     "grug-far",
                     "grug-far-history",
                     "Mundo",
+                    -- DAP UI windows
+                    "dapui_scopes",
+                    "dapui_stacks",
+                    "dapui_watches",
+                    "dapui_breakpoints",
+                    "dapui_console",
+                    "dapui_repl",
                 },
             },
         },
