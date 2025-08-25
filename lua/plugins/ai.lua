@@ -111,7 +111,7 @@ local function get_adapters()
                 },
                 schema = {
                     model = {
-                        default = "gpt-5",
+                        default = "claude-4-opus",
                     },
                 },
             })
