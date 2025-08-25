@@ -95,7 +95,7 @@ return
             dependencies = {
                 "nvim-lua/plenary.nvim",
                 "nvim-treesitter/nvim-treesitter",
-                "jinzhongjia/nvim-dap", -- (optional) only if you use `gopher.dap`
+                "mfussenegger/nvim-dap", -- (optional) only if you use `gopher.dap`
             },
             opts = {},
         },

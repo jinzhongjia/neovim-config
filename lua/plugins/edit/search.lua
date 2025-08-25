@@ -159,7 +159,7 @@ return
         "nvim-telescope/telescope-dap.nvim",
         dependencies = {
             "nvim-telescope/telescope.nvim",
-            "jinzhongjia/nvim-dap",
+            "mfussenegger/nvim-dap",
             "nvim-treesitter/nvim-treesitter",
         },
         event = "VeryLazy",

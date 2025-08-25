@@ -20,9 +20,8 @@ return
 --- @type LazySpec
 {
     {
-        "jinzhongjia/nvim-dap",
+        "mfussenegger/nvim-dap",
         event = "VeryLazy",
-        branch = "fix_pick_files",
         dev = true,
         dependencies = {
             {
@@ -88,7 +87,7 @@ return
         event = "VeryLazy",
         dependencies = {
             "nvim-neotest/nvim-nio",
-            "jinzhongjia/nvim-dap",
+            "mfussenegger/nvim-dap",
         },
         config = function()
             local dap, dapui = require("dap"), require("dapui")
@@ -143,7 +142,7 @@ return
         enabled = false,
         dependencies = {
             "nvim-treesitter/nvim-treesitter",
-            "jinzhongjia/nvim-dap",
+            "mfussenegger/nvim-dap",
         },
         opts = { commented = true },
     },
