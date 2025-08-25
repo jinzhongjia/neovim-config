@@ -129,9 +129,9 @@ end
 
 local get_default_adapter = function()
     local LLM_ROUTER_URL = os.getenv("LLM_ROUTER_URL")
-    if LLM_ROUTER_URL and LLM_ROUTER_URL ~= "" then
-        return "llm_router"
-    end
+    -- if LLM_ROUTER_URL and LLM_ROUTER_URL ~= "" then
+    --     return "llm_router"
+    -- end
     return "anthropic_oauth"
 end
 
