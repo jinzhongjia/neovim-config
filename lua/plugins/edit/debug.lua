@@ -96,6 +96,14 @@ return
                     scopes = { open = "<CR>", edit = "e", expand = "o", repl = "r" },
                 },
                 force_buffers = true, -- 防止其他缓冲区被加载到 dap-ui 窗口中
+                controls = {
+                    enabled = true,
+                    element = "repl",
+                },
+                render = {
+                    max_type_length = nil, -- 不限制类型名称长度
+                    max_value_lines = 100, -- 限制值的显示行数
+                },
                 layouts = {
                     {
                         elements = {
@@ -155,6 +163,22 @@ return
                     end, 500)
                 end
             end
+
+            -- 统一处理所有可能影响 dap-ui 布局的事件
+            local group = vim.api.nvim_create_augroup("DapUILayoutManager", { clear = true })
+
+            -- 监听窗口变化事件
+            vim.api.nvim_create_autocmd({ "WinClosed", "WinNew", "VimResized" }, {
+                group = group,
+                callback = function()
+                    if dap.session() then
+                        -- 使用 schedule 确保在下一个事件循环中执行
+                        vim.schedule(function()
+                            dapui.open({ reset = true })
+                        end)
+                    end
+                end,
+            })
         end,
     },
     {

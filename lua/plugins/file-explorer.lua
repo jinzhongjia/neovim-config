@@ -109,23 +109,6 @@ return
                         end
                     end
                 end, opts("Preview"))
-
-                -- 解决与 dap-ui 的窗口布局冲突
-                local Event = api.events.Event
-                local function handleTreeEvent()
-                    local dap_ok, dap = pcall(require, "dap")
-                    if dap_ok and dap.session() then
-                        local dapui_ok, dapui = pcall(require, "dapui")
-                        if dapui_ok then
-                            vim.defer_fn(function()
-                                dapui.open({ reset = true })
-                            end, 50)
-                        end
-                    end
-                end
-
-                api.events.subscribe(Event.TreeClose, handleTreeEvent)
-                api.events.subscribe(Event.TreeOpen, handleTreeEvent)
             end,
         },
         keys = {
