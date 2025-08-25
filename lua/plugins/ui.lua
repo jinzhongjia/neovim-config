@@ -92,7 +92,21 @@ return
         },
         event = "UIEnter",
         opts = function()
-              local special_filetypes = { "NvimTree", "Outline", "grug-far", "codecompanion", "snacks_terminal" }
+            local special_filetypes = {
+                "NvimTree",
+                "Outline",
+                "grug-far",
+                "codecompanion",
+                "snacks_terminal",
+                -- dapui: 在这些窗口中隐藏状态栏/不渲染组件
+                "dapui_scopes",
+                "dapui_stacks",
+                "dapui_watches",
+                "dapui_breakpoints",
+                "dapui_console",
+                "dapui_repl",
+                "dap-repl",
+            }
 
             -- 检查当前 buffer 是否是特殊 filetype
             local function is_special_filetype()
@@ -109,7 +123,16 @@ return
                 options = {
                     theme = "vscode",
                     disabled_filetypes = {
-                        statusline = {}, -- 不再禁用任何 filetype
+                        statusline = {
+                            -- dapui 相关窗口禁用状态栏
+                            "dapui_scopes",
+                            "dapui_stacks",
+                            "dapui_watches",
+                            "dapui_breakpoints",
+                            "dapui_console",
+                            "dapui_repl",
+                            "dap-repl",
+                        },
                         winbar = {},
                     },
                 },
