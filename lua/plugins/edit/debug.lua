@@ -95,7 +95,7 @@ return
                 element_mappings = {
                     scopes = { open = "<CR>", edit = "e", expand = "o", repl = "r" },
                 },
-               force_buffers = true, -- 防止其他缓冲区被加载到 dap-ui 窗口中
+                force_buffers = true, -- 防止其他缓冲区被加载到 dap-ui 窗口中
                 layouts = {
                     {
                         elements = {
