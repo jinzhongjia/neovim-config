@@ -4,6 +4,60 @@ local config = require("codecompanion.config")
 local curl = require("plenary.curl")
 local log = require("codecompanion.utils.log")
 
+-- Windows 平台输出清理函数
+---@param str string
+---@return string
+local function clean_windows_output(str)
+    if not str then
+        return ""
+    end
+
+    -- 移除 BOM (Byte Order Mark)
+    str = str:gsub("^\239\187\191", "")
+
+    -- 移除 Windows 的回车符
+    str = str:gsub("\r\n", "\n")
+    str = str:gsub("\r", "")
+
+    -- 移除控制字符（除了换行符和制表符）
+    str = str:gsub("[\0-\8\11-\12\14-\31\127]", "")
+
+    -- 移除前后空白字符
+    str = str:match("^%s*(.-)%s*$") or ""
+
+    return str
+end
+
+-- 安全的 JSON 编码函数
+---@param data table
+---@return string|nil
+local function safe_json_encode(data)
+    -- 清理数据中的字符串字段
+    local function clean_data(obj)
+        if type(obj) == "string" then
+            return clean_windows_output(obj)
+        elseif type(obj) == "table" then
+            local cleaned = {}
+            for k, v in pairs(obj) do
+                cleaned[k] = clean_data(v)
+            end
+            return cleaned
+        else
+            return obj
+        end
+    end
+
+    local cleaned_data = clean_data(data)
+    local success, result = pcall(vim.json.encode, cleaned_data)
+
+    if not success then
+        log:error("Anthropic OAuth: JSON 编码失败: %s", result)
+        return nil
+    end
+
+    return result
+end
+
 -- 模块级别的 API 密钥缓存
 local _api_key = nil
 local _api_key_loaded = false
@@ -86,11 +140,19 @@ local function sha256_base64url(input)
     -- 尝试使用 OpenSSL 生成正确的 SHA256 哈希
     -- 注意：Windows 系统可能需要单独安装 OpenSSL
     if vim.fn.executable("openssl") == 1 then
+        -- Windows 平台特殊处理
+        local is_windows = vim.fn.has("win32") == 1
+
         local job = Job:new({
             command = "openssl",
             args = { "dgst", "-sha256", "-binary" },
             writer = input,
             enable_recording = true,
+            -- Windows 平台需要特殊的环境变量
+            env = is_windows and {
+                PATH = vim.env.PATH,
+                SYSTEMROOT = vim.env.SYSTEMROOT,
+            } or nil,
         })
 
         local success, _ = pcall(function()
@@ -98,13 +160,31 @@ local function sha256_base64url(input)
         end)
 
         if success and job.code == 0 then
-            local hash_binary = table.concat(job:result(), "")
+            local result = job:result()
+            local hash_binary = ""
+
+            -- Windows 平台可能返回额外的输出
+            if is_windows and result then
+                -- 在 Windows 上，二进制输出可能被分割成多行
+                for _, line in ipairs(result) do
+                    if line and line ~= "" then
+                        hash_binary = hash_binary .. line
+                    end
+                end
+            else
+                hash_binary = table.concat(result or {}, "")
+            end
+
             if hash_binary ~= "" then
                 local base64 = vim.base64.encode(hash_binary)
                 return base64:gsub("[+/=]", { ["+"] = "-", ["/"] = "_", ["="] = "" })
             end
         else
-            log:warn("OpenSSL 命令执行失败，错误代码: %s", job.code)
+            log:warn(
+                "OpenSSL 命令执行失败，错误代码: %s, stderr: %s",
+                job.code or "unknown",
+                table.concat(job:stderr_result() or {}, "\n")
+            )
         end
     else
         log:warn("OpenSSL 不可用，将使用不安全的哈希方法（仅用于开发环境）")
@@ -211,8 +291,20 @@ local function save_api_key(api_key)
         version = 1, -- 版本号，用于未来可能的数据迁移
     }
 
+    -- 使用安全的 JSON 编码
+    local json_data = safe_json_encode(data)
+    if not json_data then
+        log:error("Anthropic OAuth: 无法编码 API 密钥数据")
+        return false
+    end
+
     local success, err = pcall(function()
-        vim.fn.writefile({ vim.json.encode(data) }, token_file)
+        -- Windows 平台写入文件时使用二进制模式
+        if vim.fn.has("win32") == 1 then
+            vim.fn.writefile(vim.split(json_data, "\n", { plain = true }), token_file, "b")
+        else
+            vim.fn.writefile({ json_data }, token_file)
+        end
     end)
 
     if success then
@@ -237,12 +329,19 @@ local function create_api_key(access_token)
 
     log:debug("Anthropic OAuth: 正在创建 API 密钥")
 
+    -- 使用安全的 JSON 编码
+    local body_json = safe_json_encode({})
+    if not body_json then
+        log:error("Anthropic OAuth: 无法编码请求体")
+        return nil
+    end
+
     local response = curl.post(OAUTH_CONFIG.API_KEY_URL, {
         headers = {
             ["Content-Type"] = "application/json",
             ["authorization"] = "Bearer " .. access_token,
         },
-        body = vim.json.encode({}),
+        body = body_json,
         insecure = config.adapters.opts.allow_insecure,
         proxy = config.adapters.opts.proxy,
         timeout = 30000, -- 30 second timeout
@@ -265,9 +364,15 @@ local function create_api_key(access_token)
         return nil
     end
 
-    local decode_success, api_key_data = pcall(vim.json.decode, response.body)
+    -- 清理响应体（Windows 平台可能有额外字符）
+    local cleaned_body = clean_windows_output(response.body or "")
+    local decode_success, api_key_data = pcall(vim.json.decode, cleaned_body)
+
     if not decode_success or not api_key_data or not api_key_data.raw_key then
-        log:error("Anthropic OAuth: API 密钥响应格式无效")
+        log:error(
+            "Anthropic OAuth: API 密钥响应格式无效: %s",
+            decode_success and "缺少 raw_key" or api_key_data
+        )
         return nil
     end
 
@@ -302,13 +407,20 @@ local function exchange_code_for_api_key(code, verifier)
         scope = OAUTH_CONFIG.SCOPES,
     }
 
+    -- 使用安全的 JSON 编码
+    local body_json = safe_json_encode(request_data)
+    if not body_json then
+        log:error("Anthropic OAuth: 无法编码令牌交换请求")
+        return nil
+    end
+
     log:debug("Anthropic OAuth: 令牌交换请求已发起")
 
     local response = curl.post(OAUTH_CONFIG.TOKEN_URL, {
         headers = {
             ["Content-Type"] = "application/json",
         },
-        body = vim.json.encode(request_data),
+        body = body_json,
         insecure = config.adapters.opts.allow_insecure,
         proxy = config.adapters.opts.proxy,
         timeout = 30000, -- 30 second timeout
@@ -327,9 +439,15 @@ local function exchange_code_for_api_key(code, verifier)
         return nil
     end
 
-    local decode_success, token_data = pcall(vim.json.decode, response.body)
+    -- 清理响应体（Windows 平台可能有额外字符）
+    local cleaned_body = clean_windows_output(response.body or "")
+    local decode_success, token_data = pcall(vim.json.decode, cleaned_body)
+
     if not decode_success or not token_data or not token_data.access_token then
-        log:error("Anthropic OAuth: 令牌响应格式无效")
+        log:error(
+            "Anthropic OAuth: 令牌响应格式无效: %s",
+            decode_success and "缺少 access_token" or token_data
+        )
         return nil
     end
 
@@ -421,7 +539,20 @@ local function setup_oauth()
             cmd = open_cmd .. " '" .. auth_data.url .. "'"
         end
 
-        local success = pcall(vim.fn.system, cmd)
+        -- 使用 vim.fn.jobstart 替代 system 以避免输出干扰
+        local success = pcall(function()
+            if vim.fn.has("win32") == 1 then
+                -- Windows 平台使用 jobstart 避免命令窗口闪现
+                vim.fn.jobstart(cmd, {
+                    detach = true,
+                    on_stdout = function() end,
+                    on_stderr = function() end,
+                })
+            else
+                vim.fn.system(cmd)
+            end
+        end)
+
         if not success then
             vim.notify(
                 "无法自动打开浏览器。请手动打开此 URL：\n" .. auth_data.url,
