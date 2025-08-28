@@ -813,8 +813,9 @@ adapter.opts = vim.tbl_deep_extend("force", anthropic.opts or {}, {
     stream = true,
     vision = true,
     -- 增加缓存设置以支持更长的工具调用
-    cache_breakpoints = 6,
-    cache_over = 200,
+    -- 没法增加，claude 官方最多 4 个
+    -- cache_breakpoints = 6,
+    -- cache_over = 200,
 })
 
 return adapter
