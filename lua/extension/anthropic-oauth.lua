@@ -640,7 +640,7 @@ local adapter = vim.tbl_deep_extend("force", vim.deepcopy(anthropic), {
         ["content-type"] = "application/json",
         ["x-api-key"] = "${api_key}",
         ["anthropic-version"] = "2023-06-01",
-        ["anthropic-beta"] = "claude-code-20250219,oauth-2025-04-20,interleaved-thinking-2025-05-14,fine-grained-tool-streaming-2025-05-14",
+        ["anthropic-beta"] = "claude-code-20250219,oauth-2025-04-20,interleaved-thinking-2025-05-14,fine-grained-tool-streaming-2025-05-14,prompt-caching-2024-07-31,token-efficient-tools-2025-02-19",
     },
 
     -- 使用最新模型覆盖模型架构
@@ -652,15 +652,82 @@ local adapter = vim.tbl_deep_extend("force", vim.deepcopy(anthropic), {
             desc = "The model that will complete your prompt. See https://docs.anthropic.com/claude/docs/models-overview for additional details and options.",
             default = "claude-opus-4-1-20250805",
             choices = {
-                ["claude-opus-4-1-20250805"] = { opts = { can_reason = false, has_vision = true } },
-                ["claude-opus-4-20250514"] = { opts = { can_reason = true, has_vision = true } },
-                ["claude-sonnet-4-20250514"] = { opts = { can_reason = false, has_vision = true } },
-                ["claude-3-7-sonnet-20250219"] = {
-                    opts = { can_reason = true, has_vision = true, has_token_efficient_tools = true },
+                -- Claude Opus 4.1 - 最强大的模型
+                ["claude-opus-4-1-20250805"] = {
+                    opts = {
+                        can_reason = true,
+                        has_vision = true,
+                        max_output = 32000,
+                        context_window = 200000,
+                        description = "Our most capable model - Highest level of intelligence and capability",
+                    },
                 },
-                ["claude-3-5-haiku-20241022"] = { opts = { has_vision = true } },
+                -- Claude Opus 4 - 前旗舰模型
+                ["claude-opus-4-20250514"] = {
+                    opts = {
+                        can_reason = true,
+                        has_vision = true,
+                        max_output = 32000,
+                        context_window = 200000,
+                        description = "Our previous flagship model - Very high intelligence and capability",
+                    },
+                },
+                -- Claude Sonnet 4 - 高性能模型
+                ["claude-sonnet-4-20250514"] = {
+                    opts = {
+                        can_reason = true,
+                        has_vision = true,
+                        max_output = 64000,
+                        context_window = 200000,
+                        description = "High-performance model - High intelligence and balanced performance",
+                    },
+                },
+                -- Claude Sonnet 3.7 - 带早期扩展思考的高性能模型
+                ["claude-3-7-sonnet-20250219"] = {
+                    opts = {
+                        can_reason = true,
+                        has_vision = true,
+                        has_token_efficient_tools = true,
+                        max_output = 64000,
+                        context_window = 200000,
+                        description = "High-performance model with early extended thinking",
+                    },
+                },
+                -- Claude Haiku 3.5 - 最快的模型
+                ["claude-3-5-haiku-20241022"] = {
+                    opts = {
+                        has_vision = true,
+                        max_output = 8192,
+                        context_window = 200000,
+                        description = "Our fastest model - Intelligence at blazing speeds",
+                    },
+                },
+                -- Claude Haiku 3 - 快速紧凑模型
+                ["claude-3-haiku-20240307"] = {
+                    opts = {
+                        has_vision = true,
+                        max_output = 4096,
+                        context_window = 200000,
+                        description = "Fast and compact model for near-instant responsiveness",
+                    },
+                },
             },
         },
+        -- 覆盖 max_tokens 以支持更长的工具调用
+        max_tokens = vim.tbl_deep_extend("force", anthropic.schema.max_tokens or {}, {
+            default = function(self)
+                local model = self.schema.model.default
+                local model_opts = self.schema.model.choices[model]
+                if model_opts and model_opts.opts and model_opts.opts.max_output then
+                    -- 使用模型的最大输出限制的一半作为默认值
+                    return math.min(model_opts.opts.max_output / 2, 8192)
+                end
+                return 8192
+            end,
+            validate = function(n)
+                return n > 0 and n <= 128000, "Must be between 0 and 128000"
+            end,
+        }),
     }),
 })
 
@@ -678,6 +745,37 @@ adapter.handlers = vim.tbl_extend("force", anthropic.handlers, {
                 vim.log.levels.ERROR
             )
             return false
+        end
+
+        -- 确保启用工具支持
+        if self.opts then
+            self.opts.tools = true
+        end
+
+        -- 根据选择的模型动态调整设置
+        local model = self.schema.model.default
+        local model_opts = self.schema.model.choices[model]
+        if model_opts and model_opts.opts then
+            -- 应用模型特定的选项
+            self.opts = vim.tbl_deep_extend("force", self.opts or {}, {
+                has_vision = model_opts.opts.has_vision,
+                can_reason = model_opts.opts.can_reason,
+                has_token_efficient_tools = model_opts.opts.has_token_efficient_tools,
+            })
+
+            -- 动态设置最大输出令牌数
+            if model_opts.opts.max_output and self.schema.max_tokens then
+                -- 对于工具调用，使用较大的默认值，但不超过模型限制
+                local default_tokens = math.min(model_opts.opts.max_output, 16000)
+                if type(self.schema.max_tokens.default) == "function" then
+                    -- 已经是函数，不需要覆盖
+                else
+                    self.schema.max_tokens.default = default_tokens
+                end
+            end
+
+            -- 记录当前使用的模型信息
+            log:debug("使用模型: %s - %s", model, model_opts.opts.description or "")
         end
 
         -- 调用原始设置函数处理流式传输和模型选项
@@ -707,6 +805,16 @@ adapter.handlers = vim.tbl_extend("force", anthropic.handlers, {
             messages = formatted.messages,
         }
     end,
+})
+
+-- 确保 opts 包含必要的工具支持选项
+adapter.opts = vim.tbl_deep_extend("force", anthropic.opts or {}, {
+    tools = true,
+    stream = true,
+    vision = true,
+    -- 增加缓存设置以支持更长的工具调用
+    cache_breakpoints = 6,
+    cache_over = 200,
 })
 
 return adapter
