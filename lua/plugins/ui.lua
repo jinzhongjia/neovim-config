@@ -92,6 +92,175 @@ return
         },
         event = "UIEnter",
         opts = function()
+            -- 创建 CodeCompanion Spinner 组件
+            local codecompanion_spinner = require("lualine.component"):extend()
+
+            -- 预定义的 spinner 样式
+            local spinner_styles = {
+                dots = { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" },
+                dots2 = { "⣾", "⣽", "⣻", "⢿", "⡿", "⣟", "⣯", "⣷" },
+                line = { "-", "\\", "|", "/" },
+                star = { "✶", "✸", "✹", "✺", "✹", "✸" },
+                bounce = { "⠁", "⠂", "⠄", "⡀", "⢀", "⠠", "⠐", "⠈" },
+                box = { "▖", "▘", "▝", "▗" },
+                arc = { "◜", "◠", "◝", "◞", "◡", "◟" },
+                circle = { "◐", "◓", "◑", "◒" },
+                square = { "◰", "◳", "◲", "◱" },
+                triangle = { "◢", "◣", "◤", "◥" },
+            }
+
+            -- 全局状态管理
+            local spinner_state = {
+                is_processing = false,
+                current_index = 1,
+                timer = nil,
+                autocmd_created = false,
+                last_status = "finished",  -- "started", "finished", "error"
+                instances = {},  -- 跟踪所有实例
+                update_scheduled = false,
+            }
+
+            -- 停止定时器
+            local function stop_timer()
+                if spinner_state.timer then
+                    spinner_state.timer:stop()
+                    spinner_state.timer:close()
+                    spinner_state.timer = nil
+                end
+            end
+
+            -- 防抖的状态栏刷新
+            local function debounced_redraw()
+                if not spinner_state.update_scheduled then
+                    spinner_state.update_scheduled = true
+                    vim.defer_fn(function()
+                        vim.cmd("redrawstatus!")
+                        spinner_state.update_scheduled = false
+                    end, 10)  -- 10ms 防抖延迟
+                end
+            end
+
+            -- 异步启动定时器
+            local function start_timer(interval, symbols_count)
+                stop_timer()
+                
+                spinner_state.timer = vim.loop.new_timer()
+                if spinner_state.timer then
+                    local callback = function()
+                        if spinner_state.is_processing then
+                            -- 使用原子操作更新索引
+                            spinner_state.current_index = (spinner_state.current_index % symbols_count) + 1
+                            debounced_redraw()
+                        else
+                            vim.schedule(function()
+                                stop_timer()
+                            end)
+                        end
+                    end
+                    
+                    -- 使用 vim.schedule_wrap 确保在主线程执行
+                    spinner_state.timer:start(0, interval, vim.schedule_wrap(callback))
+                end
+            end
+
+            -- Initializer
+            function codecompanion_spinner:init(options)
+                codecompanion_spinner.super.init(self, options)
+                
+                -- 配置选项
+                self.style = options.style or "dots"
+                self.interval = options.interval or 80  -- 动画更新间隔（毫秒）
+                self.show_when_done = options.show_when_done or false
+                self.done_icon = options.done_icon or "✓"
+                self.error_icon = options.error_icon or "✗"
+                self.fade_out = options.fade_out or false
+                self.fade_delay = options.fade_delay or 2000  -- 完成后淡出延迟（毫秒）
+                self.smooth = options.smooth ~= false  -- 平滑动画，默认开启
+                
+                -- 允许自定义符号
+                if options.symbols then
+                    self.symbols = options.symbols
+                else
+                    self.symbols = spinner_styles[self.style] or spinner_styles.dots
+                end
+                
+                -- 注册实例
+                table.insert(spinner_state.instances, self)
+                
+                -- 只创建一次自动命令，避免重复
+                if not spinner_state.autocmd_created then
+                    local group = vim.api.nvim_create_augroup("CodeCompanionHooks", { clear = true })
+
+                    vim.api.nvim_create_autocmd({ "User" }, {
+                        pattern = "CodeCompanionRequest*",
+                        group = group,
+                        callback = function(request)
+                            -- 获取第一个实例的配置
+                            local instance = spinner_state.instances[1]
+                            if not instance then return end
+                            
+                            if request.match == "CodeCompanionRequestStarted" then
+                                vim.schedule(function()
+                                    spinner_state.is_processing = true
+                                    spinner_state.last_status = "started"
+                                    spinner_state.current_index = 1
+                                    start_timer(instance.interval, #instance.symbols)
+                                end)
+                            elseif request.match == "CodeCompanionRequestFinished" then
+                                vim.schedule(function()
+                                    spinner_state.is_processing = false
+                                    
+                                    -- 根据请求结果设置状态
+                                    if request.data and request.data.status == "error" then
+                                        spinner_state.last_status = "error"
+                                    else
+                                        spinner_state.last_status = "finished"
+                                    end
+                                    
+                                    -- 如果设置了淡出，异步延迟清除状态
+                                    if instance.fade_out and instance.show_when_done then
+                                        vim.defer_fn(function()
+                                            spinner_state.last_status = nil
+                                            debounced_redraw()
+                                        end, instance.fade_delay)
+                                    end
+                                    
+                                    debounced_redraw()
+                                end)
+                            end
+                        end,
+                    })
+                    
+                    -- 清理资源
+                    vim.api.nvim_create_autocmd({ "VimLeavePre", "VimSuspend" }, {
+                        group = group,
+                        callback = function()
+                            stop_timer()
+                            spinner_state.instances = {}
+                        end,
+                    })
+                    
+                    spinner_state.autocmd_created = true
+                end
+            end
+
+            -- Function that runs every time statusline is updated
+            function codecompanion_spinner:update_status()
+                if spinner_state.is_processing then
+                    -- 使用缓存的索引值，避免频繁计算
+                    local idx = ((spinner_state.current_index - 1) % #self.symbols) + 1
+                    return self.symbols[idx]
+                elseif self.show_when_done and spinner_state.last_status then
+                    -- 显示完成或错误状态
+                    if spinner_state.last_status == "error" then
+                        return self.error_icon
+                    elseif spinner_state.last_status == "finished" then
+                        return self.done_icon
+                    end
+                end
+                return nil
+            end
+
             local special_filetypes = {
                 "NvimTree",
                 "Outline",
@@ -208,6 +377,13 @@ return
                         },
                     },
                     lualine_x = {
+                        -- CodeCompanion 请求处理状态
+                        {
+                            codecompanion_spinner,
+                            color = { fg = "#7aa2f7", gui = "bold" },
+                            separator = { right = "" },
+                            padding = { left = 1, right = 0 },
+                        },
                         {
                             require("lazy.status").updates,
                             cond = function()
@@ -220,6 +396,55 @@ return
                             cond = function()
                                 return not is_special_filetype()
                             end,
+                        },
+                        -- CodeCompanion 元数据显示
+                        {
+                            function()
+                                if vim.bo.filetype ~= "codecompanion" then
+                                    return ""
+                                end
+                                
+                                local bufnr = vim.api.nvim_get_current_buf()
+                                local metadata = _G.codecompanion_chat_metadata and _G.codecompanion_chat_metadata[bufnr]
+                                
+                                if not metadata then
+                                    return ""
+                                end
+                                
+                                local parts = {}
+                                
+                                -- 显示 adapter name 和 model
+                                if metadata.adapter then
+                                    local adapter_info = metadata.adapter.name or ""
+                                    if metadata.adapter.model then
+                                        adapter_info = adapter_info .. " (" .. metadata.adapter.model .. ")"
+                                    end
+                                    if adapter_info ~= "" then
+                                        table.insert(parts, "🤖 " .. adapter_info)
+                                    end
+                                end
+                                
+                                -- 显示 tokens
+                                if metadata.tokens and metadata.tokens > 0 then
+                                    table.insert(parts, "🪙 " .. metadata.tokens)
+                                end
+                                
+                                -- 显示 cycles
+                                if metadata.cycles and metadata.cycles > 0 then
+                                    table.insert(parts, "🔄 " .. metadata.cycles)
+                                end
+                                
+                                -- 显示 tools
+                                if metadata.tools and metadata.tools > 0 then
+                                    table.insert(parts, "🔧 " .. metadata.tools)
+                                end
+                                
+                                return table.concat(parts, " │ ")
+                            end,
+                            cond = function()
+                                return vim.bo.filetype == "codecompanion"
+                            end,
+                            color = { fg = "#7aa2f7" },
                         },
                         {
                             "encoding",
@@ -235,7 +460,10 @@ return
                         },
                         {
                             "filetype",
-                            -- filetype 组件始终显示
+                            -- 在 codecompanion filetype 时不显示
+                            cond = function()
+                                return vim.bo.filetype ~= "codecompanion"
+                            end,
                         },
                     },
                     lualine_y = {
