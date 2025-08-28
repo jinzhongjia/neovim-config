@@ -733,8 +733,30 @@ adapter.schema.model = {
     },
 }
 
--- 覆盖处理器以添加 OAuth 特定功能和 Claude Code 系统消息
 adapter.handlers = vim.tbl_extend("force", anthropic.handlers, {
+    -- 格式化参数，处理 Opus 4.1 的限制
+    ---@param self CodeCompanion.Adapter
+    ---@param params table
+    ---@param messages table
+    ---@return table
+    form_parameters = function(self, params, messages)
+        -- 首先调用原始的 form_parameters
+        params = anthropic.handlers.form_parameters(self, params, messages)
+        
+        -- 检查是否是 Opus 4.1 模型
+        local model = params.model or self.schema.model.default
+        if model == "claude-opus-4-1-20250805" then
+            -- Opus 4.1 不允许同时指定 temperature 和 top_p
+            -- 如果两者都存在，优先使用 temperature，移除 top_p
+            if params.temperature and params.top_p then
+                log:debug("Opus 4.1 检测到同时设置了 temperature 和 top_p，移除 top_p")
+                params.top_p = nil
+            end
+        end
+        
+        return params
+    end,
+
     -- 在开始请求前检查有效的 API 密钥
     ---@param self CodeCompanion.Adapter
     ---@return boolean
