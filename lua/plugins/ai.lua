@@ -121,9 +121,10 @@ local function get_adapters()
 
     default_adpters.http.anthropic_oauth = require("extension.anthropic-oauth")
 
-    -- default_adpters.opts = {
-    --     show_defaults = false,
-    -- }
+    default_adpters.http.opts = {
+        show_defaults = false,
+        show_model_choices = true,
+    }
 
     return default_adpters
 end
