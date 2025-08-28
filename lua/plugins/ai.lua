@@ -475,6 +475,7 @@ return
         "zbirenbaum/copilot.lua",
         event = "VeryLazy",
         opts = {
+            copilot_model = "gpt-41-copilot",
             suggestion = {
                 enabled = true,
                 auto_trigger = true,
