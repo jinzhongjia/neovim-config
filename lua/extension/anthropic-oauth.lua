@@ -645,74 +645,6 @@ local adapter = vim.tbl_deep_extend("force", vim.deepcopy(anthropic), {
 
     -- 使用最新模型覆盖模型架构
     schema = vim.tbl_deep_extend("force", anthropic.schema or {}, {
-        model = {
-            order = 1,
-            mapping = "parameters",
-            type = "enum",
-            desc = "The model that will complete your prompt. See https://docs.anthropic.com/claude/docs/models-overview for additional details and options.",
-            default = "claude-opus-4-1-20250805",
-            choices = {
-                -- Claude Opus 4.1 - 最强大的模型
-                ["claude-opus-4-1-20250805"] = {
-                    opts = {
-                        can_reason = true,
-                        has_vision = true,
-                        max_output = 32000,
-                        context_window = 200000,
-                        description = "Our most capable model - Highest level of intelligence and capability",
-                    },
-                },
-                -- Claude Opus 4 - 前旗舰模型
-                ["claude-opus-4-20250514"] = {
-                    opts = {
-                        can_reason = true,
-                        has_vision = true,
-                        max_output = 32000,
-                        context_window = 200000,
-                        description = "Our previous flagship model - Very high intelligence and capability",
-                    },
-                },
-                -- Claude Sonnet 4 - 高性能模型
-                ["claude-sonnet-4-20250514"] = {
-                    opts = {
-                        can_reason = true,
-                        has_vision = true,
-                        max_output = 64000,
-                        context_window = 200000,
-                        description = "High-performance model - High intelligence and balanced performance",
-                    },
-                },
-                -- Claude Sonnet 3.7 - 带早期扩展思考的高性能模型
-                ["claude-3-7-sonnet-20250219"] = {
-                    opts = {
-                        can_reason = true,
-                        has_vision = true,
-                        has_token_efficient_tools = true,
-                        max_output = 64000,
-                        context_window = 200000,
-                        description = "High-performance model with early extended thinking",
-                    },
-                },
-                -- Claude Haiku 3.5 - 最快的模型
-                ["claude-3-5-haiku-20241022"] = {
-                    opts = {
-                        has_vision = true,
-                        max_output = 8192,
-                        context_window = 200000,
-                        description = "Our fastest model - Intelligence at blazing speeds",
-                    },
-                },
-                -- Claude Haiku 3 - 快速紧凑模型
-                ["claude-3-haiku-20240307"] = {
-                    opts = {
-                        has_vision = true,
-                        max_output = 4096,
-                        context_window = 200000,
-                        description = "Fast and compact model for near-instant responsiveness",
-                    },
-                },
-            },
-        },
         -- 覆盖 max_tokens 以支持更长的工具调用
         max_tokens = vim.tbl_deep_extend("force", anthropic.schema.max_tokens or {}, {
             default = function(self)
@@ -730,6 +662,76 @@ local adapter = vim.tbl_deep_extend("force", vim.deepcopy(anthropic), {
         }),
     }),
 })
+
+-- 覆盖默认已经有的模型，使用官网的最新模型
+adapter.schema.model = {
+    order = 1,
+    mapping = "parameters",
+    type = "enum",
+    desc = "The model that will complete your prompt. See https://docs.anthropic.com/claude/docs/models-overview for additional details and options.",
+    default = "claude-opus-4-1-20250805",
+    choices = {
+        -- Claude Opus 4.1 - 最强大的模型
+        ["claude-opus-4-1-20250805"] = {
+            opts = {
+                can_reason = true,
+                has_vision = true,
+                max_output = 32000,
+                context_window = 200000,
+                description = "Our most capable model - Highest level of intelligence and capability",
+            },
+        },
+        -- Claude Opus 4 - 前旗舰模型
+        ["claude-opus-4-20250514"] = {
+            opts = {
+                can_reason = true,
+                has_vision = true,
+                max_output = 32000,
+                context_window = 200000,
+                description = "Our previous flagship model - Very high intelligence and capability",
+            },
+        },
+        -- Claude Sonnet 4 - 高性能模型
+        ["claude-sonnet-4-20250514"] = {
+            opts = {
+                can_reason = true,
+                has_vision = true,
+                max_output = 64000,
+                context_window = 200000,
+                description = "High-performance model - High intelligence and balanced performance",
+            },
+        },
+        -- Claude Sonnet 3.7 - 带早期扩展思考的高性能模型
+        ["claude-3-7-sonnet-20250219"] = {
+            opts = {
+                can_reason = true,
+                has_vision = true,
+                has_token_efficient_tools = true,
+                max_output = 64000,
+                context_window = 200000,
+                description = "High-performance model with early extended thinking",
+            },
+        },
+        -- Claude Haiku 3.5 - 最快的模型
+        ["claude-3-5-haiku-20241022"] = {
+            opts = {
+                has_vision = true,
+                max_output = 8192,
+                context_window = 200000,
+                description = "Our fastest model - Intelligence at blazing speeds",
+            },
+        },
+        -- Claude Haiku 3 - 快速紧凑模型
+        ["claude-3-haiku-20240307"] = {
+            opts = {
+                has_vision = true,
+                max_output = 4096,
+                context_window = 200000,
+                description = "Fast and compact model for near-instant responsiveness",
+            },
+        },
+    },
+}
 
 -- 覆盖处理器以添加 OAuth 特定功能和 Claude Code 系统消息
 adapter.handlers = vim.tbl_extend("force", anthropic.handlers, {
