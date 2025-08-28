@@ -1,5 +1,5 @@
 local Job = require("plenary.job")
-local anthropic = require("codecompanion.adapters.anthropic")
+local anthropic = require("codecompanion.adapters.http.anthropic")
 local config = require("codecompanion.config")
 local curl = require("plenary.curl")
 local log = require("codecompanion.utils.log")

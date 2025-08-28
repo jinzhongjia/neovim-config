@@ -9,24 +9,25 @@ local function get_adapters()
     local MONICA_KEY = os.getenv("MONICA_KEY")
 
     local default_adpters = {
-        copilot = function()
-            return require("codecompanion.adapters").extend("copilot", {
-                schema = {
-                    model = {
-                        default = "claude-sonnet-4",
-                        -- default = "gpt-4.1",
-                    },
-                },
-            })
-        end,
-        copilot_4_1 = function()
-            return require("codecompanion.adapters").extend("copilot", {
-                schema = { model = { default = "gpt-4.1" } },
-            })
-        end,
+        http = {},
     }
+    default_adpters.http.copilot = function()
+        return require("codecompanion.adapters").extend("copilot", {
+            schema = {
+                model = {
+                    default = "claude-sonnet-4",
+                    -- default = "gpt-4.1",
+                },
+            },
+        })
+    end
+    default_adpters.http.copilot_4_1 = function()
+        return require("codecompanion.adapters").extend("copilot", {
+            schema = { model = { default = "gpt-4.1" } },
+        })
+    end
     if API_KEY and API_KEY ~= "" then
-        default_adpters.bigmodel = function()
+        default_adpters.http.bigmodel = function()
             return require("codecompanion.adapters").extend("openai_compatible", {
                 name = "bigmodel",
                 formatted_name = "BigModel",
@@ -45,7 +46,7 @@ local function get_adapters()
     end
 
     if MONICA_KEY and MONICA_KEY ~= "" then
-        default_adpters.monica = function()
+        default_adpters.http.monica = function()
             return require("codecompanion.adapters").extend("openai_compatible", {
                 name = "monica",
                 formatted_name = "Monica",
@@ -72,7 +73,7 @@ local function get_adapters()
     end
 
     if OPENROUTER_KEY and OPENROUTER_KEY ~= "" then
-        default_adpters.openrouter = function()
+        default_adpters.http.openrouter = function()
             return require("codecompanion.adapters").extend("openai_compatible", {
                 name = "openrouter",
                 formatted_name = "OpenRouter",
@@ -91,7 +92,7 @@ local function get_adapters()
     end
 
     if TAVILY_KEY and TAVILY_KEY ~= "" then
-        default_adpters.tavily = function()
+        default_adpters.http.tavily = function()
             return require("codecompanion.adapters").extend("tavily", {
                 env = {
                     api_key = TAVILY_KEY,
@@ -101,7 +102,7 @@ local function get_adapters()
     end
 
     if LLM_ROUTER_URL and LLM_ROUTER_URL ~= "" then
-        default_adpters.llm_router = function()
+        default_adpters.http.llm_router = function()
             return require("codecompanion.adapters").extend("openai_compatible", {
                 name = "llm_router",
                 formatted_name = "LLM Router",
@@ -118,7 +119,7 @@ local function get_adapters()
         end
     end
 
-    default_adpters.anthropic_oauth = require("extension.anthropic-oauth")
+    default_adpters.http.anthropic_oauth = require("extension.anthropic-oauth")
 
     -- default_adpters.opts = {
     --     show_defaults = false,
