@@ -248,13 +248,7 @@ return
                                 winbar = "",
                             },
                         },
-                        ---Customize how tokens are displayed
-                        ---@param tokens number
-                        ---@param _ CodeCompanion.Adapter
-                        ---@return string
-                        token_count = function(tokens, _)
-                            return " (" .. tokens .. " tokens)"
-                        end,
+                        show_token_count = false, -- 禁用聊天缓冲区中的 token 显示，因为已在 lualine 中显示
                         fold_context = true,
                     },
                     -- default|mini_diff

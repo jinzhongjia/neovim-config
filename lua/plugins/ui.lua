@@ -309,10 +309,39 @@ return
                     lualine_a = {
                         {
                             "mode",
-                            -- mode 组件始终显示
+                            -- mode 组件在非 codecompanion filetype 时显示
+                            cond = function()
+                                return vim.bo.filetype ~= "codecompanion"
+                            end,
                         },
                     },
                     lualine_b = {
+                        -- CodeCompanion adapter 和 model 显示
+                        {
+                            function()
+                                if vim.bo.filetype ~= "codecompanion" then
+                                    return ""
+                                end
+                                
+                                local bufnr = vim.api.nvim_get_current_buf()
+                                local metadata = _G.codecompanion_chat_metadata and _G.codecompanion_chat_metadata[bufnr]
+                                
+                                if not metadata or not metadata.adapter then
+                                    return ""
+                                end
+                                
+                                local adapter_info = metadata.adapter.name or ""
+                                if metadata.adapter.model then
+                                    adapter_info = adapter_info .. " (" .. metadata.adapter.model .. ")"
+                                end
+                                
+                                return "🤖 " .. adapter_info
+                            end,
+                            cond = function()
+                                return vim.bo.filetype == "codecompanion"
+                            end,
+                            color = { fg = "#7aa2f7" },
+                        },
                         {
                             "branch",
                             cond = function()
@@ -397,7 +426,7 @@ return
                                 return not is_special_filetype()
                             end,
                         },
-                        -- CodeCompanion 元数据显示
+                        -- CodeCompanion 元数据显示（右侧显示 tokens, cycles, tools）
                         {
                             function()
                                 if vim.bo.filetype ~= "codecompanion" then
@@ -413,16 +442,7 @@ return
                                 
                                 local parts = {}
                                 
-                                -- 显示 adapter name 和 model
-                                if metadata.adapter then
-                                    local adapter_info = metadata.adapter.name or ""
-                                    if metadata.adapter.model then
-                                        adapter_info = adapter_info .. " (" .. metadata.adapter.model .. ")"
-                                    end
-                                    if adapter_info ~= "" then
-                                        table.insert(parts, "🤖 " .. adapter_info)
-                                    end
-                                end
+                                -- 只显示 tokens, cycles, tools（adapter 和 model 已移到左侧）
                                 
                                 -- 显示 tokens
                                 if metadata.tokens and metadata.tokens > 0 then
