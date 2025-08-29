@@ -1,39 +1,54 @@
 -- codecompanion auto tool mode
 vim.g.codecompanion_auto_tool_mode = true
 
-local function get_adapters()
-    local API_KEY = os.getenv("AI_KEY")
-    local OPENROUTER_KEY = os.getenv("OPENROUTER_KEY")
-    local TAVILY_KEY = os.getenv("TAVILY_KEY")
-    local LLM_ROUTER_URL = os.getenv("LLM_ROUTER_URL")
-    local MONICA_KEY = os.getenv("MONICA_KEY")
+-- ========================
+-- 通用常量配置
+-- ========================
+local DEFAULT_COPILOT_MODEL = "gpt-4.1"
+local DEFAULT_CLAUDE_MODEL = "claude-sonnet-4"
 
+-- ========================
+-- 环境变量配置
+-- ========================
+local env = {
+    API_KEY = os.getenv("AI_KEY"),
+    OPENROUTER_KEY = os.getenv("OPENROUTER_KEY"),
+    TAVILY_KEY = os.getenv("TAVILY_KEY"),
+    LLM_ROUTER_URL = os.getenv("LLM_ROUTER_URL"),
+    MONICA_KEY = os.getenv("MONICA_KEY"),
+}
+
+local function get_adapters()
     local default_adpters = {
         http = {},
     }
+    
+    -- Copilot 适配器
     default_adpters.http.copilot = function()
         return require("codecompanion.adapters").extend("copilot", {
             schema = {
                 model = {
-                    default = "claude-sonnet-4",
-                    -- default = "gpt-4.1",
+                    default = DEFAULT_CLAUDE_MODEL,
                 },
             },
         })
     end
+    
     default_adpters.http.copilot_4_1 = function()
         return require("codecompanion.adapters").extend("copilot", {
-            schema = { model = { default = "gpt-4.1" } },
+            schema = { model = { default = DEFAULT_COPILOT_MODEL } },
         })
     end
-    if API_KEY and API_KEY ~= "" then
+    
+    -- BigModel 适配器
+    if env.API_KEY and env.API_KEY ~= "" then
         default_adpters.http.bigmodel = function()
             return require("codecompanion.adapters").extend("openai_compatible", {
                 name = "bigmodel",
                 formatted_name = "BigModel",
                 env = {
                     url = "https://open.bigmodel.cn/api/paas/",
-                    api_key = API_KEY,
+                    api_key = env.API_KEY,
                     chat_url = "/v4/chat/completions",
                 },
                 schema = {
@@ -45,14 +60,15 @@ local function get_adapters()
         end
     end
 
-    if MONICA_KEY and MONICA_KEY ~= "" then
+    -- Monica 适配器
+    if env.MONICA_KEY and env.MONICA_KEY ~= "" then
         default_adpters.http.monica = function()
             return require("codecompanion.adapters").extend("openai_compatible", {
                 name = "monica",
                 formatted_name = "Monica",
                 env = {
                     url = "https://openapi.monica.im",
-                    api_key = MONICA_KEY,
+                    api_key = env.MONICA_KEY,
                     chat_url = "/v1/chat/completions",
                 },
                 schema = {
@@ -72,14 +88,15 @@ local function get_adapters()
         end
     end
 
-    if OPENROUTER_KEY and OPENROUTER_KEY ~= "" then
+    -- OpenRouter 适配器
+    if env.OPENROUTER_KEY and env.OPENROUTER_KEY ~= "" then
         default_adpters.http.openrouter = function()
             return require("codecompanion.adapters").extend("openai_compatible", {
                 name = "openrouter",
                 formatted_name = "OpenRouter",
                 env = {
                     url = "https://openrouter.ai/api",
-                    api_key = OPENROUTER_KEY,
+                    api_key = env.OPENROUTER_KEY,
                     chat_url = "/v1/chat/completions",
                 },
                 schema = {
@@ -91,23 +108,25 @@ local function get_adapters()
         end
     end
 
-    if TAVILY_KEY and TAVILY_KEY ~= "" then
+    -- Tavily 适配器（用于网页搜索）
+    if env.TAVILY_KEY and env.TAVILY_KEY ~= "" then
         default_adpters.http.tavily = function()
             return require("codecompanion.adapters").extend("tavily", {
                 env = {
-                    api_key = TAVILY_KEY,
+                    api_key = env.TAVILY_KEY,
                 },
             })
         end
     end
 
-    if LLM_ROUTER_URL and LLM_ROUTER_URL ~= "" then
+    -- LLM Router 适配器
+    if env.LLM_ROUTER_URL and env.LLM_ROUTER_URL ~= "" then
         default_adpters.http.llm_router = function()
             return require("codecompanion.adapters").extend("openai_compatible", {
                 name = "llm_router",
                 formatted_name = "LLM Router",
                 env = {
-                    url = LLM_ROUTER_URL,
+                    url = env.LLM_ROUTER_URL,
                     api_key = "*******",
                 },
                 schema = {
@@ -119,8 +138,10 @@ local function get_adapters()
         end
     end
 
+    -- Anthropic OAuth 适配器
     default_adpters.http.anthropic_oauth = require("extension.anthropic-oauth")
 
+    -- 适配器全局选项
     default_adpters.http.opts = {
         show_defaults = false,
         show_model_choices = true,
@@ -129,15 +150,20 @@ local function get_adapters()
     return default_adpters
 end
 
+-- ========================
+-- 默认适配器选择
+-- ========================
 local get_default_adapter = function()
-    local LLM_ROUTER_URL = os.getenv("LLM_ROUTER_URL")
-    -- if LLM_ROUTER_URL and LLM_ROUTER_URL ~= "" then
+    -- if env.LLM_ROUTER_URL and env.LLM_ROUTER_URL ~= "" then
     --     return "llm_router"
     -- end
     return "anthropic_oauth"
 end
 
-local system_rpompt = [[
+-- ========================
+-- 系统提示词
+-- ========================
+local system_prompt = [[
 You are an AI programming assistant named "CodeCompanion". You are currently plugged in to the Neovim text editor on a user's machine.
 
 Your core tasks include:
@@ -202,45 +228,59 @@ After completing the core request, if additional help would be valuable, ask:
 3. You can only give one reply for each conversation turn.
 ]]
 
-return
---- @type LazySpec
-{
+-- ========================
+-- Slash Commands 通用配置
+-- ========================
+local slash_command_defaults = {
+    contains_code = true,
+    provider = "snacks",
+}
+
+-- ========================
+-- 插件配置
+-- ========================
+return {
+    -- ========== CodeCompanion 主插件 ==========
     {
         "olimorris/codecompanion.nvim",
         event = "VeryLazy",
         dev = true,
         dependencies = {
+            -- 核心依赖
             "nvim-lua/plenary.nvim",
             "nvim-treesitter/nvim-treesitter",
             "nvim-telescope/telescope.nvim",
             "j-hui/fidget.nvim",
+            
+            -- AI 相关
             "zbirenbaum/copilot.lua",
+            
+            -- 扩展插件
             "Davidyz/VectorCode",
             "ravitemer/mcphub.nvim",
             "ravitemer/codecompanion-history.nvim",
-            {
-                "jinzhongjia/codecompanion-gitcommit.nvim",
-                dev = true,
-            },
+            { "jinzhongjia/codecompanion-gitcommit.nvim", dev = true },
         },
         opts = function()
             return {
+                -- 基础选项
                 opts = {
                     system_prompt = function(opts)
-                        return string.format(system_rpompt, opts.language or "English")
+                        return string.format(system_prompt, opts.language or "English")
                     end,
                     language = "Chinese",
                 },
-                -- system_prompt = function(opts)
-                --     return string.format(Prompt, opts.language)
-                -- end,
+                
+                -- 适配器配置
                 adapters = get_adapters(),
+                
+                -- 显示配置
                 display = {
                     action_palette = {
-                        provider = "snacks", -- Can be "default", "telescope", "mini_pick" or "snacks". If not specified, the plugin will autodetect installed providers.
+                        provider = "snacks",
                     },
                     chat = {
-                        intro_message = "欢迎使用 CodeCompanion ✨! 按下 ? 查看快捷键", -- 欢迎信息
+                        intro_message = "欢迎使用 CodeCompanion ✨! 按下 ? 查看快捷键",
                         window = {
                             opts = {
                                 relativenumber = false,
@@ -248,108 +288,59 @@ return
                                 winbar = "",
                             },
                         },
-                        show_token_count = false, -- 禁用聊天缓冲区中的 token 显示，因为已在 lualine 中显示
+                        show_token_count = false,
                         fold_context = true,
                     },
-                    -- default|mini_diff
-                    diff = { provider = "inline" },
+                    diff = { 
+                        provider = "inline",  -- default|mini_diff|inline
+                    },
                 },
+                
+                -- 策略配置
                 strategies = {
-                    -- Change the default chat adapter
                     chat = {
                         adapter = get_default_adapter(),
                         keymaps = {
-                            send = {
-                                modes = { n = "<CR>" },
-                            },
-                            close = {
-                                modes = { n = "<leader>c", i = "<C-c>" },
-                            },
+                            send = { modes = { n = "<CR>" } },
+                            close = { modes = { n = "<leader>c", i = "<C-c>" } },
                         },
                         roles = {
-                            ---The header name for the LLM's messages
-                            ---@type string|fun(adapter: CodeCompanion.Adapter): string
                             llm = function(adapter)
                                 return "CodeCompanion (" .. adapter.formatted_name .. ")"
                             end,
-
-                            ---The header name for your messages
-                            ---@type string
                             user = "我",
                         },
+                        -- Slash Commands 配置
                         slash_commands = {
-                            ["buffer"] = {
-                                opts = {
-                                    contains_code = true,
-                                    provider = "snacks", -- default|telescope|mini_pick|fzf_lua
-                                },
-                            },
-                            ["file"] = {
-                                opts = {
-                                    provider = "snacks", -- Other options include 'default', 'mini_pick', 'fzf_lua', snacks
-                                    contains_code = true,
-                                },
-                            },
-                            ["symbols"] = {
-                                opts = {
-                                    contains_code = true,
-                                    provider = "snacks", -- default|telescope|mini_pick|fzf_lua
-                                },
-                            },
-                            ["help"] = {
-                                opts = {
-                                    contains_code = true,
-                                    provider = "snacks", -- default|telescope|mini_pick|fzf_lua
-                                },
-                            },
-                            ["buffer"] = {
-                                opts = {
-                                    contains_code = true,
-                                    provider = "snacks", -- default|telescope|mini_pick|fzf_lua
-                                },
-                            },
-                            ["workspace"] = {
-                                opts = {
-                                    contains_code = true,
-                                    provider = "snacks", -- default|telescope|mini_pick|fzf_lua
-                                },
-                            },
-                            ["terminal"] = {
-                                opts = {
-                                    contains_code = true,
-                                    provider = "snacks", -- default|telescope|mini_pick|fzf_lua
-                                },
-                            },
+                            ["buffer"] = { opts = slash_command_defaults },
+                            ["file"] = { opts = slash_command_defaults },
+                            ["symbols"] = { opts = slash_command_defaults },
+                            ["help"] = { opts = slash_command_defaults },
+                            ["workspace"] = { opts = slash_command_defaults },
+                            ["terminal"] = { opts = slash_command_defaults },
                         },
+                        -- 工具配置
                         tools = {
-                            opts = {
-                                default_tools = { "full_stack_dev" },
-                            },
+                            opts = { default_tools = { "full_stack_dev" } },
                         },
                     },
                     inline = { adapter = "copilot_4_1" },
                 },
+                
+                -- 扩展配置
                 extensions = {
+                    -- VectorCode 扩展
                     vectorcode = {
-                        ---@type VectorCode.CodeCompanion.ExtensionOpts
                         opts = {
                             tool_group = {
-                                -- this will register a tool group called `@vectorcode_toolbox` that contains all 3 tools
                                 enabled = true,
-                                -- a list of extra tools that you want to include in `@vectorcode_toolbox`.
-                                -- if you use @vectorcode_vectorise, it'll be very handy to include
-                                -- `file_search` here.
                                 extras = {},
-                                collapse = true, -- whether the individual tools should be shown in the chat
+                                collapse = true,
                             },
                             tool_opts = {
-                                ---@type VectorCode.CodeCompanion.ToolOpts
                                 ["*"] = {},
-                                ---@type VectorCode.CodeCompanion.LsToolOpts
                                 ls = {},
-                                ---@type VectorCode.CodeCompanion.VectoriseToolOpts
                                 vectorise = {},
-                                ---@type VectorCode.CodeCompanion.QueryToolOpts
                                 query = {
                                     max_num = { chunk = -1, document = -1 },
                                     default_num = { chunk = 50, document = 10 },
@@ -357,9 +348,7 @@ return
                                     use_lsp = false,
                                     no_duplicate = true,
                                     chunk_mode = true,
-                                    ---@type VectorCode.CodeCompanion.SummariseOpts
                                     summarise = {
-                                        ---@type boolean|(fun(chat: CodeCompanion.Chat, results: VectorCode.QueryResult[]):boolean)|nil
                                         enabled = false,
                                         adapter = nil,
                                         query_augmented = true,
@@ -370,63 +359,57 @@ return
                             },
                         },
                     },
+                    
+                    -- MCPHub 扩展
                     mcphub = {
                         callback = "mcphub.extensions.codecompanion",
                         opts = {
-                            -- MCP Tools
-                            make_tools = true, -- Make individual tools (@server__tool) and server groups (@server) from MCP servers
-                            show_server_tools_in_chat = true, -- Show individual tools in chat completion (when make_tools=true)
-                            add_mcp_prefix_to_tool_names = false, -- Add mcp__ prefix (e.g `@mcp__github`, `@mcp__neovim__list_issues`)
-                            show_result_in_chat = true, -- Show tool results directly in chat buffer
-                            format_tool = nil, -- function(tool_name:string, tool: CodeCompanion.Agent.Tool) : string Function to format tool names to show in the chat buffer
-                            -- MCP Resources
-                            make_vars = true, -- Convert MCP resources to #variables for prompts
-                            -- MCP Prompts
-                            make_slash_commands = true, -- Add MCP prompts as /slash commands
+                            make_tools = true,
+                            show_server_tools_in_chat = true,
+                            add_mcp_prefix_to_tool_names = false,
+                            show_result_in_chat = true,
+                            format_tool = nil,
+                            make_vars = true,
+                            make_slash_commands = true,
                         },
                     },
+                    
+                    -- 历史记录扩展
                     history = {
                         enabled = true,
                         opts = {
-                            -- Keymap to open history from chat buffer (default: gh)
                             keymap = "gh",
-                            -- Automatically generate titles for new chats
                             auto_generate_title = true,
-                            ---On exiting and entering neovim, loads the last chat on opening chat
                             continue_last_chat = false,
-                            ---When chat is cleared with `gx` delete the chat from history
                             delete_on_clearing_chat = false,
-                            -- Picker interface ("telescope", "snacks" or "default")
                             picker = "snacks",
-                            ---Enable detailed logging for history extension
                             enable_logging = false,
-                            ---Directory path to save the chats
                             dir_to_save = vim.fn.stdpath("data") .. "/codecompanion-history",
                             title_generation_opts = {
-                                ---Adapter for generating titles (defaults to current chat adapter)
-                                adapter = "copilot", -- "copilot"
-                                ---Model for generating titles (defaults to current chat model)
-                                model = "gpt-4.1", -- "gpt-4o"
+                                adapter = "copilot",
+                                model = DEFAULT_COPILOT_MODEL,
                             },
                         },
                     },
+                    
+                    -- Git Commit 扩展
                     gitcommit = {
                         enabled = true,
                         opts = {
                             add_slash_command = true,
                             adapter = "copilot",
-                            model = "gpt-4.1", -- default model for gitcommit
-                            languages = { "English", "Chinese" }, -- languages to use for git commit messages
+                            model = DEFAULT_COPILOT_MODEL,
+                            languages = { "English", "Chinese" },
                             exclude_files = {
-                                "*.pb.go", -- 排除所有 .pb.go 文件
-                                "*.generated.*", -- 排除所有包含 .generated. 的文件
-                                "vendor/*", -- 排除 vendor 目录下所有文件
-                                "*.lock", -- 排除所有 .lock 文件
-                                "*gen.go", -- 排除所有 gen.go 文件
+                                "*.pb.go",
+                                "*.generated.*",
+                                "vendor/*",
+                                "*.lock",
+                                "*gen.go",
                             },
                             buffer = {
-                                enabled = true, -- Enable gitcommit buffer keymaps
-                                keymap = "<leader>gc", -- Keymap for generating commit message in gitcommit buffer
+                                enabled = true,
+                                keymap = "<leader>gc",
                                 auto_generate = true,
                             },
                         },
@@ -435,31 +418,26 @@ return
             }
         end,
         keys = {
-            {
-                "<leader>cc",
-                ":CodeCompanionChat Toggle<CR>",
-                desc = "Toggle CodeCompanionChat",
-            },
-            {
-                "<leader>cc",
-                ":CodeCompanionChat Add<CR>",
-                mode = "v",
-                desc = "Toggle CodeCompanionChat",
-            },
+            { "<leader>cc", ":CodeCompanionChat Toggle<CR>", desc = "Toggle CodeCompanionChat" },
+            { "<leader>cc", ":CodeCompanionChat Add<CR>", mode = "v", desc = "Toggle CodeCompanionChat" },
         },
     },
+    
+    -- ========== VectorCode ==========
     {
         "Davidyz/VectorCode",
         dependencies = { "nvim-lua/plenary.nvim" },
         event = "VeryLazy",
-        cmd = "VectorCode", -- if you're lazy-loading VectorCode
+        cmd = "VectorCode",
         opts = {
             on_setup = {
-                update = false, -- set to true to enable update when `setup` is called.
+                update = false,
                 lsp = false,
             },
         },
     },
+    
+    -- ========== Copilot ==========
     {
         "zbirenbaum/copilot.lua",
         event = "VeryLazy",
@@ -469,11 +447,9 @@ return
                 enabled = true,
                 auto_trigger = true,
             },
-            panel = {
-                enabled = false,
-            },
+            panel = { enabled = false },
             filetypes = {
-                ["*"] = false, -- disable for all other filetypes and ignore default `filetypes`
+                ["*"] = false,
                 lua = true,
                 go = true,
                 zig = true,
@@ -488,23 +464,23 @@ return
             },
         },
     },
+    
+    -- ========== MCPHub ==========
     {
         "ravitemer/mcphub.nvim",
-        dependencies = {
-            "nvim-lua/plenary.nvim", -- Required for Job and HTTP requests
-        },
-        -- comment the following line to ensure hub will be ready at the earliest
-        cmd = "MCPHub", -- lazy load by default
-        -- uncomment this if you don't want mcp-hub to be available globally or can't use -g
-        build = "bundled_build.lua", -- Use this and set use_bundled_binary = true in opts  (see Advanced configuration)
+        dependencies = { "nvim-lua/plenary.nvim" },
+        cmd = "MCPHub",
+        build = "bundled_build.lua",
         config = function()
             require("mcphub").setup({
                 config = vim.fn.expand(vim.fn.stdpath("config") .. "/mcphub_servers.json"),
-                auto_approve = true, -- Automatically approve MCP servers
-                use_bundled_binary = true, -- Use the bundled binary
+                auto_approve = true,
+                use_bundled_binary = true,
             })
         end,
     },
+    
+    -- ========== ClaudeCode ==========
     {
         "coder/claudecode.nvim",
         dependencies = { "folke/snacks.nvim" },
@@ -519,34 +495,30 @@ return
             { "<leader>am", "<cmd>ClaudeCodeSelectModel<cr>", desc = "Select Claude model" },
             { "<leader>ab", "<cmd>ClaudeCodeAdd %<cr>", desc = "Add current buffer" },
             { "<leader>as", "<cmd>ClaudeCodeSend<cr>", mode = "v", desc = "Send to Claude" },
-            {
-                "<leader>as",
-                "<cmd>ClaudeCodeTreeAdd<cr>",
-                desc = "Add file",
-                ft = { "NvimTree", "neo-tree", "oil", "minifiles" },
-            },
-            -- Diff management
+            { "<leader>as", "<cmd>ClaudeCodeTreeAdd<cr>", desc = "Add file", ft = { "NvimTree", "neo-tree", "oil", "minifiles" } },
             { "<leader>aa", "<cmd>ClaudeCodeDiffAccept<cr>", desc = "Accept diff" },
             { "<leader>ad", "<cmd>ClaudeCodeDiffDeny<cr>", desc = "Deny diff" },
         },
     },
+    
+    -- ========== CodeCompanion Tools ==========
     {
         "jinzhongjia/codecompanion-tools.nvim",
         dev = true,
         event = "VeryLazy",
         opts = {
             translator = {
-                adapter = "copilot", -- 默认使用的 adapter
-                model = "gpt-4.1", -- 默认使用的模型
-                default_target_lang = "zh", -- 默认翻译目标语言
+                adapter = "copilot",
+                model = DEFAULT_COPILOT_MODEL,
+                default_target_lang = "zh",
                 debug = {
-                    enabled = false, -- 是否启用调试日志
-                    log_level = "INFO", -- 日志级别
+                    enabled = false,
+                    log_level = "INFO",
                 },
                 output = {
-                    show_original = true, -- 是否显示原文
-                    notification_timeout = 5000, -- 通知显示时间（毫秒）
-                    copy_to_clipboard = false, -- 是否自动复制到剪贴板
+                    show_original = true,
+                    notification_timeout = 5000,
+                    copy_to_clipboard = false,
                 },
             },
         },
