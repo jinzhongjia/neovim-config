@@ -453,11 +453,6 @@ return
                 desc = "Toggle CodeCompanionChat",
             },
         },
-        -- config = function(_, opts)
-        --     require("codecompanion").setup(opts)
-        --     local spin = spinner()
-        --     spin:init()
-        -- end,
     },
     {
         "Davidyz/VectorCode",
@@ -516,22 +511,6 @@ return
             })
         end,
     },
-    {
-        "jinzhongjia/codecompanion-spinner.nvim",
-        dev = true,
-        enabled = true,
-        event = "VeryLazy",
-        dependencies = {
-            "olimorris/codecompanion.nvim",
-            "nvim-lua/plenary.nvim",
-            "j-hui/fidget.nvim", -- Optional: for fidget integration
-        },
-        opts = {
-            log_level = "info",
-            style = "fidget", -- "spinner", "fidget", or "none"
-        },
-    },
-
     {
         "coder/claudecode.nvim",
         dependencies = { "folke/snacks.nvim" },
