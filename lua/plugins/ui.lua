@@ -412,6 +412,9 @@ return
                             color = { fg = "#7aa2f7", gui = "bold" },
                             separator = { right = "" },
                             padding = { left = 1, right = 0 },
+                            cond = function()
+                                return vim.bo.filetype == "codecompanion"
+                            end,
                         },
                         {
                             require("lazy.status").updates,
