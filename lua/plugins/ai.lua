@@ -1,5 +1,5 @@
--- codecompanion auto tool mode
-vim.g.codecompanion_auto_tool_mode = true
+-- codecompanion yolo mode
+vim.g.codecompanion_yolo_mode = true
 
 -- ========================
 -- 通用常量配置
