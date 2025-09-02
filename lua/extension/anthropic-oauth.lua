@@ -640,7 +640,7 @@ local adapter = vim.tbl_deep_extend("force", vim.deepcopy(anthropic), {
         ["content-type"] = "application/json",
         ["x-api-key"] = "${api_key}",
         ["anthropic-version"] = "2023-06-01",
-        ["anthropic-beta"] = "claude-code-20250219,oauth-2025-04-20,interleaved-thinking-2025-05-14,fine-grained-tool-streaming-2025-05-14,prompt-caching-2024-07-31,token-efficient-tools-2025-02-19",
+        ["anthropic-beta"] = "claude-code-20250219,oauth-2025-04-20,interleaved-thinking-2025-05-14,fine-grained-tool-streaming-2025-05-14,prompt-caching-2024-07-31,token-efficient-tools-2025-02-19,output-128k-2025-02-19,context-1m-2025-08-07",
     },
 
     -- 使用最新模型覆盖模型架构
