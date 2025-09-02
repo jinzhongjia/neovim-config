@@ -790,11 +790,11 @@ adapter.handlers = vim.tbl_extend("force", anthropic.handlers, {
             -- 动态设置最大输出令牌数
             if model_opts.opts.max_output and self.schema.max_tokens then
                 -- 对于工具调用，使用较大的默认值，但不超过模型限制
-                local default_tokens = math.min(model_opts.opts.max_output, 16000)
+                -- local default_tokens = math.min(model_opts.opts.max_output, 16000)
                 if type(self.schema.max_tokens.default) == "function" then
                     -- 已经是函数，不需要覆盖
                 else
-                    self.schema.max_tokens.default = default_tokens
+                    self.schema.max_tokens.default =model_opts.opts.max_output 
                 end
             end
 
