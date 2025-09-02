@@ -697,7 +697,7 @@ adapter.schema.model = {
                 can_reason = true,
                 has_vision = true,
                 max_output = 64000,
-                context_window = 200000,
+                context_window = 1000000,
                 description = "High-performance model - High intelligence and balanced performance",
             },
         },
@@ -742,7 +742,7 @@ adapter.handlers = vim.tbl_extend("force", anthropic.handlers, {
     form_parameters = function(self, params, messages)
         -- 首先调用原始的 form_parameters
         params = anthropic.handlers.form_parameters(self, params, messages)
-        
+
         -- 检查是否是 Opus 4.1 模型
         local model = params.model or self.schema.model.default
         if model == "claude-opus-4-1-20250805" then
@@ -753,7 +753,7 @@ adapter.handlers = vim.tbl_extend("force", anthropic.handlers, {
                 params.top_p = nil
             end
         end
-        
+
         return params
     end,
 
