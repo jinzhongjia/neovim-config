@@ -669,10 +669,10 @@ adapter.schema.model = {
     mapping = "parameters",
     type = "enum",
     desc = "The model that will complete your prompt. See https://docs.anthropic.com/claude/docs/models-overview for additional details and options.",
-    default = "claude-opus-4-1-20250805",
+    default = "claude-opus-4-1",
     choices = {
         -- Claude Opus 4.1 - 最强大的模型
-        ["claude-opus-4-1-20250805"] = {
+        ["claude-opus-4-1"] = {
             opts = {
                 can_reason = true,
                 has_vision = true,
@@ -682,7 +682,7 @@ adapter.schema.model = {
             },
         },
         -- Claude Opus 4 - 前旗舰模型
-        ["claude-opus-4-20250514"] = {
+        ["claude-opus-4-0"] = {
             opts = {
                 can_reason = true,
                 has_vision = true,
@@ -692,7 +692,7 @@ adapter.schema.model = {
             },
         },
         -- Claude Sonnet 4 - 高性能模型
-        ["claude-sonnet-4-20250514"] = {
+        ["claude-sonnet-4-0"] = {
             opts = {
                 can_reason = true,
                 has_vision = true,
@@ -702,7 +702,7 @@ adapter.schema.model = {
             },
         },
         -- Claude Sonnet 3.7 - 带早期扩展思考的高性能模型
-        ["claude-3-7-sonnet-20250219"] = {
+        ["claude-3-7-sonnet-latest"] = {
             opts = {
                 can_reason = true,
                 has_vision = true,
@@ -713,7 +713,7 @@ adapter.schema.model = {
             },
         },
         -- Claude Haiku 3.5 - 最快的模型
-        ["claude-3-5-haiku-20241022"] = {
+        ["claude-3-5-haiku-latest"] = {
             opts = {
                 has_vision = true,
                 max_output = 8192,
