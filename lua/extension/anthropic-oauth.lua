@@ -4,60 +4,6 @@ local config = require("codecompanion.config")
 local curl = require("plenary.curl")
 local log = require("codecompanion.utils.log")
 
--- Windows 平台输出清理函数
----@param str string
----@return string
-local function clean_windows_output(str)
-    if not str then
-        return ""
-    end
-
-    -- 移除 BOM (Byte Order Mark)
-    str = str:gsub("^\239\187\191", "")
-
-    -- 移除 Windows 的回车符
-    str = str:gsub("\r\n", "\n")
-    str = str:gsub("\r", "")
-
-    -- 移除控制字符（除了换行符和制表符）
-    str = str:gsub("[\0-\8\11-\12\14-\31\127]", "")
-
-    -- 移除前后空白字符
-    str = str:match("^%s*(.-)%s*$") or ""
-
-    return str
-end
-
--- 安全的 JSON 编码函数
----@param data table
----@return string|nil
-local function safe_json_encode(data)
-    -- 清理数据中的字符串字段
-    local function clean_data(obj)
-        if type(obj) == "string" then
-            return clean_windows_output(obj)
-        elseif type(obj) == "table" then
-            local cleaned = {}
-            for k, v in pairs(obj) do
-                cleaned[k] = clean_data(v)
-            end
-            return cleaned
-        else
-            return obj
-        end
-    end
-
-    local cleaned_data = clean_data(data)
-    local success, result = pcall(vim.json.encode, cleaned_data)
-
-    if not success then
-        log:error("Anthropic OAuth: JSON 编码失败: %s", result)
-        return nil
-    end
-
-    return result
-end
-
 -- 模块级别的 API 密钥缓存
 local _api_key = nil
 local _api_key_loaded = false
@@ -291,9 +237,8 @@ local function save_api_key(api_key)
         version = 1, -- 版本号，用于未来可能的数据迁移
     }
 
-    -- 使用安全的 JSON 编码
-    local json_data = safe_json_encode(data)
-    if not json_data then
+    local success, json_data = pcall(vim.json.encode, data)
+    if not success then
         log:error("Anthropic OAuth: 无法编码 API 密钥数据")
         return false
     end
@@ -329,9 +274,8 @@ local function create_api_key(access_token)
 
     log:debug("Anthropic OAuth: 正在创建 API 密钥")
 
-    -- 使用安全的 JSON 编码
-    local body_json = safe_json_encode({})
-    if not body_json then
+    local success, body_json = pcall(vim.json.encode, {})
+    if not success then
         log:error("Anthropic OAuth: 无法编码请求体")
         return nil
     end
@@ -342,8 +286,8 @@ local function create_api_key(access_token)
             ["authorization"] = "Bearer " .. access_token,
         },
         body = body_json,
-        insecure = config.adapters.opts.allow_insecure,
-        proxy = config.adapters.opts.proxy,
+        insecure = config.adapters.http.opts.allow_insecure,
+        proxy = config.adapters.http.opts.proxy,
         timeout = 30000, -- 30 second timeout
         on_error = function(err)
             log:error("Anthropic OAuth: 创建 API 密钥请求错误: %s", vim.inspect(err))
@@ -365,8 +309,7 @@ local function create_api_key(access_token)
     end
 
     -- 清理响应体（Windows 平台可能有额外字符）
-    local cleaned_body = clean_windows_output(response.body or "")
-    local decode_success, api_key_data = pcall(vim.json.decode, cleaned_body)
+    local decode_success, api_key_data = pcall(vim.json.decode, response.body)
 
     if not decode_success or not api_key_data or not api_key_data.raw_key then
         log:error(
@@ -407,9 +350,8 @@ local function exchange_code_for_api_key(code, verifier)
         scope = OAUTH_CONFIG.SCOPES,
     }
 
-    -- 使用安全的 JSON 编码
-    local body_json = safe_json_encode(request_data)
-    if not body_json then
+    local encode_success, body_json = pcall(vim.json.encode, request_data)
+    if not encode_success then
         log:error("Anthropic OAuth: 无法编码令牌交换请求")
         return nil
     end
@@ -421,8 +363,8 @@ local function exchange_code_for_api_key(code, verifier)
             ["Content-Type"] = "application/json",
         },
         body = body_json,
-        insecure = config.adapters.opts.allow_insecure,
-        proxy = config.adapters.opts.proxy,
+        insecure = config.adapters.http.opts.allow_insecure,
+        proxy = config.adapters.http.opts.proxy,
         timeout = 30000, -- 30 second timeout
         on_error = function(err)
             log:error("Anthropic OAuth: 令牌交换请求错误: %s", vim.inspect(err))
@@ -439,9 +381,7 @@ local function exchange_code_for_api_key(code, verifier)
         return nil
     end
 
-    -- 清理响应体（Windows 平台可能有额外字符）
-    local cleaned_body = clean_windows_output(response.body or "")
-    local decode_success, token_data = pcall(vim.json.decode, cleaned_body)
+    local decode_success, token_data = pcall(vim.json.decode, response.body)
 
     if not decode_success or not token_data or not token_data.access_token then
         log:error(
@@ -794,7 +734,7 @@ adapter.handlers = vim.tbl_extend("force", anthropic.handlers, {
                 if type(self.schema.max_tokens.default) == "function" then
                     -- 已经是函数，不需要覆盖
                 else
-                    self.schema.max_tokens.default =model_opts.opts.max_output 
+                    self.schema.max_tokens.default = model_opts.opts.max_output
                 end
             end
 
