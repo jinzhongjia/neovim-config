@@ -308,7 +308,6 @@ local function create_api_key(access_token)
         return nil
     end
 
-    -- 清理响应体（Windows 平台可能有额外字符）
     local decode_success, api_key_data = pcall(vim.json.decode, response.body)
 
     if not decode_success or not api_key_data or not api_key_data.raw_key then
