@@ -745,7 +745,7 @@ adapter.handlers = vim.tbl_extend("force", anthropic.handlers, {
 
         -- 检查是否是 Opus 4.1 模型
         local model = params.model or self.schema.model.default
-        if model == "claude-opus-4-1-20250805" then
+        if model == "claude-opus-4-1" then
             -- Opus 4.1 不允许同时指定 temperature 和 top_p
             -- 如果两者都存在，优先使用 temperature，移除 top_p
             if params.temperature and params.top_p then
