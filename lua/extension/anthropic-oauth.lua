@@ -584,26 +584,26 @@ local adapter = vim.tbl_deep_extend("force", vim.deepcopy(anthropic), {
 
     -- 使用最新模型覆盖模型架构
     schema = vim.tbl_deep_extend("force", anthropic.schema or {}, {
-          -- 覆盖 max_tokens 以支持更长的输出，同时确保大于 thinking_budget
+        -- 覆盖 max_tokens 以支持更长的输出，同时确保大于 thinking_budget
         max_tokens = vim.tbl_deep_extend("force", anthropic.schema.max_tokens or {}, {
             default = function(self)
                 local model = self.schema.model.default
                 local model_opts = self.schema.model.choices[model]
-                  
-                  -- 如果模型支持推理（extended thinking），确保 max_tokens > thinking_budget
-                  if model_opts and model_opts.opts and model_opts.opts.can_reason then
-                      local thinking_budget = self.schema.thinking_budget and self.schema.thinking_budget.default or 16000
-                      -- 确保 max_tokens 至少比 thinking_budget 多 1000
-                      local min_tokens = thinking_budget + 1000
-                      
-                      if model_opts.opts.max_output then
-                          -- 直接使用 100% 的最大输出能力
-                          return math.max(min_tokens, model_opts.opts.max_output)
-                      end
-                      return min_tokens
-                  elseif model_opts and model_opts.opts and model_opts.opts.max_output then
-                      -- 直接使用 100% 的最大输出能力
-                      return model_opts.opts.max_output
+
+                -- 如果模型支持推理（extended thinking），确保 max_tokens > thinking_budget
+                if model_opts and model_opts.opts and model_opts.opts.can_reason then
+                    local thinking_budget = self.schema.thinking_budget and self.schema.thinking_budget.default or 16000
+                    -- 确保 max_tokens 至少比 thinking_budget 多 1000
+                    local min_tokens = thinking_budget + 1000
+
+                    if model_opts.opts.max_output then
+                        -- 直接使用 100% 的最大输出能力
+                        return math.max(min_tokens, model_opts.opts.max_output)
+                    end
+                    return min_tokens
+                elseif model_opts and model_opts.opts and model_opts.opts.max_output then
+                    -- 直接使用 100% 的最大输出能力
+                    return model_opts.opts.max_output
                 end
                 return 8192
             end,
