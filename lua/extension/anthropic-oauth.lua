@@ -1,3 +1,4 @@
+local uv = vim.uv
 local Job = require("plenary.job")
 local anthropic = require("codecompanion.adapters.http.anthropic")
 local config = require("codecompanion.config")
@@ -45,19 +46,17 @@ local function generate_random_string(length)
     local seed = os.time() -- 基础时间戳
 
     -- 使用 vim.loop (libuv) 获取高精度时间，跨平台兼容
-    if vim.loop then
-        -- 获取高精度时间戳（微秒）
-        local hrtime = vim.loop.hrtime()
-        if hrtime then
-            -- 取低32位作为额外的熵
-            seed = seed + (hrtime % 2147483647)
-        end
+    -- 获取高精度时间戳（微秒）
+    local hrtime = uv.hrtime()
+    if hrtime then
+        -- 取低32位作为额外的熵
+        seed = seed + (hrtime % 2147483647)
+    end
 
-        -- 获取进程ID作为额外的熵
-        local pid = vim.loop.os_getpid()
-        if pid then
-            seed = seed + pid
-        end
+    -- 获取进程ID作为额外的熵
+    local pid = uv.os_getpid()
+    if pid then
+        seed = seed + pid
     end
 
     -- 添加一些运行时信息作为熵
@@ -243,6 +242,7 @@ local function save_api_key(api_key)
         return false
     end
 
+    ---@diagnostic disable-next-line: redefined-local
     local success, err = pcall(function()
         -- Windows 平台写入文件时使用二进制模式
         if vim.fn.has("win32") == 1 then
@@ -464,29 +464,26 @@ local function setup_oauth()
             end
         end
     elseif vim.fn.has("win32") == 1 then
-        -- Windows 需要特殊处理，使用 cmd /c start
-        open_cmd = 'cmd /c start ""'
+        -- Windows 需要特殊处理
+        open_cmd = "start"
     end
 
     if open_cmd then
         local cmd
         if vim.fn.has("win32") == 1 then
-            -- Windows: 使用双引号，并转义特殊字符
-            cmd = open_cmd .. ' "' .. auth_data.url:gsub("&", "^&") .. '"'
+            -- Windows: 使用 cmd /c start，并正确处理 URL
+            -- 使用空标题和转义的 URL
+            cmd = string.format('cmd /c start "" "%s"', auth_data.url:gsub("&", "^&"))
         else
             -- Unix/Mac: 使用单引号
             cmd = open_cmd .. " '" .. auth_data.url .. "'"
         end
 
-        -- 使用 vim.fn.jobstart 替代 system 以避免输出干扰
         local success = pcall(function()
             if vim.fn.has("win32") == 1 then
-                -- Windows 平台使用 jobstart 避免命令窗口闪现
-                vim.fn.jobstart(cmd, {
-                    detach = true,
-                    on_stdout = function() end,
-                    on_stderr = function() end,
-                })
+                -- Windows 平台使用 system 执行，但隐藏输出
+                -- jobstart 在某些 Windows 环境下可能无法正确打开浏览器
+                vim.fn.system(cmd)
             else
                 vim.fn.system(cmd)
             end
@@ -672,15 +669,6 @@ adapter.schema.model = {
                 description = "Our fastest model - Intelligence at blazing speeds",
             },
         },
-        -- Claude Haiku 3 - 快速紧凑模型
-        ["claude-3-haiku-20240307"] = {
-            opts = {
-                has_vision = true,
-                max_output = 4096,
-                context_window = 200000,
-                description = "Fast and compact model for near-instant responsiveness",
-            },
-        },
     },
 }
 
@@ -780,17 +768,6 @@ adapter.handlers = vim.tbl_extend("force", anthropic.handlers, {
             messages = formatted.messages,
         }
     end,
-})
-
--- 确保 opts 包含必要的工具支持选项
-adapter.opts = vim.tbl_deep_extend("force", anthropic.opts or {}, {
-    tools = true,
-    stream = true,
-    vision = true,
-    -- 增加缓存设置以支持更长的工具调用
-    -- 没法增加，claude 官方最多 4 个
-    -- cache_breakpoints = 6,
-    -- cache_over = 200,
 })
 
 adapter.get_api_key = get_api_key
