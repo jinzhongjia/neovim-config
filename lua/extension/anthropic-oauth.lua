@@ -793,4 +793,6 @@ adapter.opts = vim.tbl_deep_extend("force", anthropic.opts or {}, {
     -- cache_over = 200,
 })
 
+adapter.get_api_key = get_api_key
+
 return adapter

@@ -21,8 +21,9 @@ local env = {
 local function get_adapters()
     local default_adpters = {
         http = {},
+        acp = {},
     }
-    
+
     -- Copilot 适配器
     default_adpters.http.copilot = function()
         return require("codecompanion.adapters").extend("copilot", {
@@ -33,13 +34,13 @@ local function get_adapters()
             },
         })
     end
-    
+
     default_adpters.http.copilot_4_1 = function()
         return require("codecompanion.adapters").extend("copilot", {
             schema = { model = { default = DEFAULT_COPILOT_MODEL } },
         })
     end
-    
+
     -- BigModel 适配器
     if env.API_KEY and env.API_KEY ~= "" then
         default_adpters.http.bigmodel = function()
@@ -138,8 +139,20 @@ local function get_adapters()
         end
     end
 
+    local claude_code = require("extension.anthropic-oauth")
+
     -- Anthropic OAuth 适配器
-    default_adpters.http.anthropic_oauth = require("extension.anthropic-oauth")
+    default_adpters.http.anthropic_oauth = claude_code
+
+    default_adpters.acp.claude_code = function()
+        return require("codecompanion.adapters").extend("claude_code", {
+            env = {
+                ANTHROPIC_API_KEY = function()
+                    return claude_code.get_api_key()
+                end,
+            },
+        })
+    end
 
     -- 适配器全局选项
     default_adpters.http.opts = {
@@ -251,10 +264,10 @@ return {
             "nvim-treesitter/nvim-treesitter",
             "nvim-telescope/telescope.nvim",
             "j-hui/fidget.nvim",
-            
+
             -- AI 相关
             "zbirenbaum/copilot.lua",
-            
+
             -- 扩展插件
             "Davidyz/VectorCode",
             "ravitemer/mcphub.nvim",
@@ -270,10 +283,10 @@ return {
                     end,
                     language = "Chinese",
                 },
-                
+
                 -- 适配器配置
                 adapters = get_adapters(),
-                
+
                 -- 显示配置
                 display = {
                     action_palette = {
@@ -291,11 +304,11 @@ return {
                         show_token_count = false,
                         fold_context = true,
                     },
-                    diff = { 
-                        provider = "inline",  -- default|mini_diff|inline
+                    diff = {
+                        provider = "inline", -- default|mini_diff|inline
                     },
                 },
-                
+
                 -- 策略配置
                 strategies = {
                     chat = {
@@ -326,7 +339,7 @@ return {
                     },
                     inline = { adapter = "copilot_4_1" },
                 },
-                
+
                 -- 扩展配置
                 extensions = {
                     -- VectorCode 扩展
@@ -359,7 +372,7 @@ return {
                             },
                         },
                     },
-                    
+
                     -- MCPHub 扩展
                     mcphub = {
                         callback = "mcphub.extensions.codecompanion",
@@ -373,7 +386,7 @@ return {
                             make_slash_commands = true,
                         },
                     },
-                    
+
                     -- 历史记录扩展
                     history = {
                         enabled = true,
@@ -391,7 +404,7 @@ return {
                             },
                         },
                     },
-                    
+
                     -- Git Commit 扩展
                     gitcommit = {
                         enabled = true,
@@ -422,7 +435,7 @@ return {
             { "<leader>cc", ":CodeCompanionChat Add<CR>", mode = "v", desc = "Toggle CodeCompanionChat" },
         },
     },
-    
+
     -- ========== VectorCode ==========
     {
         "Davidyz/VectorCode",
@@ -436,7 +449,7 @@ return {
             },
         },
     },
-    
+
     -- ========== Copilot ==========
     {
         "zbirenbaum/copilot.lua",
@@ -464,7 +477,7 @@ return {
             },
         },
     },
-    
+
     -- ========== MCPHub ==========
     {
         "ravitemer/mcphub.nvim",
@@ -479,7 +492,7 @@ return {
             })
         end,
     },
-    
+
     -- ========== ClaudeCode ==========
     {
         "coder/claudecode.nvim",
@@ -495,12 +508,17 @@ return {
             { "<leader>am", "<cmd>ClaudeCodeSelectModel<cr>", desc = "Select Claude model" },
             { "<leader>ab", "<cmd>ClaudeCodeAdd %<cr>", desc = "Add current buffer" },
             { "<leader>as", "<cmd>ClaudeCodeSend<cr>", mode = "v", desc = "Send to Claude" },
-            { "<leader>as", "<cmd>ClaudeCodeTreeAdd<cr>", desc = "Add file", ft = { "NvimTree", "neo-tree", "oil", "minifiles" } },
+            {
+                "<leader>as",
+                "<cmd>ClaudeCodeTreeAdd<cr>",
+                desc = "Add file",
+                ft = { "NvimTree", "neo-tree", "oil", "minifiles" },
+            },
             { "<leader>aa", "<cmd>ClaudeCodeDiffAccept<cr>", desc = "Accept diff" },
             { "<leader>ad", "<cmd>ClaudeCodeDiffDeny<cr>", desc = "Deny diff" },
         },
     },
-    
+
     -- ========== CodeCompanion Tools ==========
     {
         "jinzhongjia/codecompanion-tools.nvim",
