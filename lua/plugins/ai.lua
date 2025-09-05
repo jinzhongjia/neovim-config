@@ -19,19 +19,12 @@ local env = {
 }
 
 local function get_adapters()
-    local default_adpters = {
-        http = {},
-        acp = {},
-    }
+    local default_adpters = { http = {}, acp = {} }
 
     -- Copilot 适配器
     default_adpters.http.copilot = function()
         return require("codecompanion.adapters").extend("copilot", {
-            schema = {
-                model = {
-                    default = DEFAULT_CLAUDE_MODEL,
-                },
-            },
+            schema = { model = { default = DEFAULT_CLAUDE_MODEL } },
         })
     end
 
@@ -52,11 +45,7 @@ local function get_adapters()
                     api_key = env.API_KEY,
                     chat_url = "/v4/chat/completions",
                 },
-                schema = {
-                    model = {
-                        default = "glm-4.5",
-                    },
-                },
+                schema = { model = { default = "glm-4.5" } },
             })
         end
     end
@@ -100,11 +89,7 @@ local function get_adapters()
                     api_key = env.OPENROUTER_KEY,
                     chat_url = "/v1/chat/completions",
                 },
-                schema = {
-                    model = {
-                        default = "openrouter/horizon-alpha",
-                    },
-                },
+                schema = { model = { default = "openrouter/horizon-alpha" } },
             })
         end
     end
@@ -113,9 +98,7 @@ local function get_adapters()
     if env.TAVILY_KEY and env.TAVILY_KEY ~= "" then
         default_adpters.http.tavily = function()
             return require("codecompanion.adapters").extend("tavily", {
-                env = {
-                    api_key = env.TAVILY_KEY,
-                },
+                env = { api_key = env.TAVILY_KEY },
             })
         end
     end
@@ -126,15 +109,8 @@ local function get_adapters()
             return require("codecompanion.adapters").extend("openai_compatible", {
                 name = "llm_router",
                 formatted_name = "LLM Router",
-                env = {
-                    url = env.LLM_ROUTER_URL,
-                    api_key = "*******",
-                },
-                schema = {
-                    model = {
-                        default = "claude-4-opus",
-                    },
-                },
+                env = { url = env.LLM_ROUTER_URL, api_key = "*******" },
+                schema = { model = { default = "claude-4-opus" } },
             })
         end
     end
@@ -155,10 +131,7 @@ local function get_adapters()
     end
 
     -- 适配器全局选项
-    default_adpters.http.opts = {
-        show_defaults = false,
-        show_model_choices = true,
-    }
+    default_adpters.http.opts = { show_defaults = false, show_model_choices = true }
 
     return default_adpters
 end
@@ -172,74 +145,6 @@ local get_default_adapter = function()
     -- end
     return "anthropic_oauth"
 end
-
--- ========================
--- 系统提示词
--- ========================
-local system_prompt = [[
-You are an AI programming assistant named "CodeCompanion". You are currently plugged in to the Neovim text editor on a user's machine.
-
-Your core tasks include:
-- Answering general programming questions.
-- Explaining how the code in a Neovim buffer works.
-- Reviewing the selected code in a Neovim buffer.
-- Generating unit tests for the selected code.
-- Proposing fixes for problems in the selected code.
-- Scaffolding code for a new workspace.
-- Finding relevant code to the user's query.
-- Proposing fixes for test failures.
-- Answering questions about Neovim.
-- Running tools.
-
-You must:
-- **Be proactive and thorough in executing the user's direct requests.**
-- **Ask permission before providing additional help beyond the request.**
-- Follow the user's requirements carefully and to the letter.
-- Keep your answers short and impersonal, especially if the user responds with context outside of your tasks.
-- Minimize other prose.
-- Use Markdown formatting in your answers.
-- Include the programming language name at the start of the Markdown code blocks.
-- Avoid including line numbers in code blocks.
-- Avoid wrapping the whole response in triple backticks.
-- Only return code that's relevant to the task at hand. You may not need to return all of the code that the user has shared.
-- Use actual line breaks instead of '\n' in your response to begin new lines.
-- Use '\n' only when you want a literal backslash followed by a character 'n'.
-- All non-code responses must be in %s.
-
-**Response Strategy:**
-
-**Direct Requests (execute immediately and thoroughly):**
-- Answer the specific programming question
-- Generate the requested code with appropriate detail
-- Explain the specified code sections
-- Review and provide feedback on selected code
-- Fix identified problems or bugs
-- Create tests when explicitly asked
-- Scaffold requested project structures
-
-**Additional Help (ask permission first):**
-- Suggesting improvements or optimizations not requested
-- Providing alternative approaches or examples
-- Recommending related tools, libraries, or best practices  
-- Adding extra features or functionality
-- Offering to create related code (tests, documentation, etc.)
-- Proposing follow-up tasks or next steps
-
-**Permission Request Format:**
-After completing the core request, if additional help would be valuable, ask:
-"Would you like me to also [specific action]?"
-
-**Examples:**
-- "Would you like me to also add input validation to this function?"
-- "Should I create unit tests for this code as well?"
-- "Would you like suggestions for improving performance?"
-- "Should I show you alternative implementations?"
-
-**When given a task:**
-1. Complete the requested task thoroughly and proactively.
-2. If you identify valuable additional help, ask permission with a brief, specific question.
-3. You can only give one reply for each conversation turn.
-]]
 
 -- ========================
 -- Slash Commands 通用配置
@@ -278,9 +183,6 @@ return {
             return {
                 -- 基础选项
                 opts = {
-                    system_prompt = function(opts)
-                        return string.format(system_prompt, opts.language or "English")
-                    end,
                     language = "Chinese",
                 },
 
