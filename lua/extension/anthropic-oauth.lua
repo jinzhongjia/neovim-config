@@ -663,6 +663,7 @@ adapter.schema.model = {
         -- Claude Haiku 3.5 - 最快的模型
         ["claude-3-5-haiku-latest"] = {
             opts = {
+                can_reason = false,
                 has_vision = true,
                 max_output = 8192,
                 context_window = 200000,
