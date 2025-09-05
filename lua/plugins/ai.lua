@@ -7,6 +7,10 @@ vim.g.codecompanion_yolo_mode = true
 local DEFAULT_COPILOT_MODEL = "gpt-4.1"
 local DEFAULT_CLAUDE_MODEL = "claude-sonnet-4"
 
+local INLINE_ADAPTER = "anthropic_oauth"
+
+local DEFAULT_CLAUDE_FAST_MODEL = "claude-sonnet-4-0"
+
 -- ========================
 -- 环境变量配置
 -- ========================
@@ -191,18 +195,10 @@ return {
 
                 -- 显示配置
                 display = {
-                    action_palette = {
-                        provider = "snacks",
-                    },
+                    action_palette = { provider = "snacks" },
                     chat = {
                         intro_message = "欢迎使用 CodeCompanion ✨! 按下 ? 查看快捷键",
-                        window = {
-                            opts = {
-                                relativenumber = false,
-                                number = false,
-                                winbar = "",
-                            },
-                        },
+                        window = { opts = { relativenumber = false, number = false, winbar = "" } },
                         show_token_count = false,
                         fold_context = true,
                     },
@@ -239,7 +235,7 @@ return {
                             opts = { default_tools = { "full_stack_dev" } },
                         },
                     },
-                    inline = { adapter = "copilot_4_1" },
+                    inline = { adapter = INLINE_ADAPTER },
                 },
 
                 -- 扩展配置
@@ -247,11 +243,7 @@ return {
                     -- VectorCode 扩展
                     vectorcode = {
                         opts = {
-                            tool_group = {
-                                enabled = true,
-                                extras = {},
-                                collapse = true,
-                            },
+                            tool_group = { enabled = true, extras = {}, collapse = true },
                             tool_opts = {
                                 ["*"] = {},
                                 ls = {},
@@ -263,11 +255,7 @@ return {
                                     use_lsp = false,
                                     no_duplicate = true,
                                     chunk_mode = true,
-                                    summarise = {
-                                        enabled = false,
-                                        adapter = nil,
-                                        query_augmented = true,
-                                    },
+                                    summarise = { enabled = false, adapter = nil, query_augmented = true },
                                 },
                                 files_ls = {},
                                 files_rm = {},
@@ -301,8 +289,8 @@ return {
                             enable_logging = false,
                             dir_to_save = vim.fn.stdpath("data") .. "/codecompanion-history",
                             title_generation_opts = {
-                                adapter = "copilot",
-                                model = DEFAULT_COPILOT_MODEL,
+                                adapter = "anthropic_oauth",
+                                model = DEFAULT_CLAUDE_FAST_MODEL,
                             },
                         },
                     },
@@ -312,8 +300,8 @@ return {
                         enabled = true,
                         opts = {
                             add_slash_command = true,
-                            adapter = "copilot",
-                            model = DEFAULT_COPILOT_MODEL,
+                            adapter = "anthropic_oauth",
+                            model = DEFAULT_CLAUDE_FAST_MODEL,
                             languages = { "English", "Chinese" },
                             exclude_files = {
                                 "*.pb.go",
@@ -428,8 +416,8 @@ return {
         event = "VeryLazy",
         opts = {
             translator = {
-                adapter = "copilot",
-                model = DEFAULT_COPILOT_MODEL,
+                adapter = "anthropic_oauth",
+                model = DEFAULT_CLAUDE_FAST_MODEL,
                 default_target_lang = "zh",
                 debug = {
                     enabled = false,
