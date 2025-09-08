@@ -9,7 +9,7 @@ local DEFAULT_CLAUDE_MODEL = "claude-sonnet-4"
 
 local INLINE_ADAPTER = "anthropic_oauth"
 
-local DEFAULT_CLAUDE_FAST_MODEL = "claude-sonnet-4-0"
+local DEFAULT_CLAUDE_FAST_MODEL = "claude-3-5-haiku-latest"
 
 -- ========================
 -- 环境变量配置

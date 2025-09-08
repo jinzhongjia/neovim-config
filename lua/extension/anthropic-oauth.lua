@@ -576,7 +576,8 @@ local adapter = vim.tbl_deep_extend("force", vim.deepcopy(anthropic), {
         ["content-type"] = "application/json",
         ["x-api-key"] = "${api_key}",
         ["anthropic-version"] = "2023-06-01",
-        ["anthropic-beta"] = "claude-code-20250219,oauth-2025-04-20,interleaved-thinking-2025-05-14,fine-grained-tool-streaming-2025-05-14,prompt-caching-2024-07-31,token-efficient-tools-2025-02-19,output-128k-2025-02-19,context-1m-2025-08-07",
+        -- 基础 beta features，在 setup 中动态添加更多
+        ["anthropic-beta"] = "claude-code-20250219,oauth-2025-04-20,prompt-caching-2024-07-31,fine-grained-tool-streaming-2025-05-14,token-efficient-tools-2025-02-19,output-128k-2025-02-19,context-1m-2025-08-07",
     },
 
     -- 使用最新模型覆盖模型架构
@@ -584,7 +585,7 @@ local adapter = vim.tbl_deep_extend("force", vim.deepcopy(anthropic), {
         -- 覆盖 max_tokens 以支持更长的输出，同时确保大于 thinking_budget
         max_tokens = vim.tbl_deep_extend("force", anthropic.schema.max_tokens or {}, {
             default = function(self)
-                local model = self.schema.model.default
+                local model = self.parameters and self.parameters.model or self.schema.model.default
                 local model_opts = self.schema.model.choices[model]
 
                 -- 如果模型支持推理（extended thinking），确保 max_tokens > thinking_budget
@@ -594,12 +595,13 @@ local adapter = vim.tbl_deep_extend("force", vim.deepcopy(anthropic), {
                     local min_tokens = thinking_budget + 1000
 
                     if model_opts.opts.max_output then
-                        -- 直接使用 100% 的最大输出能力
-                        return math.max(min_tokens, model_opts.opts.max_output)
+                        -- 使用模型的最大输出能力，但需要考虑 thinking_budget
+                        -- 如果 min_tokens 超过了模型的最大输出，使用模型的最大输出
+                        return math.min(min_tokens, model_opts.opts.max_output)
                     end
                     return min_tokens
                 elseif model_opts and model_opts.opts and model_opts.opts.max_output then
-                    -- 直接使用 100% 的最大输出能力
+                    -- 使用模型的最大输出能力
                     return model_opts.opts.max_output
                 end
                 return 8192
@@ -674,7 +676,7 @@ adapter.schema.model = {
 }
 
 adapter.handlers = vim.tbl_extend("force", anthropic.handlers, {
-    -- 格式化参数，处理 Opus 4.1 的限制
+    -- 格式化参数，处理 Opus 4.1 的限制和 thinking 支持
     ---@param self CodeCompanion.Adapter
     ---@param params table
     ---@param messages table
@@ -683,11 +685,40 @@ adapter.handlers = vim.tbl_extend("force", anthropic.handlers, {
         -- 首先调用原始的 form_parameters
         params = anthropic.handlers.form_parameters(self, params, messages)
 
-        -- 检查是否是 Opus 4.1 模型
+        -- 获取当前模型配置
         local model = params.model or self.schema.model.default
+        local model_opts = self.schema.model.choices[model]
+
+        -- 关键修复：根据模型限制调整 max_tokens
+        if model_opts and model_opts.opts and model_opts.opts.max_output then
+            -- 如果当前的 max_tokens 超过了模型的最大值，调整它
+            if params.max_tokens and params.max_tokens > model_opts.opts.max_output then
+                log:debug(
+                    "模型 %s 的 max_tokens %d 超过最大值 %d，调整为最大值",
+                    model,
+                    params.max_tokens,
+                    model_opts.opts.max_output
+                )
+                params.max_tokens = model_opts.opts.max_output
+            end
+        end
+
+        -- 关键修复：如果模型不支持 thinking，移除 thinking 相关参数
+        if model_opts and model_opts.opts and not model_opts.opts.can_reason then
+            -- 移除 thinking 参数
+            if params.thinking then
+                log:debug("模型 %s 不支持 thinking，移除 thinking 参数", model)
+                params.thinking = nil
+            end
+
+            -- 清空 temp 中的 extended_thinking 和 thinking_budget
+            self.temp.extended_thinking = nil
+            self.temp.thinking_budget = nil
+        end
+
+        -- Opus 4.1 特殊处理
         if model == "claude-opus-4-1" then
             -- Opus 4.1 不允许同时指定 temperature 和 top_p
-            -- 如果两者都存在，优先使用 temperature，移除 top_p
             if params.temperature and params.top_p then
                 log:debug("Opus 4.1 检测到同时设置了 temperature 和 top_p，移除 top_p")
                 params.top_p = nil
@@ -727,10 +758,30 @@ adapter.handlers = vim.tbl_extend("force", anthropic.handlers, {
                 has_token_efficient_tools = model_opts.opts.has_token_efficient_tools,
             })
 
+            -- 动态设置 thinking 相关的 beta headers
+            -- 只有支持 thinking 的模型才添加 interleaved-thinking beta feature
+            if model_opts.opts.can_reason then
+                -- 添加 thinking 支持
+                if not string.find(self.headers["anthropic-beta"], "interleaved%-thinking") then
+                    self.headers["anthropic-beta"] = self.headers["anthropic-beta"]
+                        .. ",interleaved-thinking-2025-05-14"
+                    log:debug("为模型 %s 启用 thinking 支持", model)
+                end
+            else
+                -- 移除 thinking 支持（如果存在）
+                if string.find(self.headers["anthropic-beta"], "interleaved%-thinking") then
+                    self.headers["anthropic-beta"] =
+                        self.headers["anthropic-beta"]:gsub(",?interleaved%-thinking%-[^,]*", "")
+                    log:debug("为模型 %s 禁用 thinking 支持", model)
+                end
+
+                -- 清空 extended_thinking 相关设置
+                self.temp.extended_thinking = nil
+                self.temp.thinking_budget = nil
+            end
+
             -- 动态设置最大输出令牌数
             if model_opts.opts.max_output and self.schema.max_tokens then
-                -- 对于工具调用，使用较大的默认值，但不超过模型限制
-                -- local default_tokens = math.min(model_opts.opts.max_output, 16000)
                 if type(self.schema.max_tokens.default) == "function" then
                     -- 已经是函数，不需要覆盖
                 else
@@ -740,6 +791,7 @@ adapter.handlers = vim.tbl_extend("force", anthropic.handlers, {
 
             -- 记录当前使用的模型信息
             log:debug("使用模型: %s - %s", model, model_opts.opts.description or "")
+            log:debug("Beta features: %s", self.headers["anthropic-beta"])
         end
 
         -- 调用原始设置函数处理流式传输和模型选项
@@ -768,6 +820,41 @@ adapter.handlers = vim.tbl_extend("force", anthropic.handlers, {
             system = system,
             messages = formatted.messages,
         }
+    end,
+})
+
+-- 覆盖 extended_thinking 的默认值逻辑
+adapter.schema.extended_thinking = vim.tbl_deep_extend("force", adapter.schema.extended_thinking or {}, {
+    default = function(self)
+        local model = self.schema.model.default
+        local model_opts = self.schema.model.choices[model]
+        -- 只有明确支持 can_reason 的模型才默认启用
+        if model_opts and model_opts.opts and model_opts.opts.can_reason == true then
+            return true
+        end
+        return false
+    end,
+    condition = function(self)
+        local model = self.schema.model.default
+        local model_opts = self.schema.model.choices[model]
+        -- 只有支持 can_reason 的模型才显示这个选项
+        if model_opts and model_opts.opts then
+            return model_opts.opts.can_reason == true
+        end
+        return false
+    end,
+})
+
+-- 覆盖 thinking_budget 的条件逻辑
+adapter.schema.thinking_budget = vim.tbl_deep_extend("force", adapter.schema.thinking_budget or {}, {
+    condition = function(self)
+        local model = self.schema.model.default
+        local model_opts = self.schema.model.choices[model]
+        -- 只有支持 can_reason 的模型才显示这个选项
+        if model_opts and model_opts.opts then
+            return model_opts.opts.can_reason == true
+        end
+        return false
     end,
 })
 
