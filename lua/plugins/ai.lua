@@ -302,7 +302,7 @@ return {
                         opts = {
                             add_slash_command = true,
                             adapter = "anthropic_oauth",
-                            model = DEFAULT_CLAUDE_AUTH_MODEL,
+                            model = DEFAULT_CLAUDE_FAST_MODEL,
                             languages = { "English", "Chinese" },
                             exclude_files = {
                                 "*.pb.go",
