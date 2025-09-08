@@ -9,6 +9,7 @@ local DEFAULT_CLAUDE_MODEL = "claude-sonnet-4"
 
 local INLINE_ADAPTER = "anthropic_oauth"
 
+local DEFAULT_CLAUDE_AUTH_MODEL = "claude-sonnet-4-0"
 local DEFAULT_CLAUDE_FAST_MODEL = "claude-3-5-haiku-latest"
 
 -- ========================
@@ -301,7 +302,7 @@ return {
                         opts = {
                             add_slash_command = true,
                             adapter = "anthropic_oauth",
-                            model = DEFAULT_CLAUDE_FAST_MODEL,
+                            model = DEFAULT_CLAUDE_AUTH_MODEL,
                             languages = { "English", "Chinese" },
                             exclude_files = {
                                 "*.pb.go",
