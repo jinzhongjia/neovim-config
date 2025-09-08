@@ -66,6 +66,25 @@ return
             "nvim-telescope/telescope-fzf-native.nvim",
         },
         config = function()
+            require("dropbar").setup({
+                bar = {
+                    enable = function(buf, win, _)
+                        local excluded_filetypes = {
+                            help = true,
+                            codecompanion = true,
+                            -- 可以在这里添加更多需要排除的 filetype
+                        }
+
+                        return not vim.w[win].winbar_no_attach
+                            and vim.api.nvim_buf_is_valid(buf)
+                            and vim.api.nvim_win_is_valid(win)
+                            and vim.wo[win].winbar == ""
+                            and vim.fn.win_gettype(win) == ""
+                            and not excluded_filetypes[vim.bo[buf].ft]
+                            and ((pcall(vim.treesitter.get_parser, buf)) and true or false)
+                    end,
+                },
+            })
             local dropbar_api = require("dropbar.api")
             vim.keymap.set("n", "<Leader>;", dropbar_api.pick, { desc = "Pick symbols in winbar" })
             vim.keymap.set("n", "[;", dropbar_api.goto_context_start, { desc = "Go to start of current context" })
