@@ -4,13 +4,12 @@ vim.g.codecompanion_yolo_mode = true
 -- ========================
 -- 通用常量配置
 -- ========================
-local DEFAULT_COPILOT_MODEL = "gpt-4.1"
-local DEFAULT_CLAUDE_MODEL = "claude-sonnet-4"
+local DEFAULT_COPILOT_FREE_MODEL = "gpt-4.1"
+local DEFAULT_COPILOT_MODEL = "claude-sonnet-4"
 
-local INLINE_ADAPTER = "anthropic_oauth"
-
-local DEFAULT_CLAUDE_AUTH_MODEL = "claude-sonnet-4-0"
-local DEFAULT_CLAUDE_FAST_MODEL = "claude-3-5-haiku-latest"
+local DEFAULT_CLAUDE_AUTH_MODEL = "claude-opus-4-0"
+local DEFAULT_CLAUDE_AUTH_MIDDLE_MODEL = "claude-sonnet-4-0"
+local DEFAULT_CLAUDE_AUTH_FAST_MODEL = "claude-3-5-haiku-latest"
 
 -- ========================
 -- 环境变量配置
@@ -29,13 +28,13 @@ local function get_adapters()
     -- Copilot 适配器
     default_adpters.http.copilot = function()
         return require("codecompanion.adapters").extend("copilot", {
-            schema = { model = { default = DEFAULT_CLAUDE_MODEL } },
+            schema = { model = { default = DEFAULT_COPILOT_MODEL } },
         })
     end
 
     default_adpters.http.copilot_4_1 = function()
         return require("codecompanion.adapters").extend("copilot", {
-            schema = { model = { default = DEFAULT_COPILOT_MODEL } },
+            schema = { model = { default = DEFAULT_COPILOT_FREE_MODEL } },
         })
     end
 
@@ -124,6 +123,15 @@ local function get_adapters()
 
     -- Anthropic OAuth 适配器
     default_adpters.http.anthropic_oauth = claude_code
+
+    -- Anthropic OAuth - Inline 适配器
+    default_adpters.http.inline_adapter = function()
+        return require("codecompanion.adapters").extend("anthropic_oauth", {
+            name = "inline_adapter",
+            formatted_name = "Anthropic OAuth (Inline)",
+            schema = { model = { default = DEFAULT_CLAUDE_AUTH_MIDDLE_MODEL } },
+        })
+    end
 
     default_adpters.acp.claude_code = function()
         return require("codecompanion.adapters").extend("claude_code", {
@@ -236,7 +244,7 @@ return {
                             opts = { default_tools = { "full_stack_dev" } },
                         },
                     },
-                    inline = { adapter = INLINE_ADAPTER },
+                    inline = { adapter = "inline_adapter" },
                 },
 
                 -- 扩展配置
@@ -291,7 +299,7 @@ return {
                             dir_to_save = vim.fn.stdpath("data") .. "/codecompanion-history",
                             title_generation_opts = {
                                 adapter = "anthropic_oauth",
-                                model = DEFAULT_CLAUDE_FAST_MODEL,
+                                model = DEFAULT_CLAUDE_AUTH_FAST_MODEL,
                             },
                         },
                     },
@@ -302,7 +310,7 @@ return {
                         opts = {
                             add_slash_command = true,
                             adapter = "anthropic_oauth",
-                            model = DEFAULT_CLAUDE_FAST_MODEL,
+                            model = DEFAULT_CLAUDE_AUTH_FAST_MODEL,
                             languages = { "English", "Chinese" },
                             exclude_files = {
                                 "*.pb.go",
@@ -418,7 +426,7 @@ return {
         opts = {
             translator = {
                 adapter = "anthropic_oauth",
-                model = DEFAULT_CLAUDE_FAST_MODEL,
+                model = DEFAULT_CLAUDE_AUTH_FAST_MODEL,
                 default_target_lang = "zh",
                 debug = {
                     enabled = false,
