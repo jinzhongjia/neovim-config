@@ -94,4 +94,28 @@ return
             { "[c", function() require("treesitter-context").go_to_context(vim.v.count1) end, desc = "jumping to context(upwards)" },
         },
     },
+    {
+        "windwp/nvim-ts-autotag",
+        dependencies = "nvim-treesitter/nvim-treesitter",
+        event = { "BufReadPre", "BufNewFile" },
+        opts = {
+            -- 全局默认配置
+            enable_close = true,          -- 自动关闭标签
+            enable_rename = true,         -- 自动重命名配对的标签
+            enable_close_on_slash = false -- 在输入 </ 时自动关闭
+        },
+        config = function(_, opts)
+            require("nvim-ts-autotag").setup({
+                opts = opts,
+                -- 可以针对特定文件类型进行配置覆盖
+                per_filetype = {
+                    -- 例如: ["html"] = { enable_close = false }
+                },
+                -- 如果需要支持额外的语言，可以添加别名
+                -- aliases = {
+                --     ["your_language"] = "html",
+                -- }
+            })
+        end,
+    },
 }
