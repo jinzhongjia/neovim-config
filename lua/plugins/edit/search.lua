@@ -59,7 +59,17 @@ return
                         ["<C-l>"] = "preview_scrolling_right",
                     },
                 },
-                file_ignore_patterns = { "node_modules", "dist", "__pycache__" },
+                file_ignore_patterns = { 
+                    "node_modules", 
+                    "dist", 
+                    "__pycache__",
+                    "%.pb%.go$",      -- 忽略 *.pb.go 文件
+                    "%.connect%.go$", -- 忽略 *.connect.go 文件
+                    "gen%.go$",       -- 忽略 gen.go 文件
+                    "query/",         -- 忽略 query 目录
+                    "dal/query/",     -- 忽略 dal/query 目录
+                    "%.gen%.go$"      -- 忽略 *.gen.go 文件
+                },
             },
             pickers = {
                 -- Built-in pickers configuration
@@ -118,6 +128,8 @@ return
         keys = {
             { "<C-f>", "<cmd>Telescope live_grep<cr>", desc = "Telescope live grep" },
             { "<C-p>", "<cmd>Telescope find_files<cr>", desc = "Telescope find files" },
+            { "<C-S-p>", "<cmd>Telescope find_files no_ignore=true<cr>", desc = "Telescope find files (include ignored)" },
+            { "<C-S-f>", "<cmd>Telescope live_grep no_ignore=true<cr>", desc = "Telescope live grep (include ignored)" },
             { "<leader>tb", "<cmd>Telescope buffers<cr>", desc = "Telescope buffers" },
             { "<leader>tg", "<cmd>Telescope git_branches<cr>", desc = "Telescope git branches" },
             { "<leader>tc", "<cmd>Telescope git_commits<cr>", desc = "Telescope git commits" },
