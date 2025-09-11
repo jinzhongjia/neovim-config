@@ -47,7 +47,8 @@ return
                 },
                 per_filetype = {
                     codecompanion = { "codecompanion" },
-                    sql = { "snippets", "dadbod", "dbee", "buffer" },
+                    sql = { "snippets", "dadbod", "buffer" },
+                    mysql = { "snippets", "dadbod", "buffer" },
                 },
                 providers = {
                     lsp = { score_offset = 11 },
@@ -62,7 +63,6 @@ return
                     },
                     -- copilot = { name = "copilot", module = "blink-copilot", score_offset = 10, async = true },
                     dadbod = { name = "Dadbod", module = "vim_dadbod_completion.blink" },
-                    dbee = { name = "cmp-dbee", module = "blink.compat.source" },
                     -- ripgrep = { module = "blink-ripgrep", name = "Ripgrep", score_offset = 7 },
                 },
             },
