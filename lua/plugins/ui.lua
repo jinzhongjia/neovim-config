@@ -15,10 +15,16 @@ return
         event = "UIEnter",
         opts = {
             options = {
+                mode = "buffers", -- 显示 buffers 而不是 tabs
+                always_show_bufferline = true, -- 始终显示 bufferline
                 indicator = {
                     style = "icon",
                     icon = " ",
                 },
+                -- separator_style = "slant", -- 分隔符样式
+                -- show_buffer_close_icons = true,
+                -- show_close_icon = true,
+                -- color_icons = true,
                 offsets = {
                     { filetype = "NvimTree", text = "EXPLORER", text_align = "center" },
                     { filetype = "Outline", text = "OUTLINE", text_align = "center" },
@@ -40,6 +46,14 @@ return
                     end
                     return s
                 end,
+                -- 自定义过滤器，可以过滤某些 buffer 类型
+                custom_filter = function(buf_number, buf_numbers)
+                    -- 过滤 quickfix 等特殊 buffer
+                    if vim.bo[buf_number].buftype ~= "" then
+                        return false
+                    end
+                    return true
+                end,
             },
         },
         keys = {
@@ -50,6 +64,34 @@ return
             { "<leader>bh", "<cmd>BufferLineCloseLeft<cr>", desc = "bufferline close left" },
             { "<leader>bn", "<cmd>BufferLineMoveNext<cr>", desc = "bufferline move next" },
             { "<leader>bp", "<cmd>BufferLineMovePrev<cr>", desc = "bufferline move prev" },
+        },
+    },
+    {
+        -- scope.nvim 提供 tab 级别的 buffer 隔离
+        "tiagovla/scope.nvim",
+        event = "VeryLazy",
+        config = function()
+            require("scope").setup({
+                hooks = {
+                    pre_tab_enter = function()
+                        -- 进入 tab 前的自定义逻辑
+                    end,
+                    post_tab_enter = function()
+                        -- 进入 tab 后的自定义逻辑
+                    end,
+                },
+            })
+            -- 设置 Telescope 扩展
+            vim.api.nvim_create_autocmd("User", {
+                pattern = "TelescopeLoaded",
+                callback = function()
+                    pcall(require("telescope").load_extension, "scope")
+                end,
+            })
+        end,
+        keys = {
+            { "<leader>bm", "<cmd>ScopeMoveBuf<cr>", desc = "Move buffer to another tab" },
+            { "<leader>fb", "<cmd>Telescope scope buffers<cr>", desc = "Find buffers in current tab" },
         },
     },
     {

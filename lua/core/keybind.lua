@@ -41,3 +41,18 @@ __key_bind("v", "<C-c>", '"+y') -- copy
 __key_bind("v", "<C-x>", '"+d') -- cut
 -- map("n", "<C-v>", '"+p') -- paste from system clipboard
 __key_bind("i", "<C-v>", '<ESC>"+pa') -- paste from system clipboard
+
+-- Tab 管理快捷键
+__key_bind("n", "<leader>tn", "<CMD>tabnew<CR>") -- 新建 tab
+__key_bind("n", "<leader>tc", "<CMD>tabclose<CR>") -- 关闭当前 tab
+__key_bind("n", "<leader>to", "<CMD>tabonly<CR>") -- 关闭其他 tab
+__key_bind("n", "<leader>th", "<CMD>tabprevious<CR>") -- 前一个 tab
+__key_bind("n", "<leader>tl", "<CMD>tabnext<CR>") -- 后一个 tab
+__key_bind("n", "<leader>t1", "<CMD>tabn 1<CR>") -- 跳转到第 1 个 tab
+__key_bind("n", "<leader>t2", "<CMD>tabn 2<CR>") -- 跳转到第 2 个 tab
+__key_bind("n", "<leader>t3", "<CMD>tabn 3<CR>") -- 跳转到第 3 个 tab
+__key_bind("n", "<leader>t4", "<CMD>tabn 4<CR>") -- 跳转到第 4 个 tab
+__key_bind("n", "<leader>t5", "<CMD>tabn 5<CR>") -- 跳转到第 5 个 tab
+
+-- Buffer 导航快捷键已在 lua/plugins/ui.lua 中配置
+-- 使用 bn (下一个) 和 bp (上一个) 进行 buffer 切换
