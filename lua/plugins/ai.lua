@@ -215,6 +215,13 @@ return {
                         provider = "inline", -- default|mini_diff|inline
                     },
                 },
+                memory = {
+                    opts = {
+                        chat = {
+                            enabled = true,
+                        },
+                    },
+                },
 
                 -- 策略配置
                 strategies = {
