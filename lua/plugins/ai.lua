@@ -156,7 +156,8 @@ local get_default_adapter = function()
     -- if env.LLM_ROUTER_URL and env.LLM_ROUTER_URL ~= "" then
     --     return "llm_router"
     -- end
-    return "anthropic_oauth"
+    -- return "anthropic_oauth"
+    return "claude_code"
 end
 
 -- ========================
