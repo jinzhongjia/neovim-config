@@ -251,7 +251,13 @@ return {
                         },
                         -- 工具配置
                         tools = {
-                            opts = { default_tools = { "full_stack_dev" } },
+                            opts = {
+                                default_tools = {
+                                    "full_stack_dev",
+                                    "search_web",
+                                    "fetch_webpage",
+                                },
+                            },
                         },
                     },
                     inline = { adapter = "inline_adapter" },
