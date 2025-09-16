@@ -102,6 +102,7 @@ local function get_adapters()
     if env.TAVILY_KEY and env.TAVILY_KEY ~= "" then
         default_adpters.http.tavily = function()
             return require("codecompanion.adapters").extend("tavily", {
+                url = "https://searx.nvimer.org/search",
                 env = { api_key = env.TAVILY_KEY },
             })
         end
@@ -198,6 +199,7 @@ return {
                 -- 基础选项
                 opts = {
                     language = "Chinese",
+                    log_level = "INFO", -- TRACE|DEBUG|ERROR|INFO
                 },
 
                 -- 适配器配置

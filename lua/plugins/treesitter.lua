@@ -100,9 +100,9 @@ return
         event = { "BufReadPre", "BufNewFile" },
         opts = {
             -- 全局默认配置
-            enable_close = true,          -- 自动关闭标签
-            enable_rename = true,         -- 自动重命名配对的标签
-            enable_close_on_slash = false -- 在输入 </ 时自动关闭
+            enable_close = true, -- 自动关闭标签
+            enable_rename = true, -- 自动重命名配对的标签
+            enable_close_on_slash = false, -- 在输入 </ 时自动关闭
         },
         config = function(_, opts)
             require("nvim-ts-autotag").setup({
