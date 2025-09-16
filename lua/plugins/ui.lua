@@ -683,6 +683,7 @@ return
                     tool = { icon = " ", highlight = "CodeCompanionChatTool" },
                     user = { icon = " ", highlight = "CodeCompanionChatTool" },
                     group = { icon = " ", highlight = "CodeCompanionChatToolGroup" },
+                    memory = { icon = "󰍛 ", highlight = "CodeCompanionChatVariable" },
                 },
             },
         },
