@@ -256,7 +256,6 @@ return {
                                     "full_stack_dev",
                                     "search_web",
                                     "fetch_webpage",
-                                    "mcp",
                                 },
                             },
                         },
