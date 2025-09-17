@@ -1,10 +1,7 @@
 {
   "mcpServers": {
     "allpepper-memory-bank": {
-      "args": [
-        "-y",
-        "@allpepper/memory-bank-mcp"
-      ],
+      "args": ["-y", "@allpepper/memory-bank-mcp"],
       "autoApprove": [
         "memory_bank_read",
         "memory_bank_write",
@@ -19,47 +16,16 @@
       }
     },
     "context7": {
-      "args": [
-        "-y",
-        "@upstash/context7-mcp@latest"
-      ],
+      "args": ["-y", "@upstash/context7-mcp@latest"],
       "command": "npx"
     },
-    "duckduckgo": {
-      "args": [
-        "duckduckgo-mcp-server"
-      ],
-      "command": "uvx",
-      "disabled": false
-    },
-    "git": {
-      "args": [
-        "mcp-server-git"
-      ],
-      "command": "uvx",
-      "disabled": false
-    },
-    "memory": {
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-memory"
-      ],
-      "command": "npx",
-      "disabled": false
-    },
     "sequentialthinking": {
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-sequential-thinking"
-      ],
+      "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
       "command": "npx",
       "disabled": false
     },
     "time": {
-      "args": [
-        "mcp-server-time",
-        "--local-timezone=Asia/Shanghai"
-      ],
+      "args": ["mcp-server-time", "--local-timezone=Asia/Shanghai"],
       "command": "uvx",
       "disabled": false
     }
