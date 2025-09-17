@@ -294,7 +294,7 @@ return {
                         opts = {
                             make_tools = true,
                             show_server_tools_in_chat = true,
-                            add_mcp_prefix_to_tool_names = false,
+                            add_mcp_prefix_to_tool_names = true,
                             show_result_in_chat = true,
                             format_tool = nil,
                             make_vars = true,
