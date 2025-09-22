@@ -184,6 +184,7 @@ return {
             "nvim-treesitter/nvim-treesitter",
             "nvim-telescope/telescope.nvim",
             "j-hui/fidget.nvim",
+            "lalitmee/codecompanion-spinners.nvim", -- 添加 spinner 扩展
 
             -- AI 相关
             "zbirenbaum/copilot.lua",
@@ -340,6 +341,14 @@ return {
                                 keymap = "<leader>gc",
                                 auto_generate = true,
                             },
+                        },
+                    },
+                    -- Spinner 扩展（使用 fidget 样式）
+                    spinner = {
+                        enabled = true,
+                        opts = {
+                            style = "fidget", -- 使用 fidget.nvim 显示进度
+                            -- Use default English messages from the spinner extension
                         },
                     },
                 },
