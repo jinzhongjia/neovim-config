@@ -165,6 +165,7 @@ return
 
             return {
                 options = {
+                    globalstatus = false,
                     theme = "vscode",
                     disabled_filetypes = {
                         statusline = {
