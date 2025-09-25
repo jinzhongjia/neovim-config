@@ -20,7 +20,7 @@ return
     },
     lint = {},
     others = {
-        { name = "golangci-lint", version = "v1.64.8" },
+        { name = "golangci-lint" },
     },
     before_set = nil,
     after_set = nil,
