@@ -4,9 +4,9 @@ return
     lsp = "golangci_lint_ls",
     opt = {
         -- for v1
-        init_options = {
-            command = { "golangci-lint", "run", "--out-format", "json" },
-        },
+        -- init_options = {
+        --     command = { "golangci-lint", "run", "--out-format", "json" },
+        -- },
         -- init_options = {
         --     command = {
         --         "golangci-lint",
