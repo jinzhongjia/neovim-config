@@ -1,7 +1,7 @@
 return
 --- @type LangSpec
 {
-    lsp = "golangci_lint_ls",
+    -- lsp = "golangci_lint_ls",
     opt = {
         -- for v1
         -- init_options = {
