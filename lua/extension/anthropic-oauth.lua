@@ -1,12 +1,12 @@
 -- Anthropic OAuth 认证模块
--- 
+--
 -- 依赖要求：
 -- - Linux/macOS: 需要安装 OpenSSL
 -- - Windows: 需要以下任一工具：
 --   * OpenSSL (推荐)
 --   * PowerShell 7+ (pwsh, 跨平台版本)
 --   * Windows PowerShell 5.x (powershell, Windows 内置)
--- 
+--
 -- PKCE (Proof Key for Code Exchange) 流程需要 SHA256 哈希生成器
 -- 本模块会按以下优先级尝试：
 -- 1. OpenSSL (跨平台，推荐)
@@ -98,7 +98,7 @@ end
 ---@return string
 local function sha256_base64url(input)
     local is_windows = vim.fn.has("win32") == 1
-    
+
     -- 尝试使用 OpenSSL 生成正确的 SHA256 哈希
     if vim.fn.executable("openssl") == 1 then
         local job = Job:new({
@@ -113,9 +113,9 @@ local function sha256_base64url(input)
             } or nil,
         })
 
-            local success, _ = pcall(function()
-                job:sync(3000) -- 3 second timeout
-            end)
+        local success, _ = pcall(function()
+            job:sync(3000) -- 3 second timeout
+        end)
 
         if success and job.code == 0 then
             local result = job:result()
@@ -149,7 +149,7 @@ local function sha256_base64url(input)
         -- 优先使用 PowerShell 7 (pwsh)，其次使用 Windows PowerShell 5.x (powershell)
         local ps_executable = nil
         local ps_version = nil
-        
+
         if vim.fn.executable("pwsh") == 1 then
             ps_executable = "pwsh"
             ps_version = "PowerShell 7+"
@@ -157,10 +157,10 @@ local function sha256_base64url(input)
             ps_executable = "powershell"
             ps_version = "Windows PowerShell 5.x"
         end
-        
+
         if ps_executable then
             log:debug("OpenSSL 不可用，使用 %s 生成 SHA256 哈希", ps_version)
-        
+
             -- 构建 PowerShell 命令
             -- 使用 .NET 的加密类来计算 SHA256
             -- 注意：PowerShell 5 和 7 都支持这个 API
@@ -168,22 +168,24 @@ local function sha256_base64url(input)
                 "[Convert]::ToBase64String([System.Security.Cryptography.SHA256]::Create().ComputeHash([System.Text.Encoding]::UTF8.GetBytes('%s')))",
                 input:gsub("'", "''") -- 转义单引号
             )
-        
+
             local job = Job:new({
                 command = ps_executable,
-                args = { 
+                args = {
                     "-NoProfile",
                     "-NonInteractive",
-                    "-ExecutionPolicy", "Bypass",
-                    "-Command", ps_command
+                    "-ExecutionPolicy",
+                    "Bypass",
+                    "-Command",
+                    ps_command,
                 },
                 enable_recording = true,
             })
-        
-        local success, _ = pcall(function()
-            job:sync(3000) -- 3 second timeout
-        end)
-        
+
+            local success, _ = pcall(function()
+                job:sync(3000) -- 3 second timeout
+            end)
+
             if success and job.code == 0 then
                 local result = job:result()
                 if result and #result > 0 then
@@ -214,7 +216,7 @@ local function sha256_base64url(input)
         error_msg = "OAuth 认证失败：需要安装 OpenSSL 来生成安全的 PKCE challenge。\n"
             .. "请安装 OpenSSL 后重试。"
     end
-    
+
     log:error("无法生成 PKCE challenge：需要 OpenSSL 或 PowerShell（Windows）来计算 SHA256 哈希")
     vim.notify(error_msg, vim.log.levels.ERROR)
     return nil
@@ -225,12 +227,12 @@ end
 local function generate_pkce()
     local verifier = generate_random_string(128) -- 使用最大长度以提高安全性
     local challenge = sha256_base64url(verifier)
-    
+
     -- 如果无法生成 challenge（例如 OpenSSL 不可用），返回 nil
     if not challenge then
         return nil
     end
-    
+
     return {
         verifier = verifier,
         challenge = challenge,
@@ -487,12 +489,12 @@ end
 ---@return { url: string, verifier: string, state: string }|nil
 local function generate_auth_url()
     local pkce = generate_pkce()
-    
+
     -- 如果 PKCE 生成失败，无法继续
     if not pkce then
         return nil
     end
-    
+
     -- 生成独立的 state 参数用于 CSRF 保护
     -- state 应该是一个随机值，用于验证授权回调的完整性
     local state = generate_random_string(32)
@@ -539,7 +541,7 @@ end
 ---@return boolean
 local function setup_oauth()
     local auth_data = generate_auth_url()
-    
+
     -- 如果无法生成授权 URL（例如 OpenSSL/PowerShell 不可用），无法继续
     if not auth_data then
         local is_windows = vim.fn.has("win32") == 1
@@ -551,10 +553,7 @@ local function setup_oauth()
         else
             error_msg = "无法启动 OAuth 认证流程。请确保 OpenSSL 已安装。"
         end
-        vim.notify(
-            error_msg,
-            vim.log.levels.ERROR
-        )
+        vim.notify(error_msg, vim.log.levels.ERROR)
         return false
     end
 
@@ -752,6 +751,15 @@ adapter.schema.model = {
                 max_output = 32000,
                 context_window = 200000,
                 description = "Our previous flagship model - Very high intelligence and capability",
+            },
+        },
+        ["claude-sonnet-4-5"] = {
+            opts = {
+                can_reason = true,
+                has_vision = true,
+                max_output = 64000,
+                context_window = 1000000,
+                description = "High-performance model - Balanced performance and capability",
             },
         },
         -- Claude Sonnet 4 - 高性能模型
