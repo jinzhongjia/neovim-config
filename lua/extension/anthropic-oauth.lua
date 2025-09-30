@@ -1,18 +1,3 @@
--- Anthropic OAuth 认证模块
---
--- 依赖要求：
--- - Linux/macOS: 需要安装 OpenSSL
--- - Windows: 需要以下任一工具：
---   * OpenSSL (推荐)
---   * PowerShell 7+ (pwsh, 跨平台版本)
---   * Windows PowerShell 5.x (powershell, Windows 内置)
---
--- PKCE (Proof Key for Code Exchange) 流程需要 SHA256 哈希生成器
--- 本模块会按以下优先级尝试：
--- 1. OpenSSL (跨平台，推荐)
--- 2. PowerShell 7/pwsh (Windows 优先，如果安装了的话)
--- 3. Windows PowerShell 5.x (Windows 内置备选)
-
 local uv = vim.uv
 local Job = require("plenary.job")
 local anthropic = require("codecompanion.adapters.http.anthropic")
@@ -97,10 +82,12 @@ end
 ---@param input string
 ---@return string
 local function sha256_base64url(input)
-    local is_windows = vim.fn.has("win32") == 1
-
     -- 尝试使用 OpenSSL 生成正确的 SHA256 哈希
+    -- 注意：Windows 系统可能需要单独安装 OpenSSL
     if vim.fn.executable("openssl") == 1 then
+        -- Windows 平台特殊处理
+        local is_windows = vim.fn.has("win32") == 1
+
         local job = Job:new({
             command = "openssl",
             args = { "dgst", "-sha256", "-binary" },
@@ -144,82 +131,14 @@ local function sha256_base64url(input)
                 table.concat(job:stderr_result() or {}, "\n")
             )
         end
-    elseif is_windows then
-        -- Windows 平台使用 PowerShell 作为备选方案
-        -- 优先使用 PowerShell 7 (pwsh)，其次使用 Windows PowerShell 5.x (powershell)
-        local ps_executable = nil
-        local ps_version = nil
-
-        if vim.fn.executable("pwsh") == 1 then
-            ps_executable = "pwsh"
-            ps_version = "PowerShell 7+"
-        elseif vim.fn.executable("powershell") == 1 then
-            ps_executable = "powershell"
-            ps_version = "Windows PowerShell 5.x"
-        end
-
-        if ps_executable then
-            log:debug("OpenSSL 不可用，使用 %s 生成 SHA256 哈希", ps_version)
-
-            -- 构建 PowerShell 命令
-            -- 使用 .NET 的加密类来计算 SHA256
-            -- 注意：PowerShell 5 和 7 都支持这个 API
-            local ps_command = string.format(
-                "[Convert]::ToBase64String([System.Security.Cryptography.SHA256]::Create().ComputeHash([System.Text.Encoding]::UTF8.GetBytes('%s')))",
-                input:gsub("'", "''") -- 转义单引号
-            )
-
-            local job = Job:new({
-                command = ps_executable,
-                args = {
-                    "-NoProfile",
-                    "-NonInteractive",
-                    "-ExecutionPolicy",
-                    "Bypass",
-                    "-Command",
-                    ps_command,
-                },
-                enable_recording = true,
-            })
-
-            local success, _ = pcall(function()
-                job:sync(3000) -- 3 second timeout
-            end)
-
-            if success and job.code == 0 then
-                local result = job:result()
-                if result and #result > 0 then
-                    local base64 = vim.trim(table.concat(result, ""))
-                    -- 转换为 base64url 格式
-                    return base64:gsub("[+/=]", { ["+"] = "-", ["/"] = "_", ["="] = "" })
-                end
-            else
-                log:warn(
-                    "%s 命令执行失败，错误代码: %s, stderr: %s",
-                    ps_version,
-                    job.code or "unknown",
-                    table.concat(job:stderr_result() or {}, "\n")
-                )
-            end
-        else
-            log:debug("PowerShell 不可用（未找到 pwsh 或 powershell）")
-        end
-    end
-
-    -- 如果 OpenSSL 和 PowerShell 都不可用，不能继续 OAuth 流程
-    -- PKCE 要求真正的 SHA256 哈希，不能使用不安全的替代方案
-    local error_msg
-    if is_windows then
-        error_msg = "OAuth 认证失败：需要 OpenSSL 或 PowerShell 来生成安全的 PKCE challenge。\n"
-            .. "请确保 PowerShell 可用或安装 OpenSSL 后重试。"
     else
-        error_msg = "OAuth 认证失败：需要安装 OpenSSL 来生成安全的 PKCE challenge。\n"
-            .. "请安装 OpenSSL 后重试。"
+        log:warn("OpenSSL 不可用，将使用不安全的哈希方法（仅用于开发环境）")
     end
 
-    log:error("无法生成 PKCE challenge：需要 OpenSSL 或 PowerShell（Windows）来计算 SHA256 哈希")
-    vim.notify(error_msg, vim.log.levels.ERROR)
-    return nil
+    -- 后备方案：非加密安全但功能可用（仅用于开发/测试）
+    log:warn("使用后备哈希方法（非加密安全）")
+    local simple_hash = vim.base64.encode(input)
+    return simple_hash:gsub("[+/=]", { ["+"] = "-", ["/"] = "_", ["="] = "" })
 end
 
 -- 生成 PKCE 代码验证器和挑战码
@@ -227,12 +146,6 @@ end
 local function generate_pkce()
     local verifier = generate_random_string(128) -- 使用最大长度以提高安全性
     local challenge = sha256_base64url(verifier)
-
-    -- 如果无法生成 challenge（例如 OpenSSL 不可用），返回 nil
-    if not challenge then
-        return nil
-    end
-
     return {
         verifier = verifier,
         challenge = challenge,
@@ -412,25 +325,28 @@ end
 -- 用授权码交换访问令牌并创建 API 密钥
 ---@param code string
 ---@param verifier string
----@param state string|nil
 ---@return string|nil
-local function exchange_code_for_api_key(code, verifier, state)
+local function exchange_code_for_api_key(code, verifier)
     if not code or code == "" or not verifier or verifier == "" then
         log:error("Anthropic OAuth: 需要授权码和验证器")
         return nil
     end
 
     log:debug("Anthropic OAuth: 正在用授权码交换访问令牌")
-    log:debug("授权码: %s", code)
-    log:debug("Verifier length: %d", #verifier)
+
+    -- 从回调 URL 片段解析授权码和状态
+    local code_parts = vim.split(code, "#")
+    local auth_code = code_parts[1]
+    local state = code_parts[2] or verifier
 
     local request_data = {
-        code = code,
+        code = auth_code,
+        state = state,
         grant_type = "authorization_code",
         client_id = OAUTH_CONFIG.CLIENT_ID,
         redirect_uri = OAUTH_CONFIG.REDIRECT_URI,
         code_verifier = verifier,
-        -- 令牌交换请求通常不需要 scope 和 state
+        scope = OAUTH_CONFIG.SCOPES,
     }
 
     local encode_success, body_json = pcall(vim.json.encode, request_data)
@@ -486,18 +402,9 @@ local function exchange_code_for_api_key(code, verifier, state)
 end
 
 -- 生成带 PKCE 的 OAuth 授权 URL
----@return { url: string, verifier: string, state: string }|nil
+---@return { url: string, verifier: string }
 local function generate_auth_url()
     local pkce = generate_pkce()
-
-    -- 如果 PKCE 生成失败，无法继续
-    if not pkce then
-        return nil
-    end
-
-    -- 生成独立的 state 参数用于 CSRF 保护
-    -- state 应该是一个随机值，用于验证授权回调的完整性
-    local state = generate_random_string(32)
 
     -- 构建正确编码和顺序的查询字符串
     local query_params = {
@@ -508,18 +415,15 @@ local function generate_auth_url()
         "scope=" .. url_encode(OAUTH_CONFIG.SCOPES),
         "code_challenge=" .. url_encode(pkce.challenge),
         "code_challenge_method=S256",
-        "state=" .. url_encode(state),
+        "state=" .. url_encode(pkce.verifier),
     }
 
     local auth_url = OAUTH_CONFIG.AUTH_URL .. "?" .. table.concat(query_params, "&")
     log:debug("Anthropic OAuth: 已生成授权 URL")
-    log:debug("State: %s", state)
-    log:debug("Verifier length: %d", #pkce.verifier)
 
     return {
         url = auth_url,
         verifier = pkce.verifier,
-        state = state,
     }
 end
 
@@ -541,21 +445,6 @@ end
 ---@return boolean
 local function setup_oauth()
     local auth_data = generate_auth_url()
-
-    -- 如果无法生成授权 URL（例如 OpenSSL/PowerShell 不可用），无法继续
-    if not auth_data then
-        local is_windows = vim.fn.has("win32") == 1
-        local error_msg
-        if is_windows then
-            error_msg = "无法启动 OAuth 认证流程。\n"
-                .. "Windows 系统需要 OpenSSL 或 PowerShell 来生成安全令牌。\n"
-                .. "请确保 PowerShell 可用或安装 OpenSSL。"
-        else
-            error_msg = "无法启动 OAuth 认证流程。请确保 OpenSSL 已安装。"
-        end
-        vim.notify(error_msg, vim.log.levels.ERROR)
-        return false
-    end
 
     vim.notify("正在浏览器中打开 Anthropic OAuth 认证...", vim.log.levels.INFO)
 
@@ -612,7 +501,7 @@ local function setup_oauth()
 
     -- 提示用户输入授权码
     vim.ui.input({
-        prompt = "请输入回调 URL 中的授权码（'code=' 后面、'&' 之前的部分）：",
+        prompt = "请输入回调 URL 中的授权码（'code=' 后面的部分）：",
     }, function(code)
         if not code or code == "" then
             vim.notify("OAuth 设置已取消", vim.log.levels.WARN)
@@ -622,8 +511,7 @@ local function setup_oauth()
         -- 显示进度
         vim.notify("正在用授权码交换 API 密钥...", vim.log.levels.INFO)
 
-        -- 传递 verifier 和 state（虽然令牌交换不需要 state，但保留以备将来使用）
-        local api_key = exchange_code_for_api_key(code, auth_data.verifier, auth_data.state)
+        local api_key = exchange_code_for_api_key(code, auth_data.verifier)
         if api_key then
             vim.notify("Anthropic OAuth 认证成功！API 密钥已创建并保存。", vim.log.levels.INFO)
         else
