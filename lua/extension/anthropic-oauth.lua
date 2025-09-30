@@ -619,7 +619,7 @@ adapter.schema.model = {
     mapping = "parameters",
     type = "enum",
     desc = "The model that will complete your prompt. See https://docs.anthropic.com/claude/docs/models-overview for additional details and options.",
-    default = "claude-opus-4-1",
+    default = "claude-sonnet-4-5",
     choices = {
         -- Claude Opus 4.1 - 最强大的模型
         ["claude-opus-4-1"] = {
