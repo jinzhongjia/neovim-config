@@ -465,4 +465,149 @@ return {
             },
         },
     },
+
+    -- ========== Sidekick ==========
+    {
+        "folke/sidekick.nvim",
+        event = "VeryLazy",
+        dependencies = {
+            "zbirenbaum/copilot.lua", -- Copilot LSP server
+            "neovim/nvim-lspconfig",
+            "folke/snacks.nvim", -- for picker
+        },
+        init = function()
+            -- 全局变量，控制是否启用 NES 功能
+            vim.g.sidekick_nes = true
+        end,
+        config = function(_, opts)
+            require("sidekick").setup(opts)
+
+            -- 监听 blink.cmp 菜单关闭事件，自动清除 NES
+            vim.api.nvim_create_autocmd("User", {
+                pattern = "BlinkCmpMenuClose",
+                callback = function()
+                    require("sidekick").clear()
+                end,
+                desc = "清除 sidekick NES 当补全菜单关闭时",
+            })
+        end,
+        opts = {
+            jump = {
+                jumplist = true, -- 添加跳转到 jumplist
+            },
+            signs = {
+                enabled = true,
+                icon = " ",
+            },
+            nes = {
+                enabled = function(buf)
+                    return vim.g.sidekick_nes ~= false and vim.b.sidekick_nes ~= false
+                end,
+                debounce = 100,
+                trigger = {
+                    events = { "InsertLeave", "TextChanged", "User SidekickNesDone" },
+                },
+                clear = {
+                    events = { "TextChangedI", "TextChanged", "BufWritePre", "InsertEnter" },
+                    esc = true,
+                },
+                diff = {
+                    inline = "words",
+                },
+            },
+            cli = {
+                watch = true, -- 自动监听文件变化
+                win = {
+                    layout = "right", -- 右侧布局
+                    split = {
+                        width = 80,
+                        height = 20,
+                    },
+                },
+                mux = {
+                    backend = "zellij",
+                    enabled = false, -- 根据需要启用 tmux/zellij
+                },
+                -- AI CLI 工具配置
+                tools = {
+                    claude = { cmd = { "claude" }, url = "https://github.com/anthropics/claude-code" },
+                    codex = { cmd = { "codex", "--search" }, url = "https://github.com/openai/codex" },
+                    copilot = { cmd = { "copilot", "--banner" }, url = "https://github.com/github/copilot-cli" },
+                    gemini = { cmd = { "gemini" }, url = "https://github.com/google-gemini/gemini-cli" },
+                    grok = { cmd = { "grok" }, url = "https://github.com/superagent-ai/grok-cli" },
+                },
+                -- 提示词配置
+                prompts = {
+                    explain = "解释这段代码",
+                    diagnostics = {
+                        msg = "这个文件中的诊断信息是什么意思？",
+                        diagnostics = true,
+                    },
+                    fix = {
+                        msg = "你能修复这段代码中的问题吗？",
+                        diagnostics = true,
+                    },
+                    review = {
+                        msg = "你能检查这段代码是否有问题或改进建议吗？",
+                        diagnostics = true,
+                    },
+                    optimize = "如何优化这段代码？",
+                    tests = "你能为这段代码编写测试吗？",
+                },
+            },
+            copilot = {
+                status = {
+                    enabled = true, -- 启用状态跟踪
+                },
+            },
+            debug = false,
+        },
+        keys = {
+            -- Next Edit Suggestions 快捷键
+            {
+                "<tab>",
+                function()
+                    -- 如果有下一个编辑，跳转到它；如果已经是最后一个，则应用所有编辑
+                    if require("sidekick").nes_jump_or_apply() then
+                        return -- 成功跳转或应用
+                    end
+
+                   -- 回退到普通 Tab 行为
+                   return "<Tab>"
+                end,
+                expr = true,
+                desc = "跳转/应用下一个编辑建议",
+                mode = "n", -- 仅支持 normal 模式，insert 模式由 blink.cmp 处理
+            },
+            -- 手动控制快捷键
+            {
+                "<leader>su",
+                function()
+                    require("sidekick.nes").update()
+                end,
+                desc = "Sidekick 更新编辑建议",
+            },
+            {
+                "<leader>sj",
+                function()
+                    require("sidekick.nes").jump()
+                end,
+                desc = "Sidekick 跳转到编辑",
+            },
+            {
+                "<leader>sa",
+                function()
+                    require("sidekick.nes").apply()
+                end,
+                desc = "Sidekick 应用编辑",
+            },
+            {
+                "<leader>sx",
+                function()
+                    require("sidekick").clear()
+                end,
+                desc = "Sidekick 清除建议",
+            },
+        },
+    },
 }
