@@ -503,19 +503,6 @@ return {
                 enabled = function(buf)
                     return vim.g.sidekick_nes ~= false and vim.b.sidekick_nes ~= false
                 end,
-                debounce = 100,
-                trigger = {
-                    -- 触发 NES 建议的事件：
-                    -- InsertLeave: 离开插入模式时
-                    -- TextChanged: 文本改变时（normal 模式）
-                    -- CursorHold: 光标停止移动后（等待 updatetime 毫秒）
-                    -- User SidekickNesDone: 应用编辑后自动获取新建议
-                    events = { "InsertLeave", "TextChanged", "CursorHold", "User SidekickNesDone" },
-                },
-                clear = {
-                    events = { "TextChangedI", "TextChanged", "BufWritePre", "InsertEnter" },
-                    esc = true,
-                },
                 diff = {
                     inline = "words",
                 },
@@ -577,8 +564,8 @@ return {
                         return -- 成功跳转或应用
                     end
 
-                   -- 回退到普通 Tab 行为
-                   return "<Tab>"
+                    -- 回退到普通 Tab 行为
+                    return "<Tab>"
                 end,
                 expr = true,
                 desc = "跳转/应用下一个编辑建议",

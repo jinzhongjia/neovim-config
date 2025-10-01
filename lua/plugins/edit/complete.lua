@@ -198,17 +198,19 @@ return
                 ["<Tab>"] = {
                     function(cmp)
                         local copilot_suggestion = require("copilot.suggestion")
-                       -- 1. 如果补全菜单可见，选择下一项
+                        -- 1. 如果补全菜单可见，选择下一项
                         if cmp.is_visible() then
                             return cmp.select_next()
-                       -- 2. 如果 copilot suggestion 可见，接受它
+                        elseif require("sidekick").nes_jump_or_apply() then
+                            return true
+                        -- 2. 如果 copilot suggestion 可见，接受它
                         elseif copilot_suggestion.is_visible() then
                             if cmp.snippet_active() then
                                 vim.snippet.stop()
                             end
                             copilot_suggestion.accept()
                             return true
-                       -- 3. 如果在 snippet 中，跳转到下一个位置
+                        -- 3. 如果在 snippet 中，跳转到下一个位置
                         elseif cmp.snippet_active({ direction = 1 }) then
                             return cmp.snippet_forward()
                         end
