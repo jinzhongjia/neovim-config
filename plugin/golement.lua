@@ -265,11 +265,18 @@ local function toggle()
 end
 
 -- 注册命令和自动命令
-api.nvim_create_user_command("GoplementsEnable", enable, { desc = "Enable Goplements" })
-api.nvim_create_user_command("GoplementsDisable", disable, { desc = "Disable Goplements" })
-api.nvim_create_user_command("GoplementsToggle", toggle, { desc = "Toggle Goplements" })
+  pcall(api.nvim_del_user_command, "GoplementsEnable")
+  pcall(api.nvim_del_user_command, "GoplementsDisable")
+  pcall(api.nvim_del_user_command, "GoplementsToggle")
+
+  api.nvim_create_user_command("GoplementsEnable", enable, { desc = "Enable Goplements" })
+  api.nvim_create_user_command("GoplementsDisable", disable, { desc = "Disable Goplements" })
+  api.nvim_create_user_command("GoplementsToggle", toggle, { desc = "Toggle Goplements" })
+
+  local augroup = api.nvim_create_augroup("Goplements", { clear = true })
 
   api.nvim_create_autocmd({ "TextChanged", "LspAttach" }, {
+      group = augroup,
     pattern = { "*.go" },
     callback = debounce(function(args)
         annotate_structs_interfaces(args.buf)
