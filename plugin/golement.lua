@@ -169,6 +169,8 @@ end
 
   local implementation_callback = create_implementation_callback()
 
+  local gopls_client
+
 -- LSP 交互
 local function get_implementation_names(client, line, character, callback, bufnr)
     client:request(vim.lsp.protocol.Methods.textDocument_implementation, {
@@ -223,14 +225,17 @@ local function annotate_structs_interfaces(bufnr)
     clean_render(bufnr)
     local nodes = find_types(bufnr)
 
-    local clients = vim.lsp.get_clients({ name = "gopls" })
-    if not clients or #clients < 1 then
-        return
-    end
+      if not gopls_client or not vim.lsp.get_client_by_id(gopls_client.id) then
+          local clients = vim.lsp.get_clients({ name = "gopls" })
+          gopls_client = clients and clients[1] or nil
+      end
 
-    local gopls = clients[1]
-    for _, node in ipairs(nodes) do
-        get_implementation_names(gopls, node.line, node.character + 1, function(names)
+      if not gopls_client then
+          return
+      end
+
+      for _, node in ipairs(nodes) do
+          get_implementation_names(gopls_client, node.line, node.character + 1, function(names)
             if api.nvim_buf_is_valid(bufnr) then
                 local _prefix = config.prefix[node.type]
                 set_virt_text(bufnr, node.line, _prefix, names)
