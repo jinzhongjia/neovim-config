@@ -3,6 +3,7 @@ if vim.g.vscode then
 end
 
 local api = vim.api
+local uv = vim.loop
 
 -- 配置管理
 local config = {
@@ -31,18 +32,23 @@ local query_str = [[
 
 -- 工具函数
 local function debounce(func, delay)
-    local timer = nil
-    return function(...)
-        local args = { ... }
-        if timer then
-            timer:stop()
-            timer = nil
-        end
-        timer = vim.defer_fn(function()
-            func(unpack(args))
-            timer = nil
-        end, delay)
-    end
+      local timer = uv.new_timer()
+      return function(...)
+          local args = { ... }
+
+          if not timer or timer:is_closing() then
+              timer = uv.new_timer()
+          else
+              timer:stop()
+          end
+
+          timer:start(delay, 0, function()
+              timer:stop()
+              vim.schedule(function()
+                  func(unpack(args))
+              end)
+          end)
+      end
 end
 
 local function is_valid_buffer(bufnr)
