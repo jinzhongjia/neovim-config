@@ -93,7 +93,7 @@ end
 -- 文件处理
 local function get_package_name(fdata)
     for _, line in ipairs(fdata) do
-        local match = string.match(line, "^package (%a+)$")
+        local match = string.match(line, "^package%s+([%a_][%w_]*)%s*$")
         if match then
             return match
         end
