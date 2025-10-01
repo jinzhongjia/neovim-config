@@ -505,7 +505,12 @@ return {
                 end,
                 debounce = 100,
                 trigger = {
-                    events = { "InsertLeave", "TextChanged", "User SidekickNesDone" },
+                    -- 触发 NES 建议的事件：
+                    -- InsertLeave: 离开插入模式时
+                    -- TextChanged: 文本改变时（normal 模式）
+                    -- CursorHold: 光标停止移动后（等待 updatetime 毫秒）
+                    -- User SidekickNesDone: 应用编辑后自动获取新建议
+                    events = { "InsertLeave", "TextChanged", "CursorHold", "User SidekickNesDone" },
                 },
                 clear = {
                     events = { "TextChangedI", "TextChanged", "BufWritePre", "InsertEnter" },
