@@ -114,20 +114,11 @@ local function read_file_data(uri, bufnr, fcache)
 end
 
 -- 统一的实现回调处理
-local function process_implementation(impl, fcache, is_vscode)
-    local uri, impl_line, impl_start, impl_end
-
-    if is_vscode then
-        uri = "file://" .. impl.uri.path
-        impl_line = impl.range[1].line
-        impl_start = impl.range[1].character
-        impl_end = impl.range[2].character
-    else
-        uri = impl.uri
-        impl_line = impl.range.start.line
-        impl_start = impl.range.start.character
-        impl_end = impl.range["end"].character
-    end
+  local function process_implementation(impl, fcache)
+      local uri = impl.uri
+      local impl_line = impl.range.start.line
+      local impl_start = impl.range.start.character
+      local impl_end = impl.range["end"].character
 
     local bufnr = vim.uri_to_bufnr(uri)
     local data = read_file_data(uri, bufnr, fcache)
@@ -148,7 +139,7 @@ local function process_implementation(impl, fcache, is_vscode)
     return package_name .. impl_text:sub(impl_start + 1, impl_end)
 end
 
-local function create_implementation_callback(is_vscode)
+  local function create_implementation_callback()
     return function(result)
         if not result then
             return {}
@@ -158,36 +149,25 @@ local function create_implementation_callback(is_vscode)
         local names = {}
 
         local function process_single(impl)
-            local name = process_implementation(impl, fcache, is_vscode)
+              local name = process_implementation(impl, fcache)
             if name then
                 table.insert(names, name)
             end
         end
 
-        if is_vscode then
-            if result[1] and result[1].uri then
-                process_single(result[1])
-            else
-                for _, impl in pairs(result) do
-                    process_single(impl)
-                end
-            end
-        else
-            if result.uri then
-                process_single(result)
-            else
-                for _, impl in pairs(result) do
-                    process_single(impl)
-                end
-            end
+          if result.uri then
+              process_single(result)
+          else
+              for _, impl in pairs(result) do
+                  process_single(impl)
+              end
         end
 
         return names
     end
 end
 
-local implementation_callback = create_implementation_callback(false)
-local vscode_implementation_callback = create_implementation_callback(true)
+  local implementation_callback = create_implementation_callback()
 
 -- LSP 交互
 local function get_implementation_names(client, line, character, callback, bufnr)
@@ -202,26 +182,6 @@ local function get_implementation_names(client, line, character, callback, bufnr
         local names = implementation_callback(result)
         callback(names)
     end)
-end
-
-local function get_implementations_at_position(line, character)
-    local vscode = require("vscode")
-    return vscode.eval(
-        [[
-        const editor = vscode.window.activeTextEditor;
-        if (!editor || editor.document.languageId !== 'go') return null;
-        
-        const position = new vscode.Position(args.line, args.character);
-        return vscode.commands.executeCommand(
-            'vscode.executeImplementationProvider', 
-            editor.document.uri, 
-            position
-        );
-    ]],
-        {
-            args = { line = line, character = character },
-        }
-    )
 end
 
 -- 渲染相关
@@ -262,17 +222,6 @@ local function annotate_structs_interfaces(bufnr)
 
     clean_render(bufnr)
     local nodes = find_types(bufnr)
-
-    if vim.g.vscode then
-        for _, node in ipairs(nodes) do
-            local result = get_implementations_at_position(node.line, node.character + 1)
-            if result then
-                local _prefix = config.prefix[node.type]
-                set_virt_text(bufnr, node.line, _prefix, vscode_implementation_callback(result))
-            end
-        end
-        return
-    end
 
     local clients = vim.lsp.get_clients({ name = "gopls" })
     if not clients or #clients < 1 then
@@ -320,8 +269,7 @@ api.nvim_create_user_command("GoplementsEnable", enable, { desc = "Enable Goplem
 api.nvim_create_user_command("GoplementsDisable", disable, { desc = "Disable Goplements" })
 api.nvim_create_user_command("GoplementsToggle", toggle, { desc = "Toggle Goplements" })
 
-local events = vim.g.vscode and { "TextChanged", "LspAttach", "BufEnter" } or { "TextChanged", "LspAttach" }
-api.nvim_create_autocmd(events, {
+  api.nvim_create_autocmd({ "TextChanged", "LspAttach" }, {
     pattern = { "*.go" },
     callback = debounce(function(args)
         annotate_structs_interfaces(args.buf)
