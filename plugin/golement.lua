@@ -61,18 +61,22 @@ local function safe_pcall(func, ...)
 end
 
 -- TreeSitter 相关
-local function find_types(bufnr)
-    local parser = safe_pcall(vim.treesitter.get_parser, bufnr, "go")
-    if not parser then
-        vim.notify("Go TreeSitter parser not found", vim.log.levels.DEBUG)
-        return {}
-    end
+  local parsed_query
 
-    local query = safe_pcall(vim.treesitter.query.parse, "go", query_str)
-    if not query then
-        vim.notify("Failed to parse treesitter query", vim.log.levels.DEBUG)
-        return {}
-    end
+  local function find_types(bufnr)
+      local parser = safe_pcall(vim.treesitter.get_parser, bufnr, "go")
+      if not parser then
+          vim.notify("Go TreeSitter parser not found", vim.log.levels.DEBUG)
+          return {}
+      end
+
+      if not parsed_query then
+          parsed_query = safe_pcall(vim.treesitter.query.parse, "go", query_str)
+          if not parsed_query then
+              vim.notify("Failed to parse treesitter query", vim.log.levels.DEBUG)
+              return {}
+          end
+      end
 
     local parse_results = parser:parse()
     if not parse_results or #parse_results == 0 then
@@ -82,8 +86,8 @@ local function find_types(bufnr)
     local root = parse_results[1]:root()
     local nodes = {}
 
-    for id, node in query:iter_captures(root, 0) do
-        local type = query.captures[id]
+      for id, node in parsed_query:iter_captures(root, 0) do
+          local type = parsed_query.captures[id]
         local line, character = node:range()
         table.insert(nodes, { line = line, character = character, type = type })
     end
@@ -108,7 +112,13 @@ local function read_file_data(uri, bufnr, fcache)
 
     local file = vim.uri_to_fname(uri)
     if not fcache[file] then
-        fcache[file] = vim.fn.readfile(file)
+        local ok, content = pcall(vim.fn.readfile, file)
+        if ok then
+            fcache[file] = content
+        else
+            vim.notify(string.format("Failed to read file: %s", file), vim.log.levels.WARN)
+            fcache[file] = {}
+        end
     end
     return fcache[file]
 end
