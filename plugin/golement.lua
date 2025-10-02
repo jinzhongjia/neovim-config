@@ -42,14 +42,22 @@ local function debounce(func, delay)
     return function(...)
         local args = { ... }
 
-        if not timer or timer:is_closing() then
-            timer = uv.new_timer()
-        else
+        if timer and not timer:is_closing() then
             timer:stop()
+        else
+            timer = uv.new_timer()
+            if not timer then
+                vim.schedule(function()
+                    func(unpack(args))
+                end)
+                return
+            end
         end
 
         timer:start(delay, 0, function()
-            timer:stop()
+            if timer and not timer:is_closing() then
+                timer:stop()
+            end
             vim.schedule(function()
                 func(unpack(args))
             end)
