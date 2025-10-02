@@ -6,6 +6,12 @@ local api = vim.api
 local uv = vim.loop
 
 -- 配置管理
+local user_config = vim.g.goplements or {}
+local display_package = true
+if user_config.display_package ~= nil then
+    display_package = user_config.display_package
+end
+
 local config = {
     enable = true,
     namespace_str = "goplements",
@@ -14,7 +20,7 @@ local config = {
         interface = "implemented by: ",
         struct = "implements: ",
     },
-    display_package = vim.g.goplements and vim.g.goplements.display_package or true,
+    display_package = display_package,
 }
 
 local namespace = api.nvim_create_namespace(config.namespace_str)
