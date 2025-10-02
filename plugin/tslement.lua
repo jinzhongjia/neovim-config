@@ -134,6 +134,27 @@ local function get_cached_query(ft, query_str)
     return cache.queries[key]
 end
 
+local function safe_get_node_text(node, source)
+    if not node then
+        return nil
+    end
+
+    local ok, text = pcall(vim.treesitter.get_node_text, node, source)
+    if ok and text and text ~= "" then
+        return vim.trim(text)
+    end
+
+    if type(source) == "number" and api.nvim_buf_is_valid(source) then
+        local sr, sc, er, ec = node:range()
+        local lines = api.nvim_buf_get_text(source, sr, sc, er, ec, {})
+        if lines and #lines > 0 then
+            return vim.trim(table.concat(lines, "\n"))
+        end
+    end
+
+    return nil
+end
+
 -- 清理缓存
 local function clear_cache(bufnr)
     if bufnr then
@@ -241,8 +262,8 @@ end
 local function get_interface_name(bufnr, interface_data)
     -- 优先使用已有的node
     if interface_data.node then
-        local ok, name = pcall(vim.treesitter.get_node_text, interface_data.node, bufnr)
-        if ok and name then
+        local name = safe_get_node_text(interface_data.node, bufnr)
+        if name then
             return name
         end
     end
@@ -306,8 +327,8 @@ local function extract_class_name_from_location(bufnr, location)
     for _, node in query:iter_captures(root, 0) do
         local start_line, start_col, end_line, end_col = node:range()
         if start_line == target_line and start_col <= target_character and target_character <= end_col then
-            local ok, name = pcall(vim.treesitter.get_node_text, node, target_bufnr)
-            if ok then
+            local name = safe_get_node_text(node, target_bufnr)
+            if name then
                 return name
             end
         end
