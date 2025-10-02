@@ -49,6 +49,11 @@ local QUERIES = {
     },
 }
 
+local CAPABILITY_BY_METHOD = {
+    [vim.lsp.protocol.Methods.textDocument_implementation] = "implementationProvider",
+    [vim.lsp.protocol.Methods.textDocument_references] = "referencesProvider",
+}
+
 -- 缓存管理
 local cache = {
     parsers = {},
@@ -64,10 +69,31 @@ local function cleanup_timer(key)
     end
 end
 
+local function build_timer_key(func, args)
+    local key = tostring(func)
+    local identifier = args and args[1]
+
+    if identifier == nil then
+        return key
+    end
+
+    local id_type = type(identifier)
+    if id_type == "number" or id_type == "string" then
+        key = key .. ":" .. tostring(identifier)
+    elseif id_type == "table" then
+        local bufnr = identifier.bufnr or identifier.buf or identifier[1]
+        if bufnr then
+            key = key .. ":" .. tostring(bufnr)
+        end
+    end
+
+    return key
+end
+
 local function debounce(func, delay)
     return function(...)
         local args = { ... }
-        local key = tostring(func)
+        local key = build_timer_key(func, args)
 
         cleanup_timer(key)
         cache.timers[key] = vim.defer_fn(function()
@@ -112,6 +138,13 @@ end
 local function clear_cache(bufnr)
     if bufnr then
         cache.parsers[bufnr] = nil
+        local suffix = ":" .. tostring(bufnr)
+        for key, timer in pairs(cache.timers) do
+            if type(key) == "string" and key:sub(-#suffix) == suffix then
+                timer:stop()
+                cache.timers[key] = nil
+            end
+        end
     else
         cache.parsers = {}
         cache.queries = {}
@@ -123,17 +156,18 @@ local function clear_cache(bufnr)
 end
 
 -- 统一的查询执行函数
-local function execute_treesitter_query(bufnr, query_type)
+local function execute_treesitter_query(bufnr, query_type, opts)
+    opts = opts or {}
     if not is_valid_buffer(bufnr) then
         return {}
     end
 
-    local parser = get_cached_parser(bufnr)
+    local parser = opts.parser or get_cached_parser(bufnr)
     if not parser then
         return {}
     end
 
-    local ft = vim.bo[bufnr].filetype
+    local ft = opts.ft or vim.bo[bufnr].filetype
     local query_config = QUERIES[query_type]
     if not query_config then
         return {}
@@ -144,15 +178,19 @@ local function execute_treesitter_query(bufnr, query_type)
         return {}
     end
 
-    local parse_results = parser:parse()
-    if not parse_results or #parse_results == 0 then
-        return {}
+    local root = opts.root
+    if not root then
+        local parse_results = parser:parse()
+        if not parse_results or #parse_results == 0 then
+            return {}
+        end
+        root = parse_results[1]:root()
     end
 
-    local root = parse_results[1]:root()
+    local source = opts.source or bufnr
     local results = {}
 
-    for _, node in query:iter_captures(root, 0) do
+    for _, node in query:iter_captures(root, source) do
         local line, character = node:range()
         table.insert(results, {
             line = line,
@@ -167,10 +205,30 @@ end
 
 -- 查找所有接口类型（优化版）
 local function find_all_interfaces(bufnr)
+    if not is_valid_buffer(bufnr) then
+        return {}
+    end
+
+    local parser = get_cached_parser(bufnr)
+    if not parser then
+        return {}
+    end
+
+    local parse_results = parser:parse()
+    if not parse_results or #parse_results == 0 then
+        return {}
+    end
+
+    local root = parse_results[1]:root()
+    local ft = vim.bo[bufnr].filetype
     local all_interfaces = {}
 
     for query_type, _ in pairs(QUERIES) do
-        local results = execute_treesitter_query(bufnr, query_type)
+        local results = execute_treesitter_query(bufnr, query_type, {
+            parser = parser,
+            root = root,
+            ft = ft,
+        })
         for _, result in ipairs(results) do
             table.insert(all_interfaces, result)
         end
@@ -265,11 +323,38 @@ local function find_interface_implementations(bufnr, client, interface_data, int
         return
     end
 
-    client:request(query_config.lsp_method, {
+    local method = query_config.lsp_method
+    if not method then
+        return
+    end
+
+    if not client then
+        return
+    end
+
+    local capability_field = CAPABILITY_BY_METHOD[method]
+    local supports_method = true
+    if client.supports_method then
+        supports_method = client:supports_method(method, { bufnr = bufnr })
+    elseif capability_field then
+        supports_method = client.server_capabilities and client.server_capabilities[capability_field]
+    end
+
+    if not supports_method then
+        return
+    end
+
+    local changedtick = api.nvim_buf_get_changedtick(bufnr)
+
+    client:request(method, {
         textDocument = vim.lsp.util.make_text_document_params(),
         position = { line = interface_data.line, character = interface_data.character },
-    }, function(err, result, _, _)
+    }, function(err, result, ctx, config)
         if err or not api.nvim_buf_is_valid(bufnr) then
+            return
+        end
+
+        if api.nvim_buf_get_changedtick(bufnr) ~= changedtick then
             return
         end
 
@@ -277,15 +362,17 @@ local function find_interface_implementations(bufnr, client, interface_data, int
             return
         end
 
-        local impl_names = {}
+        local impl_set = {}
         for _, impl in ipairs(result) do
             local impl_name = extract_class_name_from_location(bufnr, impl)
             if impl_name and impl_name ~= interface_name then
-                table.insert(impl_names, impl_name)
+                impl_set[impl_name] = true
             end
         end
 
+        local impl_names = vim.tbl_keys(impl_set)
         if #impl_names > 0 then
+            table.sort(impl_names)
             local prefix = config.prefix[interface_data.type] or config.prefix.interface
             local impl_text = prefix .. table.concat(impl_names, ", ")
             pcall(api.nvim_buf_set_extmark, bufnr, namespace, interface_data.line, 0, {
@@ -305,17 +392,23 @@ local function annotate_interfaces(bufnr)
     api.nvim_buf_clear_namespace(bufnr, namespace, 0, -1)
 
     local clients = vim.lsp.get_clients({ bufnr = bufnr })
-    local capable_client = nil
-
+    local clients_by_method = {}
     for _, client in ipairs(clients) do
-        if client.server_capabilities.implementationProvider then
-            capable_client = client
-            break
+        if client.supports_method then
+            for method, _ in pairs(CAPABILITY_BY_METHOD) do
+                if client:supports_method(method, { bufnr = bufnr }) then
+                    clients_by_method[method] = clients_by_method[method] or {}
+                    table.insert(clients_by_method[method], client)
+                end
+            end
+        else
+            for method, capability_field in pairs(CAPABILITY_BY_METHOD) do
+                if client.server_capabilities and client.server_capabilities[capability_field] then
+                    clients_by_method[method] = clients_by_method[method] or {}
+                    table.insert(clients_by_method[method], client)
+                end
+            end
         end
-    end
-
-    if not capable_client then
-        return
     end
 
     local interfaces = find_all_interfaces(bufnr)
@@ -323,7 +416,15 @@ local function annotate_interfaces(bufnr)
     for _, interface_data in ipairs(interfaces) do
         local interface_name = get_interface_name(bufnr, interface_data)
         if interface_name then
-            find_interface_implementations(bufnr, capable_client, interface_data, interface_name)
+            local query_config = QUERIES[interface_data.type]
+            local method = query_config and query_config.lsp_method
+            if method then
+                local method_clients = clients_by_method[method]
+                local client = method_clients and method_clients[1]
+                if client then
+                    find_interface_implementations(bufnr, client, interface_data, interface_name)
+                end
+            end
         end
     end
 end
