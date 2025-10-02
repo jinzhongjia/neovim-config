@@ -338,7 +338,7 @@ local function extract_class_name_from_location(bufnr, location)
 end
 
 -- 查找接口实现（优化版）
-local function find_interface_implementations(bufnr, client, interface_data, interface_name)
+local function find_interface_implementations(bufnr, client, interface_data, interface_name, state)
     local query_config = QUERIES[interface_data.type]
     if not query_config then
         return
@@ -365,6 +365,9 @@ local function find_interface_implementations(bufnr, client, interface_data, int
         return
     end
 
+    state = state or {}
+    state.impl_set = state.impl_set or {}
+
     local changedtick = api.nvim_buf_get_changedtick(bufnr)
 
     client:request(method, {
@@ -383,23 +386,26 @@ local function find_interface_implementations(bufnr, client, interface_data, int
             return
         end
 
-        local impl_set = {}
         for _, impl in ipairs(result) do
             local impl_name = extract_class_name_from_location(bufnr, impl)
             if impl_name and impl_name ~= interface_name then
-                impl_set[impl_name] = true
+                state.impl_set[impl_name] = true
             end
         end
 
-        local impl_names = vim.tbl_keys(impl_set)
+        local impl_names = vim.tbl_keys(state.impl_set)
         if #impl_names > 0 then
             table.sort(impl_names)
             local prefix = config.prefix[interface_data.type] or config.prefix.interface
             local impl_text = prefix .. table.concat(impl_names, ", ")
-            pcall(api.nvim_buf_set_extmark, bufnr, namespace, interface_data.line, 0, {
+            local ok, mark_id = pcall(api.nvim_buf_set_extmark, bufnr, namespace, interface_data.line, 0, {
                 virt_text = { { impl_text, "Tsplements" } },
                 virt_text_pos = "eol",
+                id = state.extmark_id,
             })
+            if ok and type(mark_id) == "number" then
+                state.extmark_id = mark_id
+            end
         end
     end)
 end
@@ -441,9 +447,11 @@ local function annotate_interfaces(bufnr)
             local method = query_config and query_config.lsp_method
             if method then
                 local method_clients = clients_by_method[method]
-                local client = method_clients and method_clients[1]
-                if client then
-                    find_interface_implementations(bufnr, client, interface_data, interface_name)
+                if method_clients then
+                    local state = {}
+                    for _, client in ipairs(method_clients) do
+                        find_interface_implementations(bufnr, client, interface_data, interface_name, state)
+                    end
                 end
             end
         end
