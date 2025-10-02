@@ -32,23 +32,23 @@ local query_str = [[
 
 -- 工具函数
 local function debounce(func, delay)
-      local timer = uv.new_timer()
-      return function(...)
-          local args = { ... }
+    local timer = uv.new_timer()
+    return function(...)
+        local args = { ... }
 
-          if not timer or timer:is_closing() then
-              timer = uv.new_timer()
-          else
-              timer:stop()
-          end
+        if not timer or timer:is_closing() then
+            timer = uv.new_timer()
+        else
+            timer:stop()
+        end
 
-          timer:start(delay, 0, function()
-              timer:stop()
-              vim.schedule(function()
-                  func(unpack(args))
-              end)
-          end)
-      end
+        timer:start(delay, 0, function()
+            timer:stop()
+            vim.schedule(function()
+                func(unpack(args))
+            end)
+        end)
+    end
 end
 
 local function is_valid_buffer(bufnr)
@@ -61,22 +61,22 @@ local function safe_pcall(func, ...)
 end
 
 -- TreeSitter 相关
-  local parsed_query
+local parsed_query
 
-  local function find_types(bufnr)
-      local parser = safe_pcall(vim.treesitter.get_parser, bufnr, "go")
-      if not parser then
-          vim.notify("Go TreeSitter parser not found", vim.log.levels.DEBUG)
-          return {}
-      end
+local function find_types(bufnr)
+    local parser = safe_pcall(vim.treesitter.get_parser, bufnr, "go")
+    if not parser then
+        vim.notify("Go TreeSitter parser not found", vim.log.levels.DEBUG)
+        return {}
+    end
 
-      if not parsed_query then
-          parsed_query = safe_pcall(vim.treesitter.query.parse, "go", query_str)
-          if not parsed_query then
-              vim.notify("Failed to parse treesitter query", vim.log.levels.DEBUG)
-              return {}
-          end
-      end
+    if not parsed_query then
+        parsed_query = safe_pcall(vim.treesitter.query.parse, "go", query_str)
+        if not parsed_query then
+            vim.notify("Failed to parse treesitter query", vim.log.levels.DEBUG)
+            return {}
+        end
+    end
 
     local parse_results = parser:parse()
     if not parse_results or #parse_results == 0 then
@@ -86,8 +86,8 @@ end
     local root = parse_results[1]:root()
     local nodes = {}
 
-      for id, node in parsed_query:iter_captures(root, 0) do
-          local type = parsed_query.captures[id]
+    for id, node in parsed_query:iter_captures(root, 0) do
+        local type = parsed_query.captures[id]
         local line, character = node:range()
         table.insert(nodes, { line = line, character = character, type = type })
     end
@@ -124,11 +124,11 @@ local function read_file_data(uri, bufnr, fcache)
 end
 
 -- 统一的实现回调处理
-  local function process_implementation(impl, fcache)
-      local uri = impl.uri
-      local impl_line = impl.range.start.line
-      local impl_start = impl.range.start.character
-      local impl_end = impl.range["end"].character
+local function process_implementation(impl, fcache)
+    local uri = impl.uri
+    local impl_line = impl.range.start.line
+    local impl_start = impl.range.start.character
+    local impl_end = impl.range["end"].character
 
     local bufnr = vim.uri_to_bufnr(uri)
     local data = read_file_data(uri, bufnr, fcache)
@@ -146,10 +146,26 @@ end
     end
 
     local impl_text = data[impl_line + 1]
-    return package_name .. impl_text:sub(impl_start + 1, impl_end)
+    if not impl_text then
+        return nil
+    end
+
+    if impl_end <= impl_start then
+        return nil
+    end
+
+    local line_len = #impl_text
+    local start_col = math.min(impl_start + 1, line_len)
+    local end_col = math.min(impl_end, line_len)
+
+    if start_col > end_col then
+        return nil
+    end
+
+    return package_name .. impl_text:sub(start_col, end_col)
 end
 
-  local function create_implementation_callback()
+local function create_implementation_callback()
     return function(result)
         if not result then
             return {}
@@ -159,27 +175,27 @@ end
         local names = {}
 
         local function process_single(impl)
-              local name = process_implementation(impl, fcache)
+            local name = process_implementation(impl, fcache)
             if name then
                 table.insert(names, name)
             end
         end
 
-          if result.uri then
-              process_single(result)
-          else
-              for _, impl in pairs(result) do
-                  process_single(impl)
-              end
+        if result.uri then
+            process_single(result)
+        else
+            for _, impl in pairs(result) do
+                process_single(impl)
+            end
         end
 
         return names
     end
 end
 
-  local implementation_callback = create_implementation_callback()
+local implementation_callback = create_implementation_callback()
 
-  local gopls_client
+local gopls_client
 
 -- LSP 交互
 local function get_implementation_names(client, line, character, callback, bufnr)
@@ -235,17 +251,17 @@ local function annotate_structs_interfaces(bufnr)
     clean_render(bufnr)
     local nodes = find_types(bufnr)
 
-      if not gopls_client or not vim.lsp.get_client_by_id(gopls_client.id) then
-          local clients = vim.lsp.get_clients({ name = "gopls" })
-          gopls_client = clients and clients[1] or nil
-      end
+    if not gopls_client or not vim.lsp.get_client_by_id(gopls_client.id) then
+        local clients = vim.lsp.get_clients({ name = "gopls" })
+        gopls_client = clients and clients[1] or nil
+    end
 
-      if not gopls_client then
-          return
-      end
+    if not gopls_client then
+        return
+    end
 
-      for _, node in ipairs(nodes) do
-          get_implementation_names(gopls_client, node.line, node.character + 1, function(names)
+    for _, node in ipairs(nodes) do
+        get_implementation_names(gopls_client, node.line, node.character + 1, function(names)
             if api.nvim_buf_is_valid(bufnr) then
                 local _prefix = config.prefix[node.type]
                 set_virt_text(bufnr, node.line, _prefix, names)
@@ -280,18 +296,18 @@ local function toggle()
 end
 
 -- 注册命令和自动命令
-  pcall(api.nvim_del_user_command, "GoplementsEnable")
-  pcall(api.nvim_del_user_command, "GoplementsDisable")
-  pcall(api.nvim_del_user_command, "GoplementsToggle")
+pcall(api.nvim_del_user_command, "GoplementsEnable")
+pcall(api.nvim_del_user_command, "GoplementsDisable")
+pcall(api.nvim_del_user_command, "GoplementsToggle")
 
-  api.nvim_create_user_command("GoplementsEnable", enable, { desc = "Enable Goplements" })
-  api.nvim_create_user_command("GoplementsDisable", disable, { desc = "Disable Goplements" })
-  api.nvim_create_user_command("GoplementsToggle", toggle, { desc = "Toggle Goplements" })
+api.nvim_create_user_command("GoplementsEnable", enable, { desc = "Enable Goplements" })
+api.nvim_create_user_command("GoplementsDisable", disable, { desc = "Disable Goplements" })
+api.nvim_create_user_command("GoplementsToggle", toggle, { desc = "Toggle Goplements" })
 
-  local augroup = api.nvim_create_augroup("Goplements", { clear = true })
+local augroup = api.nvim_create_augroup("Goplements", { clear = true })
 
-  api.nvim_create_autocmd({ "TextChanged", "LspAttach" }, {
-      group = augroup,
+api.nvim_create_autocmd({ "TextChanged", "LspAttach" }, {
+    group = augroup,
     pattern = { "*.go" },
     callback = debounce(function(args)
         annotate_structs_interfaces(args.buf)

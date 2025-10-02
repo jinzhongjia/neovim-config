@@ -163,36 +163,36 @@ return
             { "<leader>sw", ":Namu workspace<cr>", mode = { "n" }, desc = "LSP Symbols - Workspace" },
         },
     },
-{
-    "hat0uma/prelive.nvim",
-    event = "VeryLazy",
-    cmd = {
-        "PreLiveGo",
-        "PreLiveStatus",
-        "PreLiveClose",
-        "PreLiveCloseAll",
-        "PreLiveLog",
-    },
-    opts = {
-        server = {
-            -- 强烈建议不要暴露到外部网络
-            host = "127.0.0.1",
-            -- 如果值为 0，服务器将绑定到随机端口
-            port = 2255,
+    {
+        "hat0uma/prelive.nvim",
+        event = "VeryLazy",
+        cmd = {
+            "PreLiveGo",
+            "PreLiveStatus",
+            "PreLiveClose",
+            "PreLiveCloseAll",
+            "PreLiveLog",
         },
-        log = {
-            print_level = vim.log.levels.WARN,
-            file_level = vim.log.levels.DEBUG,
-            max_file_size = 1 * 1024 * 1024,
-            max_backups = 3,
+        opts = {
+            server = {
+                -- 强烈建议不要暴露到外部网络
+                host = "127.0.0.1",
+                -- 如果值为 0，服务器将绑定到随机端口
+                port = 2255,
+            },
+            log = {
+                print_level = vim.log.levels.WARN,
+                file_level = vim.log.levels.DEBUG,
+                max_file_size = 1 * 1024 * 1024,
+                max_backups = 3,
+            },
+        },
+        keys = {
+            { "<leader>ps", "<cmd>PreLiveGo<cr>", mode = { "n" }, desc = "PreLive: Start server" },
+            { "<leader>pt", "<cmd>PreLiveStatus<cr>", mode = { "n" }, desc = "PreLive: Status" },
+            { "<leader>pc", "<cmd>PreLiveClose<cr>", mode = { "n" }, desc = "PreLive: Close" },
+            { "<leader>pa", "<cmd>PreLiveCloseAll<cr>", mode = { "n" }, desc = "PreLive: Close all" },
+            { "<leader>pl", "<cmd>PreLiveLog<cr>", mode = { "n" }, desc = "PreLive: View logs" },
         },
     },
-    keys = {
-        { "<leader>ps", "<cmd>PreLiveGo<cr>", mode = { "n" }, desc = "PreLive: Start server" },
-        { "<leader>pt", "<cmd>PreLiveStatus<cr>", mode = { "n" }, desc = "PreLive: Status" },
-        { "<leader>pc", "<cmd>PreLiveClose<cr>", mode = { "n" }, desc = "PreLive: Close" },
-        { "<leader>pa", "<cmd>PreLiveCloseAll<cr>", mode = { "n" }, desc = "PreLive: Close all" },
-        { "<leader>pl", "<cmd>PreLiveLog<cr>", mode = { "n" }, desc = "PreLive: View logs" },
-    },
-},
 }
