@@ -144,12 +144,44 @@ local function safe_get_node_text(node, source)
         return vim.trim(text)
     end
 
+    local sr, sc, er, ec = node:range()
+
     if type(source) == "number" and api.nvim_buf_is_valid(source) then
         local sr, sc, er, ec = node:range()
         local lines = api.nvim_buf_get_text(source, sr, sc, er, ec, {})
         if lines and #lines > 0 then
             return vim.trim(table.concat(lines, "\n"))
         end
+    elseif type(source) == "string" then
+        local segments = {}
+        for line in source:gmatch("[^\n]*") do
+            table.insert(segments, line)
+        end
+        if #segments == 0 then
+            return nil
+        end
+
+        local start_line = sr + 1
+        local end_line = er + 1
+
+        if start_line > #segments then
+            return nil
+        end
+
+        end_line = math.min(end_line, #segments)
+
+        if start_line == end_line then
+            return vim.trim(segments[start_line]:sub(sc + 1, ec))
+        end
+
+        local collected = {}
+        collected[#collected + 1] = segments[start_line]:sub(sc + 1)
+        for line_nr = start_line + 1, end_line - 1 do
+            collected[#collected + 1] = segments[line_nr]
+        end
+        collected[#collected + 1] = segments[end_line]:sub(1, ec)
+
+        return vim.trim(table.concat(collected, "\n"))
     end
 
     return nil
@@ -292,64 +324,112 @@ end
 
 -- 提取类名（简化版）
 local function extract_class_name_from_location(bufnr, location)
-    local target_bufnr = bufnr
     local uri = location.uri
+    local target_bufnr = bufnr
+    local parser
+    local root
+    local source
+    local ft
+    local fname
 
     if uri ~= vim.uri_from_bufnr(bufnr) then
-        local fname = vim.uri_to_fname(uri)
-        target_bufnr = vim.fn.bufnr(fname)
-        if target_bufnr == -1 then
-            return vim.fn.fnamemodify(fname, ":t:r")
+        fname = vim.uri_to_fname(uri)
+        local existing_bufnr = vim.fn.bufnr(fname)
+        if existing_bufnr ~= -1 then
+            target_bufnr = existing_bufnr
+            if not api.nvim_buf_is_loaded(target_bufnr) then
+                vim.fn.bufload(target_bufnr)
+            end
+        else
+            target_bufnr = nil
+            local ok, lines = pcall(vim.fn.readfile, fname)
+            if not ok or not lines or #lines == 0 then
+                return vim.fn.fnamemodify(fname, ":t:r")
+            end
+            local text = table.concat(lines, "\n")
+            ft = vim.filetype.match({ filename = fname, contents = text }) or "typescript"
+            local lang = vim.treesitter.language.get_lang(ft) or ft
+            local parser_ok, string_parser = pcall(vim.treesitter.get_string_parser, text, lang)
+            if not parser_ok then
+                return vim.fn.fnamemodify(fname, ":t:r")
+            end
+            local trees = string_parser:parse()
+            if not trees or #trees == 0 then
+                return vim.fn.fnamemodify(fname, ":t:r")
+            end
+            root = trees[1]:root()
+            root = trees[1]:root()
+            source = text
         end
     end
 
-    local parser = get_cached_parser(target_bufnr)
     if not parser then
-        return nil
+        parser = get_cached_parser(target_bufnr or bufnr)
+        if not parser then
+            return nil
+        end
+        ft = ft or vim.bo[target_bufnr or bufnr].filetype
+        local parse_results = parser:parse()
+        if not parse_results or #parse_results == 0 then
+            return nil
+        end
+        root = parse_results[1]:root()
+        source = target_bufnr or bufnr
     end
 
-    local ft = vim.bo[target_bufnr].filetype
+    ft = ft or vim.bo[target_bufnr or bufnr].filetype
     local class_query_str = [[(class_declaration name: (type_identifier) @name)]]
     local query = get_cached_query(ft, class_query_str)
     if not query then
         return nil
     end
 
-    local parse_results = parser:parse()
-    if not parse_results or #parse_results == 0 then
-        return nil
-    end
-
-    local root = parse_results[1]:root()
     local target_line = location.range.start.line
     local target_character = location.range.start.character
 
-    for _, node in query:iter_captures(root, 0) do
+    for _, node in query:iter_captures(root, source) do
         local start_line, start_col, end_line, end_col = node:range()
         if start_line == target_line and start_col <= target_character and target_character <= end_col then
-            local name = safe_get_node_text(node, target_bufnr)
+            local name
+            if target_bufnr then
+                name = safe_get_node_text(node, target_bufnr)
+            else
+                name = safe_get_node_text(node, source)
+            end
             if name then
                 return name
             end
         end
     end
 
+    if fname then
+        return vim.fn.fnamemodify(fname, ":t:r")
+    end
+
     return nil
 end
 
 -- 查找接口实现（优化版）
-local function find_interface_implementations(bufnr, client, interface_data, interface_name, state)
+local function find_interface_implementations(bufnr, clients, interface_data, interface_name, state, index)
     local query_config = QUERIES[interface_data.type]
     if not query_config then
         return
     end
 
+    index = index or 1
+    local client = clients and clients[index]
+    if not client then
+        return
+    end
+
     local method = query_config.lsp_method
     if not method then
+        find_interface_implementations(bufnr, clients, interface_data, interface_name, state, index + 1)
         return
     end
 
     if not client then
+        find_interface_implementations(bufnr, clients, interface_data, interface_name, state, index + 1)
         return
     end
 
@@ -362,19 +442,21 @@ local function find_interface_implementations(bufnr, client, interface_data, int
     end
 
     if not supports_method then
+        find_interface_implementations(bufnr, clients, interface_data, interface_name, state, index + 1)
         return
     end
 
     state = state or {}
     state.impl_set = state.impl_set or {}
 
-    local changedtick = api.nvim_buf_get_changedtick(bufnr)
+    local changedtick = state.changedtick or api.nvim_buf_get_changedtick(bufnr)
 
     client:request(method, {
         textDocument = vim.lsp.util.make_text_document_params(),
         position = { line = interface_data.line, character = interface_data.character },
     }, function(err, result, ctx, config)
         if err or not api.nvim_buf_is_valid(bufnr) then
+            find_interface_implementations(bufnr, clients, interface_data, interface_name, state, index + 1)
             return
         end
 
@@ -383,13 +465,18 @@ local function find_interface_implementations(bufnr, client, interface_data, int
         end
 
         if not result or #result == 0 then
+            find_interface_implementations(bufnr, clients, interface_data, interface_name, state, index + 1)
             return
         end
 
+        local added_new = false
         for _, impl in ipairs(result) do
             local impl_name = extract_class_name_from_location(bufnr, impl)
             if impl_name and impl_name ~= interface_name then
-                state.impl_set[impl_name] = true
+                if not state.impl_set[impl_name] then
+                    added_new = true
+                    state.impl_set[impl_name] = true
+                end
             end
         end
 
@@ -406,6 +493,10 @@ local function find_interface_implementations(bufnr, client, interface_data, int
             if ok and type(mark_id) == "number" then
                 state.extmark_id = mark_id
             end
+        end
+
+        if not added_new then
+            find_interface_implementations(bufnr, clients, interface_data, interface_name, state, index + 1)
         end
     end)
 end
@@ -440,6 +531,8 @@ local function annotate_interfaces(bufnr)
 
     local interfaces = find_all_interfaces(bufnr)
 
+    local current_tick = api.nvim_buf_get_changedtick(bufnr)
+
     for _, interface_data in ipairs(interfaces) do
         local interface_name = get_interface_name(bufnr, interface_data)
         if interface_name then
@@ -448,10 +541,8 @@ local function annotate_interfaces(bufnr)
             if method then
                 local method_clients = clients_by_method[method]
                 if method_clients then
-                    local state = {}
-                    for _, client in ipairs(method_clients) do
-                        find_interface_implementations(bufnr, client, interface_data, interface_name, state)
-                    end
+                    local state = { changedtick = current_tick }
+                    find_interface_implementations(bufnr, method_clients, interface_data, interface_name, state)
                 end
             end
         end
