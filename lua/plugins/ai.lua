@@ -488,21 +488,21 @@ return {
                 callback = function()
                     require("sidekick").clear()
                 end,
-                desc = "清除 sidekick NES 当补全菜单关闭时",
+                desc = "clear sidekick NES when blink cmp menu closes",
             })
         end,
         opts = {
             jump = {
                 jumplist = true, -- 添加跳转到 jumplist
             },
-            signs = {
-                enabled = true,
-                icon = " ",
-            },
             nes = {
                 enabled = function(buf)
                     return vim.g.sidekick_nes ~= false and vim.b.sidekick_nes ~= false
                 end,
+                trigger = {
+                    -- events that trigger sidekick next edit suggestions
+                    events = { "InsertLeave", "TextChanged", "User SidekickNesDone", "CursorHold" },
+                },
                 diff = {
                     inline = "words",
                 },
@@ -568,7 +568,7 @@ return {
                     return "<Tab>"
                 end,
                 expr = true,
-                desc = "跳转/应用下一个编辑建议",
+                desc = "Jump to/Apply next edit suggestion",
                 mode = "n", -- 仅支持 normal 模式，insert 模式由 blink.cmp 处理
             },
             -- 手动控制快捷键
@@ -577,28 +577,28 @@ return {
                 function()
                     require("sidekick.nes").update()
                 end,
-                desc = "Sidekick 更新编辑建议",
+                desc = "Sidekick update edit suggestions",
             },
             {
                 "<leader>sj",
                 function()
                     require("sidekick.nes").jump()
                 end,
-                desc = "Sidekick 跳转到编辑",
+                desc = "Sidekick jump to edit",
             },
             {
                 "<leader>sa",
                 function()
                     require("sidekick.nes").apply()
                 end,
-                desc = "Sidekick 应用编辑",
+                desc = "Sidekick apply edit",
             },
             {
                 "<leader>sx",
                 function()
                     require("sidekick").clear()
                 end,
-                desc = "Sidekick 清除建议",
+                desc = "Sidekick clear suggestions",
             },
         },
     },
