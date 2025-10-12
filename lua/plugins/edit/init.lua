@@ -3,6 +3,7 @@ local M = {
 
     {
         "m-demare/hlargs.nvim",
+        enabled = false,
         event = "VeryLazy",
         config = function()
             require("hlargs").setup()
