@@ -671,6 +671,16 @@ adapter.schema.model = {
                 description = "High-performance model with early extended thinking",
             },
         },
+        -- claude haiku 4.5
+        ["claude-haiku-4-5"] = {
+            opts = {
+                can_reason = true,
+                has_vision = true,
+                max_output = 64000,
+                context_window = 200000,
+                description = "Our latest Claude Haiku model - Balanced performance and capability",
+            },
+        },
         -- Claude Haiku 3.5 - 最快的模型
         ["claude-3-5-haiku-latest"] = {
             opts = {
