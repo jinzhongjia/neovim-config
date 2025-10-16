@@ -7,9 +7,33 @@ vim.g.codecompanion_yolo_mode = true
 local DEFAULT_COPILOT_FREE_MODEL = "gpt-4.1"
 local DEFAULT_COPILOT_MODEL = "claude-sonnet-4"
 
-local DEFAULT_CLAUDE_AUTH_MODEL = "claude-opus-4-0"
-local DEFAULT_CLAUDE_AUTH_MIDDLE_MODEL = "claude-sonnet-4-0"
-local DEFAULT_CLAUDE_AUTH_FAST_MODEL = "claude-3-5-haiku-latest"
+local DEFAULT_CLAUDE_AUTH_MODEL = "claude-opus-4-1"
+local DEFAULT_CLAUDE_AUTH_MIDDLE_MODEL = "claude-sonnet-4-5"
+local DEFAULT_CLAUDE_AUTH_FAST_MODEL = "claude-haiku-4-5"
+
+-- ========================
+-- 适配器使用配置（统一管理）
+-- ========================
+local adapter_usage = {
+    -- 主要功能
+    chat = "anthropic_oauth", -- 聊天功能默认适配器
+    inline = "inline_adapter", -- 内联编辑适配器
+
+    -- 扩展功能
+    history_title = "anthropic_oauth", -- 历史记录标题生成
+    git_commit = "anthropic_oauth", -- Git commit 消息生成
+    translator = "anthropic_oauth", -- 翻译工具
+}
+
+-- ========================
+-- 模型使用配置（统一管理）
+-- ========================
+local model_usage = {
+    -- 扩展功能使用的模型
+    history_title = DEFAULT_CLAUDE_AUTH_FAST_MODEL, -- 历史记录标题生成
+    git_commit = DEFAULT_CLAUDE_AUTH_FAST_MODEL, -- Git commit 消息生成
+    translator = DEFAULT_CLAUDE_AUTH_FAST_MODEL, -- 翻译工具
+}
 
 -- ========================
 -- 环境变量配置
@@ -154,11 +178,7 @@ end
 -- 默认适配器选择
 -- ========================
 local get_default_adapter = function()
-    -- if env.LLM_ROUTER_URL and env.LLM_ROUTER_URL ~= "" then
-    --     return "llm_router"
-    -- end
-    return "anthropic_oauth"
-    -- return "claude_code"
+    return adapter_usage.chat
 end
 
 -- ========================
@@ -261,7 +281,7 @@ return {
                             },
                         },
                     },
-                    inline = { adapter = "inline_adapter" },
+                    inline = { adapter = adapter_usage.inline },
                 },
 
                 -- 扩展配置
@@ -315,8 +335,8 @@ return {
                             enable_logging = false,
                             dir_to_save = vim.fn.stdpath("data") .. "/codecompanion-history",
                             title_generation_opts = {
-                                adapter = "anthropic_oauth",
-                                model = DEFAULT_CLAUDE_AUTH_FAST_MODEL,
+                                adapter = adapter_usage.history_title,
+                                model = model_usage.history_title,
                             },
                         },
                     },
@@ -326,8 +346,8 @@ return {
                         enabled = true,
                         opts = {
                             add_slash_command = true,
-                            adapter = "anthropic_oauth",
-                            model = DEFAULT_CLAUDE_AUTH_FAST_MODEL,
+                            adapter = adapter_usage.git_commit,
+                            model = model_usage.git_commit,
                             languages = { "English", "Chinese" },
                             exclude_files = {
                                 "*.pb.go",
@@ -450,8 +470,8 @@ return {
         event = "VeryLazy",
         opts = {
             translator = {
-                adapter = "anthropic_oauth",
-                model = DEFAULT_CLAUDE_AUTH_FAST_MODEL,
+                adapter = adapter_usage.translator,
+                model = model_usage.translator,
                 default_target_lang = "zh",
                 debug = {
                     enabled = false,
