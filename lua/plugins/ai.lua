@@ -532,9 +532,13 @@ return {
                 win = {
                     layout = "right", -- 右侧布局
                     split = {
-                        width = 80,
-                        height = 20,
+                        width = 90, -- 增加宽度以适应更多内容
+                        height = 25,
                     },
+                    -- 窗口样式配置
+                    border = "rounded",
+                    title = " AI Assistant ",
+                    title_pos = "center",
                 },
                 mux = {
                     backend = "zellij",
@@ -542,29 +546,124 @@ return {
                 },
                 -- AI CLI 工具配置
                 tools = {
-                    claude = { cmd = { "claude" }, url = "https://github.com/anthropics/claude-code" },
-                    codex = { cmd = { "codex", "--search" }, url = "https://github.com/openai/codex" },
-                    copilot = { cmd = { "copilot", "--banner" }, url = "https://github.com/github/copilot-cli" },
-                    gemini = { cmd = { "gemini" }, url = "https://github.com/google-gemini/gemini-cli" },
-                    grok = { cmd = { "grok" }, url = "https://github.com/superagent-ai/grok-cli" },
+                    -- Claude Code - Anthropic 官方 CLI
+                    claude = {
+                        cmd = { "claude" },
+                        url = "https://github.com/anthropics/claude-code",
+                        description = "Claude Code - 强大的 AI 编程助手",
+                    },
+                    -- Claude Code 快速模式
+                    claude_quick = {
+                        cmd = { "claude", "--model", "claude-sonnet-4-5" },
+                        url = "https://github.com/anthropics/claude-code",
+                        description = "Claude Code (快速模式)",
+                    },
+                    -- Aider - AI 结对编程工具
+                    aider = {
+                        cmd = { "aider" },
+                        url = "https://github.com/paul-gauthier/aider",
+                        description = "Aider - AI 结对编程助手",
+                    },
+                    aider_claude = {
+                        cmd = { "aider", "--model", "claude-sonnet-4-5" },
+                        url = "https://github.com/paul-gauthier/aider",
+                        description = "Aider (使用 Claude)",
+                    },
+                    -- GitHub Copilot CLI
+                    copilot = {
+                        cmd = { "copilot", "--banner" },
+                        url = "https://github.com/github/copilot-cli",
+                        description = "GitHub Copilot CLI",
+                    },
+                    -- Gemini CLI
+                    gemini = {
+                        cmd = { "gemini" },
+                        url = "https://github.com/google-gemini/gemini-cli",
+                        description = "Google Gemini CLI",
+                    },
+                    -- Grok CLI
+                    grok = {
+                        cmd = { "grok" },
+                        url = "https://github.com/superagent-ai/grok-cli",
+                        description = "Grok AI CLI",
+                    },
+                    -- OpenAI Codex
+                    codex = {
+                        cmd = { "codex", "--search" },
+                        url = "https://github.com/openai/codex",
+                        description = "OpenAI Codex",
+                    },
+                    -- Cursor CLI (如果有)
+                    cursor = {
+                        cmd = { "cursor-cli" },
+                        url = "https://cursor.sh",
+                        description = "Cursor AI Editor CLI",
+                    },
+                    -- ChatGPT CLI
+                    chatgpt = {
+                        cmd = { "chatgpt" },
+                        url = "https://github.com/j178/chatgpt",
+                        description = "ChatGPT CLI",
+                    },
                 },
                 -- 提示词配置
                 prompts = {
-                    explain = "解释这段代码",
-                    diagnostics = {
-                        msg = "这个文件中的诊断信息是什么意思？",
-                        diagnostics = true,
-                    },
+                    -- 代码理解
+                    explain = "请详细解释这段代码的功能、逻辑和实现方式",
+                    understand = "帮我理解这段代码在做什么，以及为什么这样实现",
+                    architecture = "分析这个代码的架构设计和模式",
+
+                    -- 代码改进
+                    optimize = "分析并优化这段代码的性能、可读性和可维护性",
+                    refactor = "重构这段代码，使其更加清晰、简洁和符合最佳实践",
+                    simplify = "简化这段代码，去除不必要的复杂性",
+                    modernize = "使用最新的语言特性和最佳实践来现代化这段代码",
+
+                    -- 问题修复
                     fix = {
-                        msg = "你能修复这段代码中的问题吗？",
+                        msg = "修复这段代码中的所有问题和错误",
                         diagnostics = true,
                     },
+                    debug = {
+                        msg = "帮我调试这段代码，找出潜在的问题",
+                        diagnostics = true,
+                    },
+                    diagnostics = {
+                        msg = "解释这个文件中的诊断信息并提供修复建议",
+                        diagnostics = true,
+                    },
+
+                    -- 代码质量
                     review = {
-                        msg = "你能检查这段代码是否有问题或改进建议吗？",
+                        msg = "全面审查这段代码，包括安全性、性能、可读性等方面",
                         diagnostics = true,
                     },
-                    optimize = "如何优化这段代码？",
-                    tests = "你能为这段代码编写测试吗？",
+                    security = "检查这段代码的安全漏洞和潜在风险",
+                    performance = "分析这段代码的性能瓶颈并提出优化建议",
+
+                    -- 测试相关
+                    tests = "为这段代码编写全面的单元测试",
+                    test_cases = "生成这个功能的测试用例，包括边界情况",
+                    coverage = "分析测试覆盖率并补充缺失的测试",
+
+                    -- 文档相关
+                    docs = "为这段代码编写清晰详细的文档注释",
+                    readme = "为这个模块生成 README 文档",
+                    api_doc = "生成这个 API 的使用文档和示例",
+
+                    -- 代码生成
+                    implement = "根据需求实现这个功能",
+                    complete = "补全这段未完成的代码",
+                    scaffold = "为这个功能创建基础框架代码",
+
+                    -- 转换和迁移
+                    convert = "将这段代码转换为另一种语言或框架",
+                    migrate = "帮我将这段代码迁移到新版本",
+                    translate = "将代码中的注释和文档翻译为英文",
+
+                    -- 交互式
+                    chat = "我想和你讨论这段代码",
+                    question = "我有关于这段代码的问题",
                 },
             },
             copilot = {
@@ -575,7 +674,7 @@ return {
             debug = false,
         },
         keys = {
-            -- Next Edit Suggestions 快捷键
+            -- ===== Next Edit Suggestions 快捷键 =====
             {
                 "<tab>",
                 function()
@@ -588,37 +687,138 @@ return {
                     return "<Tab>"
                 end,
                 expr = true,
-                desc = "Jump to/Apply next edit suggestion",
+                desc = "Sidekick: Jump to/Apply next edit",
                 mode = "n", -- 仅支持 normal 模式，insert 模式由 blink.cmp 处理
             },
-            -- 手动控制快捷键
+            -- 手动控制 NES
             {
                 "<leader>su",
                 function()
                     require("sidekick.nes").update()
                 end,
-                desc = "Sidekick update edit suggestions",
+                desc = "Sidekick: Update suggestions",
             },
             {
                 "<leader>sj",
                 function()
                     require("sidekick.nes").jump()
                 end,
-                desc = "Sidekick jump to edit",
+                desc = "Sidekick: Jump to edit",
             },
             {
                 "<leader>sa",
                 function()
                     require("sidekick.nes").apply()
                 end,
-                desc = "Sidekick apply edit",
+                desc = "Sidekick: Apply edit",
             },
             {
                 "<leader>sx",
                 function()
                     require("sidekick").clear()
                 end,
-                desc = "Sidekick clear suggestions",
+                desc = "Sidekick: Clear suggestions",
+            },
+
+            -- ===== AI CLI 工具快捷键 =====
+            -- 快速选择 AI 工具
+            {
+                "<leader>sc",
+                function()
+                    require("sidekick.cli").select()
+                end,
+                desc = "Sidekick: Select AI tool",
+                mode = { "n", "v" },
+            },
+            -- 快速选择提示词
+            {
+                "<leader>sp",
+                function()
+                    require("sidekick.cli").prompt()
+                end,
+                desc = "Sidekick: Select prompt",
+                mode = { "n", "v" },
+            },
+            -- 切换 AI CLI 窗口
+            {
+                "<leader>st",
+                function()
+                    require("sidekick.cli").toggle()
+                end,
+                desc = "Sidekick: Toggle CLI window",
+            },
+            -- 关闭 AI CLI
+            {
+                "<leader>sq",
+                function()
+                    require("sidekick.cli").close()
+                end,
+                desc = "Sidekick: Close CLI",
+            },
+            -- 发送选区到 AI
+            {
+                "<leader>ss",
+                function()
+                    require("sidekick.cli").send({ msg = "{selection}" })
+                end,
+                desc = "Sidekick: Send selection",
+                mode = { "v" },
+            },
+            -- 发送当前文件到 AI
+            {
+                "<leader>sF",
+                function()
+                    require("sidekick.cli").send({ msg = "{file}" })
+                end,
+                desc = "Sidekick: Send file",
+                mode = { "n" },
+            },
+            -- 发送当前行到 AI
+            {
+                "<leader>sl",
+                function()
+                    require("sidekick.cli").send({ msg = "{this}" })
+                end,
+                desc = "Sidekick: Send current line",
+                mode = { "n" },
+            },
+
+            -- ===== 特定 AI 工具快捷键 =====
+            -- Claude Code
+            {
+                "<leader>sC",
+                function()
+                    require("sidekick.cli").toggle({ name = "claude", focus = true })
+                end,
+                desc = "Sidekick: Open Claude Code",
+                mode = { "n", "v" },
+            },
+            -- Aider
+            {
+                "<leader>sA",
+                function()
+                    require("sidekick.cli").toggle({ name = "aider", focus = true })
+                end,
+                desc = "Sidekick: Open Aider",
+                mode = { "n", "v" },
+            },
+            -- GitHub Copilot
+            {
+                "<leader>sP",
+                function()
+                    require("sidekick.cli").toggle({ name = "copilot", focus = true })
+                end,
+                desc = "Sidekick: Open Copilot CLI",
+                mode = { "n", "v" },
+            },
+            -- Gemini
+            {
+                "<leader>sG",
+                function()
+                    require("sidekick.cli").toggle({ name = "gemini", focus = true })
+                end,
+                desc = "Sidekick: Open Gemini CLI",
+                mode = { "n", "v" },
             },
         },
     },
