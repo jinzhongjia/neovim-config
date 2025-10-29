@@ -427,12 +427,11 @@ return {
         "ravitemer/mcphub.nvim",
         dependencies = { "nvim-lua/plenary.nvim" },
         cmd = "MCPHub",
-        build = "bundled_build.lua",
+        build = "npm install -g mcp-hub@latest",
         config = function()
             require("mcphub").setup({
                 config = vim.fn.expand(vim.fn.stdpath("config") .. "/mcphub_servers.json"),
                 auto_approve = true,
-                use_bundled_binary = true,
             })
         end,
     },
