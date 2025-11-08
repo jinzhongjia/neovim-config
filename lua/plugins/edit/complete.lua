@@ -64,6 +64,7 @@ return
                     -- copilot = { name = "copilot", module = "blink-copilot", score_offset = 10, async = true },
                     dadbod = { name = "Dadbod", module = "vim_dadbod_completion.blink" },
                     -- ripgrep = { module = "blink-ripgrep", name = "Ripgrep", score_offset = 7 },
+                    cmdline = { min_keyword_length = 0 }, -- cmdline 不需要输入字符就显示补全
                 },
             },
             fuzzy = {
