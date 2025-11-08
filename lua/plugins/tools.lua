@@ -146,7 +146,7 @@ return
             },
             quickfile = { enabled = true },
             rename = { enabled = false }, -- 使用 LspUI rename 替代
-            scope = { enabled = true },
+            scope = { enabled = true }, -- 代码作用域检测,与 scope.nvim (tab-buffer 隔离) 功能不重叠
             scratch = { enabled = true },
             scroll = {
                 enabled = true,
