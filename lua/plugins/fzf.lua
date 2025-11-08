@@ -77,12 +77,14 @@ return
                 fzf_opts = {
                     ["--ansi"] = true,
                     ["--info"] = "inline-right", -- fzf >= v0.42
+                    -- Windows 上 fzf < 0.21.0 不支持 --height，使用 100% 确保兼容
                     ["--height"] = "100%",
                     ["--layout"] = "reverse",
                     ["--border"] = "none",
                     ["--highlight-line"] = true, -- fzf >= v0.53
                     ["--padding"] = "0,1",
                     ["--margin"] = "0",
+                    -- Windows 不需要设置 TERM 环境变量，cmd.exe 和 PowerShell 默认不设置
                 },
 
                 -- Previewers 配置
@@ -107,7 +109,9 @@ return
                     git_diff = {
                         -- delta 会被自动检测，可以通过 pager = false 禁用
                         -- pager = false,
-                        -- 跨平台兼容：delta 会自动适配终端宽度
+                        -- 跨平台兼容：
+                        -- Windows: 不使用 $FZF_PREVIEW_COLUMNS（shell 变量在 cmd.exe 中不可用）
+                        -- Unix: 使用环境变量动态调整宽度
                         pager = is_windows and "delta --line-numbers --diff-so-fancy"
                             or [[delta --width=$FZF_PREVIEW_COLUMNS --line-numbers --diff-so-fancy]],
                     },
@@ -120,11 +124,15 @@ return
                     file_icons = true,
                     git_icons = false,
                     color_icons = true,
-                    -- find 命令跨平台兼容 - 移除 GNU find 特有的 -printf
-                    -- find_opts = [[-type f -not -path '*/\.git/*']],
-                    -- 优先使用 fd，其次是 rg，最后才是 find
+                    -- Windows 兼容性说明：
+                    -- 1. 优先使用 fd（跨平台，速度快）
+                    -- 2. 其次使用 rg --files（ripgrep，Windows 原生支持）
+                    -- 3. 最后使用 find（Windows 上可能需要 Git Bash/MSYS2）
+                    -- 注意：Windows cmd.exe 会启动这些命令，确保它们在 PATH 中
                     fd_opts = [[--color=never --type f --hidden --follow --exclude .git]],
                     rg_opts = [[--color=never --files --hidden --follow -g '!.git']],
+                    -- Windows 上如果使用 find，需要确保是 Unix-like find，而非 Windows 自带的 FIND.EXE
+                    -- find_opts = [[-type f -not -path '*/\.git/*']],  -- 仅在有 Unix find 时使用
                     actions = {
                         ["enter"] = require("fzf-lua.actions").file_edit_or_qf,
                         ["ctrl-s"] = require("fzf-lua.actions").file_split,
