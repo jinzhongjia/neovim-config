@@ -56,23 +56,102 @@ return
                             { text = { "%s" }, click = "v:lua.ScSa" },
                             { text = { builtin.lnumfunc, " " }, click = "v:lua.ScLa" },
                         },
-                        provider_selector = function(bufnr, filetype, buftype)
-                            return { "lsp", "treesitter", "indent" }
-                        end,
                     })
                 end,
             },
         },
-        event = "VeryLazy",
-        opts = {
-            fold_virt_text_handler = handler,
-        },
+        event = { "BufReadPost", "BufNewFile" }, -- 打开文件时加载
+        opts = function()
+            -- 必须添加 LSP folding capability
+            vim.api.nvim_create_autocmd("LspAttach", {
+                group = vim.api.nvim_create_augroup("ufo_lsp_attach", { clear = true }),
+                callback = function(args)
+                    local client = vim.lsp.get_client_by_id(args.data.client_id)
+                    if client and client.server_capabilities then
+                        -- 为 LSP 添加 foldingRange capability
+                        client.server_capabilities.foldingRangeProvider = true
+                    end
+                end,
+            })
+
+            return {
+                fold_virt_text_handler = handler,
+                -- 提供者选择器: LSP > Treesitter > indent
+                provider_selector = function(bufnr, filetype, buftype)
+                    -- 禁用特殊文件类型的折叠
+                    local disable_filetypes = {
+                        "codecompanion",
+                        "gitcommit",
+                        "gitrebase",
+                        "help",
+                        "dashboard",
+                        "NvimTree",
+                        "neo-tree",
+                        "Outline",
+                        "lazy",
+                        "mason",
+                        "TelescopePrompt",
+                        "TelescopeResults",
+                        "terminal",
+                        "toggleterm",
+                        "floaterm",
+                        "qf", -- quickfix
+                        "diff",
+                        "fugitive",
+                        "log",
+                    }
+                    
+                    -- 禁用特殊 buffer 类型的折叠
+                    if buftype ~= "" then
+                        return ""
+                    end
+                    
+                    -- 检查文件类型
+                    for _, ft in ipairs(disable_filetypes) do
+                        if filetype == ft then
+                            return ""
+                        end
+                    end
+                    
+                    return { "lsp", "treesitter", "indent" }
+                end,
+                -- 首次打开时关闭特定类型的折叠
+                close_fold_kinds_for_ft = {
+                    default = { "imports", "comment" },
+                },
+                -- 预览窗口配置
+                preview = {
+                    win_config = {
+                        border = "rounded",
+                        winblend = 0,
+                        winhighlight = "Normal:Normal",
+                    },
+                    mappings = {
+                        scrollU = "<C-u>",
+                        scrollD = "<C-d>",
+                        jumpTop = "[",
+                        jumpBot = "]",
+                    },
+                },
+            }
+        end,
         -- stylua: ignore
         keys = {
             { "zR", function() require("ufo").openAllFolds() end, desc = "open all folds" },
             { "zM", function() require("ufo").closeAllFolds() end, desc = "close all folds" },
             { "zr", function() require("ufo").openFoldsExceptKinds() end, desc = "open folds except kinds" },
             { "zm", function() require("ufo").closeFoldsWith() end, desc = "close folds with" },
+            -- 添加预览折叠内容的快捷键
+            { 
+                "K", 
+                function()
+                    local winid = require("ufo").peekFoldedLinesUnderCursor()
+                    if not winid then
+                        vim.lsp.buf.hover() -- 如果没有折叠,则显示 hover
+                    end
+                end, 
+                desc = "Peek fold or hover" 
+            },
         },
     },
 }
