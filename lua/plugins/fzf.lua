@@ -395,8 +395,9 @@ return
                 -- },
             })
 
-            -- 注册 fzf-lua 为 vim.ui.select 的提供者（可选）
-            fzf.register_ui_select()
+            -- 注意：vim.ui.select 由 snacks.nvim 提供，不使用 fzf-lua
+            -- 如果需要使用 fzf-lua 作为 vim.ui.select，取消下面的注释
+            -- fzf.register_ui_select()
         end,
         keys = function()
             local is_windows = vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1
