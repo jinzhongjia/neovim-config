@@ -202,7 +202,6 @@ return {
             -- 核心依赖
             "nvim-lua/plenary.nvim",
             "nvim-treesitter/nvim-treesitter",
-            "nvim-telescope/telescope.nvim",
             "j-hui/fidget.nvim",
             "lalitmee/codecompanion-spinners.nvim", -- 添加 spinner 扩展
 
