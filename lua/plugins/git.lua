@@ -29,12 +29,18 @@ return
             auto_refresh = true, -- 自动刷新状态
             disable_hint = false, -- 保留顶部提示
             disable_context_highlighting = false, -- 保留上下文高亮
+            disable_signs = false, -- 保留符号
             
             -- 文件监视器优化
             filewatcher = {
                 interval = 1000,
                 enabled = true,
             },
+            
+            -- 控制台性能优化
+            console_timeout = 2000, -- 2秒后显示慢命令的输出
+            auto_show_console = true, -- 自动显示控制台
+            auto_close_console = true, -- 成功时自动关闭控制台
             
             -- 图形样式
             graph_style = "unicode",
@@ -43,15 +49,29 @@ return
             commit_editor = {
                 kind = "tab",
                 show_staged_diff = true, -- 显示暂存区差异
-                staged_diff_split_kind = "vsplit", -- 右侧显示差异
+                staged_diff_split_kind = "split", -- 底部显示差异（横向分割）
                 spell_check = true, -- 启用拼写检查
             },
             
             -- 视图配置优化
             kind = "tab", -- 默认在新标签页打开
             commit_view = {
-                kind = "vsplit",
+                kind = "split", -- 横向分割显示提交详情
                 verify_commit = vim.fn.executable("gpg") == 1, -- GPG 签名验证
+            },
+            
+            -- 其他视图优化
+            log_view = {
+                kind = "tab",
+            },
+            rebase_editor = {
+                kind = "auto", -- 自动选择最佳布局
+            },
+            reflog_view = {
+                kind = "tab",
+            },
+            popup = {
+                kind = "split", -- popup 使用横向分割
             },
             
             -- 集成配置
@@ -78,8 +98,9 @@ return
             -- 状态视图配置
             status = {
                 show_head_commit_hash = true,
-                recent_commit_count = 10,
+                recent_commit_count = 10, -- 只显示最近10个提交（性能优化）
                 HEAD_padding = 10,
+                HEAD_folded = false, -- 默认展开 HEAD
             },
             
             -- 分支排序
@@ -87,6 +108,30 @@ return
             
             -- 日志视图配置
             commit_order = "topo", -- 拓扑排序（适合查看分支图）
+            
+            -- 性能优化：禁用行号
+            disable_line_numbers = true,
+            disable_relative_line_numbers = true,
+            
+            -- sections 配置（性能优化：默认折叠某些不常用的部分）
+            sections = {
+                stashes = {
+                    folded = true, -- 默认折叠 stash
+                    hidden = false,
+                },
+                unpulled_upstream = {
+                    folded = true, -- 默认折叠未拉取的上游提交
+                    hidden = false,
+                },
+                recent = {
+                    folded = true, -- 默认折叠最近提交
+                    hidden = false,
+                },
+                rebase = {
+                    folded = false, -- rebase 状态不折叠
+                    hidden = false,
+                },
+            },
         },
         keys = {
             { "<leader>ng", "<cmd>Neogit<cr>", desc = "NeoGit" },
