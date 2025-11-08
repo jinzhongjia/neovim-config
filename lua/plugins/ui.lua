@@ -79,7 +79,7 @@ return
     {
         -- scope.nvim 提供 tab 级别的 buffer 隔离
         "tiagovla/scope.nvim",
-        event = "VeryLazy",
+        event = "TabNew", -- tab 操作时加载
         config = function()
             require("scope").setup({
                 hooks = {
@@ -128,7 +128,7 @@ return
     {
         "leath-dub/snipe.nvim",
         enabled = false,
-        event = "VeryLazy",
+        -- 按键触发即可
         -- stylua: ignore
         keys = {
             { "<leader>gb", function() require("snipe").open_buffer_menu() end, desc = "Open Snipe buffer menu" },
@@ -394,7 +394,7 @@ return
     },
     {
         "anuvyklack/windows.nvim",
-        event = "VeryLazy",
+        event = "WinNew", -- 创建新窗口时加载
         dependencies = {
             "anuvyklack/middleclass",
         },
@@ -421,7 +421,8 @@ return
     },
     {
         "folke/trouble.nvim",
-        event = "VeryLazy",
+        -- 命令和按键触发
+        cmd = "Trouble",
         opts = {
             modes = {
                 test = {
@@ -452,7 +453,8 @@ return
     },
     {
         "folke/zen-mode.nvim",
-        event = "VeryLazy",
+        -- 命令触发
+        cmd = "ZenMode",
         dependencies = {
             "folke/twilight.nvim",
             opts = {},
@@ -461,18 +463,18 @@ return
     },
     {
         "jeffkreeftmeijer/vim-numbertoggle",
-        event = "VeryLazy",
+        event = { "BufReadPost", "BufNewFile" },
     },
     {
         "nacro90/numb.nvim",
-        event = "VeryLazy",
+        event = "CmdlineEnter", -- 命令行输入时加载(用于跳转行号)
         opts = {
             number_only = true,
         },
     },
     {
         "folke/which-key.nvim",
-        event = "VeryLazy",
+        event = "VeryLazy", -- which-key 需要较早加载以捕获所有按键
         opts = {},
         keys = {
             {

@@ -4,7 +4,7 @@ local M = {
     {
         "m-demare/hlargs.nvim",
         enabled = true,
-        event = "VeryLazy",
+        event = "LspAttach", -- LSP 加载时触发
         config = function()
             require("hlargs").setup()
             vim.api.nvim_create_augroup("LspAttach_hlargs", { clear = true })
@@ -26,14 +26,14 @@ local M = {
     },
     {
         "Wansmer/treesj",
-        event = "VeryLazy",
+        -- 按键触发即可
         keys = { "<space>m", "<space>j", "<space>s" },
         dependencies = { "nvim-treesitter/nvim-treesitter" }, -- if you install parsers with `nvim-treesitter`
         opts = {},
     },
     {
         "catgoose/nvim-colorizer.lua",
-        event = "VeryLazy",
+        event = { "BufReadPost", "BufNewFile" }, -- 打开文件时加载
         opts = {
             filetypes = {
                 "css",
@@ -61,18 +61,24 @@ local M = {
     {
         "echasnovski/mini.move",
         version = "*",
-        event = "VeryLazy",
+        -- 按键触发时才需要,通过 keys 定义
+        keys = {
+            { "<M-h>", mode = { "n", "v" } },
+            { "<M-j>", mode = { "n", "v" } },
+            { "<M-k>", mode = { "n", "v" } },
+            { "<M-l>", mode = { "n", "v" } },
+        },
         opts = {},
     },
     {
         "kylechui/nvim-surround",
         version = "*", -- Use for stability; omit to use `main` branch for the latest features
-        event = "VeryLazy",
+        event = { "BufReadPost", "BufNewFile" }, -- 编辑文件时加载
         opts = {},
     },
     {
         "mcauley-penney/visual-whitespace.nvim",
-        event = "VeryLazy",
+        event = "ModeChanged", -- 模式切换时加载(进入 visual 模式)
         config = true,
     },
 }

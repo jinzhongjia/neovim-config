@@ -4,7 +4,7 @@ return
 {
     {
         "voldikss/vim-floaterm",
-        event = "VeryLazy",
+        -- 按键触发即可
         init = function()
             vim.g.floaterm_width = 0.85
             vim.g.floaterm_height = 0.8
@@ -19,22 +19,23 @@ return
     },
     {
         "voldikss/vim-translator",
-        event = "VeryLazy",
+        -- 按键触发(通常有快捷键)
+        cmd = { "Translate", "TranslateW", "TranslateR", "TranslateX" },
     },
     {
         "chrisgrieser/nvim-early-retirement",
-        event = "VeryLazy",
+        event = { "BufReadPost", "BufNewFile" }, -- 需要监控 buffer 活动
         config = true,
     },
     {
         "folke/todo-comments.nvim",
-        event = "VeryLazy",
+        event = { "BufReadPost", "BufNewFile" }, -- 打开文件时高亮 TODO
         dependencies = { "nvim-lua/plenary.nvim" },
         opts = {},
     },
     {
         "simnalamburt/vim-mundo",
-        event = "VeryLazy",
+        -- 按键触发即可
         keys = {
             -- stylua: ignore
             { "<leader>ud", "<CMD>MundoToggle<CR>", mode = { "n" }, desc = "Toggle Mundo" },
@@ -42,12 +43,12 @@ return
     },
     {
         "stevearc/stickybuf.nvim",
-        event = "VeryLazy",
+        event = { "BufReadPost", "BufNewFile" }, -- 需要监控 buffer
         opts = {},
     },
     {
         "max397574/better-escape.nvim",
-        event = "VeryLazy",
+        event = "InsertEnter", -- 进入插入模式时加载
         opts = {
             default_mappings = false,
             mappings = {
@@ -61,7 +62,7 @@ return
     },
     {
         "chrishrb/gx.nvim",
-        event = "VeryLazy",
+        -- 按键触发即可
         keys = {
             { "gx", "<cmd>Browse<cr>", mode = { "n", "x" }, desc = "Browse URL" },
         },
@@ -81,28 +82,28 @@ return
     },
     {
         "stevearc/overseer.nvim",
-        event = "VeryLazy",
+        cmd = { "OverseerRun", "OverseerToggle", "OverseerOpen" }, -- 命令触发
         opts = {},
     },
     {
         "NStefan002/screenkey.nvim",
-        event = "VeryLazy",
+        cmd = "Screenkey", -- 命令触发
         version = "*", -- or branch = "dev", to use the latest commit
     },
     {
         "OXY2DEV/helpview.nvim",
-        event = "VeryLazy",
+        ft = "help", -- 打开 help 文件时加载
         dependencies = {
             "nvim-treesitter/nvim-treesitter",
         },
     },
     {
         "tweekmonster/helpful.vim",
-        event = "VeryLazy",
+        cmd = { "HelpfulVersion" }, -- 命令触发
     },
     {
         "2kabhishek/termim.nvim",
-        event = "VeryLazy",
+        -- 命令触发即可
         cmd = { "Fterm", "FTerm", "Sterm", "STerm", "Vterm", "VTerm" },
     },
     {
@@ -272,14 +273,14 @@ return
     },
     {
         "ovk/endec.nvim",
-        event = "VeryLazy",
+        cmd = { "Endec", "EndecEncode", "EndecDecode" }, -- 命令触发
         opts = {
             -- Override default configuration here
         },
     },
     {
         "ellisonleao/dotenv.nvim",
-        event = "VeryLazy",
+        cmd = "Dotenv", -- 命令触发
         opts = {
             {
                 enable_on_load = false,
@@ -288,10 +289,12 @@ return
     },
     {
         "tpope/vim-repeat",
+        event = { "BufReadPost", "BufNewFile" }, -- 编辑时需要
     },
     {
         "MonsieurTib/package-ui.nvim",
-        event = "VeryLazy",
+        -- 命令触发
+        cmd = "PackageUi",
         config = function()
             require("package-ui").setup()
         end,
@@ -311,7 +314,7 @@ return
     },
     {
         "hat0uma/prelive.nvim",
-        event = "VeryLazy",
+        -- 命令触发即可
         cmd = {
             "PreLiveGo",
             "PreLiveStatus",

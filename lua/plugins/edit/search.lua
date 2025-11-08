@@ -16,7 +16,7 @@ return
     {
         "kevinhwang91/nvim-hlslens",
         dependencies = "kevinhwang91/nvim-ufo",
-        event = "VeryLazy",
+        event = { "BufReadPost", "BufNewFile" },
         opts = {
             nearest_only = true,
             override_lens = function(render, posList, nearest, idx, relIdx)
@@ -64,7 +64,7 @@ return
     },
     {
         "folke/flash.nvim",
-        event = "VeryLazy",
+        -- 按键触发即可,不需要提前加载
         ---@type Flash.Config
         opts = {},
         -- stylua: ignore
@@ -78,7 +78,7 @@ return
     },
     {
         "MagicDuck/grug-far.nvim",
-        event = "VeryLazy",
+        -- 命令和按键触发
         opts = {},
         -- stylua: ignore
         keys = {
@@ -101,7 +101,7 @@ return
     },
     {
         "cshuaimin/ssr.nvim",
-        event = "VeryLazy",
+        -- 按键触发即可
         opts = {},
         -- stylua: ignore
         keys = {
