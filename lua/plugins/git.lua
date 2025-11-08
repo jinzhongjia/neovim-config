@@ -4,12 +4,12 @@ return
     {
         "echasnovski/mini.diff",
         version = "*",
-        event = "VeryLazy",
+        event = { "BufReadPost", "BufNewFile" }, -- 需要实时显示 diff
         opts = {},
     },
     {
         "rbong/vim-flog",
-        event = "VeryLazy",
+        cmd = { "Flog", "Flogsplit", "Floggit" }, -- 命令触发
         dependencies = {
             "tpope/vim-fugitive",
         },
@@ -23,7 +23,7 @@ return
             -- Only one of these is needed.
             "folke/snacks.nvim",
         },
-        event = "VeryLazy",
+        cmd = "Neogit", -- 命令触发
         opts = {
             mappings = {
                 finder = {
@@ -42,19 +42,19 @@ return
     },
     {
         "sindrets/diffview.nvim",
-        event = "VeryLazy",
+        cmd = { "DiffviewOpen", "DiffviewFileHistory" }, -- 命令触发
     },
     {
         "FabijanZulj/blame.nvim",
-        event = "VeryLazy",
+        cmd = { "BlameToggle", "BlameEnable" }, -- 命令触发
         opts = {},
         keys = {
-            { "<leader>bt", "<cmd>BlameToggle<cr>", desc = "Blame toogle" },
+            { "<leader>bt", "<cmd>BlameToggle<cr>", desc = "Blame toggle" },
         },
     },
     {
         "akinsho/git-conflict.nvim",
-        event = "VeryLazy",
+        event = { "BufReadPost", "BufNewFile" }, -- 需要检测冲突标记
         version = "*",
         config = true,
     },

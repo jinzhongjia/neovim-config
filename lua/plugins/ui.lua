@@ -109,33 +109,6 @@ return
         },
     },
     {
-        "francescarpi/buffon.nvim",
-        enabled = false,
-        ---@type BuffonConfig
-        opts = {
-            keybindings = {
-                goto_next_buffer = "false",
-                goto_previous_buffer = "false",
-                close_others = "false",
-            },
-            --- Add your config here
-        },
-        dependencies = {
-            "nvim-tree/nvim-web-devicons",
-            "nvim-lua/plenary.nvim",
-        },
-    },
-    {
-        "leath-dub/snipe.nvim",
-        enabled = false,
-        -- 按键触发即可
-        -- stylua: ignore
-        keys = {
-            { "<leader>gb", function() require("snipe").open_buffer_menu() end, desc = "Open Snipe buffer menu" },
-        },
-        opts = {},
-    },
-    {
         "nvim-lualine/lualine.nvim",
         dependencies = {
             "nvim-tree/nvim-web-devicons",

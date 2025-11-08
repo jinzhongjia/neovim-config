@@ -34,13 +34,6 @@ end
 return
 --- @type LazySpec
 {
-    -- 很不错的插件，但是不应该继续用这个了
-    {
-        "chrisgrieser/nvim-origami",
-        event = "VeryLazy",
-        enabled = false,
-        opts = {}, -- needed even when using default config
-    },
     {
         "kevinhwang91/nvim-ufo",
         dependencies = {

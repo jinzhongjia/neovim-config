@@ -49,8 +49,8 @@ o.backup = false
 o.writebackup = false
 o.swapfile = false
 
-o.updatetime = 300
-o.timeoutlen = 300
+o.updatetime = 300 -- CursorHold 事件触发时间,用于 LSP 诊断
+o.timeoutlen = 500 -- 按键序列等待时间,避免复杂快捷键冲突
 
 o.splitbelow = true
 o.splitright = true
