@@ -227,21 +227,53 @@ return {
 
                 -- 显示配置
                 display = {
-                    action_palette = { provider = "snacks" },
+                    action_palette = { 
+                        provider = "snacks",
+                        opts = {
+                            title = "CodeCompanion 操作面板",  -- 自定义标题
+                        }
+                    },
                     chat = {
                         intro_message = "欢迎使用 CodeCompanion ✨! 按下 ? 查看快捷键",
-                        window = { opts = { relativenumber = false, number = false, winbar = "" } },
+                        window = { 
+                            layout = "vertical",  -- 明确指定布局
+                            width = 0.45,  -- 窗口宽度
+                            opts = { 
+                                relativenumber = false, 
+                                number = false, 
+                                winbar = "",
+                                wrap = true,  -- 启用自动换行
+                                linebreak = true,  -- 在单词边界换行
+                            } 
+                        },
                         show_token_count = false,
                         fold_context = true,
+                        fold_reasoning = true,  -- 折叠推理输出
+                        show_reasoning = true,  -- 显示推理过程
+                        auto_scroll = false,  -- 禁用自动滚动，避免响应时分心
                     },
                     diff = {
+                        enabled = true,
                         provider = "inline", -- default|mini_diff|inline
+                        provider_opts = {
+                            inline = {
+                                layout = "float",  -- diff 显示为浮动窗口
+                                show_keymap_hints = true,  -- 显示快捷键提示
+                                show_removed = true,  -- 显示删除的内容
+                            }
+                        }
                     },
                 },
                 memory = {
                     opts = {
                         chat = {
                             enabled = true,
+                            default_memory = "default",  -- 明确指定默认内存组
+                            default_params = "watch",  -- 默认为 watch 模式
+                            condition = function(chat)
+                                -- 只在非 ACP 适配器时启用内存
+                                return chat.adapter.type ~= "acp"
+                            end,
                         },
                     },
                 },
@@ -251,8 +283,12 @@ return {
                     chat = {
                         adapter = get_default_adapter(),
                         keymaps = {
-                            send = { modes = { n = "<CR>" } },
+                            send = { modes = { n = "<CR>", i = "<C-s>" } },  -- 增加 insert 模式快捷键
                             close = { modes = { n = "<leader>c", i = "<C-c>" } },
+                            regenerate = { modes = { n = "gr" } },  -- 重新生成回复
+                            yank_code = { modes = { n = "gy" } },  -- 复制代码块
+                            pin_context = { modes = { n = "gp" } },  -- 固定上下文
+                            clear = { modes = { n = "gx" } },  -- 清空聊天
                         },
                         roles = {
                             llm = function(adapter)
@@ -262,12 +298,21 @@ return {
                         },
                         -- Slash Commands 配置
                         slash_commands = {
-                            ["buffer"] = { opts = slash_command_defaults },
+                            ["buffer"] = { 
+                                opts = vim.tbl_extend("force", slash_command_defaults, {
+                                    default_params = "watch",  -- 默认 watch 模式
+                                })
+                            },
                             ["file"] = { opts = slash_command_defaults },
                             ["symbols"] = { opts = slash_command_defaults },
                             ["help"] = { opts = slash_command_defaults },
                             ["workspace"] = { opts = slash_command_defaults },
                             ["terminal"] = { opts = slash_command_defaults },
+                            ["fetch"] = { 
+                                opts = vim.tbl_extend("force", slash_command_defaults, {
+                                    auto_restore_cache = true,  -- 自动恢复缓存
+                                })
+                            },
                         },
                         -- 工具配置
                         tools = {
@@ -277,10 +322,23 @@ return {
                                     "search_web",
                                     "fetch_webpage",
                                 },
+                                auto_submit_errors = true,  -- 自动提交工具错误
+                                auto_submit_success = false,  -- 不自动提交成功消息
                             },
                         },
+                        -- 优化设置
+                        opts = {
+                            submit_delay = 1,  -- 减少提交延迟到1秒（避免频繁触发）
+                            auto_submit = false,  -- 禁用自动提交，需要用户确认
+                        }
                     },
-                    inline = { adapter = adapter_usage.inline },
+                    inline = { 
+                        adapter = adapter_usage.inline,
+                        keymaps = {
+                            accept_change = { modes = { n = "ga" } },
+                            reject_change = { modes = { n = "gr" } },
+                        }
+                    },
                 },
 
                 -- 扩展配置
@@ -336,6 +394,7 @@ return {
                             title_generation_opts = {
                                 adapter = adapter_usage.history_title,
                                 model = model_usage.history_title,
+                                max_title_length = 50,  -- 限制标题长度
                             },
                         },
                     },
@@ -362,12 +421,14 @@ return {
                             },
                         },
                     },
+                    
                     -- Spinner 扩展（使用 fidget 样式）
                     spinner = {
                         enabled = true,
                         opts = {
                             style = "fidget", -- 使用 fidget.nvim 显示进度
-                            -- Use default English messages from the spinner extension
+                            show_tool_progress = true,  -- 显示工具执行进度
+                            show_adapter_change = true,  -- 显示适配器切换
                         },
                     },
                 },
