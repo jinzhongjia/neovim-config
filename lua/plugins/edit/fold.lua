@@ -105,8 +105,12 @@ return
                             return ""
                         end
                     end
-                    
-                    return { "lsp", "treesitter", "indent" }
+                    -- 如果 LSP 支持折叠，优先使用 LSP，否则使用 treesitter
+                    -- if has_folding_lsp then
+                        -- return { "lsp", "treesitter" }
+                    -- else
+                        return { "treesitter", "indent" }
+                    -- end
                 end,
                 -- 首次打开时关闭特定类型的折叠
                 close_fold_kinds_for_ft = {
