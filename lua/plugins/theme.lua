@@ -39,10 +39,6 @@ return {
                         enabled = true,
                     },
                     lsp_trouble = true,
-                    illuminate = {
-                        enabled = true,
-                        lsp = true,
-                    },
                     which_key = true,
                     symbols_outline = true,
                 },

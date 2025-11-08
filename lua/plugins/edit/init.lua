@@ -25,33 +25,6 @@ local M = {
         end,
     },
     {
-        "RRethy/vim-illuminate",
-        event = "VeryLazy",
-        config = function()
-            require("illuminate").configure({
-                filetypes_denylist = {
-                    "dirbuf",
-                    "dirvish",
-                    "fugitive",
-                    "NvimTree",
-                    "Outline",
-                    "LspUI-rename",
-                    "LspUI-diagnostic",
-                    "LspUI-code_action",
-                    "LspUI-definition",
-                    "LspUI-type_definition",
-                    "LspUI-declaration",
-                    "LspUI-reference",
-                    "LspUI-implementation",
-                    "mason",
-                    "floaterm",
-                    "lazy",
-                    "alpha",
-                },
-            })
-        end,
-    },
-    {
         "Wansmer/treesj",
         event = "VeryLazy",
         keys = { "<space>m", "<space>j", "<space>s" },

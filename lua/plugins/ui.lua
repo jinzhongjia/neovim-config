@@ -31,9 +31,13 @@ return
                     { filetype = "codecompanion", text = "CodeCompanion", text_align = "center" },
                 },
                 show_tab_indicators = true,
-                -- To close the Tab command, use moll/vim-bbye's :Bdelete command here
-                close_command = "Bdelete! %d",
-                right_mouse_command = "Bdelete! %d",
+                -- Use snacks.nvim's bufdelete for smart buffer deletion
+                close_command = function(bufnr)
+                    require("snacks").bufdelete(bufnr)
+                end,
+                right_mouse_command = function(bufnr)
+                    require("snacks").bufdelete(bufnr)
+                end,
                 -- Using nvim's built-in LSP will be configured later in the course
                 diagnostics = "nvim_lsp",
                 -- Optional, show LSP error icon
@@ -59,7 +63,13 @@ return
         keys = {
             { "bn", "<cmd>BufferLineCycleNext<cr>", desc = "bufferline next" },
             { "bp", "<cmd>BufferLineCyclePrev<cr>", desc = "bufferline prev" },
-            { "bd", "<cmd>Bdelete<cr>", desc = "buffer delete" },
+            {
+                "bd",
+                function()
+                    require("snacks").bufdelete()
+                end,
+                desc = "buffer delete",
+            },
             { "<leader>bl", "<cmd>BufferLineCloseRight<cr>", desc = "bufferline close right" },
             { "<leader>bh", "<cmd>BufferLineCloseLeft<cr>", desc = "bufferline close left" },
             { "<leader>bn", "<cmd>BufferLineMoveNext<cr>", desc = "bufferline move next" },

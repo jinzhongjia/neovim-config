@@ -111,18 +111,164 @@ return
         lazy = false,
         ---@type snacks.Config
         opts = {
+            -- 启用的功能模块
             bigfile = { enabled = true },
+            bufdelete = { enabled = true },
+            dashboard = { enabled = false }, -- 如果使用其他 dashboard 插件，设为 false
+            dim = { enabled = true },
+            explorer = { enabled = false }, -- 如果使用 nvim-tree，设为 false
+            git = { enabled = true },
+            gitbrowse = { enabled = true },
+            indent = { enabled = false }, -- 使用 indent-blankline.nvim 替代
             input = { enabled = true },
-            picker = { enabled = true },
+            notifier = {
+                enabled = true,
+                timeout = 3000,
+                width = { min = 40, max = 0.4 },
+                height = { min = 1, max = 0.6 },
+                margin = { top = 0, right = 1, bottom = 0 },
+                padding = true,
+                sort = { "level", "added" },
+                level = vim.log.levels.TRACE,
+                icons = {
+                    error = " ",
+                    warn = " ",
+                    info = " ",
+                    debug = " ",
+                    trace = " ",
+                },
+                style = "compact",
+            },
+            picker = {
+                enabled = true,
+                -- 使用 fzf-lua 作为主要搜索工具时，可以设置为 false
+                -- 但 picker 还有其他用途（如 vim.ui.select），建议保持启用
+            },
             quickfile = { enabled = true },
+            rename = { enabled = false }, -- 使用 LspUI rename 替代
+            scope = { enabled = true },
+            scratch = { enabled = true },
+            scroll = {
+                enabled = true,
+                animate = {
+                    duration = { step = 15, total = 250 },
+                    easing = "linear",
+                },
+            },
+            statuscolumn = { enabled = true },
+            terminal = { enabled = true },
+            toggle = { enabled = true },
+            words = { enabled = true }, -- 高亮相同单词并导航
+            zen = { enabled = false }, -- 使用 zen-mode.nvim + twilight.nvim 替代
+            
+            -- 样式配置
+            styles = {
+                notification = {
+                    wo = { wrap = true },
+                },
+                terminal = {
+                    position = "float",
+                    border = "rounded",
+                    width = 0.8,
+                    height = 0.8,
+                },
+                scratch = {
+                    border = "rounded",
+                    width = 0.8,
+                    height = 0.8,
+                },
+                zen = {
+                    enter = true,
+                    fixbuf = false,
+                    minimal = false,
+                    width = 120,
+                    height = 0,
+                    backdrop = { transparent = false, blend = 40 },
+                    show = {
+                        statusline = false,
+                        tabline = false,
+                    },
+                    win = { style = "" },
+                },
+            },
         },
 
         keys = {
-            -- stylua: ignore
-            { "<leader>lg", function() Snacks.lazygit() end, desc = "Lazygit" },
-            -- stylua: ignore
-            { "<leader>n", function() Snacks.picker.notifications() end, desc = "Notification History" },
+            -- Terminal
+            { "<c-/>", function() Snacks.terminal() end, desc = "Toggle Terminal" },
+            { "<c-_>", function() Snacks.terminal() end, desc = "which_key_ignore" },
+            
+            -- Lazygit
+            { "<leader>gg", function() Snacks.lazygit() end, desc = "Lazygit" },
+            { "<leader>gB", function() Snacks.gitbrowse() end, desc = "Git Browse", mode = { "n", "v" } },
+            { "<leader>gf", function() Snacks.lazygit.log_file() end, desc = "Lazygit File History" },
+            { "<leader>gl", function() Snacks.lazygit.log() end, desc = "Lazygit Log (cwd)" },
+            
+            -- Notifications
+            { "<leader>n", function() Snacks.notifier.show_history() end, desc = "Notification History" },
+            { "<leader>un", function() Snacks.notifier.hide() end, desc = "Dismiss All Notifications" },
+            
+            -- Buffer Management
+            { "<leader>bd", function() Snacks.bufdelete() end, desc = "Delete Buffer" },
+            { "<leader>bo", function() Snacks.bufdelete.other() end, desc = "Delete Other Buffers" },
+            { "<leader>bO", function() Snacks.bufdelete.all() end, desc = "Delete All Buffers" },
+            
+            -- Scratch Buffers
+            { "<leader>.", function() Snacks.scratch() end, desc = "Toggle Scratch Buffer" },
+            { "<leader>S", function() Snacks.scratch.select() end, desc = "Select Scratch Buffer" },
+            
+            -- Word Navigation (LSP references)
+            { "]]", function() Snacks.words.jump(vim.v.count1) end, desc = "Next Reference", mode = { "n", "t" } },
+            { "[[", function() Snacks.words.jump(-vim.v.count1) end, desc = "Prev Reference", mode = { "n", "t" } },
+            
+            -- Debug
+            { "<leader>dps", function() Snacks.profiler.scratch() end, desc = "Profiler Scratch Buffer" },
         },
+        
+        init = function()
+            vim.api.nvim_create_autocmd("User", {
+                pattern = "VeryLazy",
+                callback = function()
+                    -- Setup debug helpers (lazy-loaded)
+                    _G.dd = function(...)
+                        Snacks.debug.inspect(...)
+                    end
+                    _G.bt = function()
+                        Snacks.debug.backtrace()
+                    end
+
+                    -- Override print to use snacks for `:=` command
+                    if vim.fn.has("nvim-0.11") == 1 then
+                        vim._print = function(_, ...)
+                            dd(...)
+                        end
+                    else
+                        vim.print = _G.dd
+                    end
+
+                    -- Create toggle mappings
+                    Snacks.toggle.option("spell", { name = "Spelling" }):map("<leader>us")
+                    Snacks.toggle.option("wrap", { name = "Wrap" }):map("<leader>uw")
+                    Snacks.toggle.option("relativenumber", { name = "Relative Number" }):map("<leader>uL")
+                    Snacks.toggle.diagnostics():map("<leader>ud")
+                    Snacks.toggle.line_number():map("<leader>ul")
+                    Snacks.toggle.option("conceallevel", { 
+                        off = 0, 
+                        on = vim.o.conceallevel > 0 and vim.o.conceallevel or 2 
+                    }):map("<leader>uc")
+                    Snacks.toggle.treesitter():map("<leader>uT")
+                    Snacks.toggle.option("background", { 
+                        off = "light", 
+                        on = "dark", 
+                        name = "Dark Background" 
+                    }):map("<leader>ub")
+                    Snacks.toggle.inlay_hints():map("<leader>uh")
+                    Snacks.toggle.dim():map("<leader>uD")
+                    Snacks.toggle.scroll():map("<leader>uS")
+                    Snacks.toggle.words():map("<leader>uW")
+                end,
+            })
+        end,
     },
     {
         "ovk/endec.nvim",
