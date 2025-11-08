@@ -62,9 +62,8 @@ return
     {
         "Bekaboo/dropbar.nvim",
         event = "VeryLazy",
-        dependencies = {
-            "nvim-telescope/telescope-fzf-native.nvim",
-        },
+        -- telescope-fzf-native 依赖已移除
+        -- dropbar 的模糊搜索功能是可选的，不影响核心功能
         config = function()
             require("dropbar").setup({
                 bar = {

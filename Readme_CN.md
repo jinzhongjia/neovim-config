@@ -64,6 +64,70 @@ nvim           # 等待插件安装
 :checkhealth
 ```
 
+## 🎨 可选增强工具配置
+
+### Bat 和 Delta 配置（推荐）
+
+安装 `bat` 和 `delta` 可以大幅提升文件预览和 Git diff 的视觉体验。
+
+#### 安装工具
+
+**Windows (使用 scoop):**
+```powershell
+scoop install bat delta
+```
+
+**macOS:**
+```bash
+brew install bat git-delta
+```
+
+**Linux:**
+```bash
+# Ubuntu/Debian
+sudo apt install bat
+cargo install git-delta
+
+# Arch Linux
+sudo pacman -S bat git-delta
+```
+
+#### 配置 Delta
+
+安装完成后，运行以下命令配置 Git 使用 delta：
+
+```bash
+# 设置 delta 为 git 默认 pager
+git config --global core.pager "delta"
+
+# 设置交互式 diff 过滤器
+git config --global interactive.diffFilter "delta --color-only"
+
+# 启用导航功能
+git config --global delta.navigate "true"
+
+# 启用行号显示
+git config --global delta.line-numbers "true"
+
+# 使用标准 diff 模式（非并排）
+git config --global delta.side-by-side "false"
+
+# 优化合并冲突显示
+git config --global merge.conflictstyle "diff3"
+
+# 启用移动代码检测
+git config --global diff.colorMoved "default"
+```
+
+#### 效果
+
+配置完成后：
+- 在 fzf-lua 中使用 `<C-p>` 搜索文件时，预览窗口会显示语法高亮（bat）
+- 在 fzf-lua 中使用 `<leader>tgs`（Git status）时，会显示美化的 diff（delta）
+- 在命令行使用 `git diff`、`git log -p`、`git show` 时，会自动使用 delta 美化输出
+
+
+
 ## 🛠️ 依赖
 
 ### 核心工具
@@ -90,6 +154,8 @@ nvim           # 等待插件安装
 - **MCP Hub** - MCP 服务管理
 - **GitHub CLI (gh)** - GitHub 集成
 - **jq** - JSON 处理
+- **bat** - 语法高亮预览工具（用于 fzf-lua）
+- **delta** - Git diff 美化工具
 
 ### 可选系统库
 - 编译工具链（gcc/clang, make, cmake）

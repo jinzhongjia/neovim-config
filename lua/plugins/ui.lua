@@ -81,17 +81,21 @@ return
                     end,
                 },
             })
-            -- 设置 Telescope 扩展
-            vim.api.nvim_create_autocmd("User", {
-                pattern = "TelescopeLoaded",
-                callback = function()
-                    pcall(require("telescope").load_extension, "scope")
-                end,
-            })
         end,
         keys = {
             { "<leader>bm", "<cmd>ScopeMoveBuf<cr>", desc = "Move buffer to another tab" },
-            { "<leader>fb", "<cmd>Telescope scope buffers<cr>", desc = "Find buffers in current tab" },
+            {
+                "<leader>fb",
+                function()
+                    -- 使用 fzf-lua 显示当前 tab 的 buffers
+                    require("fzf-lua").buffers({
+                        fzf_opts = {
+                            ["--header"] = "Buffers in current tab",
+                        },
+                    })
+                end,
+                desc = "Find buffers in current tab",
+            },
         },
     },
     {

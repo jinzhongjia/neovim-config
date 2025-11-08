@@ -72,6 +72,70 @@ nvim
 3. Run `:Mason` to install LSP servers, formatters, and linters
 4. Restart Neovim to ensure all configurations are loaded
 
+## 🎨 Optional Enhancement Tools
+
+### Bat and Delta Setup (Recommended)
+
+Installing `bat` and `delta` significantly enhances file preview and Git diff visualization.
+
+#### Installation
+
+**Windows (using scoop):**
+```powershell
+scoop install bat delta
+```
+
+**macOS:**
+```bash
+brew install bat git-delta
+```
+
+**Linux:**
+```bash
+# Ubuntu/Debian
+sudo apt install bat
+cargo install git-delta
+
+# Arch Linux
+sudo pacman -S bat git-delta
+```
+
+#### Configuring Delta
+
+After installation, configure Git to use delta:
+
+```bash
+# Set delta as git pager
+git config --global core.pager "delta"
+
+# Set interactive diff filter
+git config --global interactive.diffFilter "delta --color-only"
+
+# Enable navigation
+git config --global delta.navigate "true"
+
+# Enable line numbers
+git config --global delta.line-numbers "true"
+
+# Use standard diff mode (not side-by-side)
+git config --global delta.side-by-side "false"
+
+# Enhance merge conflict display
+git config --global merge.conflictstyle "diff3"
+
+# Enable moved code detection
+git config --global diff.colorMoved "default"
+```
+
+#### Benefits
+
+After configuration:
+- File previews in fzf-lua (`<C-p>`) will show syntax highlighting (via bat)
+- Git status in fzf-lua (`<leader>tgs`) will display beautiful diffs (via delta)
+- Command-line Git operations (`git diff`, `git log -p`, `git show`) will automatically use delta
+
+
+
 ## 🛠️ Dependencies
 
 ### Essential Tools (Required)
@@ -110,6 +174,8 @@ nvim
 - **MCP Hub** - Model Context Protocol server support
 - **GitHub CLI** (`gh`) - GitHub integration
 - **jq** - JSON processor (for some plugins)
+- **bat** - Syntax highlighting for file previews (enhances fzf-lua)
+- **delta** - Beautiful Git diff viewer
 
 ### Optional System Libraries
 - Compilation toolchain (gcc/clang, make, cmake) for building native extensions & Treesitter

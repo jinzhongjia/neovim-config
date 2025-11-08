@@ -8,9 +8,14 @@ return
         "chrisgrieser/nvim-scissors",
         event = "VeryLazy",
         dependencies = {
-            "nvim-telescope/telescope.nvim",
+            "folke/snacks.nvim", -- 使用 snacks.nvim 作为 picker（已经在你的配置中）
         },
-        opts = { snippetDir = my_snippets_path },
+        opts = {
+            snippetDir = my_snippets_path,
+            snippetSelection = {
+                picker = "snacks", -- 使用 snacks picker 替代 telescope
+            },
+        },
         keys = {
             {
                 "<leader>se",
