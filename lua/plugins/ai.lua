@@ -500,7 +500,6 @@ return {
     {
         "coder/claudecode.nvim",
         dependencies = { "folke/snacks.nvim" },
-        config = true,
         dev = true,
         keys = {
             { "<leader>a", nil, desc = "AI/Claude Code" },
@@ -519,6 +518,57 @@ return {
             },
             { "<leader>aa", "<cmd>ClaudeCodeDiffAccept<cr>", desc = "Accept diff" },
             { "<leader>ad", "<cmd>ClaudeCodeDiffDeny<cr>", desc = "Deny diff" },
+        },
+        opts = {
+            -- 服务器配置
+            port_range = { min = 10000, max = 65535 },
+            auto_start = true,
+            log_level = "info", -- "trace", "debug", "info", "warn", "error"
+
+            -- 发送/聚焦行为
+            -- 成功发送后自动聚焦 Claude 终端（如果已连接）
+            focus_after_send = false,
+
+            -- 选择跟踪
+            track_selection = true,
+            visual_demotion_delay_ms = 50,
+
+            -- 终端配置
+            terminal = {
+                split_side = "right", -- "left" 或 "right"
+                split_width_percentage = 0.30,
+                provider = "auto", -- "auto", "snacks", "native", "external", "none"
+                auto_close = true,
+
+                -- Snacks 窗口选项（可选：配置为浮动窗口）
+                -- snacks_win_opts = {
+                --     position = "float",
+                --     width = 0.85,
+                --     height = 0.85,
+                --     border = "rounded",
+                --     keys = {
+                --         claude_hide = {
+                --             "<Esc>",
+                --             function(self)
+                --                 self:hide()
+                --             end,
+                --             mode = "t",
+                --             desc = "Hide",
+                --         },
+                --     },
+                -- },
+            },
+
+            -- Diff 集成
+            diff_opts = {
+                auto_close_on_accept = true,
+                vertical_split = true,
+                open_in_current_tab = true,
+                keep_terminal_focus = false, -- true 时在打开 diff 后将焦点移回终端
+            },
+
+            -- 工作目录控制（可选）
+            -- git_repo_cwd = true, -- 使用 git 仓库根目录
         },
     },
 
