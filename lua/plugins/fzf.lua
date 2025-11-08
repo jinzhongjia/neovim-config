@@ -107,8 +107,9 @@ return
                     git_diff = {
                         -- delta 会被自动检测，可以通过 pager = false 禁用
                         -- pager = false,
-                        -- 或者显式指定 delta 配置
-                        pager = [[delta --width=$FZF_PREVIEW_COLUMNS --line-numbers --diff-so-fancy]],
+                        -- 跨平台兼容：delta 会自动适配终端宽度
+                        pager = is_windows and "delta --line-numbers --diff-so-fancy"
+                            or [[delta --width=$FZF_PREVIEW_COLUMNS --line-numbers --diff-so-fancy]],
                     },
                 },
 
@@ -119,7 +120,9 @@ return
                     file_icons = true,
                     git_icons = false,
                     color_icons = true,
-                    find_opts = [[-type f -not -path '*/\.git/*' -printf '%P\n']],
+                    -- find 命令跨平台兼容 - 移除 GNU find 特有的 -printf
+                    -- find_opts = [[-type f -not -path '*/\.git/*']],
+                    -- 优先使用 fd，其次是 rg，最后才是 find
                     fd_opts = [[--color=never --type f --hidden --follow --exclude .git]],
                     rg_opts = [[--color=never --files --hidden --follow -g '!.git']],
                     actions = {
@@ -339,8 +342,8 @@ return
                     },
                 },
 
-                -- Man pages
-                manpages = {
+                -- Man pages（仅在非 Windows 系统启用）
+                manpages = not is_windows and {
                     prompt = "Man❯ ",
                     actions = {
                         ["enter"] = require("fzf-lua.actions").man,
@@ -348,7 +351,7 @@ return
                         ["ctrl-v"] = require("fzf-lua.actions").man_vert,
                         ["ctrl-t"] = require("fzf-lua.actions").man_tab,
                     },
-                },
+                } or nil,
 
                 -- 颜色方案
                 colorschemes = {
@@ -395,81 +398,91 @@ return
             -- 注册 fzf-lua 为 vim.ui.select 的提供者（可选）
             fzf.register_ui_select()
         end,
-        keys = {
-            -- 文件查找
-            { "<C-p>", "<cmd>FzfLua files<cr>", desc = "Find files" },
-            {
-                "<C-S-p>",
-                function()
-                    require("fzf-lua").files({
-                        fd_opts = [[--color=never --type f --hidden --follow --no-ignore]],
-                    })
-                end,
-                desc = "Find files (include ignored)",
-            },
+        keys = function()
+            local is_windows = vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1
 
-            -- 搜索
-            { "<C-f>", "<cmd>FzfLua live_grep<cr>", desc = "Live grep" },
-            {
-                "<C-S-f>",
-                function()
-                    require("fzf-lua").live_grep({
-                        rg_opts = [[--column --line-number --no-heading --color=always --smart-case --max-columns=4096 --hidden --follow --no-ignore -e]],
-                    })
-                end,
-                desc = "Live grep (include ignored)",
-            },
-            { "<leader>*", "<cmd>FzfLua grep_cword<cr>", desc = "Grep cursor word" },
-            { "<leader>*", "<cmd>FzfLua grep_visual<cr>", mode = "v", desc = "Grep visual selection" },
-            { "<leader>tg", "<cmd>FzfLua live_grep_glob<cr>", desc = "Live grep with glob" },
-            { "<leader>tG", "<cmd>FzfLua grep_project<cr>", desc = "Grep project" },
+            local keys = {
+                -- 文件查找
+                { "<C-p>", "<cmd>FzfLua files<cr>", desc = "Find files" },
+                {
+                    "<C-S-p>",
+                    function()
+                        require("fzf-lua").files({
+                            fd_opts = [[--color=never --type f --hidden --follow --no-ignore]],
+                        })
+                    end,
+                    desc = "Find files (include ignored)",
+                },
 
-            -- 缓冲区和历史
-            { "<leader>tb", "<cmd>FzfLua buffers<cr>", desc = "Buffers" },
-            { "<leader>to", "<cmd>FzfLua oldfiles<cr>", desc = "Recent files" },
-            { "<leader>tL", "<cmd>FzfLua blines<cr>", desc = "Buffer lines" },
-            { "<leader>tl", "<cmd>FzfLua lines<cr>", desc = "All lines" },
+                -- 搜索
+                { "<C-f>", "<cmd>FzfLua live_grep<cr>", desc = "Live grep" },
+                {
+                    "<C-S-f>",
+                    function()
+                        require("fzf-lua").live_grep({
+                            rg_opts = [[--column --line-number --no-heading --color=always --smart-case --max-columns=4096 --hidden --follow --no-ignore -e]],
+                        })
+                    end,
+                    desc = "Live grep (include ignored)",
+                },
+                { "<leader>*", "<cmd>FzfLua grep_cword<cr>", desc = "Grep cursor word" },
+                { "<leader>*", "<cmd>FzfLua grep_visual<cr>", mode = "v", desc = "Grep visual selection" },
+                { "<leader>tg", "<cmd>FzfLua live_grep_glob<cr>", desc = "Live grep with glob" },
+                { "<leader>tG", "<cmd>FzfLua grep_project<cr>", desc = "Grep project" },
 
-            -- Git
-            { "<leader>tgb", "<cmd>FzfLua git_branches<cr>", desc = "Git branches" },
-            { "<leader>tgc", "<cmd>FzfLua git_commits<cr>", desc = "Git commits" },
-            { "<leader>tgs", "<cmd>FzfLua git_status<cr>", desc = "Git status" },
-            { "<leader>tgd", "<cmd>FzfLua git_bcommits<cr>", desc = "Buffer commits" },
-            { "<leader>tgh", "<cmd>FzfLua git_stash<cr>", desc = "Git stash" },
+                -- 缓冲区和历史
+                { "<leader>tb", "<cmd>FzfLua buffers<cr>", desc = "Buffers" },
+                { "<leader>to", "<cmd>FzfLua oldfiles<cr>", desc = "Recent files" },
+                { "<leader>tL", "<cmd>FzfLua blines<cr>", desc = "Buffer lines" },
+                { "<leader>tl", "<cmd>FzfLua lines<cr>", desc = "All lines" },
 
-            -- LSP
-            { "<leader>ss", "<cmd>FzfLua lsp_document_symbols<cr>", desc = "Document symbols" },
-            { "<leader>sw", "<cmd>FzfLua lsp_workspace_symbols<cr>", desc = "Workspace symbols" },
-            { "<leader>sW", "<cmd>FzfLua lsp_live_workspace_symbols<cr>", desc = "Live workspace symbols" },
-            { "<leader>sd", "<cmd>FzfLua diagnostics_document<cr>", desc = "Document diagnostics" },
-            { "<leader>sD", "<cmd>FzfLua diagnostics_workspace<cr>", desc = "Workspace diagnostics" },
-            { "<leader>sa", "<cmd>FzfLua lsp_code_actions<cr>", desc = "Code actions" },
-            { "<leader>sf", "<cmd>FzfLua lsp_finder<cr>", desc = "LSP finder (all locations)" },
-            { "gr", "<cmd>FzfLua lsp_references<cr>", desc = "LSP references" },
-            { "gd", "<cmd>FzfLua lsp_definitions<cr>", desc = "LSP definitions" },
-            { "gi", "<cmd>FzfLua lsp_implementations<cr>", desc = "LSP implementations" },
-            { "gt", "<cmd>FzfLua lsp_typedefs<cr>", desc = "LSP type definitions" },
-            { "gD", "<cmd>FzfLua lsp_declarations<cr>", desc = "LSP declarations" },
+                -- Git
+                { "<leader>tgb", "<cmd>FzfLua git_branches<cr>", desc = "Git branches" },
+                { "<leader>tgc", "<cmd>FzfLua git_commits<cr>", desc = "Git commits" },
+                { "<leader>tgs", "<cmd>FzfLua git_status<cr>", desc = "Git status" },
+                { "<leader>tgd", "<cmd>FzfLua git_bcommits<cr>", desc = "Buffer commits" },
+                { "<leader>tgh", "<cmd>FzfLua git_stash<cr>", desc = "Git stash" },
 
-            -- 其他
-            { "<leader>tt", "<cmd>FzfLua builtin<cr>", desc = "FzfLua builtin" },
-            { "<leader>th", "<cmd>FzfLua help_tags<cr>", desc = "Help tags" },
-            { "<leader>tm", "<cmd>FzfLua man_pages<cr>", desc = "Man pages" },
-            { "<leader>tk", "<cmd>FzfLua keymaps<cr>", desc = "Keymaps" },
-            { "<leader>tC", "<cmd>FzfLua commands<cr>", desc = "Commands" },
-            { "<leader>tH", "<cmd>FzfLua command_history<cr>", desc = "Command history" },
-            { "<leader>t/", "<cmd>FzfLua search_history<cr>", desc = "Search history" },
-            { "<leader>tq", "<cmd>FzfLua quickfix<cr>", desc = "Quickfix" },
-            { "<leader>tQ", "<cmd>FzfLua quickfix_stack<cr>", desc = "Quickfix stack" },
-            { "<leader>tl", "<cmd>FzfLua loclist<cr>", desc = "Location list" },
-            { "<leader>tS", "<cmd>FzfLua loclist_stack<cr>", desc = "Location list stack" },
-            { "<leader>tr", "<cmd>FzfLua resume<cr>", desc = "Resume last search" },
-            { "<leader>tc", "<cmd>FzfLua colorschemes<cr>", desc = "Colorschemes" },
-            { "<leader>tT", "<cmd>FzfLua tabs<cr>", desc = "Tabs" },
-            { "<leader>tM", "<cmd>FzfLua marks<cr>", desc = "Marks" },
-            { "<leader>tR", "<cmd>FzfLua registers<cr>", desc = "Registers" },
-            { "<leader>tj", "<cmd>FzfLua jumps<cr>", desc = "Jumps" },
-            { "<leader>tA", "<cmd>FzfLua autocmds<cr>", desc = "Autocmds" },
-        },
+                -- LSP
+                { "<leader>ss", "<cmd>FzfLua lsp_document_symbols<cr>", desc = "Document symbols" },
+                { "<leader>sw", "<cmd>FzfLua lsp_workspace_symbols<cr>", desc = "Workspace symbols" },
+                { "<leader>sW", "<cmd>FzfLua lsp_live_workspace_symbols<cr>", desc = "Live workspace symbols" },
+                { "<leader>sd", "<cmd>FzfLua diagnostics_document<cr>", desc = "Document diagnostics" },
+                { "<leader>sD", "<cmd>FzfLua diagnostics_workspace<cr>", desc = "Workspace diagnostics" },
+                { "<leader>sa", "<cmd>FzfLua lsp_code_actions<cr>", desc = "Code actions" },
+                { "<leader>sf", "<cmd>FzfLua lsp_finder<cr>", desc = "LSP finder (all locations)" },
+                { "gr", "<cmd>FzfLua lsp_references<cr>", desc = "LSP references" },
+                { "gd", "<cmd>FzfLua lsp_definitions<cr>", desc = "LSP definitions" },
+                { "gi", "<cmd>FzfLua lsp_implementations<cr>", desc = "LSP implementations" },
+                { "gt", "<cmd>FzfLua lsp_typedefs<cr>", desc = "LSP type definitions" },
+                { "gD", "<cmd>FzfLua lsp_declarations<cr>", desc = "LSP declarations" },
+
+                -- 其他
+                { "<leader>tt", "<cmd>FzfLua builtin<cr>", desc = "FzfLua builtin" },
+                { "<leader>th", "<cmd>FzfLua help_tags<cr>", desc = "Help tags" },
+                { "<leader>tk", "<cmd>FzfLua keymaps<cr>", desc = "Keymaps" },
+                { "<leader>tC", "<cmd>FzfLua commands<cr>", desc = "Commands" },
+                { "<leader>tH", "<cmd>FzfLua command_history<cr>", desc = "Command history" },
+                { "<leader>t/", "<cmd>FzfLua search_history<cr>", desc = "Search history" },
+                { "<leader>tq", "<cmd>FzfLua quickfix<cr>", desc = "Quickfix" },
+                { "<leader>tQ", "<cmd>FzfLua quickfix_stack<cr>", desc = "Quickfix stack" },
+                { "<leader>tl", "<cmd>FzfLua loclist<cr>", desc = "Location list" },
+                { "<leader>tS", "<cmd>FzfLua loclist_stack<cr>", desc = "Location list stack" },
+                { "<leader>tr", "<cmd>FzfLua resume<cr>", desc = "Resume last search" },
+                { "<leader>tc", "<cmd>FzfLua colorschemes<cr>", desc = "Colorschemes" },
+                { "<leader>tT", "<cmd>FzfLua tabs<cr>", desc = "Tabs" },
+                { "<leader>tM", "<cmd>FzfLua marks<cr>", desc = "Marks" },
+                { "<leader>tR", "<cmd>FzfLua registers<cr>", desc = "Registers" },
+                { "<leader>tj", "<cmd>FzfLua jumps<cr>", desc = "Jumps" },
+                { "<leader>tA", "<cmd>FzfLua autocmds<cr>", desc = "Autocmds" },
+            }
+
+            -- 仅在非 Windows 系统添加 man pages 快捷键
+            if not is_windows then
+                table.insert(keys, { "<leader>tm", "<cmd>FzfLua man_pages<cr>", desc = "Man pages" })
+            end
+
+            return keys
+        end,
     },
 }
