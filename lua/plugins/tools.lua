@@ -149,13 +149,7 @@ return
             rename = { enabled = false }, -- 使用 LspUI rename 替代
             scope = { enabled = true }, -- 代码作用域检测,与 scope.nvim (tab-buffer 隔离) 功能不重叠
             scratch = { enabled = true },
-            scroll = {
-                enabled = true,
-                animate = {
-                    duration = { step = 15, total = 250 },
-                    easing = "linear",
-                },
-            },
+            scroll = { enabled = false }, -- 平滑滚动动画影响性能,禁用
             statuscolumn = { enabled = true },
             terminal = { enabled = true },
             toggle = { enabled = true },
@@ -265,8 +259,7 @@ return
                     }):map("<leader>ub")
                     Snacks.toggle.inlay_hints():map("<leader>uh")
                     Snacks.toggle.dim():map("<leader>uD")
-                    Snacks.toggle.scroll():map("<leader>uS")
-                    Snacks.toggle.words():map("<leader>uW")
+                    -- scroll 已禁用,移除相关 toggle
                 end,
             })
         end,
