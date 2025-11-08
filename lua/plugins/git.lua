@@ -25,16 +25,68 @@ return
         },
         cmd = "Neogit", -- 命令触发
         opts = {
+            -- 性能优化
+            auto_refresh = true, -- 自动刷新状态
+            disable_hint = false, -- 保留顶部提示
+            disable_context_highlighting = false, -- 保留上下文高亮
+            
+            -- 文件监视器优化
+            filewatcher = {
+                interval = 1000,
+                enabled = true,
+            },
+            
+            -- 图形样式
+            graph_style = "unicode",
+            
+            -- 提交编辑器配置
+            commit_editor = {
+                kind = "tab",
+                show_staged_diff = true, -- 显示暂存区差异
+                staged_diff_split_kind = "vsplit", -- 右侧显示差异
+                spell_check = true, -- 启用拼写检查
+            },
+            
+            -- 视图配置优化
+            kind = "tab", -- 默认在新标签页打开
+            commit_view = {
+                kind = "vsplit",
+                verify_commit = vim.fn.executable("gpg") == 1, -- GPG 签名验证
+            },
+            
+            -- 集成配置
+            integrations = {
+                snacks = true,
+                diffview = true, -- 启用 diffview 集成
+            },
+            
+            -- 记住设置（跨会话保持开关/选项状态）
+            remember_settings = true,
+            use_per_project_settings = true,
+            
+            -- 映射配置
             mappings = {
                 finder = {
                     ["<C-j>"] = "Next",
                     ["<C-k>"] = "Previous",
                 },
+                status = {
+                    ["<C-r>"] = "RefreshBuffer", -- 添加手动刷新快捷键
+                },
             },
-            integrations = {
-                snacks = true,
+            
+            -- 状态视图配置
+            status = {
+                show_head_commit_hash = true,
+                recent_commit_count = 10,
+                HEAD_padding = 10,
             },
-            graph_style = "unicode",
+            
+            -- 分支排序
+            sort_branches = "-committerdate", -- 按提交日期降序排序
+            
+            -- 日志视图配置
+            commit_order = "topo", -- 拓扑排序（适合查看分支图）
         },
         keys = {
             { "<leader>ng", "<cmd>Neogit<cr>", desc = "NeoGit" },
