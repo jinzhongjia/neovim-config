@@ -121,7 +121,7 @@ Last updated: 2025-01-14
 | [xzbdmw/colorful-menu.nvim](https://github.com/xzbdmw/colorful-menu.nvim) | A colorful menu plugin |
 | [yioneko/nvim-vtsls](https://github.com/yioneko/nvim-vtsls) | A VTSLS plugin |
 | [yorickpeterse/nvim-window](https://github.com/yorickpeterse/nvim-window) | Fast window picker for Neovim |
-| [coder/claudecode.nvim](https://github.com/coder/claudecode.nvim) | Claude Code integration for Neovim |
+| [coder/claudecode.nvim](https://github.com/coder/claudecode.nvim) | Claude Code AI assistant with WebSocket MCP protocol support |
 | [jinzhongjia/codecompanion-spinner.nvim](https://github.com/jinzhongjia/codecompanion-spinner.nvim) | Spinner indicator for CodeCompanion AI operations |
 | [nvim-lua/plenary.nvim](https://github.com/nvim-lua/plenary.nvim) | Utility library for Neovim plugins |
 | [nvim-nio/nvim-nio](https://github.com/nvim-nio/nvim-nio) | Async IO library for Neovim |
