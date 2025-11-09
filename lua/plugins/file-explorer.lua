@@ -48,7 +48,6 @@ return
                 ["<C-t>"] = { "actions.select", opts = { tab = true }, desc = "Open in new tab" },
                 ["<C-p>"] = "actions.preview",
                 ["<C-c>"] = { "actions.close", mode = "n" },
-                ["q"] = { "actions.close", mode = "n", desc = "Close oil" },
                 ["<C-r>"] = "actions.refresh",
                 ["-"] = { "actions.parent", desc = "Go to parent directory" },
                 ["_"] = { "actions.open_cwd", desc = "Open current working directory" },
