@@ -38,26 +38,31 @@ local query_str = [[
 
 -- 工具函数
 local function debounce(func, delay)
-    local timer = uv.new_timer()
+    local timer = nil
     return function(...)
         local args = { ... }
 
+        -- Stop and close existing timer
         if timer and not timer:is_closing() then
             timer:stop()
-        else
-            timer = uv.new_timer()
-            if not timer then
-                vim.schedule(function()
-                    func(unpack(args))
-                end)
-                return
-            end
+            timer:close()
+        end
+
+        -- Create new timer
+        timer = uv.new_timer()
+        if not timer then
+            vim.schedule(function()
+                func(unpack(args))
+            end)
+            return
         end
 
         timer:start(delay, 0, function()
             if timer and not timer:is_closing() then
                 timer:stop()
+                timer:close()
             end
+            timer = nil
             vim.schedule(function()
                 func(unpack(args))
             end)
@@ -76,20 +81,25 @@ end
 
 -- TreeSitter 相关
 local parsed_query
+local query_parse_failed = false
 
 local function find_types(bufnr)
     local parser = safe_pcall(vim.treesitter.get_parser, bufnr, "go")
     if not parser then
-        vim.notify("Go TreeSitter parser not found", vim.log.levels.DEBUG)
         return {}
     end
 
-    if not parsed_query then
+    if not parsed_query and not query_parse_failed then
         parsed_query = safe_pcall(vim.treesitter.query.parse, "go", query_str)
         if not parsed_query then
-            vim.notify("Failed to parse treesitter query", vim.log.levels.DEBUG)
+            query_parse_failed = true
+            vim.notify("Failed to parse treesitter query", vim.log.levels.WARN)
             return {}
         end
+    end
+
+    if query_parse_failed then
+        return {}
     end
 
     local parse_results = parser:parse()
@@ -109,6 +119,8 @@ local function find_types(bufnr)
 end
 
 -- 文件处理
+local file_cache = {}
+
 local function get_package_name(fdata)
     for _, line in ipairs(fdata) do
         local match = string.match(line, "^package%s+([%a_][%w_]*)%s*$")
@@ -119,33 +131,37 @@ local function get_package_name(fdata)
     return ""
 end
 
-local function read_file_data(uri, bufnr, fcache)
+local function read_file_data(uri, bufnr)
     if bufnr and vim.api.nvim_buf_is_loaded(bufnr) then
         return vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
     end
 
     local file = vim.uri_to_fname(uri)
-    if not fcache[file] then
+    if not file_cache[file] then
         local ok, content = pcall(vim.fn.readfile, file)
-        if ok then
-            fcache[file] = content
+        if ok and content then
+            file_cache[file] = content
         else
-            vim.notify(string.format("Failed to read file: %s", file), vim.log.levels.WARN)
-            fcache[file] = {}
+            return nil
         end
     end
-    return fcache[file]
+    return file_cache[file]
+end
+
+-- Clear file cache periodically to prevent memory leak
+local function clear_file_cache()
+    file_cache = {}
 end
 
 -- 统一的实现回调处理
-local function process_implementation(impl, fcache)
+local function process_implementation(impl)
     local uri = impl.uri
     local impl_line = impl.range.start.line
     local impl_start = impl.range.start.character
     local impl_end = impl.range["end"].character
 
     local bufnr = vim.uri_to_bufnr(uri)
-    local data = read_file_data(uri, bufnr, fcache)
+    local data = read_file_data(uri, bufnr)
 
     if not data or not data[impl_line + 1] then
         return nil
@@ -185,11 +201,10 @@ local function create_implementation_callback()
             return {}
         end
 
-        local fcache = {}
         local names = {}
 
         local function process_single(impl)
-            local name = process_implementation(impl, fcache)
+            local name = process_implementation(impl)
             if name then
                 table.insert(names, name)
             end
@@ -210,25 +225,70 @@ end
 local implementation_callback = create_implementation_callback()
 
 local gopls_client
+local active_requests = {}
 
 -- LSP 交互
-local function get_implementation_names(client, line, character, callback, bufnr)
-    client:request(vim.lsp.protocol.Methods.textDocument_implementation, {
-        textDocument = vim.lsp.util.make_text_document_params(),
+local function get_gopls_client()
+    -- Check if cached client is still valid
+    if gopls_client then
+        local client = vim.lsp.get_client_by_id(gopls_client.id)
+        if client and client.name == "gopls" then
+            return gopls_client
+        end
+    end
+
+    -- Get fresh client
+    local clients = vim.lsp.get_clients({ name = "gopls" })
+    gopls_client = clients and clients[1] or nil
+    return gopls_client
+end
+
+local function get_implementation_names(bufnr, line, character, callback)
+    local client = get_gopls_client()
+    if not client then
+        return
+    end
+
+    -- Create unique request key
+    local request_key = string.format("%d:%d:%d", bufnr, line, character)
+
+    -- Cancel duplicate requests
+    if active_requests[request_key] then
+        return
+    end
+
+    active_requests[request_key] = true
+
+    -- Build request params manually to ensure correct buffer
+    local params = {
+        textDocument = vim.lsp.util.make_text_document_params(bufnr),
         position = { line = line, character = character },
-    }, function(err, result, _, _)
+    }
+
+    client:request(vim.lsp.protocol.Methods.textDocument_implementation, params, function(err, result, _, _)
+        active_requests[request_key] = nil
+
         if err or not api.nvim_buf_is_valid(bufnr) then
+            return
+        end
+
+        -- Verify buffer hasn't changed
+        if vim.bo[bufnr].filetype ~= "go" then
             return
         end
 
         local names = implementation_callback(result)
         callback(names)
-    end)
+    end, bufnr)
 end
 
 -- 渲染相关
+local extmark_cache = {}
+
 local function clean_render(bufnr)
-    vim.api.nvim_buf_clear_namespace(bufnr or 0, namespace, 0, -1)
+    bufnr = bufnr or vim.api.nvim_get_current_buf()
+    vim.api.nvim_buf_clear_namespace(bufnr, namespace, 0, -1)
+    extmark_cache[bufnr] = {}
 end
 
 local function set_virt_text(bufnr, line, _prefix, names)
@@ -247,13 +307,19 @@ local function set_virt_text(bufnr, line, _prefix, names)
         virt_text_pos = "eol",
     }
 
-    -- 避免在同一行创建多个 extmark
-    local marks = safe_pcall(vim.api.nvim_buf_get_extmarks, bufnr, namespace, { line, 0 }, { line, -1 }, {})
-    if marks and #marks > 0 then
-        opts.id = marks[1][1]
+    -- Use cached extmark ID if available
+    if not extmark_cache[bufnr] then
+        extmark_cache[bufnr] = {}
     end
 
-    pcall(vim.api.nvim_buf_set_extmark, bufnr, namespace, line, 0, opts)
+    if extmark_cache[bufnr][line] then
+        opts.id = extmark_cache[bufnr][line]
+    end
+
+    local ok, mark_id = pcall(vim.api.nvim_buf_set_extmark, bufnr, namespace, line, 0, opts)
+    if ok and mark_id then
+        extmark_cache[bufnr][line] = mark_id
+    end
 end
 
 -- 主要功能
@@ -265,22 +331,22 @@ local function annotate_structs_interfaces(bufnr)
     clean_render(bufnr)
     local nodes = find_types(bufnr)
 
-    if not gopls_client or not vim.lsp.get_client_by_id(gopls_client.id) then
-        local clients = vim.lsp.get_clients({ name = "gopls" })
-        gopls_client = clients and clients[1] or nil
+    if #nodes == 0 then
+        return
     end
 
-    if not gopls_client then
+    local client = get_gopls_client()
+    if not client then
         return
     end
 
     for _, node in ipairs(nodes) do
-        get_implementation_names(gopls_client, node.line, node.character + 1, function(names)
-            if api.nvim_buf_is_valid(bufnr) then
+        get_implementation_names(bufnr, node.line, node.character + 1, function(names)
+            if api.nvim_buf_is_valid(bufnr) and vim.bo[bufnr].filetype == "go" then
                 local _prefix = config.prefix[node.type]
                 set_virt_text(bufnr, node.line, _prefix, names)
             end
-        end, bufnr)
+        end)
     end
 end
 
@@ -320,10 +386,26 @@ api.nvim_create_user_command("GoplementsToggle", toggle, { desc = "Toggle Goplem
 
 local augroup = api.nvim_create_augroup("Goplements", { clear = true })
 
-api.nvim_create_autocmd({ "TextChanged", "LspAttach" }, {
+api.nvim_create_autocmd({ "TextChanged", "TextChangedI", "LspAttach" }, {
     group = augroup,
     pattern = { "*.go" },
     callback = debounce(function(args)
         annotate_structs_interfaces(args.buf)
     end, config.debounce_delay),
+})
+
+-- Clear file cache on BufDelete to prevent memory leaks
+api.nvim_create_autocmd("BufDelete", {
+    group = augroup,
+    pattern = { "*.go" },
+    callback = function(args)
+        -- Clear extmark cache for this buffer
+        if extmark_cache[args.buf] then
+            extmark_cache[args.buf] = nil
+        end
+        -- Periodic file cache cleanup
+        if math.random() < 0.1 then -- 10% chance
+            clear_file_cache()
+        end
+    end,
 })
