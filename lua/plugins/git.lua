@@ -191,4 +191,42 @@ return
             },
         },
     },
+    {
+        "pwntester/octo.nvim",
+        cmd = "Octo",
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+            "folke/snacks.nvim",
+            "nvim-tree/nvim-web-devicons",
+        },
+        opts = {
+            -- 使用 Snacks picker
+            picker = "snacks",
+            
+            -- 默认合并策略
+            default_merge_method = "squash", -- 默认是 commit，这里自定义为 squash
+        },
+        keys = {
+            -- Issue 操作
+            { "<leader>oi", "<cmd>Octo issue list<cr>", desc = "List issues" },
+            { "<leader>oI", "<cmd>Octo issue search<cr>", desc = "Search issues" },
+            { "<leader>oc", "<cmd>Octo issue create<cr>", desc = "Create issue" },
+            
+            -- PR 操作
+            { "<leader>op", "<cmd>Octo pr list<cr>", desc = "List PRs" },
+            { "<leader>oP", "<cmd>Octo pr search<cr>", desc = "Search PRs" },
+            { "<leader>opr", "<cmd>Octo pr create<cr>", desc = "Create PR" },
+            { "<leader>opo", "<cmd>Octo pr<cr>", desc = "Open current branch PR" },
+            
+            -- Repo 操作
+            { "<leader>or", "<cmd>Octo repo list<cr>", desc = "List repos" },
+            { "<leader>oR", "<cmd>Octo repo browser<cr>", desc = "Open repo in browser" },
+            
+            -- 搜索
+            { "<leader>os", "<cmd>Octo search<cr>", desc = "Search GitHub" },
+            
+            -- 其他
+            { "<leader>oa", "<cmd>Octo actions<cr>", desc = "List Octo actions" },
+        },
+    },
 }
