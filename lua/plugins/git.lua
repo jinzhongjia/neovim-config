@@ -229,4 +229,24 @@ return
             { "<leader>oa", "<cmd>Octo actions<cr>", desc = "List Octo actions" },
         },
     },
+    {
+        "topaxi/pipeline.nvim",
+        keys = {
+            { "<leader>ci", "<cmd>Pipeline<cr>", desc = "Open pipeline" },
+        },
+        opts = {
+            -- 刷新间隔（秒）
+            refresh_interval = 10,
+            
+            -- 用于 dispatch workflow 的分支
+            dispatch_branch = "default", -- "default", "current" 或具体分支名
+            
+            -- 分屏配置
+            split = {
+                relative = "editor",
+                position = "right", -- "left", "right", "top", "bottom"
+                size = 60,
+            },
+        },
+    },
 }
