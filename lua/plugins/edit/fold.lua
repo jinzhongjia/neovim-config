@@ -138,17 +138,7 @@ return
             { "zM", function() require("ufo").closeAllFolds() end, desc = "close all folds" },
             { "zr", function() require("ufo").openFoldsExceptKinds() end, desc = "open folds except kinds" },
             { "zm", function() require("ufo").closeFoldsWith() end, desc = "close folds with" },
-            -- 添加预览折叠内容的快捷键
-            { 
-                "K", 
-                function()
-                    local winid = require("ufo").peekFoldedLinesUnderCursor()
-                    if not winid then
-                        vim.lsp.buf.hover() -- 如果没有折叠,则显示 hover
-                    end
-                end, 
-                desc = "Peek fold or hover" 
-            },
+            -- K 键已在 LspUI 配置中定义，包含了 ufo 折叠预览 + LspUI hover 的逻辑
         },
     },
 }

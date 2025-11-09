@@ -452,7 +452,7 @@ return
                 { "<leader>tgd", "<cmd>FzfLua git_bcommits<cr>", desc = "Buffer commits" },
                 { "<leader>tgh", "<cmd>FzfLua git_stash<cr>", desc = "Git stash" },
 
-                -- LSP
+                -- LSP（仅保留 LspUI 没有的功能：symbols、diagnostics、finder）
                 { "<leader>ss", "<cmd>FzfLua lsp_document_symbols<cr>", desc = "Document symbols" },
                 { "<leader>sw", "<cmd>FzfLua lsp_workspace_symbols<cr>", desc = "Workspace symbols" },
                 { "<leader>sW", "<cmd>FzfLua lsp_live_workspace_symbols<cr>", desc = "Live workspace symbols" },
@@ -460,11 +460,6 @@ return
                 { "<leader>sD", "<cmd>FzfLua diagnostics_workspace<cr>", desc = "Workspace diagnostics" },
                 { "<leader>sa", "<cmd>FzfLua lsp_code_actions<cr>", desc = "Code actions" },
                 { "<leader>sf", "<cmd>FzfLua lsp_finder<cr>", desc = "LSP finder (all locations)" },
-                { "gr", "<cmd>FzfLua lsp_references<cr>", desc = "LSP references" },
-                { "gd", "<cmd>FzfLua lsp_definitions<cr>", desc = "LSP definitions" },
-                { "gi", "<cmd>FzfLua lsp_implementations<cr>", desc = "LSP implementations" },
-                { "gt", "<cmd>FzfLua lsp_typedefs<cr>", desc = "LSP type definitions" },
-                { "gD", "<cmd>FzfLua lsp_declarations<cr>", desc = "LSP declarations" },
 
                 -- 其他
                 { "<leader>tt", "<cmd>FzfLua builtin<cr>", desc = "FzfLua builtin" },
