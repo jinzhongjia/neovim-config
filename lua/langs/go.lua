@@ -99,8 +99,5 @@ return
             },
             opts = {},
         },
-        -- goimpl.nvim 已移除 - 它专门依赖 telescope，如果需要类似功能，请考虑：
-        -- 1. 使用 gopls 的 LSP code action 实现接口
-        -- 2. 或者为 goimpl.nvim 添加 fzf-lua 支持
     },
 }
