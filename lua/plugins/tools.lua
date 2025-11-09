@@ -120,7 +120,7 @@ return
             explorer = { enabled = false }, -- 如果使用 nvim-tree，设为 false
             git = { enabled = true },
             gitbrowse = { enabled = true },
-            indent = { enabled = false }, -- 使用 indent-blankline.nvim 替代
+            indent = { enabled = false }, -- 使用 blink.indent 替代
             input = { enabled = true },
             notifier = {
                 enabled = true,
