@@ -33,7 +33,7 @@ return
             
             -- 文件监视器优化
             filewatcher = {
-                interval = 1000,
+                interval = 2000, -- 增加到2秒，减少频繁刷新
                 enabled = true,
             },
             
@@ -44,6 +44,13 @@ return
             
             -- 图形样式
             graph_style = "unicode",
+            
+            -- Git 性能优化
+            use_default_keymaps = true,
+            disable_insert_on_commit = true, -- 提交时不自动进入插入模式
+            
+            -- 大仓库优化
+            fetch_after_checkout = false, -- 切换分支后不自动 fetch
             
             -- 提交编辑器配置
             commit_editor = {
@@ -78,6 +85,7 @@ return
             integrations = {
                 snacks = true,
                 diffview = true, -- 启用 diffview 集成
+                telescope = false, -- 禁用 telescope 集成以提升性能
             },
             
             -- 记住设置（跨会话保持开关/选项状态）
@@ -101,6 +109,24 @@ return
                 recent_commit_count = 10, -- 只显示最近10个提交（性能优化）
                 HEAD_padding = 10,
                 HEAD_folded = false, -- 默认展开 HEAD
+                mode_padding = 3,
+                mode_text = {
+                    M = "modified",
+                    N = "new file",
+                    A = "added",
+                    D = "deleted",
+                    C = "copied",
+                    U = "updated",
+                    R = "renamed",
+                    DD = "unmerged",
+                    AU = "unmerged",
+                    UD = "unmerged",
+                    UA = "unmerged",
+                    DU = "unmerged",
+                    AA = "unmerged",
+                    UU = "unmerged",
+                    ["?"] = "untracked",
+                },
             },
             
             -- 分支排序
