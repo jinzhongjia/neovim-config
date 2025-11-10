@@ -129,8 +129,8 @@ return
                     -- 2. 其次使用 rg --files（ripgrep，Windows 原生支持）
                     -- 3. 最后使用 find（Windows 上可能需要 Git Bash/MSYS2）
                     -- 注意：Windows cmd.exe 会启动这些命令，确保它们在 PATH 中
-                    fd_opts = [[--color=never --type f --hidden --follow --exclude .git --exclude '*.gen.go' --exclude 'gen.go' --exclude '*.pb.go' --exclude '*.connect.go']],
-                    rg_opts = [[--color=never --files --hidden --follow -g '!.git' -g '!*.gen.go' -g '!gen.go' -g '!*.pb.go' -g '!*.connect.go']],
+                    fd_opts = [[--color=never --type f --hidden --follow --exclude .git --exclude '*.gen.go' --exclude 'gen.go' --exclude '*.pb.go' --exclude '*.connector.go' --exclude '*.connect.go']],
+                    rg_opts = [[--color=never --files --hidden --follow -g '!.git' -g '!*.gen.go' -g '!gen.go' -g '!*.pb.go' -g '!*.connector.go' -g '!*.connect.go']],
                     -- Windows 上如果使用 find，需要确保是 Unix-like find，而非 Windows 自带的 FIND.EXE
                     -- find_opts = [[-type f -not -path '*/\.git/*']],  -- 仅在有 Unix find 时使用
                     actions = {
@@ -153,7 +153,7 @@ return
                     file_icons = true,
                     git_icons = false,
                     color_icons = true,
-                    rg_opts = [[--column --line-number --no-heading --color=always --smart-case --max-columns=4096 -g '!*.gen.go' -g '!gen.go' -g '!*.pb.go' -g '!*.connect.go' -e]],
+                    rg_opts = [[--column --line-number --no-heading --color=always --smart-case --max-columns=4096 -g '!*.gen.go' -g '!gen.go' -g '!*.pb.go' -g '!*.connector.go' -g '!*.connect.go' -e]],
                     actions = {
                         ["enter"] = require("fzf-lua.actions").file_edit_or_qf,
                         ["ctrl-s"] = require("fzf-lua.actions").file_split,
@@ -176,7 +176,7 @@ return
                     glob_flag = "--iglob",
                     glob_separator = "%s%-%-",
                     -- 默认忽略生成的文件
-                    rg_opts = [[--column --line-number --no-heading --color=always --smart-case --max-columns=4096 -g '!*.gen.go' -g '!gen.go' -g '!*.pb.go' -g '!*.connect.go' -e]],
+                    rg_opts = [[--column --line-number --no-heading --color=always --smart-case --max-columns=4096 -g '!*.gen.go' -g '!gen.go' -g '!*.pb.go' -g '!*.connector.go' -g '!*.connect.go' -e]],
                     -- 可选：开始时隐藏预览，避免空结果时的错误
                     -- winopts = { preview = { hidden = "hidden" } },
                 },

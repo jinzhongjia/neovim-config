@@ -142,37 +142,42 @@ return
             },
             picker = {
                 enabled = true,
-                -- 使用 fzf-lua 作为主要搜索工具时，可以设置为 false
-                -- 但 picker 还有其他用途（如 vim.ui.select），建议保持启用
+                -- 全局排除 Go 生成文件的配置
                 sources = {
-                    -- 为所有文件相关的 picker 添加排除规则
                     files = {
-                        exclude = { "*.gen.go", "gen.go", "*.pb.go", "*.connect.go" },
+                        exclude = { "*.gen.go", "gen.go", "*.pb.go", "*.connector.go", "*.connect.go" },
                     },
                     git_files = {
-                        exclude = { "*.gen.go", "gen.go", "*.pb.go", "*.connect.go" },
+                        exclude = { "*.gen.go", "gen.go", "*.pb.go", "*.connector.go", "*.connect.go" },
                     },
                     smart = {
-                        exclude = { "*.gen.go", "gen.go", "*.pb.go", "*.connect.go" },
+                        -- smart 会继承 files 的配置,所以无需额外配置 exclude
                     },
                     recent = {
+                        -- recent files 使用 filter.paths 来排除,pattern 需要匹配完整路径
+                        -- 使用自定义 filter 函数来支持 glob patterns
                         filter = {
-                            paths = {
-                                ["*.gen.go"] = false,
-                                ["*.pb.go"] = false,
-                                ["*.connect.go"] = false,
-                            },
+                            filter = function(item, filter)
+                                local path = item.file or item.text or ""
+                                -- 排除以这些后缀结尾的文件
+                                return not (
+                                    path:match("%.gen%.go$")
+                                    or path:match("/gen%.go$")
+                                    or path:match("%.pb%.go$")
+                                    or path:match("%.connector%.go$")
+                                    or path:match("%.connect%.go$")
+                                )
+                            end,
                         },
                     },
-                    -- grep 相关的 picker 也添加排除规则
                     grep = {
-                        exclude = { "*.gen.go", "gen.go", "*.pb.go", "*.connect.go" },
+                        exclude = { "*.gen.go", "gen.go", "*.pb.go", "*.connector.go", "*.connect.go" },
                     },
                     grep_word = {
-                        exclude = { "*.gen.go", "gen.go", "*.pb.go", "*.connect.go" },
+                        exclude = { "*.gen.go", "gen.go", "*.pb.go", "*.connector.go", "*.connect.go" },
                     },
                     grep_buffers = {
-                        exclude = { "*.gen.go", "gen.go", "*.pb.go", "*.connect.go" },
+                        exclude = { "*.gen.go", "gen.go", "*.pb.go", "*.connector.go", "*.connect.go" },
                     },
                 },
             },
