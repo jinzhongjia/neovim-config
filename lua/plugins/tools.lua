@@ -144,6 +144,37 @@ return
                 enabled = true,
                 -- 使用 fzf-lua 作为主要搜索工具时，可以设置为 false
                 -- 但 picker 还有其他用途（如 vim.ui.select），建议保持启用
+                sources = {
+                    -- 为所有文件相关的 picker 添加排除规则
+                    files = {
+                        exclude = { "*.gen.go", "gen.go", "*.pb.go", "*.connect.go" },
+                    },
+                    git_files = {
+                        exclude = { "*.gen.go", "gen.go", "*.pb.go", "*.connect.go" },
+                    },
+                    smart = {
+                        exclude = { "*.gen.go", "gen.go", "*.pb.go", "*.connect.go" },
+                    },
+                    recent = {
+                        filter = {
+                            paths = {
+                                ["*.gen.go"] = false,
+                                ["*.pb.go"] = false,
+                                ["*.connect.go"] = false,
+                            },
+                        },
+                    },
+                    -- grep 相关的 picker 也添加排除规则
+                    grep = {
+                        exclude = { "*.gen.go", "gen.go", "*.pb.go", "*.connect.go" },
+                    },
+                    grep_word = {
+                        exclude = { "*.gen.go", "gen.go", "*.pb.go", "*.connect.go" },
+                    },
+                    grep_buffers = {
+                        exclude = { "*.gen.go", "gen.go", "*.pb.go", "*.connect.go" },
+                    },
+                },
             },
             quickfile = { enabled = true },
             rename = { enabled = false }, -- 使用 LspUI rename 替代
