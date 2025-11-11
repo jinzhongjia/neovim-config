@@ -461,9 +461,9 @@ return
                 { "<leader>ss", "<cmd>FzfLua lsp_document_symbols<cr>", desc = "Document symbols" },
                 { "<leader>sw", "<cmd>FzfLua lsp_workspace_symbols<cr>", desc = "Workspace symbols" },
                 { "<leader>sW", "<cmd>FzfLua lsp_live_workspace_symbols<cr>", desc = "Live workspace symbols" },
+                { "<leader>sf", "<cmd>FzfLua lsp_finder<cr>", desc = "Project symbols (functions)" },
                 { "<leader>sd", "<cmd>FzfLua diagnostics_document<cr>", desc = "Document diagnostics" },
                 { "<leader>sD", "<cmd>FzfLua diagnostics_workspace<cr>", desc = "Workspace diagnostics" },
-                { "<leader>sa", "<cmd>FzfLua lsp_code_actions<cr>", desc = "Code actions" },
                 { "<leader>sf", "<cmd>FzfLua lsp_finder<cr>", desc = "LSP finder (all locations)" },
 
                 -- 其他
