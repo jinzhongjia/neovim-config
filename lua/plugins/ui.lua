@@ -447,17 +447,188 @@ return
     },
     {
         "folke/which-key.nvim",
-        event = "VeryLazy", -- which-key 需要较早加载以捕获所有按键
-        opts = {},
-        keys = {
-            {
-                "<leader>?",
-                function()
-                    require("which-key").show({ global = false })
+        event = "VeryLazy",
+        config = function()
+            local wk = require("which-key")
+            
+            -- 配置选项
+            wk.setup({
+                preset = "modern", -- classic / modern / helix
+                delay = function(ctx)
+                    return ctx.plugin and 0 or 200
                 end,
-                desc = "Buffer Local Keymaps (which-key)",
-            },
-        },
+                notify = true,
+                sort = { "local", "order", "group", "alphanum", "mod" },
+                expand = 0,
+                icons = {
+                    breadcrumb = "»",
+                    separator = "➜",
+                    group = "➕",
+                    ellipsis = "…",
+                    mappings = true,
+                    colors = true,
+                },
+                win = {
+                    no_overlap = true,
+                    padding = { 1, 2 },
+                    title = true,
+                    title_pos = "center",
+                    zindex = 1000,
+                },
+                layout = {
+                    width = { min = 20, max = 50 },
+                    spacing = 3,
+                },
+                keys = {
+                    scroll_down = "<c-d>",
+                    scroll_up = "<c-u>",
+                },
+                plugins = {
+                    marks = true,
+                    registers = true,
+                    spelling = {
+                        enabled = true,
+                        suggestions = 20,
+                    },
+                    presets = {
+                        operators = true,
+                        motions = true,
+                        text_objects = true,
+                        windows = true,
+                        nav = true,
+                        z = true,
+                        g = true,
+                    },
+                },
+                show_help = true,
+                show_keys = true,
+                disable = {
+                    ft = { "TelescopePrompt" },
+                    bt = { "nofile" },
+                },
+            })
+
+            -- 定义快捷键组和映射
+            wk.add({
+                -- ===== 窗口管理 (s = split) =====
+                { "s", group = "split" },
+                { "sv", "<CMD>vsp<CR>", desc = "Vertical split" },
+                { "sh", "<CMD>sp<CR>", desc = "Horizontal split" },
+                { "sc", "<C-w>c", desc = "Close current window" },
+                { "so", "<C-w>o", desc = "Close other windows" },
+                { "s=", "<C-w>=", desc = "Equalize window height" },
+                { "s,", "<CMD>vertical resize -2<CR>", desc = "Decrease window width" },
+                { "s.", "<CMD>vertical resize +2<CR>", desc = "Increase window width" },
+                { "sj", "<CMD>resize +2<CR>", desc = "Increase window height" },
+                { "sk", "<CMD>resize -2<CR>", desc = "Decrease window height" },
+
+                -- ===== 窗口导航 (w = window) =====
+                { "w", group = "window navigate" },
+                { "wh", "<C-w>h", desc = "Go to left window" },
+                { "wj", "<C-w>j", desc = "Go to lower window" },
+                { "wk", "<C-w>k", desc = "Go to upper window" },
+                { "wl", "<C-w>l", desc = "Go to right window" },
+
+                -- ===== 快速查找 (Ctrl+p/f) =====
+                { "<C-p>", "<cmd>FzfLua files<cr>", desc = "Find files" },
+                { "<C-S-p>", function() require("fzf-lua").files({ fd_opts = [[--color=never --type f --hidden --follow --no-ignore]] }) end, desc = "Find files (all)" },
+                { "<C-f>", "<cmd>FzfLua live_grep<cr>", desc = "Live grep" },
+                { "<C-S-f>", function() require("fzf-lua").live_grep({ rg_opts = [[--column --line-number --no-heading --color=always --smart-case --max-columns=4096 --hidden --follow --no-ignore -e]] }) end, desc = "Live grep (all)" },
+
+                -- ===== Ctrl 窗口大小调整 =====
+                { "<C-Left>", "<CMD>vertical resize -2<CR>", desc = "Decrease window width" },
+                { "<C-Right>", "<CMD>vertical resize +2<CR>", desc = "Increase window width" },
+                { "<C-Down>", "<CMD>resize +2<CR>", desc = "Increase window height" },
+                { "<C-Up>", "<CMD>resize -2<CR>", desc = "Decrease window height" },
+
+                -- ===== Visual 模式编辑 =====
+                { "<", "<gv", mode = "v", desc = "Indent left (keep selection)" },
+                { ">", ">gv", mode = "v", desc = "Indent right (keep selection)" },
+                { "J", "<CMD>move '>+1<CR>gv-gv", mode = "v", desc = "Move selection down" },
+                { "K", "<CMD>move '<-2<CR>gv-gv", mode = "v", desc = "Move selection up" },
+
+                -- ===== 复制粘贴 =====
+                { "<C-c>", '"+y', mode = "v", desc = "Copy to system clipboard" },
+                { "<C-x>", '"+d', mode = "v", desc = "Cut to system clipboard" },
+                { "<C-v>", '<ESC>"+pa', mode = "i", desc = "Paste from system clipboard" },
+
+                -- ===== 标签页管理 (leader-t = tabs) =====
+                { "<leader>t", group = "tabs" },
+                { "<leader>tn", "<CMD>tabnew<CR>", desc = "New tab" },
+                { "<leader>tc", "<CMD>tabclose<CR>", desc = "Close tab" },
+                { "<leader>to", "<CMD>tabonly<CR>", desc = "Close others" },
+                { "<leader>th", "<CMD>tabprevious<CR>", desc = "Previous tab" },
+                { "<leader>tl", "<CMD>tabnext<CR>", desc = "Next tab" },
+                { "<leader>t1", "<CMD>tabn 1<CR>", desc = "Go to tab 1" },
+                { "<leader>t2", "<CMD>tabn 2<CR>", desc = "Go to tab 2" },
+                { "<leader>t3", "<CMD>tabn 3<CR>", desc = "Go to tab 3" },
+                { "<leader>t4", "<CMD>tabn 4<CR>", desc = "Go to tab 4" },
+                { "<leader>t5", "<CMD>tabn 5<CR>", desc = "Go to tab 5" },
+                { "<leader>tt", "<cmd>FzfLua builtin<cr>", desc = "FzfLua builtins" },
+                { "<leader>tr", "<cmd>FzfLua resume<cr>", desc = "Resume search" },
+                { "<leader>tT", "<cmd>FzfLua tabs<cr>", desc = "Tabs list" },
+
+                -- ===== 查找和搜索 (leader-f = find) =====
+                { "<leader>f", group = "find" },
+                { "<leader>ff", "<cmd>FzfLua files<cr>", desc = "Files" },
+                { "<leader>fF", function() require("fzf-lua").files({ fd_opts = [[--color=never --type f --hidden --follow --no-ignore]] }) end, desc = "Files (all)" },
+                { "<leader>fg", "<cmd>FzfLua live_grep_glob<cr>", desc = "Grep (glob)" },
+                { "<leader>fG", "<cmd>FzfLua grep_project<cr>", desc = "Grep project" },
+
+                -- ===== LSP 符号 (leader-s = search/symbols) =====
+                { "<leader>s", group = "search/symbols" },
+                { "<leader>ss", "<cmd>FzfLua lsp_document_symbols<cr>", desc = "Document symbols" },
+                { "<leader>sw", "<cmd>FzfLua lsp_workspace_symbols<cr>", desc = "Workspace symbols" },
+                { "<leader>sW", "<cmd>FzfLua lsp_live_workspace_symbols<cr>", desc = "Live symbols" },
+                { "<leader>sf", "<cmd>FzfLua lsp_finder<cr>", desc = "LSP finder" },
+                { "<leader>sd", "<cmd>FzfLua diagnostics_document<cr>", desc = "Document diagnostics" },
+                { "<leader>sD", "<cmd>FzfLua diagnostics_workspace<cr>", desc = "Workspace diagnostics" },
+
+                -- ===== 打开 (leader-o = open) =====
+                { "<leader>o", group = "open" },
+                { "<leader>ob", "<cmd>FzfLua buffers<cr>", desc = "Buffers" },
+                { "<leader>oB", "<cmd>FzfLua oldfiles<cr>", desc = "Recent files" },
+                { "<leader>ol", "<cmd>FzfLua lines<cr>", desc = "Lines (all)" },
+                { "<leader>oL", "<cmd>FzfLua blines<cr>", desc = "Lines (buffer)" },
+                { "<leader>oh", "<cmd>FzfLua help_tags<cr>", desc = "Help tags" },
+                { "<leader>ok", "<cmd>FzfLua keymaps<cr>", desc = "Keymaps" },
+                { "<leader>oc", "<cmd>FzfLua commands<cr>", desc = "Commands" },
+                { "<leader>oC", "<cmd>FzfLua colorschemes<cr>", desc = "Colorschemes" },
+                { "<leader>om", "<cmd>FzfLua marks<cr>", desc = "Marks" },
+                { "<leader>oM", "<cmd>FzfLua man_pages<cr>", desc = "Man pages" },
+                { "<leader>or", "<cmd>FzfLua registers<cr>", desc = "Registers" },
+                { "<leader>oA", "<cmd>FzfLua autocmds<cr>", desc = "Autocmds" },
+                { "<leader>oj", "<cmd>FzfLua jumps<cr>", desc = "Jumps" },
+                { "<leader>oH", "<cmd>FzfLua command_history<cr>", desc = "Command history" },
+                { "<leader>o/", "<cmd>FzfLua search_history<cr>", desc = "Search history" },
+                { "<leader>oq", "<cmd>FzfLua quickfix<cr>", desc = "Quickfix" },
+                { "<leader>oQ", "<cmd>FzfLua quickfix_stack<cr>", desc = "Quickfix history" },
+
+                -- ===== Git (leader-g = git) =====
+                { "<leader>g", group = "git" },
+                { "<leader>gb", "<cmd>FzfLua git_branches<cr>", desc = "Branches" },
+                { "<leader>gc", "<cmd>FzfLua git_commits<cr>", desc = "Commits" },
+                { "<leader>gC", "<cmd>FzfLua git_bcommits<cr>", desc = "Buffer commits" },
+                { "<leader>gs", "<cmd>FzfLua git_status<cr>", desc = "Status" },
+                { "<leader>gS", "<cmd>FzfLua git_stash<cr>", desc = "Stash" },
+
+                -- ===== 搜索内容 (leader-/ = search) =====
+                { "<leader>/", "<cmd>FzfLua live_grep<cr>", desc = "Live grep" },
+                { "<leader>?", "<cmd>FzfLua live_grep_glob<cr>", desc = "Grep (glob)" },
+                { "<leader>*", "<cmd>FzfLua grep_cword<cr>", desc = "Grep cursor word" },
+
+                -- ===== 会话 (leader-q = quit/session) =====
+                { "<leader>q", group = "session" },
+                { "<leader>qs", function() require("persistence").load() end, desc = "Restore session" },
+                { "<leader>qS", function() require("persistence").select() end, desc = "Select session" },
+                { "<leader>ql", function() require("persistence").load({ last = true }) end, desc = "Last session" },
+                { "<leader>qd", function() require("persistence").stop() end, desc = "Disable session autosave" },
+
+                -- ===== 帮助 (leader-h = help) =====
+                { "<leader>h", function() require("which-key").show({ global = false }) end, desc = "Keymaps", mode = "n" },
+            })
+        end,
+        keys = {},
     },
     {
         -- 这个插件也不错

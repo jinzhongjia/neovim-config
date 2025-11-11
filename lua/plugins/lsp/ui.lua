@@ -36,8 +36,8 @@ return
             },
         },
         keys = {
-            { "<leader>rn", "<cmd>LspUI rename<cr>", desc = "LspUI rename" },
-            { "<leader>ca", "<cmd>LspUI code_action<cr>", desc = "LspUI code action" },
+            { "<leader>rn", "<cmd>LspUI rename<cr>", desc = "Rename symbol" },
+            { "<leader>ca", "<cmd>LspUI code_action<cr>", desc = "Code action" },
             {
                 "K",
                 function()
@@ -46,17 +46,17 @@ return
                         vim.cmd("LspUI hover")
                     end
                 end,
-                desc = "LspUI hover",
+                desc = "Hover information",
             },
-            { "gd", "<cmd>LspUI definition<cr>", desc = "LspUI definition" },
-            { "gD", "<cmd>LspUI declaration<cr>", desc = "LspUI declaration" },
-            { "gi", "<cmd>LspUI implementation<cr>", desc = "LspUI implementation" },
-            { "gr", "<cmd>LspUI reference<cr>", desc = "LspUI reference" },
-            { "gy", "<cmd>LspUI type_definition<cr>", desc = "LspUI type definition" },
-            { "gk", "<cmd>LspUI diagnostic prev<cr>", desc = "LspUI diagnostic prev" },
-            { "gj", "<cmd>LspUI diagnostic next<cr>", desc = "LspUI diagnostic next" },
-            { "gh", "<cmd>LspUI call_hierarchy incoming<cr>", desc = "LspUI call hierarchy incoming" },
-            { "gl", "<cmd>LspUI call_hierarchy outgoing<cr>", desc = "LspUI call hierarchy outgoing" },
+            { "gd", "<cmd>LspUI definition<cr>", desc = "Go to definition" },
+            { "gD", "<cmd>LspUI declaration<cr>", desc = "Go to declaration" },
+            { "gi", "<cmd>LspUI implementation<cr>", desc = "Go to implementation" },
+            { "gr", "<cmd>LspUI reference<cr>", desc = "Find references" },
+            { "gy", "<cmd>LspUI type_definition<cr>", desc = "Go to type definition" },
+            { "gk", "<cmd>LspUI diagnostic prev<cr>", desc = "Previous diagnostic" },
+            { "gj", "<cmd>LspUI diagnostic next<cr>", desc = "Next diagnostic" },
+            { "gh", "<cmd>LspUI call_hierarchy incoming<cr>", desc = "Call hierarchy (callers)" },
+            { "gl", "<cmd>LspUI call_hierarchy outgoing<cr>", desc = "Call hierarchy (callees)" },
         },
     },
     {
