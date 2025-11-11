@@ -394,34 +394,92 @@ return
     },
     {
         "folke/trouble.nvim",
-        -- 命令和按键触发
         cmd = "Trouble",
+        dependencies = { "nvim-web-devicons" },
         opts = {
+            win = { border = "rounded" },
+            keys = {
+                b = {
+                    action = function(view)
+                        view:filter({ buf = 0 }, { toggle = true })
+                    end,
+                    desc = "Toggle Current Buffer Filter",
+                },
+                s = {
+                    action = function(view)
+                        local f = view:get_filter("severity")
+                        local severity = ((f and f.filter.severity or 0) + 1) % 5
+                        view:filter({ severity = severity }, {
+                            id = "severity",
+                            template = "{hl:Title}Filter:{hl} {severity}",
+                            del = severity == 0,
+                        })
+                    end,
+                    desc = "Toggle Severity Filter",
+                },
+            },
             modes = {
-                test = {
+                diagnostics_buffer = {
                     mode = "diagnostics",
-                    preview = {
-                        type = "split",
-                        relative = "win",
+                    filter = { buf = 0 },
+                },
+                errors = {
+                    mode = "diagnostics",
+                    filter = { severity = vim.diagnostic.severity.ERROR },
+                },
+                warnings = {
+                    mode = "diagnostics",
+                    filter = {
+                        any = {
+                            { severity = vim.diagnostic.severity.WARN },
+                            { severity = vim.diagnostic.severity.ERROR },
+                        },
+                    },
+                },
+                symbols = {
+                    mode = "lsp_document_symbols",
+                    focus = false,
+                    win = {
                         position = "right",
                         size = 0.3,
                     },
                 },
+                cascade = {
+                    mode = "diagnostics",
+                    filter = function(items)
+                        local severity = vim.diagnostic.severity.HINT
+                        for _, item in ipairs(items) do
+                            severity = math.min(severity, item.severity)
+                        end
+                        return vim.tbl_filter(function(item)
+                            return item.severity == severity
+                        end, items)
+                    end,
+                },
+                preview_float = {
+                    mode = "diagnostics",
+                    preview = {
+                        type = "float",
+                        relative = "editor",
+                        border = "rounded",
+                        position = { 0, -2 },
+                        size = { width = 0.3, height = 0.3 },
+                        zindex = 200,
+                    },
+                },
             },
-        }, -- for default options, refer to the configuration section for custom setup.
+        },
         keys = {
-            -- stylua: ignore
-            { "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", desc = "Diagnostics (Trouble)" },
-            { "<leader>xX", "<cmd>Trouble diagnostics toggle filter.buf=0<cr>", desc = "Buffer Diagnostics (Trouble)" },
-            { "<leader>xL", "<cmd>Trouble loclist toggle<cr>", desc = "Location List (Trouble)" },
-            { "<leader>xQ", "<cmd>Trouble qflist toggle<cr>", desc = "Quickfix List (Trouble)" },
-            -- { "gd", "<cmd>Trouble lsp_definitions<cr>", desc = "LspUI definition" },
-            -- { "gf", "<cmd>Trouble lsp_declarations<cr>", desc = "Trouble declaration" },
-            -- { "gi", "<cmd>Trouble lsp_implementations<cr>", desc = "Trouble implementation" },
-            -- { "gr", "<cmd>Trouble lsp_references<cr>", desc = "Trouble reference" },
-            -- { "gy", "<cmd>Trouble lsp_type_definitions<cr>", desc = "Trouble type definition" },
-            -- { "gci", "<cmd>Trouble lsp_incoming_calls<cr>", desc = "Trouble incoming calls" },
-            -- { "gco", "<cmd>Trouble lsp_outgoing_calls<cr>", desc = "Trouble outgoing calls" },
+            { "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", desc = "Diagnostics (all)" },
+            { "<leader>xb", "<cmd>Trouble diagnostics_buffer toggle<cr>", desc = "Diagnostics (buffer)" },
+            { "<leader>xe", "<cmd>Trouble errors toggle<cr>", desc = "Errors only" },
+            { "<leader>xw", "<cmd>Trouble warnings toggle<cr>", desc = "Warnings & errors" },
+            { "<leader>xl", "<cmd>Trouble lsp toggle focus=false<cr>", desc = "LSP (definitions/refs)" },
+            { "<leader>xs", "<cmd>Trouble symbols toggle focus=false<cr>", desc = "Symbols (document)" },
+            { "<leader>xc", "<cmd>Trouble cascade toggle<cr>", desc = "Cascade diagnostics" },
+            { "<leader>xf", "<cmd>Trouble preview_float toggle<cr>", desc = "Preview (float)" },
+            { "<leader>xq", "<cmd>Trouble qflist toggle<cr>", desc = "Quickfix list" },
+            { "<leader>xL", "<cmd>Trouble loclist toggle<cr>", desc = "Location list" },
         },
     },
     {
@@ -623,6 +681,19 @@ return
                 { "<leader>qS", function() require("persistence").select() end, desc = "Select session" },
                 { "<leader>ql", function() require("persistence").load({ last = true }) end, desc = "Last session" },
                 { "<leader>qd", function() require("persistence").stop() end, desc = "Disable session autosave" },
+
+                -- ===== 问题诊断 (leader-x = troubleshooting) =====
+                { "<leader>x", group = "troubleshoot" },
+                { "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", desc = "Diagnostics (all)" },
+                { "<leader>xb", "<cmd>Trouble diagnostics_buffer toggle<cr>", desc = "Diagnostics (buffer)" },
+                { "<leader>xe", "<cmd>Trouble errors toggle<cr>", desc = "Errors only" },
+                { "<leader>xw", "<cmd>Trouble warnings toggle<cr>", desc = "Warnings & errors" },
+                { "<leader>xl", "<cmd>Trouble lsp toggle focus=false<cr>", desc = "LSP (refs/defs)" },
+                { "<leader>xs", "<cmd>Trouble symbols toggle focus=false<cr>", desc = "Symbols (doc)" },
+                { "<leader>xc", "<cmd>Trouble cascade toggle<cr>", desc = "Cascade (severity)" },
+                { "<leader>xf", "<cmd>Trouble preview_float toggle<cr>", desc = "Preview (float)" },
+                { "<leader>xq", "<cmd>Trouble qflist toggle<cr>", desc = "Quickfix list" },
+                { "<leader>xL", "<cmd>Trouble loclist toggle<cr>", desc = "Location list" },
 
                 -- ===== 帮助 (leader-h = help) =====
                 { "<leader>h", function() require("which-key").show({ global = false }) end, desc = "Keymaps", mode = "n" },
