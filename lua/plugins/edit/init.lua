@@ -454,6 +454,26 @@ local M = {
         event = "ModeChanged", -- 模式切换时加载(进入 visual 模式)
         config = true,
     },
+    {
+        "qwavies/smart-backspace.nvim",
+        event = { "InsertEnter", "CmdlineEnter" }, -- 进入插入或命令行模式时加载
+        opts = {
+            enabled = true, -- 启用智能退格
+            silent = true, -- 切换时不显示通知
+            disabled_filetypes = { -- 禁用智能退格的文件类型
+                "markdown",
+                "text",
+            },
+        },
+        keys = {
+            {
+                "<leader>bs",
+                "<cmd>SmartBackspaceToggle<CR>",
+                desc = "Toggle Smart Backspace",
+                mode = "n",
+            },
+        },
+    },
 }
 
 -- all plugins
