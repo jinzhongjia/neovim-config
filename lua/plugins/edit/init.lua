@@ -32,6 +32,24 @@ local M = {
         opts = {},
     },
     {
+        "ckolkey/ts-node-action",
+        dependencies = { "nvim-treesitter" },
+        event = { "BufReadPost", "BufNewFile" }, -- 编辑文件时加载
+        opts = {},
+        keys = {
+            {
+                "K",
+                function()
+                    require("ts-node-action").node_action()
+                end,
+                desc = "Trigger Node Action",
+            },
+        },
+        config = function(_, opts)
+            require("ts-node-action").setup(opts)
+        end,
+    },
+    {
         "catgoose/nvim-colorizer.lua",
         event = { "BufReadPost", "BufNewFile" }, -- 打开文件时加载
         opts = {
