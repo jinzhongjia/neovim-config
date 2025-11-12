@@ -17,19 +17,13 @@ return
             "rafamadriz/friendly-snippets",
             "onsails/lspkind.nvim",
             "folke/lazydev.nvim",
-            -- "fang2hou/blink-copilot",
-            "mikavilpas/blink-ripgrep.nvim",
-            "hrisgrieser/nvim-scissors",
             { "xzbdmw/colorful-menu.nvim", opts = {} },
-            -- { "echasnovski/mini.pairs", version = "*" },
             {
                 "saghen/blink.pairs",
                 branch = "main",
                 build = "cargo build --release",
                 opts = {},
             },
-            "kristijanhusak/vim-dadbod-completion",
-            "MattiasMTS/cmp-dbee",
         },
         event = "VeryLazy",
         version = "*",
@@ -39,7 +33,6 @@ return
             sources = {
                 default = {
                     "lsp",
-                    -- "copilot",
                     "lazydev",
                     "path",
                     "snippets",
@@ -47,8 +40,6 @@ return
                 },
                 per_filetype = {
                     codecompanion = { "codecompanion" },
-                    sql = { "snippets", "dadbod", "buffer" },
-                    mysql = { "snippets", "dadbod", "buffer" },
                 },
                 providers = {
                     lsp = { score_offset = 11 },
@@ -61,9 +52,6 @@ return
                         -- make lazydev completions top priority (see `:h blink.cmp`)
                         score_offset = 10,
                     },
-                    -- copilot = { name = "copilot", module = "blink-copilot", score_offset = 10, async = true },
-                    dadbod = { name = "Dadbod", module = "vim_dadbod_completion.blink" },
-                    -- ripgrep = { module = "blink-ripgrep", name = "Ripgrep", score_offset = 7 },
                     cmdline = { min_keyword_length = 0 }, -- cmdline 不需要输入字符就显示补全
                 },
             },
