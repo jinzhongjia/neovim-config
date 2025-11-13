@@ -250,7 +250,7 @@ return {
                         fold_context = true,
                         fold_reasoning = true, -- 折叠推理输出
                         show_reasoning = true, -- 显示推理过程
-                        auto_scroll = false, -- 禁用自动滚动，避免响应时分心
+                        auto_scroll = true, -- 弃用自动滚动
                     },
                     diff = {
                         enabled = true,
