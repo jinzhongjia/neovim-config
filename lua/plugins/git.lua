@@ -100,6 +100,8 @@ return
                 },
                 status = {
                     ["<C-r>"] = "RefreshBuffer", -- 添加手动刷新快捷键
+                    ["gg"] = false, -- 禁用 neogit 的 gg 映射，恢复 vim 原生行为（跳到顶部）
+                    ["G"] = false, -- 禁用 neogit 的 G 映射，恢复 vim 原生行为（跳到底部）
                 },
             },
             
