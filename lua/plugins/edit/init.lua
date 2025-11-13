@@ -138,6 +138,22 @@ local M = {
                 
                 -- 切换 make 的容量参数
                 ["call_expression"] = {
+                    -- errors.Is(err, SomeError) <-> err == SomeError
+                    function(node)
+                        local text = helpers.node_text(node)
+                        if text:match("^errors%.Is%(") then
+                            local err_var, err_type = text:match("errors%.Is%((%w+),%s*([%w%.]+)%)")
+                            if err_var and err_type then
+                                return string.format("%s == %s", err_var, err_type)
+                            end
+                        elseif text:match("^!errors%.Is%(") then
+                            -- !errors.Is(err, SomeError) -> err != SomeError
+                            local err_var, err_type = text:match("!errors%.Is%((%w+),%s*([%w%.]+)%)")
+                            if err_var and err_type then
+                                return string.format("%s != %s", err_var, err_type)
+                            end
+                        end
+                    end,
                     -- make([]T, len) <-> make([]T, len, cap) <-> make([]T, 0, cap)
                     function(node)
                         local text = helpers.node_text(node)
@@ -173,7 +189,7 @@ local M = {
                             end
                         end
                     end,
-                    name = "Toggle make/append params",
+                    name = "Toggle errors.Is/make/append",
                 },
                 
                 -- 切换 struct 字段标签的 json tag 格式
@@ -220,9 +236,23 @@ local M = {
                     end
                 end,
                 
-                -- 切换 nil 检查风格
+                -- 切换 nil 检查风格和错误比较
                 ["binary_expression"] = function(node)
                     local text = helpers.node_text(node)
+                    -- err == SpecificError -> errors.Is(err, SpecificError)
+                    -- 匹配 err == context.Canceled, err == io.EOF 等
+                    local err_var, err_type = text:match("(%w+)%s*==%s*([%w%.]+)")
+                    if err_var and err_type and err_type ~= "nil" and not err_type:match("^%d") then
+                        -- 确保不是数字比较，且右边不是 nil
+                        return string.format("errors.Is(%s, %s)", err_var, err_type)
+                    end
+                    
+                    -- err != SpecificError -> !errors.Is(err, SpecificError)
+                    err_var, err_type = text:match("(%w+)%s*!=%s*([%w%.]+)")
+                    if err_var and err_type and err_type ~= "nil" and not err_type:match("^%d") then
+                        return string.format("!errors.Is(%s, %s)", err_var, err_type)
+                    end
+                    
                     -- x == nil <-> x != nil
                     if text:match("==%s*nil") then
                         return text:gsub("==%s*nil", "!= nil")
