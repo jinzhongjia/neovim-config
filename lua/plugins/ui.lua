@@ -682,6 +682,11 @@ return
                 { "<leader>ql", function() require("persistence").load({ last = true }) end, desc = "Last session" },
                 { "<leader>qd", function() require("persistence").stop() end, desc = "Disable session autosave" },
 
+                -- ===== 代码分割/合并 (leader-m/j/s = treesj) =====
+                { "<leader>m", function() require("treesj").toggle() end, desc = "Toggle split/join" },
+                { "<leader>j", function() require("treesj").join() end, desc = "Join code block" },
+                { "<leader>s", function() require("treesj").split() end, desc = "Split code block" },
+
                 -- ===== 问题诊断 (leader-x = troubleshooting) =====
                 { "<leader>x", group = "troubleshoot" },
                 { "<leader>xx", "<cmd>Trouble diagnostics toggle<cr>", desc = "Diagnostics (all)" },
