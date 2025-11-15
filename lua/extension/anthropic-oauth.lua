@@ -1,4 +1,4 @@
-local uv = vim.uv
+local uv = vim.uv or vim.loop
 local Job = require("plenary.job")
 local anthropic = require("codecompanion.adapters.http.anthropic")
 local config = require("codecompanion.config")
@@ -19,6 +19,214 @@ local OAUTH_CONFIG = {
     SCOPES = "org:create_api_key user:profile user:inference", -- 请求的权限范围
 }
 
+local DEFAULT_API_VERSION = (anthropic.headers and anthropic.headers["anthropic-version"]) or "2023-06-01"
+
+local REQUIRED_BETA_FLAGS = {
+    "oauth-2025-04-20",
+}
+
+local function trim(str)
+    if type(str) ~= "string" then
+        return ""
+    end
+    if vim.trim then
+        return vim.trim(str)
+    end
+    return (str:gsub("^%s+", ""):gsub("%s+$", ""))
+end
+
+---@param headers table
+---@param flag string
+local function ensure_beta_flag(headers, flag)
+    if not flag or flag == "" then
+        return
+    end
+    headers["anthropic-beta"] = headers["anthropic-beta"] or ""
+    local current = headers["anthropic-beta"]
+    local pattern = string.format("(^|,)%s(,|$)", vim.pesc(flag))
+    if current == "" then
+        headers["anthropic-beta"] = flag
+    elseif not current:match(pattern) then
+        headers["anthropic-beta"] = current .. "," .. flag
+    end
+end
+
+---@param path string
+---@param length number
+---@return string|nil
+local function read_random_from_file(path, length)
+    if not uv or (vim.fn.has("win32") == 1) then
+        return nil
+    end
+    local fd = uv.fs_open(path, "rb", 438)
+    if not fd then
+        return nil
+    end
+    local data = uv.fs_read(fd, length, 0)
+    uv.fs_close(fd)
+    return data
+end
+
+---@param length number
+---@return string|nil
+local function read_random_from_windows(length)
+    if vim.fn.has("win32") == 0 then
+        return nil
+    end
+
+    local ps_exe = nil
+    if vim.fn.executable("pwsh") == 1 then
+        ps_exe = "pwsh"
+    elseif vim.fn.executable("powershell") == 1 then
+        ps_exe = "powershell"
+    end
+    if not ps_exe then
+        return nil
+    end
+
+    local script = string.format(
+        "$bytes = New-Object byte[] %d; "
+            .. "[Security.Cryptography.RandomNumberGenerator]::Create().GetBytes($bytes); "
+            .. "[System.Convert]::ToBase64String($bytes)",
+        length
+    )
+    local result = vim.fn.system({ ps_exe, "-NoProfile", "-Command", script })
+    if vim.v.shell_error ~= 0 then
+        return nil
+    end
+
+    local ok, decoded = pcall(vim.base64.decode, trim(result))
+    if ok and decoded and #decoded >= length then
+        return decoded:sub(1, length)
+    end
+    return nil
+end
+
+---@param length number
+---@return string|nil
+local function read_random_from_openssl(length)
+    if vim.fn.executable("openssl") == 0 then
+        return nil
+    end
+    local result = vim.fn.system({ "openssl", "rand", "-base64", tostring(length) })
+    if vim.v.shell_error ~= 0 then
+        return nil
+    end
+    local ok, decoded = pcall(vim.base64.decode, trim(result))
+    if ok and decoded and #decoded >= length then
+        return decoded:sub(1, length)
+    end
+    return nil
+end
+
+---@param length number
+---@return string|nil
+local function secure_random_bytes(length)
+    local readers = {
+        function()
+            return read_random_from_file("/dev/urandom", length)
+        end,
+        function()
+            return read_random_from_windows(length)
+        end,
+        function()
+            return read_random_from_openssl(length)
+        end,
+    }
+
+    for _, reader in ipairs(readers) do
+        local ok, bytes = pcall(reader)
+        if ok and bytes and #bytes >= length then
+            return bytes:sub(1, length)
+        end
+    end
+
+    return nil
+end
+
+---@param hex string
+---@return string|nil
+local function hex_to_binary(hex)
+    if not hex or hex == "" then
+        return nil
+    end
+    local ok, binary = pcall(function()
+        return hex:gsub("..", function(cc)
+            local byte = tonumber(cc, 16)
+            return byte and string.char(byte) or ""
+        end)
+    end)
+    if ok and binary and binary ~= "" then
+        return binary
+    end
+    return nil
+end
+
+---@return string|nil
+local function sha256_binary_openssl(input)
+    if vim.fn.executable("openssl") == 0 then
+        return nil
+    end
+
+    local job = Job:new({
+        command = "openssl",
+        args = { "dgst", "-sha256", "-binary" },
+        writer = input,
+        enable_recording = true,
+        env = vim.fn.has("win32") == 1 and {
+            PATH = vim.env.PATH,
+            SYSTEMROOT = vim.env.SYSTEMROOT,
+        } or nil,
+    })
+
+    local success = pcall(function()
+        job:sync(3000)
+    end)
+
+    if not success or job.code ~= 0 then
+        log:warn(
+            "OpenSSL 命令执行失败，错误代码: %s, stderr: %s",
+            job.code or "unknown",
+            table.concat(job:stderr_result() or {}, "\n")
+        )
+        return nil
+    end
+
+    local result = job:result()
+    if not result then
+        return nil
+    end
+
+    local hash_binary
+    if vim.fn.has("win32") == 1 then
+        hash_binary = ""
+        for _, line in ipairs(result) do
+            if line and line ~= "" then
+                hash_binary = hash_binary .. line
+            end
+        end
+    else
+        hash_binary = table.concat(result or {}, "")
+    end
+
+    if not hash_binary or hash_binary == "" then
+        return nil
+    end
+    return hash_binary
+end
+
+---@return string|nil
+local function sha256_binary_vimfn(input)
+    if vim.fn.exists("*sha256") ~= 1 then
+        return nil
+    end
+    local ok, hash_hex = pcall(vim.fn.sha256, input)
+    if not ok or not hash_hex or hash_hex == "" then
+        return nil
+    end
+    return hex_to_binary(hash_hex)
+end
+
 -- URL 编码函数，用于构建 OAuth URL 参数
 ---@param str string
 ---@return string
@@ -38,42 +246,18 @@ end
 ---@param length number
 ---@return string
 local function generate_random_string(length)
+    local bytes = secure_random_bytes(length)
+    if not bytes then
+        log:error("Anthropic OAuth: 无法生成安全随机数，请确认系统提供安全随机源（例如 /dev/urandom、PowerShell 或 OpenSSL）")
+        return nil
+    end
+
     local chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-._~"
     local result = {}
-
-    -- 使用更好的跨平台随机种子生成方法
-    -- 结合多个熵源以提高随机性
-    local seed = os.time() -- 基础时间戳
-
-    -- 使用 vim.loop (libuv) 获取高精度时间，跨平台兼容
-    -- 获取高精度时间戳（微秒）
-    local hrtime = uv.hrtime()
-    if hrtime then
-        -- 取低32位作为额外的熵
-        seed = seed + (hrtime % 2147483647)
-    end
-
-    -- 获取进程ID作为额外的熵
-    local pid = uv.os_getpid()
-    if pid then
-        seed = seed + pid
-    end
-
-    -- 添加一些运行时信息作为熵
-    local runtime_entropy = tostring({}):match("0x(%x+)") -- 从新对象地址获取熵
-    if runtime_entropy then
-        seed = seed + (tonumber(runtime_entropy, 16) % 1000000)
-    end
-
-    math.randomseed(seed)
-    -- 预热随机数生成器
-    for _ = 1, 10 do
-        math.random()
-    end
-
     for i = 1, length do
-        local rand_index = math.random(1, #chars)
-        table.insert(result, chars:sub(rand_index, rand_index))
+        local byte = bytes:byte(i)
+        local rand_index = (byte % #chars) + 1
+        result[i] = chars:sub(rand_index, rand_index)
     end
     return table.concat(result)
 end
@@ -82,70 +266,27 @@ end
 ---@param input string
 ---@return string
 local function sha256_base64url(input)
-    -- 尝试使用 OpenSSL 生成正确的 SHA256 哈希
-    -- 注意：Windows 系统可能需要单独安装 OpenSSL
-    if vim.fn.executable("openssl") == 1 then
-        -- Windows 平台特殊处理
-        local is_windows = vim.fn.has("win32") == 1
-
-        local job = Job:new({
-            command = "openssl",
-            args = { "dgst", "-sha256", "-binary" },
-            writer = input,
-            enable_recording = true,
-            -- Windows 平台需要特殊的环境变量
-            env = is_windows and {
-                PATH = vim.env.PATH,
-                SYSTEMROOT = vim.env.SYSTEMROOT,
-            } or nil,
-        })
-
-        local success, _ = pcall(function()
-            job:sync(3000) -- 3 second timeout
-        end)
-
-        if success and job.code == 0 then
-            local result = job:result()
-            local hash_binary = ""
-
-            -- Windows 平台可能返回额外的输出
-            if is_windows and result then
-                -- 在 Windows 上，二进制输出可能被分割成多行
-                for _, line in ipairs(result) do
-                    if line and line ~= "" then
-                        hash_binary = hash_binary .. line
-                    end
-                end
-            else
-                hash_binary = table.concat(result or {}, "")
-            end
-
-            if hash_binary ~= "" then
-                local base64 = vim.base64.encode(hash_binary)
-                return base64:gsub("[+/=]", { ["+"] = "-", ["/"] = "_", ["="] = "" })
-            end
-        else
-            log:warn(
-                "OpenSSL 命令执行失败，错误代码: %s, stderr: %s",
-                job.code or "unknown",
-                table.concat(job:stderr_result() or {}, "\n")
-            )
-        end
-    else
-        log:warn("OpenSSL 不可用，将使用不安全的哈希方法（仅用于开发环境）")
+    local hash_binary = sha256_binary_openssl(input) or sha256_binary_vimfn(input)
+    if not hash_binary then
+        log:error("Anthropic OAuth: 无法生成 PKCE 哈希，请确保系统支持 OpenSSL 或内置 sha256")
+        return nil
     end
 
-    -- 后备方案：非加密安全但功能可用（仅用于开发/测试）
-    log:warn("使用后备哈希方法（非加密安全）")
-    local simple_hash = vim.base64.encode(input)
-    return simple_hash:gsub("[+/=]", { ["+"] = "-", ["/"] = "_", ["="] = "" })
+    local base64 = vim.base64.encode(hash_binary)
+    return base64:gsub("[+/=]", { ["+"] = "-", ["/"] = "_", ["="] = "" })
 end
 
 -- 生成 PKCE 代码验证器和挑战码
 ---@return { verifier: string, challenge: string }
 local function generate_pkce()
     local verifier = generate_random_string(128) -- 使用最大长度以提高安全性
+    if not verifier then
+        return nil
+    end
     local challenge = sha256_base64url(verifier)
+    if not challenge then
+        return nil
+    end
     return {
         verifier = verifier,
         challenge = challenge,
@@ -284,6 +425,7 @@ local function create_api_key(access_token)
         headers = {
             ["Content-Type"] = "application/json",
             ["authorization"] = "Bearer " .. access_token,
+            ["anthropic-version"] = DEFAULT_API_VERSION,
         },
         body = body_json,
         insecure = config.adapters.http.opts.allow_insecure,
@@ -360,6 +502,7 @@ local function exchange_code_for_api_key(code, verifier)
     local response = curl.post(OAUTH_CONFIG.TOKEN_URL, {
         headers = {
             ["Content-Type"] = "application/json",
+            ["anthropic-version"] = DEFAULT_API_VERSION,
         },
         body = body_json,
         insecure = config.adapters.http.opts.allow_insecure,
@@ -405,6 +548,9 @@ end
 ---@return { url: string, verifier: string }
 local function generate_auth_url()
     local pkce = generate_pkce()
+    if not pkce then
+        return nil
+    end
 
     -- 构建正确编码和顺序的查询字符串
     local query_params = {
@@ -445,6 +591,10 @@ end
 ---@return boolean
 local function setup_oauth()
     local auth_data = generate_auth_url()
+    if not auth_data then
+        vim.notify("无法生成 Anthropic OAuth 授权 URL，请检查日志。", vim.log.levels.ERROR)
+        return false
+    end
 
     vim.notify("正在浏览器中打开 Anthropic OAuth 认证...", vim.log.levels.INFO)
 
@@ -560,6 +710,14 @@ end, {
 })
 
 -- 通过扩展基础 anthropic 适配器创建适配器
+local headers = vim.deepcopy(anthropic.headers or {})
+headers["x-api-key"] = "${api_key}"
+headers["anthropic-version"] = headers["anthropic-version"] or DEFAULT_API_VERSION
+headers["anthropic-beta"] = headers["anthropic-beta"] or ""
+for _, flag in ipairs(REQUIRED_BETA_FLAGS) do
+    ensure_beta_flag(headers, flag)
+end
+
 local adapter = vim.tbl_deep_extend("force", vim.deepcopy(anthropic), {
     name = "anthropic_oauth",
     formatted_name = "Anthropic (OAuth)",
@@ -572,13 +730,7 @@ local adapter = vim.tbl_deep_extend("force", vim.deepcopy(anthropic), {
         end,
     },
 
-    headers = {
-        ["content-type"] = "application/json",
-        ["x-api-key"] = "${api_key}",
-        ["anthropic-version"] = "2023-06-01",
-        -- 基础 beta features，在 setup 中动态添加更多
-        ["anthropic-beta"] = "claude-code-20250219,oauth-2025-04-20,prompt-caching-2024-07-31,fine-grained-tool-streaming-2025-05-14,token-efficient-tools-2025-02-19,output-128k-2025-02-19,context-1m-2025-08-07",
-    },
+    headers = headers,
 
     -- 使用最新模型覆盖模型架构
     schema = vim.tbl_deep_extend("force", anthropic.schema or {}, {
