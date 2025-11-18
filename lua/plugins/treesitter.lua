@@ -60,6 +60,7 @@ return
                 "vue",
                 "yaml",
                 "zig",
+                "prisma",
             },
             auto_install = true,
             highlight = {
