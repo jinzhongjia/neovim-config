@@ -42,5 +42,20 @@ return
             "yioneko/nvim-vtsls",
             event = "VeryLazy",
         },
+        {
+            "dmmulroy/ts-error-translator.nvim",
+            event = "VeryLazy",
+            opts = {
+                auto_attach = true,
+                servers = {
+                    "astro",
+                    "svelte",
+                    "ts_ls",
+                    "typescript-tools",
+                    "volar",
+                    "vtsls", -- 你当前使用的 LSP 服务器
+                },
+            },
+        },
     },
 }
