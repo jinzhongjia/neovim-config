@@ -93,12 +93,12 @@ return
                         "fugitive",
                         "log",
                     }
-                    
+
                     -- 禁用特殊 buffer 类型的折叠
                     if buftype ~= "" then
                         return ""
                     end
-                    
+
                     -- 检查文件类型
                     for _, ft in ipairs(disable_filetypes) do
                         if filetype == ft then
@@ -107,9 +107,9 @@ return
                     end
                     -- 如果 LSP 支持折叠，优先使用 LSP，否则使用 treesitter
                     -- if has_folding_lsp then
-                        -- return { "lsp", "treesitter" }
+                    -- return { "lsp", "treesitter" }
                     -- else
-                        return { "treesitter", "indent" }
+                    return { "treesitter", "indent" }
                     -- end
                 end,
                 -- 首次打开时关闭特定类型的折叠
