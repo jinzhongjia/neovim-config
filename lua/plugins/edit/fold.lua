@@ -55,20 +55,51 @@ return
         },
         event = { "BufReadPost", "BufNewFile" }, -- 打开文件时加载
         opts = function()
-            -- 必须添加 LSP folding capability
-            vim.api.nvim_create_autocmd("LspAttach", {
-                group = vim.api.nvim_create_augroup("ufo_lsp_attach", { clear = true }),
-                callback = function(args)
-                    local client = vim.lsp.get_client_by_id(args.data.client_id)
-                    if client and client.server_capabilities then
-                        -- 为 LSP 添加 foldingRange capability
-                        client.server_capabilities.foldingRangeProvider = true
-                    end
-                end,
-            })
-
+            -- LSP folding capability 已在 plugins/lsp/init.lua 中配置
             return {
-                fold_virt_text_handler = handler,
+                fold_virt_text_handler = function(virtText, lnum, endLnum, width, truncate, ctx)
+                    -- 获取当前 buffer 的信息
+                    local bufnr = ctx.bufnr or vim.api.nvim_get_current_buf()
+                    local buftype = vim.api.nvim_buf_get_option(bufnr, "buftype")
+                    local filetype = vim.api.nvim_buf_get_option(bufnr, "filetype")
+                    
+                    -- 禁用特殊文件类型和 buftype 的自定义折叠文本
+                    local disable_filetypes = {
+                        "codecompanion",
+                        "gitcommit",
+                        "gitrebase",
+                        "help",
+                        "dashboard",
+                        "NvimTree",
+                        "neo-tree",
+                        "Outline",
+                        "lazy",
+                        "mason",
+                        "TelescopePrompt",
+                        "TelescopeResults",
+                        "terminal",
+                        "toggleterm",
+                        "floaterm",
+                        "qf",
+                        "diff",
+                        "fugitive",
+                        "log",
+                    }
+                    
+                    -- 如果是特殊类型，返回默认行为
+                    if buftype ~= "" then
+                        return virtText
+                    end
+                    
+                    for _, ft in ipairs(disable_filetypes) do
+                        if filetype == ft then
+                            return virtText
+                        end
+                    end
+                    
+                    -- 使用自定义 handler
+                    return handler(virtText, lnum, endLnum, width, truncate)
+                end,
                 -- 提供者选择器: LSP > Treesitter > indent
                 provider_selector = function(bufnr, filetype, buftype)
                     -- 禁用特殊文件类型的折叠
@@ -105,16 +136,21 @@ return
                             return ""
                         end
                     end
-                    -- 如果 LSP 支持折叠，优先使用 LSP，否则使用 treesitter
-                    -- if has_folding_lsp then
-                    -- return { "lsp", "treesitter" }
-                    -- else
-                    return { "treesitter", "indent" }
-                    -- end
+                    
+                    -- 优先使用 LSP，fallback 使用 treesitter
+                    -- 注意：provider_selector 只支持最多两个 provider (main + fallback)
+                    return { "lsp", "treesitter" }
                 end,
-                -- 首次打开时关闭特定类型的折叠
+                -- 首次打开时关闭特定类型的折叠（仅对 LSP provider 有效）
                 close_fold_kinds_for_ft = {
                     default = { "imports", "comment" },
+                    -- 可以为特定语言添加额外的 fold kinds
+                    go = { "imports", "comment" },
+                    python = { "imports", "comment" },
+                    typescript = { "imports", "comment" },
+                    typescriptreact = { "imports", "comment" },
+                    javascript = { "imports", "comment" },
+                    javascriptreact = { "imports", "comment" },
                 },
                 -- 预览窗口配置
                 preview = {
