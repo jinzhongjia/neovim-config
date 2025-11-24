@@ -62,7 +62,7 @@ return
                     local bufnr = ctx.bufnr or vim.api.nvim_get_current_buf()
                     local buftype = vim.api.nvim_buf_get_option(bufnr, "buftype")
                     local filetype = vim.api.nvim_buf_get_option(bufnr, "filetype")
-                    
+
                     -- 禁用特殊文件类型和 buftype 的自定义折叠文本
                     local disable_filetypes = {
                         "codecompanion",
@@ -85,18 +85,18 @@ return
                         "fugitive",
                         "log",
                     }
-                    
+
                     -- 如果是特殊类型，返回默认行为
                     if buftype ~= "" then
                         return virtText
                     end
-                    
+
                     for _, ft in ipairs(disable_filetypes) do
                         if filetype == ft then
                             return virtText
                         end
                     end
-                    
+
                     -- 使用自定义 handler
                     return handler(virtText, lnum, endLnum, width, truncate)
                 end,
@@ -136,22 +136,22 @@ return
                             return ""
                         end
                     end
-                    
+
                     -- 优先使用 LSP，fallback 使用 treesitter
                     -- 注意：provider_selector 只支持最多两个 provider (main + fallback)
-                    return { "lsp", "treesitter" }
+                    return { "lsp", "indent" }
                 end,
                 -- 首次打开时关闭特定类型的折叠（仅对 LSP provider 有效）
-                -- close_fold_kinds_for_ft = {
-                --     default = { "imports", "comment" },
-                --     -- 可以为特定语言添加额外的 fold kinds
-                --     go = { "imports", "comment" },
-                --     python = { "imports", "comment" },
-                --     typescript = { "imports", "comment" },
-                --     typescriptreact = { "imports", "comment" },
-                --     javascript = { "imports", "comment" },
-                --     javascriptreact = { "imports", "comment" },
-                -- },
+                close_fold_kinds_for_ft = {
+                    default = { "imports", "comment" },
+                    -- 可以为特定语言添加额外的 fold kinds
+                    go = { "imports", "comment" },
+                    python = { "imports", "comment" },
+                    typescript = { "imports", "comment" },
+                    typescriptreact = { "imports", "comment" },
+                    javascript = { "imports", "comment" },
+                    javascriptreact = { "imports", "comment" },
+                },
                 -- 预览窗口配置
                 preview = {
                     win_config = {
