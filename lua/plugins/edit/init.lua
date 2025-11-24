@@ -2,7 +2,7 @@
 local M = {
 
     {
-        "m-demare/hlargs.nvim",
+        "jinzhongjia/hlargs.nvim",
         enabled = true,
         event = "LspAttach", -- LSP 加载时触发
         config = function()
