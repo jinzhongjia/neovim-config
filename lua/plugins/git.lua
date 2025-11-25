@@ -277,4 +277,62 @@ return
             },
         },
     },
+    {
+        "esmuellert/vscode-diff.nvim",
+        dependencies = { "MunifTanjim/nui.nvim" },
+        cmd = "CodeDiff", -- 命令触发，避免影响启动性能
+        config = function()
+            require("vscode-diff").setup({
+                -- 高亮配置 - 自动适应你的配色方案
+                highlights = {
+                    -- 行级：使用配色方案的 DiffAdd 和 DiffDelete
+                    line_insert = "DiffAdd",
+                    line_delete = "DiffDelete",
+                    
+                    -- 字符级：nil = 自动根据背景调整亮度
+                    -- 深色主题会自动 1.4x 增亮，浅色主题会 0.92x 变暗
+                    char_insert = nil,
+                    char_delete = nil,
+                    
+                    -- 也可以手动指定亮度倍数（覆盖自动检测）
+                    -- char_brightness = 1.4,
+                },
+                
+                -- Diff 视图行为
+                diff = {
+                    disable_inlay_hints = true,      -- 在 diff 窗口中禁用 inlay hints
+                    max_computation_time_ms = 5000,  -- diff 计算最大时间
+                },
+                
+                -- 快捷键配置
+                keymaps = {
+                    view = {
+                        next_hunk = "]c",   -- 跳到下一个变更
+                        prev_hunk = "[c",   -- 跳到上一个变更
+                        next_file = "]f",   -- 下一个文件
+                        prev_file = "[f",   -- 上一个文件
+                    },
+                    explorer = {
+                        select = "<CR>",    -- 打开选中文件的 diff
+                        hover = "K",        -- 预览文件 diff
+                        refresh = "R",      -- 刷新 git 状态
+                    },
+                },
+            })
+        end,
+        keys = {
+            -- Git diff 模式 - 与指定版本比较当前文件
+            { "<leader>dh", "<cmd>CodeDiff file HEAD<cr>", desc = "Diff with HEAD" },
+            { "<leader>dH", "<cmd>CodeDiff file HEAD~1<cr>", desc = "Diff with HEAD~1" },
+            
+            -- 文件浏览器模式 - 显示所有变更的文件
+            { "<leader>df", "<cmd>CodeDiff<cr>", desc = "Diff file explorer" },
+            
+            -- 与指定版本比较（需要输入版本号）
+            { "<leader>dc", ":CodeDiff file ", desc = "Diff with commit...", silent = false },
+            
+            -- 文件比较模式（需要输入两个文件路径）
+            { "<leader>d2", ":CodeDiff file ", desc = "Diff two files...", silent = false },
+        },
+    },
 }
