@@ -248,7 +248,9 @@ end
 local function generate_random_string(length)
     local bytes = secure_random_bytes(length)
     if not bytes then
-        log:error("Anthropic OAuth: 无法生成安全随机数，请确认系统提供安全随机源（例如 /dev/urandom、PowerShell 或 OpenSSL）")
+        log:error(
+            "Anthropic OAuth: 无法生成安全随机数，请确认系统提供安全随机源（例如 /dev/urandom、PowerShell 或 OpenSSL）"
+        )
         return nil
     end
 
@@ -773,6 +775,16 @@ adapter.schema.model = {
     desc = "The model that will complete your prompt. See https://docs.anthropic.com/claude/docs/models-overview for additional details and options.",
     default = "claude-sonnet-4-5",
     choices = {
+        -- Claude Opus 4.5 - 高性能模型
+        ["claude-opus-4-5"] = {
+            opts = {
+                can_reason = true,
+                has_vision = true,
+                max_output = 64000,
+                context_window = 200000,
+                description = "High-performance model - Balanced performance and capability",
+            },
+        },
         -- Claude Opus 4.1 - 最强大的模型
         ["claude-opus-4-1"] = {
             opts = {
@@ -798,7 +810,7 @@ adapter.schema.model = {
                 can_reason = true,
                 has_vision = true,
                 max_output = 64000,
-                context_window = 1000000,
+                context_window = 200000,
                 description = "High-performance model - Balanced performance and capability",
             },
         },
@@ -808,7 +820,7 @@ adapter.schema.model = {
                 can_reason = true,
                 has_vision = true,
                 max_output = 64000,
-                context_window = 1000000,
+                context_window = 200000,
                 description = "High-performance model - High intelligence and balanced performance",
             },
         },
