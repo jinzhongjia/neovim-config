@@ -1,8 +1,12 @@
+-- 注意: fzf-lua 已被 snacks.nvim picker 替代
+-- 所有快捷键已迁移到 lua/plugins/tools.lua 的 snacks.nvim 配置中
+-- 如需恢复 fzf-lua，将 enabled = false 改为 true
 return
 --- @type LazySpec
 {
     {
         "ibhagwan/fzf-lua",
+        enabled = false, -- 已被 snacks.nvim picker 替代
         dependencies = {
             "nvim-tree/nvim-web-devicons",
         },

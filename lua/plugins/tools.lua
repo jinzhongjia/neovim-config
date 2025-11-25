@@ -232,8 +232,6 @@ return
             -- Lazygit
             { "<leader>gg", function() Snacks.lazygit() end, desc = "Lazygit" },
             { "<leader>gB", function() Snacks.gitbrowse() end, desc = "Git Browse", mode = { "n", "v" } },
-            { "<leader>gf", function() Snacks.lazygit.log_file() end, desc = "Lazygit File History" },
-            { "<leader>gl", function() Snacks.lazygit.log() end, desc = "Lazygit Log (cwd)" },
             
             -- Notifications
             { "<leader>n", function() Snacks.notifier.show_history() end, desc = "Notification History" },
@@ -254,6 +252,78 @@ return
             
             -- Debug
             { "<leader>dps", function() Snacks.profiler.scratch() end, desc = "Profiler Scratch Buffer" },
+
+            -- ===== Picker: 快速查找 (Ctrl+p/f) =====
+            { "<C-p>", function() Snacks.picker.files() end, desc = "Find files" },
+            { "<C-S-p>", function() Snacks.picker.files({ hidden = true, ignored = true }) end, desc = "Find files (all)" },
+            { "<C-f>", function() Snacks.picker.grep() end, desc = "Live grep" },
+            { "<C-S-f>", function() Snacks.picker.grep({ hidden = true, ignored = true }) end, desc = "Live grep (all)" },
+
+            -- ===== Picker: 查找和搜索 (leader-f = find) =====
+            { "<leader>ff", function() Snacks.picker.files() end, desc = "Files" },
+            { "<leader>fF", function() Snacks.picker.files({ hidden = true, ignored = true }) end, desc = "Files (all)" },
+            { "<leader>fg", function() Snacks.picker.grep() end, desc = "Grep" },
+            { "<leader>fG", function() Snacks.picker.grep({ hidden = true, ignored = true }) end, desc = "Grep (all)" },
+            { "<leader>fb", function() Snacks.picker.buffers() end, desc = "Buffers" },
+            { "<leader>fr", function() Snacks.picker.recent() end, desc = "Recent files" },
+            { "<leader>fc", function() Snacks.picker.files({ cwd = vim.fn.stdpath("config") }) end, desc = "Config files" },
+            { "<leader>fp", function() Snacks.picker.projects() end, desc = "Projects" },
+
+            -- ===== Picker: Git (leader-g = git) =====
+            { "<leader>gb", function() Snacks.picker.git_branches() end, desc = "Branches" },
+            { "<leader>gc", function() Snacks.picker.git_log() end, desc = "Commits" },
+            { "<leader>gC", function() Snacks.picker.git_log_file() end, desc = "Buffer commits" },
+            { "<leader>gs", function() Snacks.picker.git_status() end, desc = "Status" },
+            { "<leader>gS", function() Snacks.picker.git_stash() end, desc = "Stash" },
+            { "<leader>gd", function() Snacks.picker.git_diff() end, desc = "Git Diff (Hunks)" },
+            { "<leader>gf", function() Snacks.picker.git_log_file() end, desc = "Git File History" },
+            { "<leader>gl", function() Snacks.picker.git_log() end, desc = "Git Log" },
+
+            -- ===== Picker: LSP 符号 (leader-s = search/symbols) =====
+            { "<leader>ss", function() Snacks.picker.lsp_symbols() end, desc = "Document symbols" },
+            { "<leader>sS", function() Snacks.picker.lsp_workspace_symbols() end, desc = "Workspace symbols" },
+            { "<leader>sd", function() Snacks.picker.diagnostics_buffer() end, desc = "Document diagnostics" },
+            { "<leader>sD", function() Snacks.picker.diagnostics() end, desc = "Workspace diagnostics" },
+            { "<leader>sb", function() Snacks.picker.lines() end, desc = "Buffer lines" },
+            { "<leader>sB", function() Snacks.picker.grep_buffers() end, desc = "Grep open buffers" },
+            { "<leader>sg", function() Snacks.picker.grep() end, desc = "Grep" },
+            { "<leader>sw", function() Snacks.picker.grep_word() end, desc = "Grep word", mode = { "n", "x" } },
+            { "<leader>sR", function() Snacks.picker.resume() end, desc = "Resume" },
+
+            -- ===== Picker: 打开 (leader-o = open) =====
+            { "<leader>ob", function() Snacks.picker.buffers() end, desc = "Buffers" },
+            { "<leader>oB", function() Snacks.picker.recent() end, desc = "Recent files" },
+            { "<leader>ol", function() Snacks.picker.lines() end, desc = "Lines (buffer)" },
+            { "<leader>oh", function() Snacks.picker.help() end, desc = "Help tags" },
+            { "<leader>ok", function() Snacks.picker.keymaps() end, desc = "Keymaps" },
+            { "<leader>oc", function() Snacks.picker.commands() end, desc = "Commands" },
+            { "<leader>oC", function() Snacks.picker.colorschemes() end, desc = "Colorschemes" },
+            { "<leader>om", function() Snacks.picker.marks() end, desc = "Marks" },
+            { "<leader>oM", function() Snacks.picker.man() end, desc = "Man pages" },
+            { "<leader>or", function() Snacks.picker.registers() end, desc = "Registers" },
+            { "<leader>oA", function() Snacks.picker.autocmds() end, desc = "Autocmds" },
+            { "<leader>oj", function() Snacks.picker.jumps() end, desc = "Jumps" },
+            { "<leader>oH", function() Snacks.picker.command_history() end, desc = "Command history" },
+            { "<leader>o/", function() Snacks.picker.search_history() end, desc = "Search history" },
+            { "<leader>oq", function() Snacks.picker.qflist() end, desc = "Quickfix" },
+            { "<leader>oL", function() Snacks.picker.loclist() end, desc = "Location list" },
+            { "<leader>ou", function() Snacks.picker.undo() end, desc = "Undo history" },
+            { "<leader>oi", function() Snacks.picker.icons() end, desc = "Icons" },
+
+            -- ===== Picker: 搜索内容 (leader-/ = search) =====
+            { "<leader>/", function() Snacks.picker.grep() end, desc = "Live grep" },
+            { "<leader>*", function() Snacks.picker.grep_word() end, desc = "Grep cursor word" },
+
+            -- ===== Picker: Tabs =====
+            { "<leader>tt", function() Snacks.picker.pickers() end, desc = "All pickers" },
+            { "<leader>tr", function() Snacks.picker.resume() end, desc = "Resume search" },
+
+            -- ===== Picker: LSP =====
+            { "gd", function() Snacks.picker.lsp_definitions() end, desc = "Goto Definition" },
+            { "gD", function() Snacks.picker.lsp_declarations() end, desc = "Goto Declaration" },
+            { "gr", function() Snacks.picker.lsp_references() end, nowait = true, desc = "References" },
+            { "gI", function() Snacks.picker.lsp_implementations() end, desc = "Goto Implementation" },
+            { "gy", function() Snacks.picker.lsp_type_definitions() end, desc = "Goto Type Definition" },
         },
         
         init = function()

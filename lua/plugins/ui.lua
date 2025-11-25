@@ -97,12 +97,8 @@ return
             {
                 "<leader>fb",
                 function()
-                    -- 使用 fzf-lua 显示当前 tab 的 buffers
-                    require("fzf-lua").buffers({
-                        fzf_opts = {
-                            ["--header"] = "Buffers in current tab",
-                        },
-                    })
+                    -- 使用 snacks.picker 显示当前 tab 的 buffers
+                    Snacks.picker.buffers()
                 end,
                 desc = "Find buffers in current tab",
             },
@@ -587,17 +583,14 @@ return
                 { "wk", "<C-w>k", desc = "Go to upper window" },
                 { "wl", "<C-w>l", desc = "Go to right window" },
 
-                -- ===== 快速查找 (Ctrl+p/f) =====
-                { "<C-p>", "<cmd>FzfLua files<cr>", desc = "Find files" },
-                { "<C-S-p>", function() require("fzf-lua").files({ fd_opts = [[--color=never --type f --hidden --follow --no-ignore]] }) end, desc = "Find files (all)" },
-                { "<C-f>", "<cmd>FzfLua live_grep<cr>", desc = "Live grep" },
-                { "<C-S-f>", function() require("fzf-lua").live_grep({ rg_opts = [[--column --line-number --no-heading --color=always --smart-case --max-columns=4096 --hidden --follow --no-ignore -e]] }) end, desc = "Live grep (all)" },
+                -- ===== 快速查找 (Ctrl+p/f) - 由 snacks.nvim 的 keys 配置定义 =====
+                -- 注意: 这些快捷键已移至 lua/plugins/tools.lua 的 snacks.nvim keys 中
 
                 -- ===== Ctrl 窗口大小调整 =====
-                { "<C-Left>", "<CMD>vertical resize -2<CR>", desc = "Decrease window width" },
-                { "<C-Right>", "<CMD>vertical resize +2<CR>", desc = "Increase window width" },
-                { "<C-Down>", "<CMD>resize +2<CR>", desc = "Increase window height" },
-                { "<C-Up>", "<CMD>resize -2<CR>", desc = "Decrease window height" },
+                { "<C-Left>", "<cmd>vertical resize -2<cr>", desc = "Decrease window width" },
+                { "<C-Right>", "<cmd>vertical resize +2<cr>", desc = "Increase window width" },
+                { "<C-Down>", "<cmd>resize +2<cr>", desc = "Increase window height" },
+                { "<C-Up>", "<cmd>resize -2<cr>", desc = "Decrease window height" },
 
                 -- ===== Visual 模式编辑 =====
                 { "<", "<gv", mode = "v", desc = "Indent left (keep selection)" },
@@ -612,68 +605,36 @@ return
 
                 -- ===== 标签页管理 (leader-t = tabs) =====
                 { "<leader>t", group = "tabs" },
-                { "<leader>tn", "<CMD>tabnew<CR>", desc = "New tab" },
-                { "<leader>tc", "<CMD>tabclose<CR>", desc = "Close tab" },
-                { "<leader>to", "<CMD>tabonly<CR>", desc = "Close others" },
-                { "<leader>th", "<CMD>tabprevious<CR>", desc = "Previous tab" },
-                { "<leader>tl", "<CMD>tabnext<CR>", desc = "Next tab" },
-                { "<leader>t1", "<CMD>tabn 1<CR>", desc = "Go to tab 1" },
-                { "<leader>t2", "<CMD>tabn 2<CR>", desc = "Go to tab 2" },
-                { "<leader>t3", "<CMD>tabn 3<CR>", desc = "Go to tab 3" },
-                { "<leader>t4", "<CMD>tabn 4<CR>", desc = "Go to tab 4" },
-                { "<leader>t5", "<CMD>tabn 5<CR>", desc = "Go to tab 5" },
-                { "<leader>tt", "<cmd>FzfLua builtin<cr>", desc = "FzfLua builtins" },
-                { "<leader>tr", "<cmd>FzfLua resume<cr>", desc = "Resume search" },
-                { "<leader>tT", "<cmd>FzfLua tabs<cr>", desc = "Tabs list" },
+                { "<leader>tn", "<cmd>tabnew<cr>", desc = "New tab" },
+                { "<leader>tc", "<cmd>tabclose<cr>", desc = "Close tab" },
+                { "<leader>to", "<cmd>tabonly<cr>", desc = "Close others" },
+                { "<leader>th", "<cmd>tabprevious<cr>", desc = "Previous tab" },
+                { "<leader>tl", "<cmd>tabnext<cr>", desc = "Next tab" },
+                { "<leader>t1", "<cmd>tabn 1<cr>", desc = "Go to tab 1" },
+                { "<leader>t2", "<cmd>tabn 2<cr>", desc = "Go to tab 2" },
+                { "<leader>t3", "<cmd>tabn 3<cr>", desc = "Go to tab 3" },
+                { "<leader>t4", "<cmd>tabn 4<cr>", desc = "Go to tab 4" },
+                { "<leader>t5", "<cmd>tabn 5<cr>", desc = "Go to tab 5" },
+                -- 注意: <leader>tt 和 <leader>tr 已在 snacks.nvim keys 中定义
 
                 -- ===== 查找和搜索 (leader-f = find) =====
                 { "<leader>f", group = "find" },
-                { "<leader>ff", "<cmd>FzfLua files<cr>", desc = "Files" },
-                { "<leader>fF", function() require("fzf-lua").files({ fd_opts = [[--color=never --type f --hidden --follow --no-ignore]] }) end, desc = "Files (all)" },
-                { "<leader>fg", "<cmd>FzfLua live_grep_glob<cr>", desc = "Grep (glob)" },
-                { "<leader>fG", "<cmd>FzfLua grep_project<cr>", desc = "Grep project" },
+                -- 注意: 所有 <leader>f* 快捷键已在 snacks.nvim keys 中定义
 
                 -- ===== LSP 符号 (leader-s = search/symbols) =====
                 { "<leader>s", group = "search/symbols" },
-                { "<leader>ss", "<cmd>FzfLua lsp_document_symbols<cr>", desc = "Document symbols" },
-                { "<leader>sw", "<cmd>FzfLua lsp_workspace_symbols<cr>", desc = "Workspace symbols" },
-                { "<leader>sW", "<cmd>FzfLua lsp_live_workspace_symbols<cr>", desc = "Live symbols" },
-                { "<leader>sf", "<cmd>FzfLua lsp_finder<cr>", desc = "LSP finder" },
-                { "<leader>sd", "<cmd>FzfLua diagnostics_document<cr>", desc = "Document diagnostics" },
-                { "<leader>sD", "<cmd>FzfLua diagnostics_workspace<cr>", desc = "Workspace diagnostics" },
+                -- 注意: 所有 <leader>s* 快捷键已在 snacks.nvim keys 中定义
 
                 -- ===== 打开 (leader-o = open) =====
                 { "<leader>o", group = "open" },
-                { "<leader>ob", "<cmd>FzfLua buffers<cr>", desc = "Buffers" },
-                { "<leader>oB", "<cmd>FzfLua oldfiles<cr>", desc = "Recent files" },
-                { "<leader>ol", "<cmd>FzfLua lines<cr>", desc = "Lines (all)" },
-                { "<leader>oL", "<cmd>FzfLua blines<cr>", desc = "Lines (buffer)" },
-                { "<leader>oh", "<cmd>FzfLua help_tags<cr>", desc = "Help tags" },
-                { "<leader>ok", "<cmd>FzfLua keymaps<cr>", desc = "Keymaps" },
-                { "<leader>oc", "<cmd>FzfLua commands<cr>", desc = "Commands" },
-                { "<leader>oC", "<cmd>FzfLua colorschemes<cr>", desc = "Colorschemes" },
-                { "<leader>om", "<cmd>FzfLua marks<cr>", desc = "Marks" },
-                { "<leader>oM", "<cmd>FzfLua man_pages<cr>", desc = "Man pages" },
-                { "<leader>or", "<cmd>FzfLua registers<cr>", desc = "Registers" },
-                { "<leader>oA", "<cmd>FzfLua autocmds<cr>", desc = "Autocmds" },
-                { "<leader>oj", "<cmd>FzfLua jumps<cr>", desc = "Jumps" },
-                { "<leader>oH", "<cmd>FzfLua command_history<cr>", desc = "Command history" },
-                { "<leader>o/", "<cmd>FzfLua search_history<cr>", desc = "Search history" },
-                { "<leader>oq", "<cmd>FzfLua quickfix<cr>", desc = "Quickfix" },
-                { "<leader>oQ", "<cmd>FzfLua quickfix_stack<cr>", desc = "Quickfix history" },
+                -- 注意: 所有 <leader>o* 快捷键已在 snacks.nvim keys 中定义
 
                 -- ===== Git (leader-g = git) =====
                 { "<leader>g", group = "git" },
-                { "<leader>gb", "<cmd>FzfLua git_branches<cr>", desc = "Branches" },
-                { "<leader>gc", "<cmd>FzfLua git_commits<cr>", desc = "Commits" },
-                { "<leader>gC", "<cmd>FzfLua git_bcommits<cr>", desc = "Buffer commits" },
-                { "<leader>gs", "<cmd>FzfLua git_status<cr>", desc = "Status" },
-                { "<leader>gS", "<cmd>FzfLua git_stash<cr>", desc = "Stash" },
+                -- 注意: 所有 <leader>g* 快捷键已在 snacks.nvim keys 中定义
 
                 -- ===== 搜索内容 (leader-/ = search) =====
-                { "<leader>/", "<cmd>FzfLua live_grep<cr>", desc = "Live grep" },
-                { "<leader>?", "<cmd>FzfLua live_grep_glob<cr>", desc = "Grep (glob)" },
-                { "<leader>*", "<cmd>FzfLua grep_cword<cr>", desc = "Grep cursor word" },
+                -- 注意: <leader>/, <leader>* 快捷键已在 snacks.nvim keys 中定义
 
                 -- ===== 会话 (leader-q = quit/session) =====
                 { "<leader>q", group = "session" },
