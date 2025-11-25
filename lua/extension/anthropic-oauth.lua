@@ -55,10 +55,15 @@ end
 ---@param length number
 ---@return string|nil
 local function read_random_from_file(path, length)
-    if not uv or (vim.fn.has("win32") == 1) then
+    if not uv then
         return nil
     end
-    local fd = uv.fs_open(path, "rb", 438)
+    -- Skip on Windows, use PowerShell instead
+    if vim.fn.has("win32") == 1 then
+        return nil
+    end
+    -- Use "r" flag (read mode) not "rb" for uv.fs_open
+    local fd = uv.fs_open(path, "r", 438)
     if not fd then
         return nil
     end
