@@ -1,123 +1,127 @@
--- manager lazy.nvim self
+-- 注意: oil.nvim 已被 fyler.nvim 替代
+-- 如需恢复 oil.nvim，将 enabled = false 改为 true
 return
 --- @type LazySpec
 {
+    -- ===== fyler.nvim - 基于 buffer 的文件管理器，支持树形视图 =====
+    {
+        "A7Lavinraj/fyler.nvim",
+        lazy = false,
+        dependencies = { "echasnovski/mini.icons" },
+        opts = {
+            integrations = {
+                icon = "mini_icons",
+            },
+            views = {
+                finder = {
+                    close_on_select = true,
+                    confirm_simple = false,
+                    default_explorer = true, -- 接管 netrw
+                    delete_to_trash = false,
+                    git_status = {
+                        enabled = true,
+                        symbols = {
+                            Untracked = "?",
+                            Added = "+",
+                            Modified = "*",
+                            Deleted = "x",
+                            Renamed = ">",
+                            Copied = "~",
+                            Conflict = "!",
+                            Ignored = "#",
+                        },
+                    },
+                    indentscope = {
+                        enabled = true,
+                        group = "FylerIndentMarker",
+                        marker = "│",
+                    },
+                    mappings = {
+                        ["q"] = "CloseView",
+                        ["<CR>"] = "Select",
+                        ["<C-t>"] = "SelectTab",
+                        ["|"] = "SelectVSplit",
+                        ["-"] = "SelectSplit",
+                        ["^"] = "GotoParent",
+                        ["="] = "GotoCwd",
+                        ["."] = "GotoNode",
+                        ["#"] = "CollapseAll",
+                        ["<BS>"] = "CollapseNode",
+                        -- 自定义快捷键，类似 oil.nvim
+                        ["sv"] = "SelectVSplit",
+                        ["sh"] = "SelectSplit",
+                    },
+                    follow_current_file = true,
+                    watcher = {
+                        enabled = true,
+                    },
+                    win = {
+                        border = "rounded",
+                        kind = "replace",
+                        kinds = {
+                            float = {
+                                height = "70%",
+                                width = "70%",
+                                top = "15%",
+                                left = "15%",
+                            },
+                            replace = {},
+                            split_left = {
+                                width = "30%",
+                            },
+                            split_left_most = {
+                                width = "30%",
+                                win_opts = {
+                                    winfixwidth = true,
+                                },
+                            },
+                        },
+                        win_opts = {
+                            concealcursor = "nvic",
+                            conceallevel = 3,
+                            cursorline = true,
+                            number = false,
+                            relativenumber = false,
+                            wrap = false,
+                            signcolumn = "no",
+                        },
+                    },
+                },
+            },
+        },
+        keys = {
+            {
+                "-",
+                function()
+                    require("fyler").open({ kind = "replace" })
+                end,
+                desc = "Open file manager",
+            },
+            {
+                "<leader>-",
+                function()
+                    require("fyler").open({ kind = "float" })
+                end,
+                desc = "Open file manager (float)",
+            },
+            {
+                "<leader>fe",
+                function()
+                    require("fyler").toggle({ kind = "split_left_most" })
+                end,
+                desc = "Toggle file explorer (sidebar)",
+            },
+        },
+    },
+    -- ===== oil.nvim - 已禁用，被 fyler.nvim 替代 =====
     {
         "stevearc/oil.nvim",
+        enabled = false, -- 已被 fyler.nvim 替代
         lazy = false,
         dependencies = { "nvim-tree/nvim-web-devicons" },
         opts = {
-            -- Oil will take over directory buffers (e.g. `vim .` or `:e src/`)
             default_file_explorer = true,
-            columns = {
-                "icon",
-                -- "permissions",
-                -- "size",
-                -- "mtime",
-            },
-            buf_options = {
-                buflisted = false,
-                bufhidden = "hide",
-            },
-            win_options = {
-                wrap = false,
-                signcolumn = "yes:2",
-                cursorcolumn = false,
-                foldcolumn = "0",
-                spell = false,
-                list = false,
-                conceallevel = 3,
-                concealcursor = "nvic",
-            },
-            delete_to_trash = false,
-            skip_confirm_for_simple_edits = false,
-            prompt_save_on_select_new_entry = true,
-            cleanup_delay_ms = 2000,
-            lsp_file_methods = {
-                enabled = true,
-                timeout_ms = 1000,
-                autosave_changes = false,
-            },
-            constrain_cursor = "editable",
-            watch_for_changes = false,
-            keymaps = {
-                ["g?"] = "actions.show_help",
-                ["<CR>"] = "actions.select",
-                ["sv"] = { "actions.select", opts = { vertical = true }, desc = "Open in vertical split" },
-                ["sh"] = { "actions.select", opts = { horizontal = true }, desc = "Open in horizontal split" },
-                ["<C-t>"] = { "actions.select", opts = { tab = true }, desc = "Open in new tab" },
-                ["<C-p>"] = "actions.preview",
-                ["<C-c>"] = { "actions.close", mode = "n" },
-                ["<C-r>"] = "actions.refresh",
-                ["-"] = { "actions.parent", desc = "Go to parent directory" },
-                ["_"] = { "actions.open_cwd", desc = "Open current working directory" },
-                ["`"] = { "actions.cd", desc = "Change directory" },
-                ["~"] = { "actions.cd", opts = { scope = "tab" }, desc = "Change directory (tab-scoped)" },
-                ["gs"] = { "actions.change_sort", desc = "Change sort order" },
-                ["gx"] = "actions.open_external",
-                ["g."] = { "actions.toggle_hidden", desc = "Toggle hidden files" },
-                ["g\\"] = { "actions.toggle_trash", desc = "Toggle trash" },
-            },
-            use_default_keymaps = true,
-            view_options = {
-                show_hidden = false,
-                is_hidden_file = function(name, bufnr)
-                    return vim.startswith(name, ".")
-                end,
-                is_always_hidden = function(name, bufnr)
-                    return false
-                end,
-                natural_order = "fast",
-                case_insensitive = false,
-                sort = {
-                    { "type", "asc" },
-                    { "name", "asc" },
-                },
-            },
-            float = {
-                padding = 2,
-                max_width = 0,
-                max_height = 0,
-                border = "rounded",
-                win_options = {
-                    winblend = 0,
-                },
-                preview_split = "auto",
-            },
-            preview_win = {
-                update_on_cursor_moved = true,
-                preview_method = "fast_scratch",
-                disable_preview = function(filename)
-                    return false
-                end,
-            },
-            confirmation = {
-                max_width = 0.9,
-                min_width = { 40, 0.4 },
-                max_height = 0.9,
-                min_height = { 5, 0.1 },
-                border = "rounded",
-                win_options = {
-                    winblend = 0,
-                },
-            },
-            progress = {
-                max_width = 0.9,
-                min_width = { 40, 0.4 },
-                max_height = { 10, 0.9 },
-                min_height = { 5, 0.1 },
-                border = "rounded",
-                minimized_border = "none",
-                win_options = {
-                    winblend = 0,
-                },
-            },
-            ssh = {
-                border = "rounded",
-            },
-            keymaps_help = {
-                border = "rounded",
-            },
+            columns = { "icon" },
         },
         keys = {
             { "-", "<CMD>Oil<CR>", desc = "Open parent directory" },
@@ -126,11 +130,13 @@ return
     },
     {
         "JezerM/oil-lsp-diagnostics.nvim",
+        enabled = false, -- oil.nvim 已禁用
         dependencies = { "stevearc/oil.nvim" },
         opts = {},
     },
     {
         "refractalize/oil-git-status.nvim",
+        enabled = false, -- oil.nvim 已禁用
         dependencies = { "stevearc/oil.nvim" },
         opts = {
             show_ignored = true,
@@ -150,8 +156,8 @@ return
         },
         opts = {
             view = { adaptive_size = true },
-            disable_netrw = false, -- Let oil.nvim handle netrw
-            hijack_netrw = false, -- Let oil.nvim handle netrw
+            disable_netrw = false, -- Let fyler.nvim handle netrw
+            hijack_netrw = false, -- Let fyler.nvim handle netrw
             sync_root_with_cwd = true,
             update_focused_file = { enable = true },
             filters = {
