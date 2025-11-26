@@ -720,4 +720,131 @@ return
         },
         config = true,
     },
+    -- ===== reactive.nvim - 模式切换时的视觉反馈 =====
+    {
+        "rasulomaroff/reactive.nvim",
+        event = "VeryLazy",
+        opts = {
+            builtin = {
+                cursorline = true, -- 光标行颜色随模式变化
+                cursor = true, -- 光标颜色随模式变化
+                modemsg = true, -- 模式消息颜色变化
+            },
+        },
+        config = function(_, opts)
+            local reactive = require("reactive")
+
+            -- 使用内置预设
+            reactive.setup(opts)
+
+            -- 添加自定义预设：为不同模式和操作符提供视觉反馈
+            reactive.add_preset({
+                name = "custom-modes",
+                modes = {
+                    -- 普通模式
+                    n = {
+                        winhl = {
+                            CursorLine = { bg = "#1e1e2e" },
+                            CursorLineNr = { fg = "#cdd6f4", bold = true },
+                        },
+                    },
+                    -- 插入模式 - 绿色调
+                    i = {
+                        winhl = {
+                            CursorLine = { bg = "#1a332e" },
+                            CursorLineNr = { fg = "#a6e3a1", bold = true },
+                        },
+                        hl = {
+                            Cursor = { bg = "#a6e3a1" },
+                        },
+                    },
+                    -- 可视模式 - 紫色调
+                    [{ "v", "V", "\x16" }] = {
+                        winhl = {
+                            CursorLine = { bg = "#2d2640" },
+                            CursorLineNr = { fg = "#cba6f7", bold = true },
+                        },
+                        hl = {
+                            Cursor = { bg = "#cba6f7" },
+                        },
+                    },
+                    -- 选择模式
+                    [{ "s", "S", "\x13" }] = {
+                        winhl = {
+                            CursorLine = { bg = "#2d3040" },
+                            CursorLineNr = { fg = "#89b4fa", bold = true },
+                        },
+                    },
+                    -- 替换模式 - 青色调
+                    R = {
+                        winhl = {
+                            CursorLine = { bg = "#1a3333" },
+                            CursorLineNr = { fg = "#94e2d5", bold = true },
+                        },
+                        hl = {
+                            Cursor = { bg = "#94e2d5" },
+                        },
+                    },
+                    -- 命令行模式 - 黄色调
+                    c = {
+                        winhl = {
+                            CursorLine = { bg = "#332e1a" },
+                            CursorLineNr = { fg = "#f9e2af", bold = true },
+                        },
+                    },
+                    -- Operator-pending 模式
+                    no = {
+                        winhl = {
+                            CursorLine = { bg = "#1e1e2e" },
+                        },
+                        operators = {
+                            -- 删除操作 - 红色调
+                            d = {
+                                winhl = {
+                                    CursorLine = { bg = "#331a1a" },
+                                    CursorLineNr = { fg = "#f38ba8", bold = true },
+                                },
+                                hl = {
+                                    Cursor = { bg = "#f38ba8" },
+                                },
+                            },
+                            -- 修改操作 - 蓝色调
+                            c = {
+                                winhl = {
+                                    CursorLine = { bg = "#1a2633" },
+                                    CursorLineNr = { fg = "#89b4fa", bold = true },
+                                },
+                                hl = {
+                                    Cursor = { bg = "#89b4fa" },
+                                },
+                            },
+                            -- 复制操作 - 橙色调
+                            y = {
+                                winhl = {
+                                    CursorLine = { bg = "#332a1a" },
+                                    CursorLineNr = { fg = "#fab387", bold = true },
+                                },
+                                hl = {
+                                    Cursor = { bg = "#fab387" },
+                                },
+                            },
+                        },
+                    },
+                },
+                -- 静态高亮：活动/非活动窗口区分
+                static = {
+                    winhl = {
+                        active = {
+                            CursorLine = { bg = "#1e1e2e" },
+                            CursorLineNr = { fg = "#cdd6f4", bold = true },
+                        },
+                        inactive = {
+                            CursorLine = { bg = "#181825" },
+                            CursorLineNr = { fg = "#6c7086" },
+                        },
+                    },
+                },
+            })
+        end,
+    },
 }
