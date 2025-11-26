@@ -60,8 +60,8 @@ return
                 fold_virt_text_handler = function(virtText, lnum, endLnum, width, truncate, ctx)
                     -- 获取当前 buffer 的信息
                     local bufnr = ctx.bufnr or vim.api.nvim_get_current_buf()
-                    local buftype = vim.api.nvim_buf_get_option(bufnr, "buftype")
-                    local filetype = vim.api.nvim_buf_get_option(bufnr, "filetype")
+                    local buftype = vim.api.nvim_get_option_value("buftype", { buf = bufnr })
+                    local filetype = vim.api.nvim_get_option_value("filetype", { buf = bufnr })
 
                     -- 禁用特殊文件类型和 buftype 的自定义折叠文本
                     local disable_filetypes = {
@@ -143,14 +143,35 @@ return
                 end,
                 -- 首次打开时关闭特定类型的折叠（仅对 LSP provider 有效）
                 close_fold_kinds_for_ft = {
-                    default = { "imports", "comment" },
+                    default = {
+                        "imports",
+                        -- "comment",
+                    },
                     -- 可以为特定语言添加额外的 fold kinds
-                    go = { "imports", "comment" },
-                    python = { "imports", "comment" },
-                    typescript = { "imports", "comment" },
-                    typescriptreact = { "imports", "comment" },
-                    javascript = { "imports", "comment" },
-                    javascriptreact = { "imports", "comment" },
+                    go = {
+                        "imports",
+                        -- "comment",
+                    },
+                    python = {
+                        "imports",
+                        -- "comment",
+                    },
+                    typescript = {
+                        "imports",
+                        -- "comment",
+                    },
+                    typescriptreact = {
+                        "imports",
+                        -- "comment",
+                    },
+                    javascript = {
+                        "imports",
+                        -- "comment",
+                    },
+                    javascriptreact = {
+                        "imports",
+                        -- "comment",
+                    },
                 },
                 -- 预览窗口配置
                 preview = {
