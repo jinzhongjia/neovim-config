@@ -384,6 +384,9 @@ return
                     "dapui_breakpoints",
                     "dapui_console",
                     "dapui_repl",
+                    -- opencode
+                    "opencode",
+                    "opencode_output",
                 },
             },
         },
