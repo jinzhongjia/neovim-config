@@ -196,6 +196,7 @@ return {
     -- ========== CodeCompanion 主插件 ==========
     {
         "olimorris/codecompanion.nvim",
+        version = "v17.33.0",
         event = "VeryLazy",
         dev = true,
         dependencies = {
