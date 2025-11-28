@@ -16,7 +16,7 @@ return
     },
     {
         "tpope/vim-fugitive",
-        event = { "EveryLazy" }, -- 需要 git 功能时加载
+        event = { "VeryLazy" }, -- 需要 git 功能时加载
     },
     {
         "NeogitOrg/neogit",
