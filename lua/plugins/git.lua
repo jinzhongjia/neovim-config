@@ -15,6 +15,10 @@ return
         },
     },
     {
+        "tpope/vim-fugitive",
+        event = { "EveryLazy" }, -- 需要 git 功能时加载
+    },
+    {
         "NeogitOrg/neogit",
         dependencies = {
             "nvim-lua/plenary.nvim", -- required
@@ -30,28 +34,28 @@ return
             disable_hint = false, -- 保留顶部提示
             disable_context_highlighting = false, -- 保留上下文高亮
             disable_signs = false, -- 保留符号
-            
+
             -- 文件监视器优化
             filewatcher = {
                 interval = 2000, -- 增加到2秒，减少频繁刷新
                 enabled = true,
             },
-            
+
             -- 控制台性能优化
             console_timeout = 2000, -- 2秒后显示慢命令的输出
             auto_show_console = true, -- 自动显示控制台
             auto_close_console = true, -- 成功时自动关闭控制台
-            
+
             -- 图形样式
             graph_style = "unicode",
-            
+
             -- Git 性能优化
             use_default_keymaps = true,
             disable_insert_on_commit = true, -- 提交时不自动进入插入模式
-            
+
             -- 大仓库优化
             fetch_after_checkout = false, -- 切换分支后不自动 fetch
-            
+
             -- 提交编辑器配置
             commit_editor = {
                 kind = "tab",
@@ -59,14 +63,14 @@ return
                 staged_diff_split_kind = "split", -- 底部显示差异（横向分割）
                 spell_check = true, -- 启用拼写检查
             },
-            
+
             -- 视图配置优化
             kind = "tab", -- 默认在新标签页打开
             commit_view = {
                 kind = "split", -- 横向分割显示提交详情
                 verify_commit = vim.fn.executable("gpg") == 1, -- GPG 签名验证
             },
-            
+
             -- 其他视图优化
             log_view = {
                 kind = "tab",
@@ -80,18 +84,18 @@ return
             popup = {
                 kind = "split", -- popup 使用横向分割
             },
-            
+
             -- 集成配置
             integrations = {
                 snacks = true,
                 diffview = true, -- 启用 diffview 集成
                 telescope = false, -- 禁用 telescope 集成以提升性能
             },
-            
+
             -- 记住设置（跨会话保持开关/选项状态）
             remember_settings = true,
             use_per_project_settings = true,
-            
+
             -- 映射配置
             mappings = {
                 finder = {
@@ -104,7 +108,7 @@ return
                     ["G"] = false, -- 禁用 neogit 的 G 映射，恢复 vim 原生行为（跳到底部）
                 },
             },
-            
+
             -- 状态视图配置
             status = {
                 show_head_commit_hash = true,
@@ -130,17 +134,17 @@ return
                     ["?"] = "untracked",
                 },
             },
-            
+
             -- 分支排序
             sort_branches = "-committerdate", -- 按提交日期降序排序
-            
+
             -- 日志视图配置
             commit_order = "topo", -- 拓扑排序（适合查看分支图）
-            
+
             -- 性能优化：禁用行号
             disable_line_numbers = true,
             disable_relative_line_numbers = true,
-            
+
             -- sections 配置（性能优化：默认折叠某些不常用的部分）
             sections = {
                 stashes = {
@@ -230,7 +234,7 @@ return
         opts = {
             -- 使用 Snacks picker
             picker = "snacks",
-            
+
             -- 默认合并策略
             default_merge_method = "squash", -- 默认是 commit，这里自定义为 squash
         },
@@ -239,20 +243,20 @@ return
             { "<leader>oi", "<cmd>Octo issue list<cr>", desc = "List issues" },
             { "<leader>oI", "<cmd>Octo issue search<cr>", desc = "Search issues" },
             { "<leader>oc", "<cmd>Octo issue create<cr>", desc = "Create issue" },
-            
+
             -- PR 操作
             { "<leader>op", "<cmd>Octo pr list<cr>", desc = "List PRs" },
             { "<leader>oP", "<cmd>Octo pr search<cr>", desc = "Search PRs" },
             { "<leader>opr", "<cmd>Octo pr create<cr>", desc = "Create PR" },
             { "<leader>opo", "<cmd>Octo pr<cr>", desc = "Open current branch PR" },
-            
+
             -- Repo 操作
             { "<leader>or", "<cmd>Octo repo list<cr>", desc = "List repos" },
             { "<leader>oR", "<cmd>Octo repo browser<cr>", desc = "Open repo in browser" },
-            
+
             -- 搜索
             { "<leader>os", "<cmd>Octo search<cr>", desc = "Search GitHub" },
-            
+
             -- 其他
             { "<leader>oa", "<cmd>Octo actions<cr>", desc = "List Octo actions" },
         },
@@ -265,10 +269,10 @@ return
         opts = {
             -- 刷新间隔（秒）
             refresh_interval = 10,
-            
+
             -- 用于 dispatch workflow 的分支
             dispatch_branch = "default", -- "default", "current" 或具体分支名
-            
+
             -- 分屏配置
             split = {
                 relative = "editor",
@@ -288,34 +292,34 @@ return
                     -- 行级：使用配色方案的 DiffAdd 和 DiffDelete
                     line_insert = "DiffAdd",
                     line_delete = "DiffDelete",
-                    
+
                     -- 字符级：nil = 自动根据背景调整亮度
                     -- 深色主题会自动 1.4x 增亮，浅色主题会 0.92x 变暗
                     char_insert = nil,
                     char_delete = nil,
-                    
+
                     -- 也可以手动指定亮度倍数（覆盖自动检测）
                     -- char_brightness = 1.4,
                 },
-                
+
                 -- Diff 视图行为
                 diff = {
-                    disable_inlay_hints = true,      -- 在 diff 窗口中禁用 inlay hints
-                    max_computation_time_ms = 5000,  -- diff 计算最大时间
+                    disable_inlay_hints = true, -- 在 diff 窗口中禁用 inlay hints
+                    max_computation_time_ms = 5000, -- diff 计算最大时间
                 },
-                
+
                 -- 快捷键配置
                 keymaps = {
                     view = {
-                        next_hunk = "]c",   -- 跳到下一个变更
-                        prev_hunk = "[c",   -- 跳到上一个变更
-                        next_file = "]f",   -- 下一个文件
-                        prev_file = "[f",   -- 上一个文件
+                        next_hunk = "]c", -- 跳到下一个变更
+                        prev_hunk = "[c", -- 跳到上一个变更
+                        next_file = "]f", -- 下一个文件
+                        prev_file = "[f", -- 上一个文件
                     },
                     explorer = {
-                        select = "<CR>",    -- 打开选中文件的 diff
-                        hover = "K",        -- 预览文件 diff
-                        refresh = "R",      -- 刷新 git 状态
+                        select = "<CR>", -- 打开选中文件的 diff
+                        hover = "K", -- 预览文件 diff
+                        refresh = "R", -- 刷新 git 状态
                     },
                 },
             })
@@ -324,13 +328,13 @@ return
             -- Git diff 模式 - 与指定版本比较当前文件
             { "<leader>dh", "<cmd>CodeDiff file HEAD<cr>", desc = "Diff with HEAD" },
             { "<leader>dH", "<cmd>CodeDiff file HEAD~1<cr>", desc = "Diff with HEAD~1" },
-            
+
             -- 文件浏览器模式 - 显示所有变更的文件
             { "<leader>df", "<cmd>CodeDiff<cr>", desc = "Diff file explorer" },
-            
+
             -- 与指定版本比较（需要输入版本号）
             { "<leader>dc", ":CodeDiff file ", desc = "Diff with commit...", silent = false },
-            
+
             -- 文件比较模式（需要输入两个文件路径）
             { "<leader>d2", ":CodeDiff file ", desc = "Diff two files...", silent = false },
         },
