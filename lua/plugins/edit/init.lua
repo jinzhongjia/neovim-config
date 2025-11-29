@@ -37,27 +37,27 @@ local M = {
         event = { "BufReadPost", "BufNewFile" }, -- 编辑文件时加载
         opts = function()
             local helpers = require("ts-node-action.helpers")
-            
+
             -- Lua 自定义操作
             local lua_actions = {
                 -- 切换 require 风格: local x = require("x") <-> require("x")
                 ["assignment_statement"] = function(node)
                     local text = helpers.node_text(node)
                     if text:match("^local%s+%w+%s*=%s*require") then
-                        local module = text:match('require%(["\'](.+)["\']%)')
+                        local module = text:match("require%([\"'](.+)[\"']%)")
                         if module then
                             return string.format('require("%s")', module)
                         end
                     end
                 end,
-                
+
                 -- 切换字符串拼接方式: "a" .. "b" <-> string.format("%s%s", "a", "b")
                 ["binary_expression"] = function(node)
                     local text = helpers.node_text(node)
                     if text:match("%.%.") then
                         -- 简单的两个字符串拼接
                         local parts = {}
-                        for part in text:gmatch('[^%.]+') do
+                        for part in text:gmatch("[^%.]+") do
                             local trimmed = part:match("^%s*(.-)%s*$")
                             table.insert(parts, trimmed)
                         end
@@ -67,7 +67,7 @@ local M = {
                     end
                 end,
             }
-            
+
             -- Go 自定义操作
             local go_actions = {
                 -- 切换错误处理风格
@@ -80,7 +80,7 @@ local M = {
                         return text:gsub("err%s*==", "err !=")
                     end
                 end,
-                
+
                 -- 切换指针接收者和值接收者
                 ["method_declaration"] = function(node)
                     local text = helpers.node_text(node)
@@ -94,7 +94,7 @@ local M = {
                         end
                     end
                 end,
-                
+
                 -- 添加/移除 error 返回值
                 ["function_declaration"] = function(node)
                     local text = helpers.node_text(node)
@@ -117,7 +117,7 @@ local M = {
                         end
                     end
                 end,
-                
+
                 -- 切换短变量声明和标准声明: x := 1 <-> var x = 1
                 ["short_var_declaration"] = function(node)
                     local text = helpers.node_text(node)
@@ -126,7 +126,7 @@ local M = {
                         return string.format("var %s = %s", var_name, value)
                     end
                 end,
-                
+
                 ["var_declaration"] = function(node)
                     local text = helpers.node_text(node)
                     -- var x = 1 -> x := 1 (简单情况)
@@ -135,7 +135,7 @@ local M = {
                         return string.format("%s := %s", var_name, value)
                     end
                 end,
-                
+
                 -- 切换 make 的容量参数
                 ["call_expression"] = {
                     -- errors.Is(err, SomeError) <-> err == SomeError
@@ -191,20 +191,20 @@ local M = {
                     end,
                     name = "Toggle errors.Is/make/append",
                 },
-                
+
                 -- 切换 struct 字段标签的 json tag 格式
                 ["field_declaration"] = function(node)
                     local text = helpers.node_text(node)
                     -- Name string `json:"name"` <-> Name string `json:"name,omitempty"`
                     if text:match('`json:"[^"]+"`') then
-                        if text:match('omitempty') then
-                            return text:gsub(',omitempty', '')
+                        if text:match("omitempty") then
+                            return text:gsub(",omitempty", "")
                         else
                             return text:gsub('(json:"[^"]+)"', '%1,omitempty"')
                         end
                     end
                 end,
-                
+
                 -- 切换循环类型: for range <-> for i := 0
                 ["for_statement"] = function(node)
                     local text = helpers.node_text(node)
@@ -212,21 +212,21 @@ local M = {
                     if text:match("for%s+range%s+") then
                         local var_name = text:match("for%s+(%w+)%s+:=%s+range")
                         if var_name then
-                            return text:gsub("for%s+%w+%s+:=%s+range%s+(%w+)", 
-                                "for %s := 0; %s < len(%s); %s++"):format(
-                                var_name, var_name, "%1", var_name)
+                            return text:gsub("for%s+%w+%s+:=%s+range%s+(%w+)", "for %s := 0; %s < len(%s); %s++")
+                                :format(var_name, var_name, "%1", var_name)
                         end
                     elseif text:match("for%s+_%s*,%s*%w+%s+:=%s+range") then
                         -- for _, v := range slice -> for i := 0; i < len(slice); i++ { v := slice[i]
                         local val_name, slice = text:match("for%s+_%s*,%s*(%w+)%s+:=%s+range%s+(%w+)")
                         if val_name and slice then
-                            return text:gsub("for%s+_%s*,%s*%w+%s+:=%s+range%s+%w+%s*{",
-                                string.format("for i := 0; i < len(%s); i++ {\n\t%s := %s[i]", 
-                                slice, val_name, slice))
+                            return text:gsub(
+                                "for%s+_%s*,%s*%w+%s+:=%s+range%s+%w+%s*{",
+                                string.format("for i := 0; i < len(%s); i++ {\n\t%s := %s[i]", slice, val_name, slice)
+                            )
                         end
                     end
                 end,
-                
+
                 -- 切换接口类型断言: v.(Type) <-> v.(Type), ok
                 ["type_assertion_expression"] = function(node)
                     local text = helpers.node_text(node)
@@ -235,7 +235,7 @@ local M = {
                         return text .. ", ok"
                     end
                 end,
-                
+
                 -- 切换 nil 检查风格和错误比较
                 ["binary_expression"] = function(node)
                     local text = helpers.node_text(node)
@@ -246,13 +246,13 @@ local M = {
                         -- 确保不是数字比较，且右边不是 nil
                         return string.format("errors.Is(%s, %s)", err_var, err_type)
                     end
-                    
+
                     -- err != SpecificError -> !errors.Is(err, SpecificError)
                     err_var, err_type = text:match("(%w+)%s*!=%s*([%w%.]+)")
                     if err_var and err_type and err_type ~= "nil" and not err_type:match("^%d") then
                         return string.format("!errors.Is(%s, %s)", err_var, err_type)
                     end
-                    
+
                     -- x == nil <-> x != nil
                     if text:match("==%s*nil") then
                         return text:gsub("==%s*nil", "!= nil")
@@ -265,7 +265,7 @@ local M = {
                         return text:gsub(">%s*0", "== 0")
                     end
                 end,
-                
+
                 -- 切换 context 参数: ctx context.Context <-> _ context.Context
                 ["parameter_declaration"] = function(node)
                     local text = helpers.node_text(node)
@@ -275,7 +275,7 @@ local M = {
                         return text:gsub("_%s+context%.Context", "ctx context.Context")
                     end
                 end,
-                
+
                 -- 切换 defer 语句位置（上移/下移优先级）
                 ["defer_statement"] = function(node)
                     local text = helpers.node_text(node)
@@ -284,7 +284,7 @@ local M = {
                         return "// defer: cleanup\n" .. text
                     end
                 end,
-                
+
                 -- 切换返回 nil 的方式: return nil <-> return nil, nil <-> return nil, fmt.Errorf()
                 ["return_statement"] = function(node)
                     local text = helpers.node_text(node)
@@ -297,7 +297,7 @@ local M = {
                     end
                 end,
             }
-            
+
             -- Rust 自定义操作
             local rust_actions = {
                 -- 切换 Result 和 Option 的 unwrap 方法
@@ -306,16 +306,16 @@ local M = {
                     -- unwrap() <-> unwrap_or_default() <-> unwrap_or(...) <-> expect(...)
                     if text:match("%.unwrap%(%)") then
                         local base = text:match("(.*)%.unwrap%(%)")
-                        return base .. '.unwrap_or_default()'
+                        return base .. ".unwrap_or_default()"
                     elseif text:match("%.unwrap_or_default%(%)") then
                         local base = text:match("(.*)%.unwrap_or_default%(%)")
                         return base .. '.expect("TODO: add message")'
                     elseif text:match("%.expect%(") then
                         local base = text:match("(.*)%.expect%(")
-                        return base .. '.unwrap()'
+                        return base .. ".unwrap()"
                     end
                 end,
-                
+
                 -- 切换可变性: let x <-> let mut x
                 ["let_declaration"] = function(node)
                     local text = helpers.node_text(node)
@@ -325,7 +325,7 @@ local M = {
                         return text:gsub("let%s+", "let mut ")
                     end
                 end,
-                
+
                 -- 切换引用类型: &T <-> &mut T <-> T
                 ["reference_type"] = function(node)
                     local text = helpers.node_text(node)
@@ -338,7 +338,7 @@ local M = {
                     end
                 end,
             }
-            
+
             -- TypeScript/JavaScript 自定义操作
             local ts_actions = {
                 -- 切换 const/let/var
@@ -352,7 +352,7 @@ local M = {
                         return text:gsub("^var%s+", "const ")
                     end
                 end,
-                
+
                 -- 切换箭头函数和普通函数
                 ["arrow_function"] = function(node)
                     local text = helpers.node_text(node)
@@ -370,7 +370,7 @@ local M = {
                         end
                     end
                 end,
-                
+
                 -- 切换 Promise 链式调用和 async/await
                 ["call_expression"] = function(node)
                     local text = helpers.node_text(node)
@@ -382,7 +382,7 @@ local M = {
                         end
                     end
                 end,
-                
+
                 -- 切换模板字符串和普通字符串
                 ["template_string"] = function(node)
                     local text = helpers.node_text(node)
@@ -394,7 +394,7 @@ local M = {
                         end
                     end
                 end,
-                
+
                 ["string"] = function(node)
                     local text = helpers.node_text(node)
                     -- "text" -> `text`
@@ -407,7 +407,7 @@ local M = {
                     end
                 end,
             }
-            
+
             return {
                 ["*"] = {
                     -- 全局操作：切换注释风格等
@@ -442,22 +442,6 @@ local M = {
                 "css",
                 "javascript",
                 "html",
-            },
-        },
-    },
-    {
-        "chrisgrieser/nvim-rip-substitute",
-        event = "VeryLazy",
-        cmd = "RipSubstitute",
-        opts = {},
-        keys = {
-            {
-                "<leader>rs",
-                function()
-                    require("rip-substitute").sub()
-                end,
-                mode = { "n", "x" },
-                desc = "rip substitute",
             },
         },
     },
