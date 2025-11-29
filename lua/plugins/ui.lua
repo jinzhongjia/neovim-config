@@ -507,7 +507,7 @@ return
         event = "VeryLazy",
         config = function()
             local wk = require("which-key")
-            
+
             -- 配置选项
             wk.setup({
                 preset = "modern", -- classic / modern / helix
@@ -641,15 +641,57 @@ return
 
                 -- ===== 会话 (leader-q = quit/session) =====
                 { "<leader>q", group = "session" },
-                { "<leader>qs", function() require("persistence").load() end, desc = "Restore session" },
-                { "<leader>qS", function() require("persistence").select() end, desc = "Select session" },
-                { "<leader>ql", function() require("persistence").load({ last = true }) end, desc = "Last session" },
-                { "<leader>qd", function() require("persistence").stop() end, desc = "Disable session autosave" },
+                {
+                    "<leader>qs",
+                    function()
+                        require("persistence").load()
+                    end,
+                    desc = "Restore session",
+                },
+                {
+                    "<leader>qS",
+                    function()
+                        require("persistence").select()
+                    end,
+                    desc = "Select session",
+                },
+                {
+                    "<leader>ql",
+                    function()
+                        require("persistence").load({ last = true })
+                    end,
+                    desc = "Last session",
+                },
+                {
+                    "<leader>qd",
+                    function()
+                        require("persistence").stop()
+                    end,
+                    desc = "Disable session autosave",
+                },
 
                 -- ===== 代码分割/合并 (leader-m/j/s = treesj) =====
-                { "<leader>m", function() require("treesj").toggle() end, desc = "Toggle split/join" },
-                { "<leader>j", function() require("treesj").join() end, desc = "Join code block" },
-                { "<leader>s", function() require("treesj").split() end, desc = "Split code block" },
+                {
+                    "<leader>m",
+                    function()
+                        require("treesj").toggle()
+                    end,
+                    desc = "Toggle split/join",
+                },
+                {
+                    "<leader>j",
+                    function()
+                        require("treesj").join()
+                    end,
+                    desc = "Join code block",
+                },
+                {
+                    "<leader>s",
+                    function()
+                        require("treesj").split()
+                    end,
+                    desc = "Split code block",
+                },
 
                 -- ===== 问题诊断 (leader-x = troubleshooting) =====
                 { "<leader>x", group = "troubleshoot" },
@@ -665,7 +707,14 @@ return
                 { "<leader>xL", "<cmd>Trouble loclist toggle<cr>", desc = "Location list" },
 
                 -- ===== 帮助 (leader-h = help) =====
-                { "<leader>h", function() require("which-key").show({ global = false }) end, desc = "Keymaps", mode = "n" },
+                {
+                    "<leader>h",
+                    function()
+                        require("which-key").show({ global = false })
+                    end,
+                    desc = "Keymaps",
+                    mode = "n",
+                },
             })
         end,
         keys = {},

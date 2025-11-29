@@ -5,9 +5,24 @@ vim.g.maplocalleader = " "
 -- 此文件仅定义非 <leader> 快捷键，使用 vim.keymap.set 以支持 desc
 
 -- ===== Ctrl 快捷键：调整窗口大小 =====
-vim.keymap.set("n", "<C-Left>", "<CMD>vertical resize -2<CR>", { noremap = true, silent = true, desc = "Decrease window width" })
-vim.keymap.set("n", "<C-Right>", "<CMD>vertical resize +2<CR>", { noremap = true, silent = true, desc = "Increase window width" })
-vim.keymap.set("n", "<C-Down>", "<CMD>resize +2<CR>", { noremap = true, silent = true, desc = "Increase window height" })
+vim.keymap.set(
+    "n",
+    "<C-Left>",
+    "<CMD>vertical resize -2<CR>",
+    { noremap = true, silent = true, desc = "Decrease window width" }
+)
+vim.keymap.set(
+    "n",
+    "<C-Right>",
+    "<CMD>vertical resize +2<CR>",
+    { noremap = true, silent = true, desc = "Increase window width" }
+)
+vim.keymap.set(
+    "n",
+    "<C-Down>",
+    "<CMD>resize +2<CR>",
+    { noremap = true, silent = true, desc = "Increase window height" }
+)
 vim.keymap.set("n", "<C-Up>", "<CMD>resize -2<CR>", { noremap = true, silent = true, desc = "Decrease window height" })
 
 -- ===== Visual 模式：缩进和移动 =====

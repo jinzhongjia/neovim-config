@@ -11,16 +11,40 @@ return
         },
         keys = {
             -- 加载当前目录的会话
-            { "<leader>qs", function() require("persistence").load() end, desc = "Restore Session" },
+            {
+                "<leader>qs",
+                function()
+                    require("persistence").load()
+                end,
+                desc = "Restore Session",
+            },
 
             -- 选择一个会话加载
-            { "<leader>qS", function() require("persistence").select() end, desc = "Select Session" },
+            {
+                "<leader>qS",
+                function()
+                    require("persistence").select()
+                end,
+                desc = "Select Session",
+            },
 
             -- 加载上一个会话
-            { "<leader>ql", function() require("persistence").load({ last = true }) end, desc = "Restore Last Session" },
+            {
+                "<leader>ql",
+                function()
+                    require("persistence").load({ last = true })
+                end,
+                desc = "Restore Last Session",
+            },
 
             -- 停止持久化（这次退出时不保存会话）
-            { "<leader>qd", function() require("persistence").stop() end, desc = "Don't Save Session" },
+            {
+                "<leader>qd",
+                function()
+                    require("persistence").stop()
+                end,
+                desc = "Don't Save Session",
+            },
         },
     },
 }

@@ -454,7 +454,7 @@ local function find_interface_implementations(bufnr, clients, interface_data, in
     client:request(method, {
         textDocument = vim.lsp.util.make_text_document_params(),
         position = { line = interface_data.line, character = interface_data.character },
-     }, function(err, result, ctx, lsp_config)
+    }, function(err, result, ctx, lsp_config)
         if err or not api.nvim_buf_is_valid(bufnr) then
             find_interface_implementations(bufnr, clients, interface_data, interface_name, state, index + 1)
             return

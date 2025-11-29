@@ -144,8 +144,8 @@ return
                         ["ctrl-t"] = require("fzf-lua.actions").file_tabedit,
                         ["alt-q"] = require("fzf-lua.actions").file_sel_to_qf,
                         ["alt-l"] = require("fzf-lua.actions").file_sel_to_ll,
-                        ["alt-i"] = require("fzf-lua.actions").toggle_ignore,  -- 切换忽略规则
-                        ["alt-h"] = require("fzf-lua.actions").toggle_hidden,  -- 切换隐藏文件
+                        ["alt-i"] = require("fzf-lua.actions").toggle_ignore, -- 切换忽略规则
+                        ["alt-h"] = require("fzf-lua.actions").toggle_hidden, -- 切换隐藏文件
                     },
                 },
 
@@ -165,7 +165,7 @@ return
                         ["ctrl-t"] = require("fzf-lua.actions").file_tabedit,
                         ["alt-q"] = require("fzf-lua.actions").file_sel_to_qf,
                         ["alt-l"] = require("fzf-lua.actions").file_sel_to_ll,
-                        ["alt-i"] = require("fzf-lua.actions").toggle_ignore,  -- 切换忽略规则
+                        ["alt-i"] = require("fzf-lua.actions").toggle_ignore, -- 切换忽略规则
                     },
                 },
 
