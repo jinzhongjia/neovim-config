@@ -5,18 +5,18 @@ local config = require("codecompanion.config")
 local curl = require("plenary.curl")
 local log = require("codecompanion.utils.log")
 
--- 模块级别的 API 密钥缓存
+-- Module-level API key cache
 local _api_key = nil
 local _api_key_loaded = false
 
--- OAuth 流程的常量配置
+-- OAuth flow constant configuration
 local OAUTH_CONFIG = {
-    CLIENT_ID = "9d1c250a-e61b-44d9-88ed-5944d1962f5e", -- OAuth 客户端 ID
-    REDIRECT_URI = "https://console.anthropic.com/oauth/code/callback", -- 授权回调地址
-    AUTH_URL = "https://console.anthropic.com/oauth/authorize", -- 授权请求地址
-    TOKEN_URL = "https://api.anthropic.com/v1/oauth/token", -- 令牌交换地址
-    API_KEY_URL = "https://api.anthropic.com/api/oauth/claude_cli/create_api_key", -- API 密钥创建地址
-    SCOPES = "org:create_api_key user:profile user:inference", -- 请求的权限范围
+    CLIENT_ID = "9d1c250a-e61b-44d9-88ed-5944d1962f5e", -- OAuth client ID
+    REDIRECT_URI = "https://console.anthropic.com/oauth/code/callback", -- Authorization callback URL
+    AUTH_URL = "https://console.anthropic.com/oauth/authorize", -- Authorization request URL
+    TOKEN_URL = "https://api.anthropic.com/v1/oauth/token", -- Token exchange URL
+    API_KEY_URL = "https://api.anthropic.com/api/oauth/claude_cli/create_api_key", -- API key creation URL
+    SCOPES = "org:create_api_key user:profile user:inference", -- Requested permission scopes
 }
 
 local DEFAULT_API_VERSION = (anthropic.headers and anthropic.headers["anthropic-version"]) or "2023-06-01"
@@ -190,7 +190,7 @@ local function sha256_binary_openssl(input)
 
     if not success or job.code ~= 0 then
         log:warn(
-            "OpenSSL 命令执行失败，错误代码: %s, stderr: %s",
+            "OpenSSL command execution failed, error code: %s, stderr: %s",
             job.code or "unknown",
             table.concat(job:stderr_result() or {}, "\n")
         )
@@ -232,7 +232,7 @@ local function sha256_binary_vimfn(input)
     return hex_to_binary(hash_hex)
 end
 
--- URL 编码函数，用于构建 OAuth URL 参数
+-- URL encoding function for building OAuth URL parameters
 ---@param str string
 ---@return string
 local function url_encode(str)
@@ -246,15 +246,15 @@ local function url_encode(str)
     return str
 end
 
--- 生成用于 PKCE 的加密安全随机字符串
--- PKCE (Proof Key for Code Exchange) 是 OAuth 2.0 的安全扩展
+-- Generate cryptographically secure random string for PKCE
+-- PKCE (Proof Key for Code Exchange) is a security extension for OAuth 2.0
 ---@param length number
 ---@return string
 local function generate_random_string(length)
     local bytes = secure_random_bytes(length)
     if not bytes then
         log:error(
-            "Anthropic OAuth: 无法生成安全随机数，请确认系统提供安全随机源（例如 /dev/urandom、PowerShell 或 OpenSSL）"
+            "Anthropic OAuth: Unable to generate secure random bytes, please ensure system provides secure random source (e.g. /dev/urandom, PowerShell, or OpenSSL)"
         )
         return nil
     end
@@ -269,13 +269,13 @@ local function generate_random_string(length)
     return table.concat(result)
 end
 
--- 生成 PKCE challenge 所需的 SHA256 哈希（base64url 格式）
+-- Generate SHA256 hash required for PKCE challenge (base64url format)
 ---@param input string
 ---@return string
 local function sha256_base64url(input)
     local hash_binary = sha256_binary_openssl(input) or sha256_binary_vimfn(input)
     if not hash_binary then
-        log:error("Anthropic OAuth: 无法生成 PKCE 哈希，请确保系统支持 OpenSSL 或内置 sha256")
+        log:error("Anthropic OAuth: Unable to generate PKCE hash, please ensure system supports OpenSSL or built-in sha256")
         return nil
     end
 
@@ -283,10 +283,10 @@ local function sha256_base64url(input)
     return base64:gsub("[+/=]", { ["+"] = "-", ["/"] = "_", ["="] = "" })
 end
 
--- 生成 PKCE 代码验证器和挑战码
+-- Generate PKCE code verifier and challenge
 ---@return { verifier: string, challenge: string }
 local function generate_pkce()
-    local verifier = generate_random_string(128) -- 使用最大长度以提高安全性
+    local verifier = generate_random_string(128) -- Use maximum length for better security
     if not verifier then
         return nil
     end
@@ -300,17 +300,17 @@ local function generate_pkce()
     }
 end
 
--- 查找用于存储 OAuth 令牌的数据路径
--- 支持通过环境变量自定义路径
+-- Find data path for storing OAuth tokens
+-- Supports custom path via environment variable
 ---@return string|nil
 local function find_data_path()
-    -- 首先检查环境变量
+    -- First check environment variable
     local env_path = os.getenv("CODECOMPANION_ANTHROPIC_TOKEN_PATH")
     if env_path and vim.fn.isdirectory(vim.fs.dirname(env_path)) > 0 then
         return vim.fs.dirname(env_path)
     end
 
-    -- 使用 Neovim 数据目录（跨平台兼容）
+    -- Use Neovim data directory (cross-platform compatible)
     local nvim_data = vim.fn.stdpath("data")
     if nvim_data and vim.fn.isdirectory(nvim_data) > 0 then
         return nvim_data
@@ -319,22 +319,22 @@ local function find_data_path()
     return nil
 end
 
--- 获取 OAuth 令牌文件路径
--- 使用跨平台的路径分隔符
+-- Get OAuth token file path
+-- Use cross-platform path separator
 ---@return string|nil
 local function get_token_file_path()
     local data_path = find_data_path()
     if not data_path then
-        log:error("Anthropic OAuth: 无法确定数据目录")
+        log:error("Anthropic OAuth: Unable to determine data directory")
         return nil
     end
 
-    -- 使用 vim.fs.joinpath 确保跨平台路径兼容性
-    local path_sep = package.config:sub(1, 1) -- 获取系统路径分隔符
+    -- Use vim.fs.joinpath to ensure cross-platform path compatibility
+    local path_sep = package.config:sub(1, 1) -- Get system path separator
     return data_path .. path_sep .. "anthropic_oauth.json"
 end
 
--- 从文件加载 API 密钥
+-- Load API key from file
 ---@return string|nil
 local function load_api_key()
     if _api_key_loaded then
@@ -350,7 +350,7 @@ local function load_api_key()
 
     local success, content = pcall(vim.fn.readfile, token_file)
     if not success or not content or #content == 0 then
-        log:debug("Anthropic OAuth: 无法读取令牌文件或文件为空")
+        log:debug("Anthropic OAuth: Unable to read token file or file is empty")
         return nil
     end
 
@@ -359,17 +359,17 @@ local function load_api_key()
         _api_key = data.api_key
         return data.api_key
     else
-        log:warn("Anthropic OAuth: 令牌文件格式无效")
+        log:warn("Anthropic OAuth: Invalid token file format")
         return nil
     end
 end
 
--- 保存 API 密钥到文件
+-- Save API key to file
 ---@param api_key string
 ---@return boolean
 local function save_api_key(api_key)
     if not api_key or api_key == "" then
-        log:error("Anthropic OAuth: 无法保存空的 API 密钥")
+        log:error("Anthropic OAuth: Cannot save empty API key")
         return false
     end
 
@@ -381,18 +381,18 @@ local function save_api_key(api_key)
     local data = {
         api_key = api_key,
         created_at = os.time(),
-        version = 1, -- 版本号，用于未来可能的数据迁移
+        version = 1, -- Version number for potential future data migration
     }
 
     local success, json_data = pcall(vim.json.encode, data)
     if not success then
-        log:error("Anthropic OAuth: 无法编码 API 密钥数据")
+        log:error("Anthropic OAuth: Unable to encode API key data")
         return false
     end
 
     ---@diagnostic disable-next-line: redefined-local
     local success, err = pcall(function()
-        -- Windows 平台写入文件时使用二进制模式
+        -- Use binary mode for Windows platform when writing file
         if vim.fn.has("win32") == 1 then
             vim.fn.writefile(vim.split(json_data, "\n", { plain = true }), token_file, "b")
         else
@@ -403,28 +403,28 @@ local function save_api_key(api_key)
     if success then
         _api_key = api_key
         _api_key_loaded = true
-        log:info("Anthropic OAuth: API 密钥保存成功")
+        log:info("Anthropic OAuth: API key saved successfully")
         return true
     else
-        log:error("Anthropic OAuth: 保存 API 密钥失败: %s", err or "未知错误")
+        log:error("Anthropic OAuth: Failed to save API key: %s", err or "unknown error")
         return false
     end
 end
 
--- 使用 OAuth 访问令牌创建 API 密钥
+-- Create API key using OAuth access token
 ---@param access_token string
 ---@return string|nil
 local function create_api_key(access_token)
     if not access_token or access_token == "" then
-        log:error("Anthropic OAuth: 需要访问令牌")
+        log:error("Anthropic OAuth: Access token required")
         return nil
     end
 
-    log:debug("Anthropic OAuth: 正在创建 API 密钥")
+    log:debug("Anthropic OAuth: Creating API key")
 
     local success, body_json = pcall(vim.json.encode, {})
     if not success then
-        log:error("Anthropic OAuth: 无法编码请求体")
+        log:error("Anthropic OAuth: Unable to encode request body")
         return nil
     end
 
@@ -439,18 +439,18 @@ local function create_api_key(access_token)
         proxy = config.adapters.http.opts.proxy,
         timeout = 30000, -- 30 second timeout
         on_error = function(err)
-            log:error("Anthropic OAuth: 创建 API 密钥请求错误: %s", vim.inspect(err))
+            log:error("Anthropic OAuth: API key creation request error: %s", vim.inspect(err))
         end,
     })
 
     if not response then
-        log:error("Anthropic OAuth: API 密钥创建请求无响应")
+        log:error("Anthropic OAuth: No response from API key creation request")
         return nil
     end
 
     if response.status >= 400 then
         log:error(
-            "Anthropic OAuth: 创建 API 密钥失败，状态码 %d: %s",
+            "Anthropic OAuth: Failed to create API key, status code %d: %s",
             response.status,
             response.body or "no body"
         )
@@ -461,29 +461,29 @@ local function create_api_key(access_token)
 
     if not decode_success or not api_key_data or not api_key_data.raw_key then
         log:error(
-            "Anthropic OAuth: API 密钥响应格式无效: %s",
-            decode_success and "缺少 raw_key" or api_key_data
+            "Anthropic OAuth: Invalid API key response format: %s",
+            decode_success and "missing raw_key" or api_key_data
         )
         return nil
     end
 
-    log:debug("Anthropic OAuth: API 密钥创建成功")
+    log:debug("Anthropic OAuth: API key created successfully")
     return api_key_data.raw_key
 end
 
--- 用授权码交换访问令牌并创建 API 密钥
+-- Exchange authorization code for access token and create API key
 ---@param code string
 ---@param verifier string
 ---@return string|nil
 local function exchange_code_for_api_key(code, verifier)
     if not code or code == "" or not verifier or verifier == "" then
-        log:error("Anthropic OAuth: 需要授权码和验证器")
+        log:error("Anthropic OAuth: Authorization code and verifier required")
         return nil
     end
 
-    log:debug("Anthropic OAuth: 正在用授权码交换访问令牌")
+    log:debug("Anthropic OAuth: Exchanging authorization code for access token")
 
-    -- 从回调 URL 片段解析授权码和状态
+    -- Parse authorization code and state from callback URL fragment
     local code_parts = vim.split(code, "#")
     local auth_code = code_parts[1]
     local state = code_parts[2] or verifier
@@ -500,11 +500,11 @@ local function exchange_code_for_api_key(code, verifier)
 
     local encode_success, body_json = pcall(vim.json.encode, request_data)
     if not encode_success then
-        log:error("Anthropic OAuth: 无法编码令牌交换请求")
+        log:error("Anthropic OAuth: Unable to encode token exchange request")
         return nil
     end
 
-    log:debug("Anthropic OAuth: 令牌交换请求已发起")
+    log:debug("Anthropic OAuth: Token exchange request initiated")
 
     local response = curl.post(OAUTH_CONFIG.TOKEN_URL, {
         headers = {
@@ -516,17 +516,17 @@ local function exchange_code_for_api_key(code, verifier)
         proxy = config.adapters.http.opts.proxy,
         timeout = 30000, -- 30 second timeout
         on_error = function(err)
-            log:error("Anthropic OAuth: 令牌交换请求错误: %s", vim.inspect(err))
+            log:error("Anthropic OAuth: Token exchange request error: %s", vim.inspect(err))
         end,
     })
 
     if not response then
-        log:error("Anthropic OAuth: 令牌交换请求无响应")
+        log:error("Anthropic OAuth: No response from token exchange request")
         return nil
     end
 
     if response.status >= 400 then
-        log:error("Anthropic OAuth: 令牌交换失败，状态码 %d: %s", response.status, response.body or "no body")
+        log:error("Anthropic OAuth: Token exchange failed, status code %d: %s", response.status, response.body or "no body")
         return nil
     end
 
@@ -534,15 +534,15 @@ local function exchange_code_for_api_key(code, verifier)
 
     if not decode_success or not token_data or not token_data.access_token then
         log:error(
-            "Anthropic OAuth: 令牌响应格式无效: %s",
-            decode_success and "缺少 access_token" or token_data
+            "Anthropic OAuth: Invalid token response format: %s",
+            decode_success and "missing access_token" or token_data
         )
         return nil
     end
 
-    log:debug("Anthropic OAuth: 成功获取访问令牌")
+    log:debug("Anthropic OAuth: Successfully obtained access token")
 
-    -- 使用访问令牌创建 API 密钥
+    -- Create API key using access token
     local api_key = create_api_key(token_data.access_token)
     if api_key and save_api_key(api_key) then
         return api_key
@@ -551,7 +551,7 @@ local function exchange_code_for_api_key(code, verifier)
     return nil
 end
 
--- 生成带 PKCE 的 OAuth 授权 URL
+-- Generate OAuth authorization URL with PKCE
 ---@return { url: string, verifier: string }
 local function generate_auth_url()
     local pkce = generate_pkce()
@@ -559,7 +559,7 @@ local function generate_auth_url()
         return nil
     end
 
-    -- 构建正确编码和顺序的查询字符串
+    -- Build properly encoded and ordered query string
     local query_params = {
         "code=true",
         "client_id=" .. url_encode(OAUTH_CONFIG.CLIENT_ID),
@@ -572,7 +572,7 @@ local function generate_auth_url()
     }
 
     local auth_url = OAUTH_CONFIG.AUTH_URL .. "?" .. table.concat(query_params, "&")
-    log:debug("Anthropic OAuth: 已生成授权 URL")
+    log:debug("Anthropic OAuth: Authorization URL generated")
 
     return {
         url = auth_url,
@@ -580,39 +580,39 @@ local function generate_auth_url()
     }
 end
 
--- 获取 API 密钥，从缓存或文件中
+-- Get API key from cache or file
 ---@return string|nil
 local function get_api_key()
-    -- 尝试从缓存或文件加载
+    -- Try loading from cache or file
     local api_key = load_api_key()
     if api_key then
         return api_key
     end
 
-    -- 需要新的 OAuth 流程
-    log:error("Anthropic OAuth: 未找到 API 密钥。请运行 :AnthropicOAuthSetup 进行认证")
+    -- New OAuth flow required
+    log:error("Anthropic OAuth: API key not found. Please run :AnthropicOAuthSetup to authenticate")
     return nil
 end
 
--- 设置 OAuth 认证（交互式）
+-- Setup OAuth authentication (interactive)
 ---@return boolean
 local function setup_oauth()
     local auth_data = generate_auth_url()
     if not auth_data then
-        vim.notify("无法生成 Anthropic OAuth 授权 URL，请检查日志。", vim.log.levels.ERROR)
+        vim.notify("Unable to generate Anthropic OAuth authorization URL, please check logs.", vim.log.levels.ERROR)
         return false
     end
 
-    vim.notify("正在浏览器中打开 Anthropic OAuth 认证...", vim.log.levels.INFO)
+    vim.notify("Opening Anthropic OAuth authentication in browser...", vim.log.levels.INFO)
 
-    -- 在默认浏览器中打开 URL（跨平台处理）
+    -- Open URL in default browser (cross-platform handling)
     local open_cmd
     if vim.fn.has("mac") == 1 then
         open_cmd = "open"
     elseif vim.fn.has("unix") == 1 then
-        -- Linux 系统，优先尝试 xdg-open
+        -- Linux system, try xdg-open first
         open_cmd = "xdg-open"
-        -- 如果 xdg-open 不存在，尝试其他常见命令
+        -- If xdg-open doesn't exist, try other common commands
         if vim.fn.executable("xdg-open") == 0 then
             if vim.fn.executable("gnome-open") == 1 then
                 open_cmd = "gnome-open"
@@ -621,25 +621,25 @@ local function setup_oauth()
             end
         end
     elseif vim.fn.has("win32") == 1 then
-        -- Windows 需要特殊处理
+        -- Windows requires special handling
         open_cmd = "start"
     end
 
     if open_cmd then
         local cmd
         if vim.fn.has("win32") == 1 then
-            -- Windows: 使用 cmd /c start，并正确处理 URL
-            -- 使用空标题和转义的 URL
+            -- Windows: Use cmd /c start and properly handle URL
+            -- Use empty title and escaped URL
             cmd = string.format('cmd /c start "" "%s"', auth_data.url:gsub("&", "^&"))
         else
-            -- Unix/Mac: 使用单引号
+            -- Unix/Mac: Use single quotes
             cmd = open_cmd .. " '" .. auth_data.url .. "'"
         end
 
         local success = pcall(function()
             if vim.fn.has("win32") == 1 then
-                -- Windows 平台使用 system 执行，但隐藏输出
-                -- jobstart 在某些 Windows 环境下可能无法正确打开浏览器
+                -- Windows platform uses system execution but hides output
+                -- jobstart may not correctly open browser in some Windows environments
                 vim.fn.system(cmd)
             else
                 vim.fn.system(cmd)
@@ -648,54 +648,54 @@ local function setup_oauth()
 
         if not success then
             vim.notify(
-                "无法自动打开浏览器。请手动打开此 URL：\n" .. auth_data.url,
+                "Unable to automatically open browser. Please manually open this URL:\n" .. auth_data.url,
                 vim.log.levels.WARN
             )
         end
     else
-        vim.notify("请在浏览器中打开此 URL：\n" .. auth_data.url, vim.log.levels.INFO)
+        vim.notify("Please open this URL in your browser:\n" .. auth_data.url, vim.log.levels.INFO)
     end
 
-    -- 提示用户输入授权码
+    -- Prompt user to enter authorization code
     vim.ui.input({
-        prompt = "请输入回调 URL 中的授权码（'code=' 后面的部分）：",
+        prompt = "Please enter the authorization code from callback URL (the part after 'code='):",
     }, function(code)
         if not code or code == "" then
-            vim.notify("OAuth 设置已取消", vim.log.levels.WARN)
+            vim.notify("OAuth setup cancelled", vim.log.levels.WARN)
             return
         end
 
-        -- 显示进度
-        vim.notify("正在用授权码交换 API 密钥...", vim.log.levels.INFO)
+        -- Show progress
+        vim.notify("Exchanging authorization code for API key...", vim.log.levels.INFO)
 
         local api_key = exchange_code_for_api_key(code, auth_data.verifier)
         if api_key then
-            vim.notify("Anthropic OAuth 认证成功！API 密钥已创建并保存。", vim.log.levels.INFO)
+            vim.notify("Anthropic OAuth authentication successful! API key created and saved.", vim.log.levels.INFO)
         else
-            vim.notify("Anthropic OAuth 认证失败。请检查日志并重试。", vim.log.levels.ERROR)
+            vim.notify("Anthropic OAuth authentication failed. Please check logs and retry.", vim.log.levels.ERROR)
         end
     end)
 
     return true
 end
 
--- 创建用于 OAuth 管理的用户命令
+-- Create user commands for OAuth management
 vim.api.nvim_create_user_command("AnthropicOAuthSetup", function()
     setup_oauth()
 end, {
-    desc = "设置 Anthropic OAuth 认证",
+    desc = "Setup Anthropic OAuth authentication",
 })
 
 vim.api.nvim_create_user_command("AnthropicOAuthStatus", function()
     local api_key = load_api_key()
     if not api_key then
-        vim.notify("未找到 Anthropic API 密钥。运行 :AnthropicOAuthSetup 进行认证。", vim.log.levels.WARN)
+        vim.notify("Anthropic API key not found. Run :AnthropicOAuthSetup to authenticate.", vim.log.levels.WARN)
         return
     end
 
-    vim.notify("Anthropic API 密钥已配置并可以使用。", vim.log.levels.INFO)
+    vim.notify("Anthropic API key is configured and ready to use.", vim.log.levels.INFO)
 end, {
-    desc = "检查 Anthropic OAuth API 密钥状态",
+    desc = "Check Anthropic OAuth API key status",
 })
 
 vim.api.nvim_create_user_command("AnthropicOAuthClear", function()
@@ -705,18 +705,18 @@ vim.api.nvim_create_user_command("AnthropicOAuthClear", function()
         if success then
             _api_key = nil
             _api_key_loaded = false
-            vim.notify("Anthropic API 密钥已清除。", vim.log.levels.INFO)
+            vim.notify("Anthropic API key cleared.", vim.log.levels.INFO)
         else
-            vim.notify("清除 API 密钥文件失败。", vim.log.levels.ERROR)
+            vim.notify("Failed to clear API key file.", vim.log.levels.ERROR)
         end
     else
-        vim.notify("没有可清除的 Anthropic API 密钥。", vim.log.levels.WARN)
+        vim.notify("No Anthropic API key to clear.", vim.log.levels.WARN)
     end
 end, {
-    desc = "清除存储的 Anthropic OAuth API 密钥",
+    desc = "Clear stored Anthropic OAuth API key",
 })
 
--- 通过扩展基础 anthropic 适配器创建适配器
+-- Create adapter by extending base anthropic adapter
 local headers = vim.deepcopy(anthropic.headers or {})
 headers["x-api-key"] = "${api_key}"
 headers["anthropic-version"] = headers["anthropic-version"] or DEFAULT_API_VERSION
@@ -730,7 +730,7 @@ local adapter = vim.tbl_deep_extend("force", vim.deepcopy(anthropic), {
     formatted_name = "Anthropic (OAuth)",
 
     env = {
-        -- 从 OAuth 流程获取 API 密钥
+        -- Get API key from OAuth flow
         ---@return string|nil
         api_key = function()
             return get_api_key()
@@ -739,28 +739,28 @@ local adapter = vim.tbl_deep_extend("force", vim.deepcopy(anthropic), {
 
     headers = headers,
 
-    -- 使用最新模型覆盖模型架构
+    -- Override model schema with latest models
     schema = vim.tbl_deep_extend("force", anthropic.schema or {}, {
-        -- 覆盖 max_tokens 以支持更长的输出，同时确保大于 thinking_budget
+        -- Override max_tokens to support longer outputs while ensuring it's greater than thinking_budget
         max_tokens = vim.tbl_deep_extend("force", anthropic.schema.max_tokens or {}, {
             default = function(self)
                 local model = self.parameters and self.parameters.model or self.schema.model.default
                 local model_opts = self.schema.model.choices[model]
 
-                -- 如果模型支持推理（extended thinking），确保 max_tokens > thinking_budget
+                -- If model supports reasoning (extended thinking), ensure max_tokens > thinking_budget
                 if model_opts and model_opts.opts and model_opts.opts.can_reason then
                     local thinking_budget = self.schema.thinking_budget and self.schema.thinking_budget.default or 16000
-                    -- 确保 max_tokens 至少比 thinking_budget 多 1000
+                    -- Ensure max_tokens is at least 1000 more than thinking_budget
                     local min_tokens = thinking_budget + 1000
 
                     if model_opts.opts.max_output then
-                        -- 使用模型的最大输出能力，但需要考虑 thinking_budget
-                        -- 如果 min_tokens 超过了模型的最大输出，使用模型的最大输出
+                        -- Use model's max output capability, but consider thinking_budget
+                        -- If min_tokens exceeds model's max output, use model's max output
                         return math.min(min_tokens, model_opts.opts.max_output)
                     end
                     return min_tokens
                 elseif model_opts and model_opts.opts and model_opts.opts.max_output then
-                    -- 使用模型的最大输出能力
+                    -- Use model's max output capability
                     return model_opts.opts.max_output
                 end
                 return 8192
@@ -772,7 +772,7 @@ local adapter = vim.tbl_deep_extend("force", vim.deepcopy(anthropic), {
     }),
 })
 
--- 覆盖默认已经有的模型，使用官网的最新模型
+-- Override existing default models with latest models from official website
 adapter.schema.model = {
     order = 1,
     mapping = "parameters",
@@ -780,7 +780,7 @@ adapter.schema.model = {
     desc = "The model that will complete your prompt. See https://docs.anthropic.com/claude/docs/models-overview for additional details and options.",
     default = "claude-sonnet-4-5",
     choices = {
-        -- Claude Opus 4.5 - 高性能模型
+        -- Claude Opus 4.5 - High performance model
         ["claude-opus-4-5"] = {
             opts = {
                 can_reason = true,
@@ -790,7 +790,7 @@ adapter.schema.model = {
                 description = "High-performance model - Balanced performance and capability",
             },
         },
-        -- Claude Opus 4.1 - 最强大的模型
+        -- Claude Opus 4.1 - Most powerful model
         ["claude-opus-4-1"] = {
             opts = {
                 can_reason = true,
@@ -800,7 +800,7 @@ adapter.schema.model = {
                 description = "Our most capable model - Highest level of intelligence and capability",
             },
         },
-        -- Claude Opus 4 - 前旗舰模型
+        -- Claude Opus 4 - Previous flagship model
         ["claude-opus-4-0"] = {
             opts = {
                 can_reason = true,
@@ -819,7 +819,7 @@ adapter.schema.model = {
                 description = "High-performance model - Balanced performance and capability",
             },
         },
-        -- Claude Sonnet 4 - 高性能模型
+        -- Claude Sonnet 4 - High performance model
         ["claude-sonnet-4-0"] = {
             opts = {
                 can_reason = true,
@@ -829,7 +829,7 @@ adapter.schema.model = {
                 description = "High-performance model - High intelligence and balanced performance",
             },
         },
-        -- Claude Sonnet 3.7 - 带早期扩展思考的高性能模型
+        -- Claude Sonnet 3.7 - High performance model with early extended thinking
         ["claude-3-7-sonnet-latest"] = {
             opts = {
                 can_reason = true,
@@ -840,7 +840,7 @@ adapter.schema.model = {
                 description = "High-performance model with early extended thinking",
             },
         },
-        -- claude haiku 4.5
+        -- Claude Haiku 4.5
         ["claude-haiku-4-5"] = {
             opts = {
                 can_reason = true,
@@ -850,7 +850,7 @@ adapter.schema.model = {
                 description = "Our latest Claude Haiku model - Balanced performance and capability",
             },
         },
-        -- Claude Haiku 3.5 - 最快的模型
+        -- Claude Haiku 3.5 - Fastest model
         ["claude-3-5-haiku-latest"] = {
             opts = {
                 can_reason = false,
@@ -864,25 +864,25 @@ adapter.schema.model = {
 }
 
 adapter.handlers = vim.tbl_extend("force", anthropic.handlers, {
-    -- 格式化参数，处理 Opus 4.1 的限制和 thinking 支持
+    -- Format parameters, handle Opus 4.1 limitations and thinking support
     ---@param self CodeCompanion.Adapter
     ---@param params table
     ---@param messages table
     ---@return table
     form_parameters = function(self, params, messages)
-        -- 首先调用原始的 form_parameters
+        -- First call original form_parameters
         params = anthropic.handlers.form_parameters(self, params, messages)
 
-        -- 获取当前模型配置
+        -- Get current model configuration
         local model = params.model or self.schema.model.default
         local model_opts = self.schema.model.choices[model]
 
-        -- 关键修复：根据模型限制调整 max_tokens
+        -- Critical fix: Adjust max_tokens based on model limits
         if model_opts and model_opts.opts and model_opts.opts.max_output then
-            -- 如果当前的 max_tokens 超过了模型的最大值，调整它
+            -- If current max_tokens exceeds model's maximum, adjust it
             if params.max_tokens and params.max_tokens > model_opts.opts.max_output then
                 log:debug(
-                    "模型 %s 的 max_tokens %d 超过最大值 %d，调整为最大值",
+                    "Model %s max_tokens %d exceeds maximum %d, adjusting to maximum",
                     model,
                     params.max_tokens,
                     model_opts.opts.max_output
@@ -891,24 +891,24 @@ adapter.handlers = vim.tbl_extend("force", anthropic.handlers, {
             end
         end
 
-        -- 关键修复：如果模型不支持 thinking，移除 thinking 相关参数
+        -- Critical fix: If model doesn't support thinking, remove thinking-related parameters
         if model_opts and model_opts.opts and not model_opts.opts.can_reason then
-            -- 移除 thinking 参数
+            -- Remove thinking parameter
             if params.thinking then
-                log:debug("模型 %s 不支持 thinking，移除 thinking 参数", model)
+                log:debug("Model %s doesn't support thinking, removing thinking parameter", model)
                 params.thinking = nil
             end
 
-            -- 清空 temp 中的 extended_thinking 和 thinking_budget
+            -- Clear extended_thinking and thinking_budget in temp
             self.temp.extended_thinking = nil
             self.temp.thinking_budget = nil
         end
 
-        -- Opus 4.1 特殊处理
+        -- Opus 4.1 special handling
         if model == "claude-opus-4-1" then
-            -- Opus 4.1 不允许同时指定 temperature 和 top_p
+            -- Opus 4.1 doesn't allow both temperature and top_p
             if params.temperature and params.top_p then
-                log:debug("Opus 4.1 检测到同时设置了 temperature 和 top_p，移除 top_p")
+                log:debug("Opus 4.1 detected with both temperature and top_p set, removing top_p")
                 params.top_p = nil
             end
         end
@@ -916,94 +916,94 @@ adapter.handlers = vim.tbl_extend("force", anthropic.handlers, {
         return params
     end,
 
-    -- 在开始请求前检查有效的 API 密钥
+    -- Check for valid API key before starting request
     ---@param self CodeCompanion.Adapter
     ---@return boolean
     setup = function(self)
-        -- 获取并验证 API 密钥
+        -- Get and validate API key
         local api_key = get_api_key()
         if not api_key then
             vim.notify(
-                "未找到 Anthropic API 密钥。运行 :AnthropicOAuthSetup 进行认证。",
+                "Anthropic API key not found. Run :AnthropicOAuthSetup to authenticate.",
                 vim.log.levels.ERROR
             )
             return false
         end
 
-        -- 确保启用工具支持
+        -- Ensure tool support is enabled
         if self.opts then
             self.opts.tools = true
         end
 
-        -- 根据选择的模型动态调整设置
+        -- Dynamically adjust settings based on selected model
         local model = self.schema.model.default
         local model_opts = self.schema.model.choices[model]
         if model_opts and model_opts.opts then
-            -- 应用模型特定的选项
+            -- Apply model-specific options
             self.opts = vim.tbl_deep_extend("force", self.opts or {}, {
                 has_vision = model_opts.opts.has_vision,
                 can_reason = model_opts.opts.can_reason,
                 has_token_efficient_tools = model_opts.opts.has_token_efficient_tools,
             })
 
-            -- 动态设置 thinking 相关的 beta headers
-            -- 只有支持 thinking 的模型才添加 interleaved-thinking beta feature
+            -- Dynamically set thinking-related beta headers
+            -- Only add interleaved-thinking beta feature for models that support thinking
             if model_opts.opts.can_reason then
-                -- 添加 thinking 支持
+                -- Add thinking support
                 if not string.find(self.headers["anthropic-beta"], "interleaved%-thinking") then
                     self.headers["anthropic-beta"] = self.headers["anthropic-beta"]
                         .. ",interleaved-thinking-2025-05-14"
-                    log:debug("为模型 %s 启用 thinking 支持", model)
+                    log:debug("Enabled thinking support for model %s", model)
                 end
             else
-                -- 移除 thinking 支持（如果存在）
+                -- Remove thinking support (if exists)
                 if string.find(self.headers["anthropic-beta"], "interleaved%-thinking") then
                     self.headers["anthropic-beta"] =
                         self.headers["anthropic-beta"]:gsub(",?interleaved%-thinking%-[^,]*", "")
-                    log:debug("为模型 %s 禁用 thinking 支持", model)
+                    log:debug("Disabled thinking support for model %s", model)
                 end
 
-                -- 清空 extended_thinking 相关设置
+                -- Clear extended_thinking related settings
                 self.temp.extended_thinking = nil
                 self.temp.thinking_budget = nil
             end
 
-            -- 动态设置最大输出令牌数
+            -- Dynamically set maximum output tokens
             if model_opts.opts.max_output and self.schema.max_tokens then
                 if type(self.schema.max_tokens.default) == "function" then
-                    -- 已经是函数，不需要覆盖
+                    -- Already a function, no need to override
                 else
                     self.schema.max_tokens.default = model_opts.opts.max_output
                 end
             end
 
-            -- 记录当前使用的模型信息
-            log:debug("使用模型: %s - %s", model, model_opts.opts.description or "")
+            -- Log current model information
+            log:debug("Using model: %s - %s", model, model_opts.opts.description or "")
             log:debug("Beta features: %s", self.headers["anthropic-beta"])
         end
 
-        -- 调用原始设置函数处理流式传输和模型选项
+        -- Call original setup function to handle streaming and model options
         return anthropic.handlers.setup(self)
     end,
 
-    -- 在开头格式化包含 Claude Code 系统消息的消息（OAuth 必需）
+    -- Format messages with Claude Code system message at the beginning (required for OAuth)
     ---@param self CodeCompanion.Adapter
     ---@param messages table
     ---@return table
     form_messages = function(self, messages)
-        -- 首先，调用原始 form_messages 获取标准格式
+        -- First, call original form_messages to get standard format
         local formatted = anthropic.handlers.form_messages(self, messages)
 
-        -- 提取现有系统消息或初始化空数组
+        -- Extract existing system messages or initialize empty array
         local system = formatted.system or {}
 
-        -- 在开头添加 Claude Code 系统消息（OAuth 正常工作所必需）
+        -- Add Claude Code system message at the beginning (required for OAuth to work properly)
         table.insert(system, 1, {
             type = "text",
             text = "You are Claude Code, Anthropic's official CLI for Claude.",
         })
 
-        -- 返回带有修改后系统消息的格式化消息
+        -- Return formatted messages with modified system messages
         return {
             system = system,
             messages = formatted.messages,
@@ -1011,12 +1011,12 @@ adapter.handlers = vim.tbl_extend("force", anthropic.handlers, {
     end,
 })
 
--- 覆盖 extended_thinking 的默认值逻辑
+-- Override extended_thinking default value logic
 adapter.schema.extended_thinking = vim.tbl_deep_extend("force", adapter.schema.extended_thinking or {}, {
     default = function(self)
         local model = self.schema.model.default
         local model_opts = self.schema.model.choices[model]
-        -- 只有明确支持 can_reason 的模型才默认启用
+        -- Only enable by default for models that explicitly support can_reason
         if model_opts and model_opts.opts and model_opts.opts.can_reason == true then
             return true
         end
@@ -1025,7 +1025,7 @@ adapter.schema.extended_thinking = vim.tbl_deep_extend("force", adapter.schema.e
     condition = function(self)
         local model = self.schema.model.default
         local model_opts = self.schema.model.choices[model]
-        -- 只有支持 can_reason 的模型才显示这个选项
+        -- Only show this option for models that support can_reason
         if model_opts and model_opts.opts then
             return model_opts.opts.can_reason == true
         end
@@ -1033,12 +1033,12 @@ adapter.schema.extended_thinking = vim.tbl_deep_extend("force", adapter.schema.e
     end,
 })
 
--- 覆盖 thinking_budget 的条件逻辑
+-- Override thinking_budget condition logic
 adapter.schema.thinking_budget = vim.tbl_deep_extend("force", adapter.schema.thinking_budget or {}, {
     condition = function(self)
         local model = self.schema.model.default
         local model_opts = self.schema.model.choices[model]
-        -- 只有支持 can_reason 的模型才显示这个选项
+        -- Only show this option for models that support can_reason
         if model_opts and model_opts.opts then
             return model_opts.opts.can_reason == true
         end
