@@ -15,7 +15,7 @@ return
             blocked = {
                 -- 默认禁用的 buftype 和 filetype
                 buftypes = { include_defaults = true }, -- terminal, quickfix, nofile, prompt
-                filetypes = { include_defaults = true, "dashboard", "mason" }, -- 包含默认 + 额外的
+                filetypes = { include_defaults = true, "dashboard", "mason", "codecompanion" }, -- 包含默认 + 额外的
             },
             static = {
                 enabled = true,
