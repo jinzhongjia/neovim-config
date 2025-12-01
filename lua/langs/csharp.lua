@@ -1,7 +1,7 @@
 return
 --- @type LangSpec
 {
-    lsp = "csharp_ls",
+    -- lsp = "csharp_ls",
     opt = {},
     others = {},
     before_set = nil,
