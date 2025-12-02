@@ -4,6 +4,8 @@ local M = {
     {
         "jinzhongjia/hlargs.nvim",
         enabled = true,
+        branch = "fix_err",
+        dev = true,
         event = "LspAttach", -- LSP 加载时触发
         config = function()
             require("hlargs").setup()
