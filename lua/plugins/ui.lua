@@ -133,6 +133,9 @@ return
                 "dapui_console",
                 "dapui_repl",
                 "dap-repl",
+                -- opencode: 使用自定义扩展
+                "opencode",
+                "opencode_output",
             }
 
             -- 检查当前 buffer 是否是特殊 filetype
@@ -145,6 +148,105 @@ return
                 end
                 return false
             end
+
+            -- OpenCode extension for lualine
+            -- 为 opencode 和 opencode_output filetype 提供美化的状态栏
+            -- Section A: 显示当前窗口类型（Input/Output）
+            -- Section B: 显示会话名称
+            -- Section C: 显示 Provider 和 Model
+            -- Section X: 显示 Token 使用量
+            local opencode_extension = {
+                sections = {
+                    lualine_a = {
+                        {
+                            function()
+                                local ft = vim.bo.filetype
+                                if ft == "opencode" then
+                                    return " OpenCode Input"
+                                elseif ft == "opencode_output" then
+                                    return " OpenCode Output"
+                                end
+                                return ""
+                            end,
+                            color = function()
+                                local ft = vim.bo.filetype
+                                if ft == "opencode" then
+                                    return { fg = "#ffffff", bg = "#7aa2f7", gui = "bold" }
+                                elseif ft == "opencode_output" then
+                                    return { fg = "#ffffff", bg = "#9ece6a", gui = "bold" }
+                                end
+                            end,
+                        },
+                    },
+                    lualine_b = {
+                        {
+                            function()
+                                -- 显示当前会话信息
+                                local ok, opencode = pcall(require, "opencode")
+                                if ok and opencode.get_current_session then
+                                    local session = opencode.get_current_session()
+                                    if session and session.name then
+                                        return " " .. session.name
+                                    end
+                                end
+                                return ""
+                            end,
+                            color = { fg = "#bb9af7" },
+                        },
+                    },
+                    lualine_c = {
+                        {
+                            function()
+                                -- 显示 provider/model 信息
+                                local ok, opencode = pcall(require, "opencode")
+                                if ok and opencode.get_config then
+                                    local config = opencode.get_config()
+                                    if config and config.provider then
+                                        local provider = config.provider
+                                        local model = config.model or ""
+                                        if model ~= "" then
+                                            return string.format(" %s (%s)", provider, model)
+                                        else
+                                            return string.format(" %s", provider)
+                                        end
+                                    end
+                                end
+                                return ""
+                            end,
+                            color = { fg = "#7dcfff" },
+                        },
+                    },
+                    lualine_x = {
+                        {
+                            function()
+                                -- 显示 token 使用情况（如果可用）
+                                local ok, opencode = pcall(require, "opencode")
+                                if ok and opencode.get_token_usage then
+                                    local usage = opencode.get_token_usage()
+                                    if usage and usage.total then
+                                        return string.format("󰔷 %d", usage.total)
+                                    end
+                                end
+                                return ""
+                            end,
+                            color = { fg = "#e0af68" },
+                        },
+                    },
+                    lualine_y = {
+                        {
+                            "progress",
+                            color = { fg = "#c0caf5" },
+                        },
+                    },
+                    lualine_z = {
+                        {
+                            "location",
+                            color = { fg = "#c0caf5" },
+                        },
+                    },
+                },
+                filetypes = { "opencode", "opencode_output" },
+            }
 
             return {
                 options = {
@@ -164,6 +266,7 @@ return
                         winbar = {},
                     },
                 },
+                extensions = { opencode_extension },
                 sections = {
                     lualine_a = {
                         {
