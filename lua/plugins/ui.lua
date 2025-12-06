@@ -76,34 +76,7 @@ return
             { "<leader>bp", "<cmd>BufferLineMovePrev<cr>", desc = "bufferline move prev" },
         },
     },
-    {
-        -- scope.nvim 提供 tab 级别的 buffer 隔离
-        "tiagovla/scope.nvim",
-        event = "TabNew", -- tab 操作时加载
-        config = function()
-            require("scope").setup({
-                hooks = {
-                    pre_tab_enter = function()
-                        -- 进入 tab 前的自定义逻辑
-                    end,
-                    post_tab_enter = function()
-                        -- 进入 tab 后的自定义逻辑
-                    end,
-                },
-            })
-        end,
-        keys = {
-            { "<leader>bm", "<cmd>ScopeMoveBuf<cr>", desc = "Move buffer to another tab" },
-            {
-                "<leader>fb",
-                function()
-                    -- 使用 snacks.picker 显示当前 tab 的 buffers
-                    Snacks.picker.buffers()
-                end,
-                desc = "Find buffers in current tab",
-            },
-        },
-    },
+
     {
         "nvim-lualine/lualine.nvim",
         dependencies = {
