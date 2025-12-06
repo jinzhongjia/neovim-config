@@ -2,10 +2,145 @@ return
 --- @type LazySpec
 {
     {
-        "echasnovski/mini.diff",
-        version = "*",
+        "lewis6991/gitsigns.nvim",
         event = { "BufReadPost", "BufNewFile" }, -- 需要实时显示 diff
-        opts = {},
+        opts = {
+            signs = {
+                add = { text = "┃" },
+                change = { text = "┃" },
+                delete = { text = "_" },
+                topdelete = { text = "‾" },
+                changedelete = { text = "~" },
+                untracked = { text = "┆" },
+            },
+            signs_staged = {
+                add = { text = "┃" },
+                change = { text = "┃" },
+                delete = { text = "_" },
+                topdelete = { text = "‾" },
+                changedelete = { text = "~" },
+            },
+            signs_staged_enable = true,
+            signcolumn = true, -- 显示 sign column
+            numhl = true, -- 高亮行号 - 更直观地看到修改
+            linehl = false, -- 不高亮整行（太干扰）
+            word_diff = false, -- 不默认显示 word diff（按需使用）
+            watch_gitdir = {
+                follow_files = true, -- 跟随文件移动
+            },
+            auto_attach = true,
+            attach_to_untracked = true, -- 附加到未跟踪的文件
+            current_line_blame = false, -- 默认不显示当前行 blame（按需开启，避免干扰）
+            current_line_blame_opts = {
+                virt_text = true,
+                virt_text_pos = "eol", -- 显示在行尾
+                delay = 1000, -- 延迟 1000ms 显示，避免频繁切换行时闪烁
+                ignore_whitespace = false,
+                virt_text_priority = 100,
+                use_focus = true, -- 只在窗口聚焦时显示
+            },
+            current_line_blame_formatter = "  <author> • <author_time:%Y-%m-%d> • <summary>",
+            sign_priority = 6,
+            update_debounce = 100,
+            status_formatter = nil, -- 使用默认格式化
+            max_file_length = 40000, -- 文件超过 40000 行则禁用
+            preview_config = {
+                border = "rounded",
+                style = "minimal",
+                relative = "cursor",
+                row = 0,
+                col = 1,
+            },
+            diff_opts = {
+                algorithm = "histogram", -- 更好的 diff 算法
+                internal = true, -- 使用内置 diff 库
+                indent_heuristic = true, -- 启用缩进启发式
+                vertical = true, -- 垂直分屏显示 diff
+                linematch = 60, -- 启用行匹配（对齐相似行），提升 diff 质量
+            },
+            on_attach = function(bufnr)
+                local gitsigns = require("gitsigns")
+
+                local function map(mode, l, r, opts)
+                    opts = opts or {}
+                    opts.buffer = bufnr
+                    vim.keymap.set(mode, l, r, opts)
+                end
+
+                -- Navigation - 增强版：自动打开折叠和可选预览
+                map("n", "]c", function()
+                    if vim.wo.diff then
+                        vim.cmd.normal({ "]c", bang = true })
+                    else
+                        gitsigns.nav_hunk("next", {
+                            wrap = true, -- 循环跳转
+                            navigation_message = true, -- 显示导航消息
+                            foldopen = true, -- 自动打开折叠
+                            preview = false, -- 不自动预览（可以手动 hp）
+                        })
+                    end
+                end, { desc = "Next hunk" })
+
+                map("n", "[c", function()
+                    if vim.wo.diff then
+                        vim.cmd.normal({ "[c", bang = true })
+                    else
+                        gitsigns.nav_hunk("prev", {
+                            wrap = true,
+                            navigation_message = true,
+                            foldopen = true,
+                            preview = false,
+                        })
+                    end
+                end, { desc = "Previous hunk" })
+
+                -- Actions
+                map("n", "<leader>hs", gitsigns.stage_hunk, { desc = "Stage hunk" })
+                map("n", "<leader>hr", gitsigns.reset_hunk, { desc = "Reset hunk" })
+                map("v", "<leader>hs", function()
+                    gitsigns.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
+                end, { desc = "Stage hunk (visual)" })
+                map("v", "<leader>hr", function()
+                    gitsigns.reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
+                end, { desc = "Reset hunk (visual)" })
+
+                map("n", "<leader>hS", gitsigns.stage_buffer, { desc = "Stage buffer" })
+                map("n", "<leader>hu", gitsigns.undo_stage_hunk, { desc = "Undo stage hunk" })
+                map("n", "<leader>hR", gitsigns.reset_buffer, { desc = "Reset buffer" })
+                map("n", "<leader>hp", gitsigns.preview_hunk, { desc = "Preview hunk" })
+                map("n", "<leader>hP", gitsigns.preview_hunk_inline, { desc = "Preview hunk inline" })
+
+                map("n", "<leader>hb", function()
+                    gitsigns.blame_line({ full = true })
+                end, { desc = "Blame line" })
+                map("n", "<leader>hB", gitsigns.blame, { desc = "Blame buffer" })
+                map("n", "<leader>tb", gitsigns.toggle_current_line_blame, { desc = "Toggle line blame" })
+
+                map("n", "<leader>hd", gitsigns.diffthis, { desc = "Diff this" })
+                map("n", "<leader>hD", function()
+                    gitsigns.diffthis("~")
+                end, { desc = "Diff this ~" })
+
+                map("n", "<leader>td", gitsigns.toggle_deleted, { desc = "Toggle deleted" })
+
+                -- Quickfix / Location list
+                map("n", "<leader>hq", function()
+                    gitsigns.setqflist("all")
+                end, { desc = "Hunks to quickfix (all)" })
+                map("n", "<leader>hl", function()
+                    gitsigns.setloclist(0)
+                end, { desc = "Hunks to loclist" })
+
+                -- Toggle features
+                map("n", "<leader>ts", gitsigns.toggle_signs, { desc = "Toggle signs" })
+                map("n", "<leader>tn", gitsigns.toggle_numhl, { desc = "Toggle numhl" })
+                map("n", "<leader>tl", gitsigns.toggle_linehl, { desc = "Toggle linehl" })
+                map("n", "<leader>tw", gitsigns.toggle_word_diff, { desc = "Toggle word diff" })
+
+                -- Text object
+                map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", { desc = "Select hunk" })
+            end,
+        },
     },
     {
         "rbong/vim-flog",
