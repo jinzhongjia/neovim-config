@@ -107,9 +107,21 @@ return {
     keys = {
         -- 基础操作
         { "<leader>og", "<cmd>Opencode<cr>", desc = "打开/关闭 Opencode" },
-        { "<leader>oi", "<cmd>Opencode open input<cr>", desc = "打开输入窗口" },
-        { "<leader>oI", "<cmd>Opencode open input_new_session<cr>", desc = "新会话并打开输入" },
-        { "<leader>on", "<cmd>Opencode open input_new_session<cr>", desc = "快速创建新会话" },
+        { "<leader>oi", "<cmd>Opencode open input<cr>", desc = "打开输入窗口（当前会话）" },
+        {
+            "<leader>oI",
+            function()
+                require("opencode.api").open_input_new_session()
+            end,
+            desc = "打开输入窗口（新会话）",
+        },
+        {
+            "<leader>on",
+            function()
+                require("opencode.api").open_input_new_session()
+            end,
+            desc = "快速创建新会话",
+        },
         { "<leader>oo", "<cmd>Opencode open output<cr>", desc = "打开输出窗口" },
         { "<leader>ot", "<cmd>Opencode toggle focus<cr>", desc = "切换焦点" },
         { "<leader>oq", "<cmd>Opencode close<cr>", desc = "关闭窗口" },
@@ -117,7 +129,17 @@ return {
         -- 会话管理
         { "<leader>os", "<cmd>Opencode session select<cr>", desc = "选择会话" },
         { "<leader>oS", "<cmd>Opencode session select_child<cr>", desc = "选择子会话" },
-        { "<leader>oN", "<cmd>Opencode session new<cr>", desc = "创建命名会话" },
+        {
+            "<leader>oN",
+            function()
+                vim.ui.input({ prompt = "New session name: " }, function(name)
+                    if name and name ~= "" then
+                        vim.cmd("Opencode session new " .. name)
+                    end
+                end)
+            end,
+            desc = "创建命名会话",
+        },
         { "<leader>oR", "<cmd>Opencode session rename<cr>", desc = "重命名会话" },
         { "<leader>oT", "<cmd>Opencode timeline<cr>", desc = "显示时间线" },
 
