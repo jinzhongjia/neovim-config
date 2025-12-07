@@ -29,6 +29,12 @@ return
                     { filetype = "NvimTree", text = "EXPLORER", text_align = "center" },
                     { filetype = "Outline", text = "OUTLINE", text_align = "center" },
                     { filetype = "codecompanion", text = "CodeCompanion", text_align = "center" },
+                    {
+                        filetype = "fyler",
+                        text = " FILE MANAGER",
+                        text_align = "center",
+                        separator = true,
+                    },
                 },
                 show_tab_indicators = true,
                 -- Use snacks.nvim's bufdelete for smart buffer deletion
