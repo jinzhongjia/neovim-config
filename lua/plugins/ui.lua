@@ -35,6 +35,34 @@ return
                         text_align = "center",
                         separator = true,
                     },
+                    -- Neogit status buffer
+                    {
+                        filetype = "NeogitStatus",
+                        text = " NEOGIT STATUS",
+                        text_align = "center",
+                        separator = true,
+                    },
+                    -- Neogit commit view
+                    {
+                        filetype = "NeogitCommitView",
+                        text = " COMMIT VIEW",
+                        text_align = "center",
+                        separator = true,
+                    },
+                    -- Neogit diff view
+                    {
+                        filetype = "NeogitDiffView",
+                        text = " DIFF VIEW",
+                        text_align = "center",
+                        separator = true,
+                    },
+                    -- Git commit message editor
+                    {
+                        filetype = "gitcommit",
+                        text = " COMMIT MESSAGE",
+                        text_align = "center",
+                        separator = true,
+                    },
                 },
                 show_tab_indicators = true,
                 -- Use snacks.nvim's bufdelete for smart buffer deletion
@@ -115,6 +143,11 @@ return
                 -- opencode: 使用自定义扩展
                 "opencode",
                 "opencode_output",
+                -- neogit: git 相关窗口使用简化状态栏
+                "NeogitStatus",
+                "NeogitCommitView",
+                "NeogitDiffView",
+                "gitcommit",
             }
 
             -- 检查当前 buffer 是否是特殊 filetype
@@ -227,6 +260,97 @@ return
                 filetypes = { "opencode", "opencode_output" },
             }
 
+            -- Neogit/Git extension for lualine
+            -- 为 Neogit 和 gitcommit filetype 提供美化的状态栏
+            local neogit_extension = {
+                sections = {
+                    lualine_a = {
+                        {
+                            function()
+                                local ft = vim.bo.filetype
+                                if ft == "NeogitStatus" then
+                                    return " Neogit Status"
+                                elseif ft == "NeogitCommitView" then
+                                    return " Commit View"
+                                elseif ft == "NeogitDiffView" then
+                                    return " Diff View"
+                                elseif ft == "gitcommit" then
+                                    return " Commit Message"
+                                end
+                                return ""
+                            end,
+                            color = function()
+                                local ft = vim.bo.filetype
+                                if ft == "NeogitStatus" then
+                                    return { fg = "#ffffff", bg = "#f7768e", gui = "bold" } -- 红色
+                                elseif ft == "NeogitCommitView" then
+                                    return { fg = "#ffffff", bg = "#bb9af7", gui = "bold" } -- 紫色
+                                elseif ft == "NeogitDiffView" then
+                                    return { fg = "#1a1b26", bg = "#e0af68", gui = "bold" } -- 橙色/黄色
+                                elseif ft == "gitcommit" then
+                                    return { fg = "#1a1b26", bg = "#9ece6a", gui = "bold" } -- 绿色
+                                end
+                            end,
+                        },
+                    },
+                    lualine_b = {
+                        {
+                            function()
+                                -- 显示当前 git 分支
+                                local branch = vim.fn.system("git branch --show-current 2>/dev/null"):gsub("\n", "")
+                                if branch and branch ~= "" then
+                                    return " " .. branch
+                                end
+                                return ""
+                            end,
+                            color = { fg = "#e0af68" },
+                        },
+                    },
+                    lualine_c = {
+                        {
+                            function()
+                                -- 显示当前仓库名称
+                                local repo = vim.fn
+                                    .system("basename $(git rev-parse --show-toplevel 2>/dev/null) 2>/dev/null")
+                                    :gsub("\n", "")
+                                if repo and repo ~= "" then
+                                    return " " .. repo
+                                end
+                                return ""
+                            end,
+                            color = { fg = "#7aa2f7" },
+                        },
+                    },
+                    lualine_x = {
+                        {
+                            function()
+                                -- gitcommit: 显示行数和字符统计
+                                if vim.bo.filetype == "gitcommit" then
+                                    local lines = vim.fn.line("$")
+                                    local chars = vim.fn.wordcount().chars
+                                    return string.format(" %d lines │  %d chars", lines, chars)
+                                end
+                                return ""
+                            end,
+                            color = { fg = "#c0caf5" },
+                        },
+                    },
+                    lualine_y = {
+                        {
+                            "progress",
+                            color = { fg = "#c0caf5" },
+                        },
+                    },
+                    lualine_z = {
+                        {
+                            "location",
+                            color = { fg = "#c0caf5" },
+                        },
+                    },
+                },
+                filetypes = { "NeogitStatus", "NeogitCommitView", "NeogitDiffView", "gitcommit" },
+            }
+
             return {
                 options = {
                     globalstatus = false,
@@ -245,7 +369,7 @@ return
                         winbar = {},
                     },
                 },
-                extensions = { opencode_extension },
+                extensions = { opencode_extension, neogit_extension },
                 sections = {
                     lualine_a = {
                         {
