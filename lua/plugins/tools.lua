@@ -260,7 +260,7 @@ return
 
             -- Notifications
             {
-                "<leader>n",
+                "<leader>sn",
                 function()
                     Snacks.notifier.show_history()
                 end,
