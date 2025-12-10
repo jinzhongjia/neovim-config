@@ -266,14 +266,6 @@ return
         },
     },
     {
-        "FabijanZulj/blame.nvim",
-        cmd = { "BlameToggle", "BlameEnable" }, -- 命令触发
-        opts = {},
-        keys = {
-            { "<leader>bt", "<cmd>BlameToggle<cr>", desc = "Blame toggle" },
-        },
-    },
-    {
         "pwntester/octo.nvim",
         cmd = "Octo",
         dependencies = {
