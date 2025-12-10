@@ -26,3 +26,4 @@
 - **Before adding/modifying keybindings**: Search the codebase for existing uses of the key sequence to avoid conflicts
 - **Check for conflicts**: Use `grep` to search `lua/plugins/` and `lua/core/keybind.lua` for the key pattern
 - **Avoid overwriting**: Plugin keybindings in `on_attach` or `keys` tables may override each other based on load order
+- **All keybindings need descriptions**: Ensure every keybinding has a clear description for better usability and maintenance (english only)
