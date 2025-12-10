@@ -21,3 +21,8 @@
 - Plugin specs: `return { { "plugin/name", event = "VeryLazy", opts = {} } }`
 - Lang specs: `return --- @type LangSpec { lsp = "server", others = { "tool" } }`
 - Prefer `event = "VeryLazy"` or `ft = "filetype"` for lazy loading
+
+## Keybinding Guidelines
+- **Before adding/modifying keybindings**: Search the codebase for existing uses of the key sequence to avoid conflicts
+- **Check for conflicts**: Use `grep` to search `lua/plugins/` and `lua/core/keybind.lua` for the key pattern
+- **Avoid overwriting**: Plugin keybindings in `on_attach` or `keys` tables may override each other based on load order
