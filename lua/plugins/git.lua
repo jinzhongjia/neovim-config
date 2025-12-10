@@ -461,17 +461,17 @@ return
         end,
         keys = {
             -- Git diff 模式 - 与指定版本比较当前文件
-            { "<leader>dh", "<cmd>CodeDiff file HEAD<cr>", desc = "Diff with HEAD" },
-            { "<leader>dH", "<cmd>CodeDiff file HEAD~1<cr>", desc = "Diff with HEAD~1" },
+            { "<leader>gdh", "<cmd>CodeDiff file HEAD<cr>", desc = "Diff with HEAD" },
+            { "<leader>gdH", "<cmd>CodeDiff file HEAD~1<cr>", desc = "Diff with HEAD~1" },
 
             -- 文件浏览器模式 - 显示所有变更的文件
-            { "<leader>df", "<cmd>CodeDiff<cr>", desc = "Diff file explorer" },
+            { "<leader>gdf", "<cmd>CodeDiff<cr>", desc = "Diff file explorer" },
 
             -- 与指定版本比较（需要输入版本号）
-            { "<leader>dc", ":CodeDiff file ", desc = "Diff with commit...", silent = false },
+            { "<leader>gdc", ":CodeDiff file ", desc = "Diff with commit...", silent = false },
 
             -- 文件比较模式（需要输入两个文件路径）
-            { "<leader>d2", ":CodeDiff file ", desc = "Diff two files...", silent = false },
+            { "<leader>gd2", ":CodeDiff file ", desc = "Diff two files...", silent = false },
         },
     },
 }
