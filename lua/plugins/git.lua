@@ -166,15 +166,6 @@ return
         opts = {
             -- 性能优化
             auto_refresh = true, -- 自动刷新状态
-            disable_hint = false, -- 保留顶部提示
-            disable_context_highlighting = false, -- 保留上下文高亮
-            disable_signs = false, -- 保留符号
-
-            -- 文件监视器优化
-            filewatcher = {
-                interval = 2000, -- 增加到2秒，减少频繁刷新
-                enabled = true,
-            },
 
             -- 控制台性能优化
             console_timeout = 2000, -- 2秒后显示慢命令的输出
@@ -183,6 +174,7 @@ return
 
             -- 图形样式
             graph_style = "unicode",
+            process_spinner = true,
 
             -- Git 性能优化
             use_default_keymaps = true,
@@ -237,37 +229,6 @@ return
                     ["<C-j>"] = "Next",
                     ["<C-k>"] = "Previous",
                 },
-                status = {
-                    ["<C-r>"] = "RefreshBuffer", -- 添加手动刷新快捷键
-                    ["gg"] = false, -- 禁用 neogit 的 gg 映射，恢复 vim 原生行为（跳到顶部）
-                    ["G"] = false, -- 禁用 neogit 的 G 映射，恢复 vim 原生行为（跳到底部）
-                },
-            },
-
-            -- 状态视图配置
-            status = {
-                show_head_commit_hash = true,
-                recent_commit_count = 10, -- 只显示最近10个提交（性能优化）
-                HEAD_padding = 10,
-                HEAD_folded = false, -- 默认展开 HEAD
-                mode_padding = 3,
-                mode_text = {
-                    M = "modified",
-                    N = "new file",
-                    A = "added",
-                    D = "deleted",
-                    C = "copied",
-                    U = "updated",
-                    R = "renamed",
-                    DD = "unmerged",
-                    AU = "unmerged",
-                    UD = "unmerged",
-                    UA = "unmerged",
-                    DU = "unmerged",
-                    AA = "unmerged",
-                    UU = "unmerged",
-                    ["?"] = "untracked",
-                },
             },
 
             -- 分支排序
@@ -303,10 +264,6 @@ return
         keys = {
             { "<leader>ng", "<cmd>Neogit<cr>", desc = "NeoGit" },
         },
-    },
-    {
-        "sindrets/diffview.nvim",
-        cmd = { "DiffviewOpen", "DiffviewFileHistory" }, -- 命令触发
     },
     {
         "FabijanZulj/blame.nvim",
