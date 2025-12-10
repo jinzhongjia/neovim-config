@@ -284,9 +284,9 @@ return
         opts = {
             -- 使用 Snacks picker
             picker = "snacks",
-
-            -- 默认合并策略
-            default_merge_method = "squash", -- 默认是 commit，这里自定义为 squash
+            picker_config = {
+                search_static = false,
+            },
         },
         keys = {
             -- Issue 操作
