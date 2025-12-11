@@ -61,6 +61,7 @@ return
     },
     {
         "Bekaboo/dropbar.nvim",
+        enabled = false,
         event = "VeryLazy",
         -- telescope-fzf-native 依赖已移除
         -- dropbar 的模糊搜索功能是可选的，不影响核心功能
