@@ -1,7 +1,3 @@
-if vim.g.vscode then
-    return
-end
-
 local api = vim.api
 local uv = vim.loop
 

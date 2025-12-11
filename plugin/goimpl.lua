@@ -19,11 +19,6 @@
 --   - Change keymap: edit line ~445 (vim.keymap.set)
 --   - Disable plugin: add 'return' at the top of this file
 
--- Skip if not needed
-if vim.g.vscode then
-    return
-end
-
 local M = {}
 
 -- Logger helper
