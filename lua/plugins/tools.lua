@@ -336,32 +336,32 @@ return
 
             -- ===== Picker: 快速查找 (Ctrl+p/f) =====
             {
-                "<C-p>",
+                "<leader>ff",
                 function()
                     Snacks.picker.files()
                 end,
-                desc = "Find files",
+                desc = "Files",
             },
             {
-                "<C-S-p>",
+                "<leader>fF",
                 function()
                     Snacks.picker.files({ hidden = true, ignored = true })
                 end,
-                desc = "Find files (all)",
+                desc = "Files (all)",
             },
             {
-                "<C-f>",
+                "<leader>fg",
                 function()
                     Snacks.picker.grep()
                 end,
-                desc = "Live grep",
+                desc = "Grep",
             },
             {
-                "<C-S-f>",
+                "<leader>fG",
                 function()
                     Snacks.picker.grep({ hidden = true, ignored = true })
                 end,
-                desc = "Live grep (all)",
+                desc = "Grep (all)",
             },
 
             -- ===== Picker: 查找和搜索 (leader-f = find) =====
