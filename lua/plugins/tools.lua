@@ -308,24 +308,6 @@ return
                 desc = "Select Scratch Buffer",
             },
 
-            -- Word Navigation (LSP references)
-            {
-                "]]",
-                function()
-                    Snacks.words.jump(vim.v.count1)
-                end,
-                desc = "Next Reference",
-                mode = { "n", "t" },
-            },
-            {
-                "[[",
-                function()
-                    Snacks.words.jump(-vim.v.count1)
-                end,
-                desc = "Prev Reference",
-                mode = { "n", "t" },
-            },
-
             -- Debug
             {
                 "<leader>dps",
@@ -366,34 +348,6 @@ return
             },
 
             -- ===== Picker: 查找和搜索 (leader-f = find) =====
-            {
-                "<leader>ff",
-                function()
-                    Snacks.picker.files()
-                end,
-                desc = "Files",
-            },
-            {
-                "<leader>fF",
-                function()
-                    Snacks.picker.files({ hidden = true, ignored = true })
-                end,
-                desc = "Files (all)",
-            },
-            {
-                "<leader>fg",
-                function()
-                    Snacks.picker.grep()
-                end,
-                desc = "Grep",
-            },
-            {
-                "<leader>fG",
-                function()
-                    Snacks.picker.grep({ hidden = true, ignored = true })
-                end,
-                desc = "Grep (all)",
-            },
             {
                 "<leader>fb",
                 function()
