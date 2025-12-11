@@ -68,60 +68,25 @@ return
                 end
 
                 -- Navigation - 增强版：自动打开折叠和可选预览
-                map("n", "]c", function()
-                    if vim.wo.diff then
-                        vim.cmd.normal({ "]c", bang = true })
-                    else
-                        gitsigns.nav_hunk("next", {
-                            wrap = true, -- 循环跳转
-                            navigation_message = true, -- 显示导航消息
-                            foldopen = true, -- 自动打开折叠
-                            preview = false, -- 不自动预览（可以手动 hp）
-                        })
-                    end
+                map("n", "<leader>nh", function()
+                    gitsigns.nav_hunk("next", {
+                        wrap = true, -- 循环跳转
+                        navigation_message = true, -- 显示导航消息
+                        foldopen = true, -- 自动打开折叠
+                        preview = false, -- 不自动预览（可以手动 hp）
+                    })
                 end, { desc = "Next hunk" })
 
-                map("n", "[c", function()
-                    if vim.wo.diff then
-                        vim.cmd.normal({ "[c", bang = true })
-                    else
-                        gitsigns.nav_hunk("prev", {
-                            wrap = true,
-                            navigation_message = true,
-                            foldopen = true,
-                            preview = false,
-                        })
-                    end
+                map("n", "<leader>ph", function()
+                    gitsigns.nav_hunk("prev", {
+                        wrap = true,
+                        navigation_message = true,
+                        foldopen = true,
+                        preview = false,
+                    })
                 end, { desc = "Previous hunk" })
 
-                -- Actions
-                map("n", "<leader>hs", gitsigns.stage_hunk, { desc = "Stage hunk" })
-                map("n", "<leader>hr", gitsigns.reset_hunk, { desc = "Reset hunk" })
-                map("v", "<leader>hs", function()
-                    gitsigns.stage_hunk({ vim.fn.line("."), vim.fn.line("v") })
-                end, { desc = "Stage hunk (visual)" })
-                map("v", "<leader>hr", function()
-                    gitsigns.reset_hunk({ vim.fn.line("."), vim.fn.line("v") })
-                end, { desc = "Reset hunk (visual)" })
-
-                map("n", "<leader>hS", gitsigns.stage_buffer, { desc = "Stage buffer" })
-                map("n", "<leader>hu", gitsigns.undo_stage_hunk, { desc = "Undo stage hunk" })
-                map("n", "<leader>hR", gitsigns.reset_buffer, { desc = "Reset buffer" })
-                map("n", "<leader>hp", gitsigns.preview_hunk, { desc = "Preview hunk" })
-                map("n", "<leader>hP", gitsigns.preview_hunk_inline, { desc = "Preview hunk inline" })
-
-                map("n", "<leader>hb", function()
-                    gitsigns.blame_line({ full = true })
-                end, { desc = "Blame line" })
                 map("n", "<leader>hB", gitsigns.blame, { desc = "Blame buffer" })
-                map("n", "<leader>tb", gitsigns.toggle_current_line_blame, { desc = "Toggle line blame" })
-
-                map("n", "<leader>hd", gitsigns.diffthis, { desc = "Diff this" })
-                map("n", "<leader>hD", function()
-                    gitsigns.diffthis("~")
-                end, { desc = "Diff this ~" })
-
-                map("n", "<leader>td", gitsigns.toggle_deleted, { desc = "Toggle deleted" })
 
                 -- Quickfix / Location list
                 map("n", "<leader>hq", function()
@@ -130,15 +95,6 @@ return
                 map("n", "<leader>hl", function()
                     gitsigns.setloclist(0)
                 end, { desc = "Hunks to loclist" })
-
-                -- Toggle features
-                map("n", "<leader>ts", gitsigns.toggle_signs, { desc = "Toggle signs" })
-                map("n", "<leader>tn", gitsigns.toggle_numhl, { desc = "Toggle numhl" })
-                map("n", "<leader>tl", gitsigns.toggle_linehl, { desc = "Toggle linehl" })
-                map("n", "<leader>tw", gitsigns.toggle_word_diff, { desc = "Toggle word diff" })
-
-                -- Text object
-                map({ "o", "x" }, "ih", ":<C-U>Gitsigns select_hunk<CR>", { desc = "Select hunk" })
             end,
         },
     },
@@ -281,24 +237,6 @@ return
             },
         },
         keys = {
-            -- Issue 操作
-            { "<leader>oi", "<cmd>Octo issue list<cr>", desc = "List issues" },
-            { "<leader>oI", "<cmd>Octo issue search<cr>", desc = "Search issues" },
-            { "<leader>oc", "<cmd>Octo issue create<cr>", desc = "Create issue" },
-
-            -- PR 操作
-            { "<leader>op", "<cmd>Octo pr list<cr>", desc = "List PRs" },
-            { "<leader>oP", "<cmd>Octo pr search<cr>", desc = "Search PRs" },
-            { "<leader>opr", "<cmd>Octo pr create<cr>", desc = "Create PR" },
-            { "<leader>opo", "<cmd>Octo pr<cr>", desc = "Open current branch PR" },
-
-            -- Repo 操作
-            { "<leader>or", "<cmd>Octo repo list<cr>", desc = "List repos" },
-            { "<leader>oR", "<cmd>Octo repo browser<cr>", desc = "Open repo in browser" },
-
-            -- 搜索
-            { "<leader>os", "<cmd>Octo search<cr>", desc = "Search GitHub" },
-
             -- 其他
             { "<leader>oa", "<cmd>Octo actions<cr>", desc = "List Octo actions" },
         },
@@ -313,19 +251,21 @@ return
             refresh_interval = 10,
 
             -- 用于 dispatch workflow 的分支
-            dispatch_branch = "default", -- "default", "current" 或具体分支名
+            dispatch_branch = "current", -- "default", "current" 或具体分支名
 
             -- 分屏配置
             split = {
                 relative = "editor",
-                position = "right", -- "left", "right", "top", "bottom"
+                position = "bottom", -- "left", "right", "top", "bottom"
                 size = 60,
             },
         },
     },
     {
+        -- NOTE: we need addational config for this plugin
         "esmuellert/vscode-diff.nvim",
         dependencies = { "MunifTanjim/nui.nvim" },
+        enabled = false,
         cmd = "CodeDiff", -- 命令触发，避免影响启动性能
         config = function()
             require("vscode-diff").setup({
@@ -348,21 +288,6 @@ return
                 diff = {
                     disable_inlay_hints = true, -- 在 diff 窗口中禁用 inlay hints
                     max_computation_time_ms = 5000, -- diff 计算最大时间
-                },
-
-                -- 快捷键配置
-                keymaps = {
-                    view = {
-                        next_hunk = "]c", -- 跳到下一个变更
-                        prev_hunk = "[c", -- 跳到上一个变更
-                        next_file = "]f", -- 下一个文件
-                        prev_file = "[f", -- 上一个文件
-                    },
-                    explorer = {
-                        select = "<CR>", -- 打开选中文件的 diff
-                        hover = "K", -- 预览文件 diff
-                        refresh = "R", -- 刷新 git 状态
-                    },
                 },
             })
         end,
