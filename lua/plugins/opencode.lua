@@ -2,7 +2,6 @@
 -- opencode.nvim - Neovim frontend for opencode AI coding agent
 -- ========================
 -- 文档：https://github.com/sudo-tee/opencode.nvim
--- 本地文档：docs/opencode-setup.md
 
 return {
     "sudo-tee/opencode.nvim",
