@@ -18,9 +18,23 @@ return
         },
     },
     {
-        "voldikss/vim-translator",
-        -- 按键触发(通常有快捷键)
-        cmd = { "Translate", "TranslateW", "TranslateR", "TranslateX" },
+        "askfiy/smart-translate.nvim",
+        cmd = { "Translate" },
+        dependencies = { "askfiy/http.nvim" },
+        opts = {
+            default = {
+                cmds = {
+                    source = "auto",
+                    target = "zh-CN",
+                    handle = "float",
+                    engine = "google",
+                },
+                cache = true,
+            },
+        },
+        keys = {
+            { "<leader>ts", ":Translate<cr>", mode = { "n", "v" }, desc = "Translate selection" },
+        },
     },
     {
         "folke/todo-comments.nvim",
