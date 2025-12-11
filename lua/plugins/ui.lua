@@ -569,6 +569,7 @@ return
     },
     {
         "anuvyklack/windows.nvim",
+        enabled = false,
         event = "WinNew", -- 创建新窗口时加载
         dependencies = {
             "anuvyklack/middleclass",
