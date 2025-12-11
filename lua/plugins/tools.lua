@@ -29,11 +29,14 @@ return
         opts = {},
     },
     {
-        "simnalamburt/vim-mundo",
-        -- 按键触发即可
-        keys = {
-            -- stylua: ignore
-            { "<leader>ud", "<CMD>MundoToggle<CR>", mode = { "n" }, desc = "Toggle Mundo" },
+        "jiaoshijie/undotree",
+        ---@module 'undotree.collector'
+        ---@type UndoTreeCollector.Opts
+        opts = {
+            -- your options
+        },
+        keys = { -- load the plugin only when using it's keybinding:
+            { "<leader>u", "<cmd>lua require('undotree').toggle()<cr>" },
         },
     },
     {
