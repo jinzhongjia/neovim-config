@@ -211,8 +211,14 @@ return {
 
             -- 扩展插件
             "Davidyz/VectorCode",
-            "ravitemer/mcphub.nvim",
-            "ravitemer/codecompanion-history.nvim",
+            {
+                "ravitemer/mcphub.nvim",
+                commit = "8ff40b5edc649959bb7e89d25ae18e055554859a",
+            },
+            {
+                "ravitemer/codecompanion-history.nvim",
+                commit = "eb99d256352144cf3b6a1c45608ec25544a0813d",
+            },
             { "jinzhongjia/codecompanion-gitcommit.nvim", dev = true },
         },
         opts = function()
