@@ -1022,7 +1022,7 @@ adapter.schema.extended_thinking = vim.tbl_deep_extend("force", adapter.schema.e
         end
         return false
     end,
-    condition = function(self)
+    enabled = function(self)
         local model = self.schema.model.default
         local model_opts = self.schema.model.choices[model]
         -- Only show this option for models that support can_reason
@@ -1035,7 +1035,7 @@ adapter.schema.extended_thinking = vim.tbl_deep_extend("force", adapter.schema.e
 
 -- Override thinking_budget condition logic
 adapter.schema.thinking_budget = vim.tbl_deep_extend("force", adapter.schema.thinking_budget or {}, {
-    condition = function(self)
+    enabled = function(self)
         local model = self.schema.model.default
         local model_opts = self.schema.model.choices[model]
         -- Only show this option for models that support can_reason
