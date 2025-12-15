@@ -209,7 +209,7 @@ return {
             "zbirenbaum/copilot.lua",
 
             -- 扩展插件
-            -- "Davidyz/VectorCode",
+            "Davidyz/VectorCode",
             {
                 "ravitemer/mcphub.nvim",
             },
@@ -348,27 +348,27 @@ return {
                 -- 扩展配置
                 extensions = {
                     -- VectorCode 扩展
-                    -- vectorcode = {
-                    --     opts = {
-                    --         tool_group = { enabled = true, extras = {}, collapse = true },
-                    --         tool_opts = {
-                    --             ["*"] = {},
-                    --             ls = {},
-                    --             vectorise = {},
-                    --             query = {
-                    --                 max_num = { chunk = -1, document = -1 },
-                    --                 default_num = { chunk = 50, document = 10 },
-                    --                 include_stderr = false,
-                    --                 use_lsp = false,
-                    --                 no_duplicate = true,
-                    --                 chunk_mode = true,
-                    --                 summarise = { enabled = false, adapter = nil, query_augmented = true },
-                    --             },
-                    --             files_ls = {},
-                    --             files_rm = {},
-                    --         },
-                    --     },
-                    -- },
+                    vectorcode = {
+                        opts = {
+                            tool_group = { enabled = true, extras = {}, collapse = true },
+                            tool_opts = {
+                                ["*"] = {},
+                                ls = {},
+                                vectorise = {},
+                                query = {
+                                    max_num = { chunk = -1, document = -1 },
+                                    default_num = { chunk = 50, document = 10 },
+                                    include_stderr = false,
+                                    use_lsp = false,
+                                    no_duplicate = true,
+                                    chunk_mode = true,
+                                    summarise = { enabled = false, adapter = nil, query_augmented = true },
+                                },
+                                files_ls = {},
+                                files_rm = {},
+                            },
+                        },
+                    },
 
                     -- MCPHub 扩展
                     mcphub = {
@@ -449,9 +449,7 @@ return {
     -- ========== VectorCode ==========
     {
         "Davidyz/VectorCode",
-        enabled = false,
         dependencies = { "nvim-lua/plenary.nvim" },
-        branch = "patch-1",
         event = "VeryLazy",
         cmd = "VectorCode",
         opts = {
