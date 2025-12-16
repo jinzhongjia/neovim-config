@@ -147,6 +147,7 @@ local function get_adapters()
     local claude_code = require("extension.anthropic-oauth")
     local gemini_oauth = require("extension.gemini-oauth")
     local antigravity_oauth = require("extension.antigravity-oauth")
+    local codex_oauth = require("extension.codex-oauth")
 
     -- Anthropic OAuth 适配器
     default_adpters.http.anthropic_oauth = claude_code
@@ -156,6 +157,9 @@ local function get_adapters()
 
     -- Antigravity OAuth 适配器
     default_adpters.http.antigravity_oauth = antigravity_oauth
+
+    -- Codex OAuth 适配器 (ChatGPT Plus/Pro)
+    default_adpters.http.codex_oauth = codex_oauth
 
     -- Anthropic OAuth - Inline 适配器
     default_adpters.http.inline_adapter = function()
