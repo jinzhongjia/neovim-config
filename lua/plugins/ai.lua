@@ -245,16 +245,17 @@ return {
                             opts = {
                                 relativenumber = false,
                                 number = false,
+                                signcolumn = "no", -- 隐藏左侧标记列
                                 winbar = "",
                                 wrap = true, -- 启用自动换行
                                 linebreak = true, -- 在单词边界换行
                             },
                         },
                         show_token_count = false,
-                        fold_context = true,
+                        fold_context = true, -- 折叠上下文
                         fold_reasoning = true, -- 折叠推理输出
                         show_reasoning = true, -- 显示推理过程
-                        auto_scroll = true, -- 弃用自动滚动
+                        auto_scroll = true, -- 启用自动滚动
                     },
                     diff = {
                         enabled = true,
