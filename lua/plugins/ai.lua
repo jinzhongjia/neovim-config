@@ -8,7 +8,7 @@ local DEFAULT_COPILOT_FREE_MODEL = "gpt-4.1"
 local DEFAULT_COPILOT_MODEL = "claude-sonnet-4"
 
 local DEFAULT_CLAUDE_AUTH_MODEL = "claude-opus-4-1"
-local DEFAULT_CLAUDE_AUTH_MIDDLE_MODEL = "claude-sonnet-4-5"
+local DEFAULT_CLAUDE_AUTH_MIDDLE_MODEL = "claude-opus-4-5"
 local DEFAULT_CLAUDE_AUTH_FAST_MODEL = "claude-haiku-4-5"
 
 -- ========================
