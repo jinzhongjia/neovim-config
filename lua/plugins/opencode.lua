@@ -9,14 +9,7 @@ return {
     dev = true,
     dependencies = {
         "nvim-lua/plenary.nvim",
-        {
-            "MeanderingProgrammer/render-markdown.nvim",
-            opts = {
-                anti_conceal = { enabled = false },
-                file_types = { "markdown", "opencode_output" },
-            },
-            ft = { "markdown", "Avante", "copilot-chat", "opencode_output" },
-        },
+        "MeanderingProgrammer/render-markdown.nvim", -- 配置统一在 lua/plugins/ui.lua 中
         "saghen/blink.cmp", -- 补全支持
         "folke/snacks.nvim", -- 文件选择器
     },

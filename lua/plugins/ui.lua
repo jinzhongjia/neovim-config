@@ -444,39 +444,41 @@ return
                                     return require("gitblame").get_current_blame_text()
                                 end
                             end,
-                        cond = function()
-                            -- 特殊 filetype 不显示这个组件
-                            if is_special_filetype() then
-                                return false
-                            end
+                            cond = function()
+                                -- 特殊 filetype 不显示这个组件
+                                if is_special_filetype() then
+                                    return false
+                                end
 
-                            -- 检查当前 buffer 是否是真实文件
-                            local bufnr = vim.api.nvim_get_current_buf()
-                            local bufname = vim.api.nvim_buf_get_name(bufnr)
-                            local buftype = vim.bo[bufnr].buftype
-                            
-                            -- 只有当 buffer 是普通文件（buftype 为空）、有文件名且文件实际存在时才显示相关信息
-                            local is_real_file = buftype == "" and bufname ~= "" and vim.fn.filereadable(bufname) == 1
+                                -- 检查当前 buffer 是否是真实文件
+                                local bufnr = vim.api.nvim_get_current_buf()
+                                local bufname = vim.api.nvim_buf_get_name(bufnr)
+                                local buftype = vim.bo[bufnr].buftype
 
-                            -- 只在真实文件中检查 insert 模式和 git blame
-                            if is_real_file then
-                                local mode_info = vim.api.nvim_get_mode()
-                                local mode = mode_info["mode"]
-                                is_insert = mode:find("i") ~= nil or mode:find("ic") ~= nil
+                                -- 只有当 buffer 是普通文件（buftype 为空）、有文件名且文件实际存在时才显示相关信息
+                                local is_real_file = buftype == ""
+                                    and bufname ~= ""
+                                    and vim.fn.filereadable(bufname) == 1
 
-                                local text = require("gitblame").get_current_blame_text()
-                                if text then
-                                    is_blame = text ~= ""
+                                -- 只在真实文件中检查 insert 模式和 git blame
+                                if is_real_file then
+                                    local mode_info = vim.api.nvim_get_mode()
+                                    local mode = mode_info["mode"]
+                                    is_insert = mode:find("i") ~= nil or mode:find("ic") ~= nil
+
+                                    local text = require("gitblame").get_current_blame_text()
+                                    if text then
+                                        is_blame = text ~= ""
+                                    else
+                                        is_blame = false
+                                    end
                                 else
+                                    is_insert = false
                                     is_blame = false
                                 end
-                            else
-                                is_insert = false
-                                is_blame = false
-                            end
 
-                            return is_insert or is_blame
-                        end,
+                                return is_insert or is_blame
+                            end,
                         },
                         {
                             "filename",
@@ -954,29 +956,56 @@ return
     {
         "MeanderingProgrammer/render-markdown.nvim",
         dependencies = { "nvim-treesitter/nvim-treesitter", "nvim-tree/nvim-web-devicons" },
-        ft = { "markdown", "codecompanion", "LspUI_hover" },
+        ft = { "markdown", "codecompanion", "LspUI_hover", "Avante", "copilot-chat", "opencode_output" },
         ---@module 'render-markdown'
         ---@type render.md.UserConfig
         opts = {
+            -- 启用所有需要的 filetype（需与 ft 保持一致）
+            file_types = { "markdown", "codecompanion", "LspUI_hover", "Avante", "copilot-chat", "opencode_output" },
+            -- 启用 anti-conceal：光标所在行显示原始 markdown 语法
+            anti_conceal = {
+                enabled = true,
+                -- 光标上下各显示 0 行的原始语法（仅当前行）
+                above = 0,
+                below = 0,
+            },
+            -- 启用 LSP completions 支持（用于 checkbox 和 callouts 补全）
+            completions = {
+                lsp = { enabled = true },
+            },
+            -- Checkbox 自定义样式
             checkbox = {
                 unchecked = { icon = "✘ " },
                 checked = { icon = "✔ " },
                 custom = { todo = { rendered = "◯ " } },
             },
+            -- HTML 标签渲染（保留原有配置）
             html = {
                 enabled = true,
                 tag = {
                     buf = { icon = " ", highlight = "CodeCompanionChatVariable" },
                     file = { icon = " ", highlight = "CodeCompanionChatVariable" },
-                    help = { icon = "󰘥 ", highlight = "CodeCompanionChatVariable" },
+                    help = { icon = "󰾚 ", highlight = "CodeCompanionChatVariable" },
                     image = { icon = " ", highlight = "CodeCompanionChatVariable" },
                     symbols = { icon = " ", highlight = "CodeCompanionChatVariable" },
+
                     url = { icon = "󰖟 ", highlight = "CodeCompanionChatVariable" },
                     var = { icon = " ", highlight = "CodeCompanionChatVariable" },
                     tool = { icon = " ", highlight = "CodeCompanionChatTool" },
                     user = { icon = " ", highlight = "CodeCompanionChatTool" },
                     group = { icon = " ", highlight = "CodeCompanionChatToolGroup" },
                     memory = { icon = "󰍛 ", highlight = "CodeCompanionChatVariable" },
+                },
+            },
+            -- 针对特殊 buffer 类型的优化
+            overrides = {
+                buftype = {
+                    -- 为 nofile 类型的 buffer（如 codecompanion chat）优化
+                    nofile = {
+                        render_modes = true, -- 在所有模式下渲染
+                        sign = { enabled = false }, -- 禁用 sign column（chat buffer 不需要）
+                        padding = { highlight = "NormalFloat" }, -- 使用浮动窗口背景色
+                    },
                 },
             },
         },
