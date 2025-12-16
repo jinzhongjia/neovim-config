@@ -146,12 +146,16 @@ local function get_adapters()
 
     local claude_code = require("extension.anthropic-oauth")
     local gemini_oauth = require("extension.gemini-oauth")
+    local antigravity_oauth = require("extension.antigravity-oauth")
 
     -- Anthropic OAuth 适配器
     default_adpters.http.anthropic_oauth = claude_code
 
     -- Gemini OAuth 适配器
     default_adpters.http.gemini_oauth = gemini_oauth
+
+    -- Antigravity OAuth 适配器
+    default_adpters.http.antigravity_oauth = antigravity_oauth
 
     -- Anthropic OAuth - Inline 适配器
     default_adpters.http.inline_adapter = function()
