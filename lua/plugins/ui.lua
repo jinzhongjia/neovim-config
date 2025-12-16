@@ -983,9 +983,9 @@ return
             html = {
                 enabled = true,
                 tag = {
-                    buf = { icon = " ", highlight = "CodeCompanionChatVariable" },
-                    file = { icon = " ", highlight = "CodeCompanionChatVariable" },
-                    help = { icon = "󰾚 ", highlight = "CodeCompanionChatVariable" },
+                    buf = { icon = "󱔗 ", highlight = "CodeCompanionChatVariable" },
+                    file = { icon = "󰈮 ", highlight = "CodeCompanionChatVariable" },
+                    help = { icon = "󰱼 ", highlight = "CodeCompanionChatVariable" },
                     image = { icon = " ", highlight = "CodeCompanionChatVariable" },
                     symbols = { icon = " ", highlight = "CodeCompanionChatVariable" },
 
