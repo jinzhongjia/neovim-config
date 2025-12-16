@@ -444,12 +444,22 @@ return
                                     return require("gitblame").get_current_blame_text()
                                 end
                             end,
-                            cond = function()
-                                -- 特殊 filetype 不显示这个组件
-                                if is_special_filetype() then
-                                    return false
-                                end
+                        cond = function()
+                            -- 特殊 filetype 不显示这个组件
+                            if is_special_filetype() then
+                                return false
+                            end
 
+                            -- 检查当前 buffer 是否是真实文件
+                            local bufnr = vim.api.nvim_get_current_buf()
+                            local bufname = vim.api.nvim_buf_get_name(bufnr)
+                            local buftype = vim.bo[bufnr].buftype
+                            
+                            -- 只有当 buffer 是普通文件（buftype 为空）、有文件名且文件实际存在时才显示相关信息
+                            local is_real_file = buftype == "" and bufname ~= "" and vim.fn.filereadable(bufname) == 1
+
+                            -- 只在真实文件中检查 insert 模式和 git blame
+                            if is_real_file then
                                 local mode_info = vim.api.nvim_get_mode()
                                 local mode = mode_info["mode"]
                                 is_insert = mode:find("i") ~= nil or mode:find("ic") ~= nil
@@ -460,9 +470,13 @@ return
                                 else
                                     is_blame = false
                                 end
+                            else
+                                is_insert = false
+                                is_blame = false
+                            end
 
-                                return is_insert or is_blame
-                            end,
+                            return is_insert or is_blame
+                        end,
                         },
                         {
                             "filename",
