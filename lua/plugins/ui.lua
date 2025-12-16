@@ -995,6 +995,7 @@ return
                     user = { icon = " ", highlight = "CodeCompanionChatTool" },
                     group = { icon = " ", highlight = "CodeCompanionChatToolGroup" },
                     memory = { icon = "󰍛 ", highlight = "CodeCompanionChatVariable" },
+                    rules = { icon = "󰺾 ", highlight = "CodeCompanionChatVariable" },
                 },
             },
             -- 针对特殊 buffer 类型的优化
