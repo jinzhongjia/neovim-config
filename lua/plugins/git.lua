@@ -143,7 +143,7 @@ return
             commit_editor = {
                 kind = "tab",
                 show_staged_diff = true, -- 显示暂存区差异
-                staged_diff_split_kind = "split", -- 底部显示差异（横向分割）
+                staged_diff_split_kind = "vsplit", -- 右侧显示差异（左右布局）
                 spell_check = true, -- 启用拼写检查
             },
 
