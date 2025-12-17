@@ -354,7 +354,7 @@ return
             return {
                 options = {
                     globalstatus = false,
-                    theme = "vscode",
+                    theme = "auto",
                     disabled_filetypes = {
                         statusline = {
                             -- dapui 相关窗口禁用状态栏
