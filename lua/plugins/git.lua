@@ -130,7 +130,7 @@ return
 
             -- 图形样式
             graph_style = "unicode",
-            process_spinner = true,
+            -- process_spinner = true,
 
             -- Git 性能优化
             use_default_keymaps = true,

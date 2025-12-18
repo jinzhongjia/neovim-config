@@ -2,6 +2,7 @@ return {
     {
         "rebelot/kanagawa.nvim",
         priority = 1000,
+        enabled = false,
         opts = {
             compile = true,
             dimInactive = true,
@@ -49,7 +50,7 @@ return {
     {
         "Mofiqul/vscode.nvim",
         priority = 1000,
-        enabled = false,
+        enabled = true,
         opts = {
             italic_comments = true,
             italic_inlayhints = true,
