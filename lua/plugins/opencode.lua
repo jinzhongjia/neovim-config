@@ -17,7 +17,7 @@ return {
         -- 只配置与默认不同的部分
         preferred_picker = "snacks", -- 使用 snacks 作为文件选择器
         preferred_completion = "blink", -- 使用 blink.cmp 作为补全引擎
-        default_mode = "build", -- 默认使用 build 模式（完整开发模式）
+        default_mode = "Sisyphus", -- 默认使用 sisyphus 模式（完整开发模式）
 
         -- 自定义快捷键配置
         keymap = {
