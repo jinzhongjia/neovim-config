@@ -144,41 +144,41 @@ local function get_adapters()
         end
     end
 
-    local claude_code = require("extension.anthropic-oauth")
-    local gemini_oauth = require("extension.gemini-oauth")
-    local antigravity_oauth = require("extension.antigravity-oauth")
-    local codex_oauth = require("extension.codex-oauth")
+    -- local claude_code = require("extension.anthropic-oauth")
+    -- local gemini_oauth = require("extension.gemini-oauth")
+    -- local antigravity_oauth = require("extension.antigravity-oauth")
+    -- local codex_oauth = require("extension.codex-oauth")
 
     -- Anthropic OAuth 适配器
-    default_adpters.http.anthropic_oauth = claude_code
+    -- default_adpters.http.anthropic_oauth = claude_code
 
     -- Gemini OAuth 适配器
-    default_adpters.http.gemini_oauth = gemini_oauth
+    -- default_adpters.http.gemini_oauth = gemini_oauth
 
     -- Antigravity OAuth 适配器
-    default_adpters.http.antigravity_oauth = antigravity_oauth
+    -- default_adpters.http.antigravity_oauth = antigravity_oauth
 
     -- Codex OAuth 适配器 (ChatGPT Plus/Pro)
-    default_adpters.http.codex_oauth = codex_oauth
+    -- default_adpters.http.codex_oauth = codex_oauth
 
     -- Anthropic OAuth - Inline 适配器
-    default_adpters.http.inline_adapter = function()
-        return require("codecompanion.adapters").extend("anthropic_oauth", {
-            name = "inline_adapter",
-            formatted_name = "Anthropic OAuth (Inline)",
-            schema = { model = { default = DEFAULT_CLAUDE_AUTH_MIDDLE_MODEL } },
-        })
-    end
+    -- default_adpters.http.inline_adapter = function()
+    --     return require("codecompanion.adapters").extend("anthropic_oauth", {
+    --         name = "inline_adapter",
+    --         formatted_name = "Anthropic OAuth (Inline)",
+    --         schema = { model = { default = DEFAULT_CLAUDE_AUTH_MIDDLE_MODEL } },
+    --     })
+    -- end
 
-    default_adpters.acp.claude_code = function()
-        return require("codecompanion.adapters").extend("claude_code", {
-            env = {
-                ANTHROPIC_API_KEY = function()
-                    return claude_code.get_api_key()
-                end,
-            },
-        })
-    end
+    -- default_adpters.acp.claude_code = function()
+    --     return require("codecompanion.adapters").extend("claude_code", {
+    --         env = {
+    --             ANTHROPIC_API_KEY = function()
+    --                 return claude_code.get_api_key()
+    --             end,
+    --         },
+    --     })
+    -- end
 
     -- 适配器全局选项
     default_adpters.http.opts = { show_defaults = false, show_model_choices = true }
@@ -613,6 +613,13 @@ return {
                     notification_timeout = 5000,
                     copy_to_clipboard = false,
                 },
+            },
+            adapters = {
+                -- 启用/禁用特定适配器（默认全部启用）
+                anthropic_oauth = true, -- Anthropic Claude
+                codex_oauth = true, -- OpenAI Codex/ChatGPT
+                gemini_oauth = true, -- Google Gemini
+                antigravity_oauth = true, -- Google Antigravity
             },
         },
     },
