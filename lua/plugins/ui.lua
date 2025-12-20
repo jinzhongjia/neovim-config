@@ -296,8 +296,8 @@ return
                     lualine_b = {
                         {
                             function()
-                                -- 显示当前 git 分支
-                                local branch = vim.fn.system("git branch --show-current 2>/dev/null"):gsub("\n", "")
+                                -- gitsigns 已异步维护 vim.b.gitsigns_head
+                                local branch = vim.b.gitsigns_head
                                 if branch and branch ~= "" then
                                     return " " .. branch
                                 end
@@ -309,10 +309,8 @@ return
                     lualine_c = {
                         {
                             function()
-                                -- 显示当前仓库名称
-                                local repo = vim.fn
-                                    .system("basename $(git rev-parse --show-toplevel 2>/dev/null) 2>/dev/null")
-                                    :gsub("\n", "")
+                                -- 从 cwd 获取 repo 名称，纯内存操作
+                                local repo = vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
                                 if repo and repo ~= "" then
                                     return " " .. repo
                                 end
