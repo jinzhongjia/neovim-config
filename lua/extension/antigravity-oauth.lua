@@ -1,7 +1,7 @@
 local uv = vim.uv or vim.loop
-local curl = require("plenary.curl")
 local Job = require("plenary.job")
 local config = require("codecompanion.config")
+local curl = require("plenary.curl")
 local log = require("codecompanion.utils.log")
 
 -- Module-level token cache
@@ -630,8 +630,14 @@ local function load_managed_project(access_token)
                 ["Authorization"] = "Bearer " .. access_token,
             }, ANTIGRAVITY_CONFIG.HEADERS),
             body = body_json,
-            insecure = config.adapters and config.adapters.http and config.adapters.http.opts and config.adapters.http.opts.allow_insecure,
-            proxy = config.adapters and config.adapters.http and config.adapters.http.opts and config.adapters.http.opts.proxy,
+            insecure = config.adapters
+                and config.adapters.http
+                and config.adapters.http.opts
+                and config.adapters.http.opts.allow_insecure,
+            proxy = config.adapters
+                and config.adapters.http
+                and config.adapters.http.opts
+                and config.adapters.http.opts.proxy,
             timeout = 30000,
             on_error = function(err)
                 log:debug("Antigravity OAuth: Load managed project error at %s: %s", endpoint, vim.inspect(err))
@@ -687,8 +693,14 @@ local function onboard_managed_project(access_token)
             ["Authorization"] = "Bearer " .. access_token,
         }, ANTIGRAVITY_CONFIG.HEADERS),
         body = body_json,
-        insecure = config.adapters and config.adapters.http and config.adapters.http.opts and config.adapters.http.opts.allow_insecure,
-        proxy = config.adapters and config.adapters.http and config.adapters.http.opts and config.adapters.http.opts.proxy,
+        insecure = config.adapters
+            and config.adapters.http
+            and config.adapters.http.opts
+            and config.adapters.http.opts.allow_insecure,
+        proxy = config.adapters
+            and config.adapters.http
+            and config.adapters.http.opts
+            and config.adapters.http.opts.proxy,
         timeout = 30000,
         on_error = function(err)
             log:debug("Antigravity OAuth: Onboard error: %s", vim.inspect(err))
@@ -698,7 +710,9 @@ local function onboard_managed_project(access_token)
     if response and response.status < 400 then
         local decode_success, data = pcall(vim.json.decode, response.body)
         if decode_success and data then
-            local project_id = data.response and data.response.cloudaicompanionProject and data.response.cloudaicompanionProject.id
+            local project_id = data.response
+                and data.response.cloudaicompanionProject
+                and data.response.cloudaicompanionProject.id
             if data.done and project_id then
                 log:debug("Antigravity OAuth: Onboarded with managed project: %s", project_id)
                 return project_id
@@ -752,8 +766,14 @@ local function refresh_access_token()
             .. url_encode(OAUTH_CONFIG.CLIENT_ID)
             .. "&client_secret="
             .. url_encode(OAUTH_CONFIG.CLIENT_SECRET),
-        insecure = config.adapters and config.adapters.http and config.adapters.http.opts and config.adapters.http.opts.allow_insecure,
-        proxy = config.adapters and config.adapters.http and config.adapters.http.opts and config.adapters.http.opts.proxy,
+        insecure = config.adapters
+            and config.adapters.http
+            and config.adapters.http.opts
+            and config.adapters.http.opts.allow_insecure,
+        proxy = config.adapters
+            and config.adapters.http
+            and config.adapters.http.opts
+            and config.adapters.http.opts.proxy,
         timeout = 30000,
         on_error = function(err)
             log:error("Antigravity OAuth: Token refresh error: %s", vim.inspect(err))
@@ -816,19 +836,19 @@ local function exchange_code_for_tokens(code, verifier)
         headers = {
             ["Content-Type"] = "application/x-www-form-urlencoded",
         },
-        body = "client_id="
-            .. url_encode(OAUTH_CONFIG.CLIENT_ID)
-            .. "&client_secret="
-            .. url_encode(OAUTH_CONFIG.CLIENT_SECRET)
-            .. "&code="
-            .. url_encode(code)
-            .. "&grant_type=authorization_code"
-            .. "&redirect_uri="
-            .. url_encode(OAUTH_CONFIG.REDIRECT_URI)
-            .. "&code_verifier="
-            .. url_encode(verifier),
-        insecure = config.adapters and config.adapters.http and config.adapters.http.opts and config.adapters.http.opts.allow_insecure,
-        proxy = config.adapters and config.adapters.http and config.adapters.http.opts and config.adapters.http.opts.proxy,
+        body = "client_id=" .. url_encode(OAUTH_CONFIG.CLIENT_ID) .. "&client_secret=" .. url_encode(
+            OAUTH_CONFIG.CLIENT_SECRET
+        ) .. "&code=" .. url_encode(code) .. "&grant_type=authorization_code" .. "&redirect_uri=" .. url_encode(
+            OAUTH_CONFIG.REDIRECT_URI
+        ) .. "&code_verifier=" .. url_encode(verifier),
+        insecure = config.adapters
+            and config.adapters.http
+            and config.adapters.http.opts
+            and config.adapters.http.opts.allow_insecure,
+        proxy = config.adapters
+            and config.adapters.http
+            and config.adapters.http.opts
+            and config.adapters.http.opts.proxy,
         timeout = 30000,
         on_error = function(err)
             log:error("Antigravity OAuth: Token exchange error: %s", vim.inspect(err))
@@ -841,7 +861,11 @@ local function exchange_code_for_tokens(code, verifier)
     end
 
     if response.status >= 400 then
-        log:error("Antigravity OAuth: Token exchange failed, status %d: %s", response.status, response.body or "no body")
+        log:error(
+            "Antigravity OAuth: Token exchange failed, status %d: %s",
+            response.status,
+            response.body or "no body"
+        )
         return false
     end
 
@@ -1184,7 +1208,10 @@ end, {
 vim.api.nvim_create_user_command("AntigravityOAuthStatus", function()
     load_tokens()
     if not _refresh_token then
-        vim.notify("Antigravity OAuth: Not authenticated. Run :AntigravityOAuthSetup to authenticate.", vim.log.levels.WARN)
+        vim.notify(
+            "Antigravity OAuth: Not authenticated. Run :AntigravityOAuthSetup to authenticate.",
+            vim.log.levels.WARN
+        )
         return
     end
 
@@ -1285,11 +1312,17 @@ local adapter = {
         setup = function(self)
             local access_token, project_id = get_access_token()
             if not access_token then
-                vim.notify("Antigravity OAuth: Not authenticated. Run :AntigravityOAuthSetup to authenticate.", vim.log.levels.ERROR)
+                vim.notify(
+                    "Antigravity OAuth: Not authenticated. Run :AntigravityOAuthSetup to authenticate.",
+                    vim.log.levels.ERROR
+                )
                 return false
             end
             if not project_id then
-                vim.notify("Antigravity OAuth: No project ID. Run :AntigravityOAuthSetup to reauthenticate.", vim.log.levels.ERROR)
+                vim.notify(
+                    "Antigravity OAuth: No project ID. Run :AntigravityOAuthSetup to reauthenticate.",
+                    vim.log.levels.ERROR
+                )
                 return false
             end
 
@@ -1518,11 +1551,23 @@ local adapter = {
             default = "gemini-2.5-flash",
             choices = {
                 -- Gemini 3 models
-                ["gemini-3-pro-high"] = { formatted_name = "Gemini 3 Pro High", opts = { can_reason = true, has_vision = true } },
-                ["gemini-3-pro-low"] = { formatted_name = "Gemini 3 Pro Low", opts = { can_reason = true, has_vision = true } },
+                ["gemini-3-pro-high"] = {
+                    formatted_name = "Gemini 3 Pro High",
+                    opts = { can_reason = true, has_vision = true },
+                },
+                ["gemini-3-pro-low"] = {
+                    formatted_name = "Gemini 3 Pro Low",
+                    opts = { can_reason = true, has_vision = true },
+                },
                 -- Gemini 2.x models
-                ["gemini-2.5-pro"] = { formatted_name = "Gemini 2.5 Pro", opts = { can_reason = true, has_vision = true } },
-                ["gemini-2.5-flash"] = { formatted_name = "Gemini 2.5 Flash", opts = { can_reason = true, has_vision = true } },
+                ["gemini-2.5-pro"] = {
+                    formatted_name = "Gemini 2.5 Pro",
+                    opts = { can_reason = true, has_vision = true },
+                },
+                ["gemini-2.5-flash"] = {
+                    formatted_name = "Gemini 2.5 Flash",
+                    opts = { can_reason = true, has_vision = true },
+                },
                 ["gemini-2.0-flash"] = { formatted_name = "Gemini 2.0 Flash", opts = { has_vision = true } },
                 ["gemini-2.0-flash-lite"] = { formatted_name = "Gemini 2.0 Flash Lite", opts = { has_vision = true } },
                 -- Gemini 1.x models
@@ -1530,8 +1575,14 @@ local adapter = {
                 ["gemini-1.5-flash"] = { formatted_name = "Gemini 1.5 Flash", opts = { has_vision = true } },
                 -- Claude models (via Antigravity)
                 ["claude-sonnet-4-5"] = { formatted_name = "Claude Sonnet 4.5", opts = { has_vision = true } },
-                ["claude-sonnet-4-5-thinking"] = { formatted_name = "Claude Sonnet 4.5 Thinking", opts = { can_reason = true, has_vision = true } },
-                ["claude-opus-4-5-thinking"] = { formatted_name = "Claude Opus 4.5 Thinking", opts = { can_reason = true, has_vision = true } },
+                ["claude-sonnet-4-5-thinking"] = {
+                    formatted_name = "Claude Sonnet 4.5 Thinking",
+                    opts = { can_reason = true, has_vision = true },
+                },
+                ["claude-opus-4-5-thinking"] = {
+                    formatted_name = "Claude Opus 4.5 Thinking",
+                    opts = { can_reason = true, has_vision = true },
+                },
                 -- GPT models (via Antigravity)
                 ["gpt-oss-120b-medium"] = { formatted_name = "GPT-OSS 120B Medium", opts = { has_vision = false } },
             },

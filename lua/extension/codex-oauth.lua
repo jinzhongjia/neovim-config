@@ -1,7 +1,7 @@
 local uv = vim.uv or vim.loop
-local curl = require("plenary.curl")
 local Job = require("plenary.job")
 local config = require("codecompanion.config")
+local curl = require("plenary.curl")
 local log = require("codecompanion.utils.log")
 
 -- Module-level token cache
@@ -1229,13 +1229,25 @@ local adapter = {
                 -- GPT-5.2 (supports xhigh reasoning)
                 ["gpt-5.2"] = { formatted_name = "GPT-5.2", opts = { can_reason = true, has_vision = true } },
                 -- GPT-5.1 Codex family
-                ["gpt-5.1-codex-max"] = { formatted_name = "GPT-5.1 Codex Max", opts = { can_reason = true, has_vision = true } },
-                ["gpt-5.1-codex"] = { formatted_name = "GPT-5.1 Codex", opts = { can_reason = true, has_vision = true } },
-                ["gpt-5.1-codex-mini"] = { formatted_name = "GPT-5.1 Codex Mini", opts = { can_reason = true, has_vision = true } },
+                ["gpt-5.1-codex-max"] = {
+                    formatted_name = "GPT-5.1 Codex Max",
+                    opts = { can_reason = true, has_vision = true },
+                },
+                ["gpt-5.1-codex"] = {
+                    formatted_name = "GPT-5.1 Codex",
+                    opts = { can_reason = true, has_vision = true },
+                },
+                ["gpt-5.1-codex-mini"] = {
+                    formatted_name = "GPT-5.1 Codex Mini",
+                    opts = { can_reason = true, has_vision = true },
+                },
                 -- GPT-5.1 general
                 ["gpt-5.1"] = { formatted_name = "GPT-5.1", opts = { can_reason = true, has_vision = true } },
                 -- Legacy Codex Mini
-                ["codex-mini-latest"] = { formatted_name = "Codex Mini Latest", opts = { can_reason = true, has_vision = true } },
+                ["codex-mini-latest"] = {
+                    formatted_name = "Codex Mini Latest",
+                    opts = { can_reason = true, has_vision = true },
+                },
             },
         },
     },

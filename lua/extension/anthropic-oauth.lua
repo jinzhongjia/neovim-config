@@ -275,7 +275,9 @@ end
 local function sha256_base64url(input)
     local hash_binary = sha256_binary_openssl(input) or sha256_binary_vimfn(input)
     if not hash_binary then
-        log:error("Anthropic OAuth: Unable to generate PKCE hash, please ensure system supports OpenSSL or built-in sha256")
+        log:error(
+            "Anthropic OAuth: Unable to generate PKCE hash, please ensure system supports OpenSSL or built-in sha256"
+        )
         return nil
     end
 
@@ -526,7 +528,11 @@ local function exchange_code_for_api_key(code, verifier)
     end
 
     if response.status >= 400 then
-        log:error("Anthropic OAuth: Token exchange failed, status code %d: %s", response.status, response.body or "no body")
+        log:error(
+            "Anthropic OAuth: Token exchange failed, status code %d: %s",
+            response.status,
+            response.body or "no body"
+        )
         return nil
     end
 
@@ -923,10 +929,7 @@ adapter.handlers = vim.tbl_extend("force", anthropic.handlers, {
         -- Get and validate API key
         local api_key = get_api_key()
         if not api_key then
-            vim.notify(
-                "Anthropic API key not found. Run :AnthropicOAuthSetup to authenticate.",
-                vim.log.levels.ERROR
-            )
+            vim.notify("Anthropic API key not found. Run :AnthropicOAuthSetup to authenticate.", vim.log.levels.ERROR)
             return false
         end
 

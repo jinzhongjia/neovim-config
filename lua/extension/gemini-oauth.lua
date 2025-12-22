@@ -1,7 +1,7 @@
 local uv = vim.uv or vim.loop
-local curl = require("plenary.curl")
 local Job = require("plenary.job")
 local config = require("codecompanion.config")
+local curl = require("plenary.curl")
 local log = require("codecompanion.utils.log")
 
 -- Module-level token cache
@@ -613,8 +613,14 @@ local function load_managed_project(access_token)
             ["Authorization"] = "Bearer " .. access_token,
         }, CODE_ASSIST_CONFIG.HEADERS),
         body = body_json,
-        insecure = config.adapters and config.adapters.http and config.adapters.http.opts and config.adapters.http.opts.allow_insecure,
-        proxy = config.adapters and config.adapters.http and config.adapters.http.opts and config.adapters.http.opts.proxy,
+        insecure = config.adapters
+            and config.adapters.http
+            and config.adapters.http.opts
+            and config.adapters.http.opts.allow_insecure,
+        proxy = config.adapters
+            and config.adapters.http
+            and config.adapters.http.opts
+            and config.adapters.http.opts.proxy,
         timeout = 30000,
         on_error = function(err)
             log:error("Gemini OAuth: Load managed project error: %s", vim.inspect(err))
@@ -664,8 +670,14 @@ local function onboard_managed_project(access_token)
                 ["Authorization"] = "Bearer " .. access_token,
             }, CODE_ASSIST_CONFIG.HEADERS),
             body = body_json,
-            insecure = config.adapters and config.adapters.http and config.adapters.http.opts and config.adapters.http.opts.allow_insecure,
-            proxy = config.adapters and config.adapters.http and config.adapters.http.opts and config.adapters.http.opts.proxy,
+            insecure = config.adapters
+                and config.adapters.http
+                and config.adapters.http.opts
+                and config.adapters.http.opts.allow_insecure,
+            proxy = config.adapters
+                and config.adapters.http
+                and config.adapters.http.opts
+                and config.adapters.http.opts.proxy,
             timeout = 30000,
             on_error = function(err)
                 log:error("Gemini OAuth: Onboard error: %s", vim.inspect(err))
@@ -675,7 +687,9 @@ local function onboard_managed_project(access_token)
         if response and response.status < 400 then
             local decode_success, data = pcall(vim.json.decode, response.body)
             if decode_success and data then
-                local project_id = data.response and data.response.cloudaicompanionProject and data.response.cloudaicompanionProject.id
+                local project_id = data.response
+                    and data.response.cloudaicompanionProject
+                    and data.response.cloudaicompanionProject.id
                 if data.done and project_id then
                     log:debug("Gemini OAuth: Onboarded with managed project: %s", project_id)
                     return project_id
@@ -726,8 +740,14 @@ local function refresh_access_token()
             .. url_encode(OAUTH_CONFIG.CLIENT_ID)
             .. "&client_secret="
             .. url_encode(OAUTH_CONFIG.CLIENT_SECRET),
-        insecure = config.adapters and config.adapters.http and config.adapters.http.opts and config.adapters.http.opts.allow_insecure,
-        proxy = config.adapters and config.adapters.http and config.adapters.http.opts and config.adapters.http.opts.proxy,
+        insecure = config.adapters
+            and config.adapters.http
+            and config.adapters.http.opts
+            and config.adapters.http.opts.allow_insecure,
+        proxy = config.adapters
+            and config.adapters.http
+            and config.adapters.http.opts
+            and config.adapters.http.opts.proxy,
         timeout = 30000,
         on_error = function(err)
             log:error("Gemini OAuth: Token refresh error: %s", vim.inspect(err))
@@ -790,19 +810,19 @@ local function exchange_code_for_tokens(code, verifier)
         headers = {
             ["Content-Type"] = "application/x-www-form-urlencoded",
         },
-        body = "client_id="
-            .. url_encode(OAUTH_CONFIG.CLIENT_ID)
-            .. "&client_secret="
-            .. url_encode(OAUTH_CONFIG.CLIENT_SECRET)
-            .. "&code="
-            .. url_encode(code)
-            .. "&grant_type=authorization_code"
-            .. "&redirect_uri="
-            .. url_encode(OAUTH_CONFIG.REDIRECT_URI)
-            .. "&code_verifier="
-            .. url_encode(verifier),
-        insecure = config.adapters and config.adapters.http and config.adapters.http.opts and config.adapters.http.opts.allow_insecure,
-        proxy = config.adapters and config.adapters.http and config.adapters.http.opts and config.adapters.http.opts.proxy,
+        body = "client_id=" .. url_encode(OAUTH_CONFIG.CLIENT_ID) .. "&client_secret=" .. url_encode(
+            OAUTH_CONFIG.CLIENT_SECRET
+        ) .. "&code=" .. url_encode(code) .. "&grant_type=authorization_code" .. "&redirect_uri=" .. url_encode(
+            OAUTH_CONFIG.REDIRECT_URI
+        ) .. "&code_verifier=" .. url_encode(verifier),
+        insecure = config.adapters
+            and config.adapters.http
+            and config.adapters.http.opts
+            and config.adapters.http.opts.allow_insecure,
+        proxy = config.adapters
+            and config.adapters.http
+            and config.adapters.http.opts
+            and config.adapters.http.opts.proxy,
         timeout = 30000,
         on_error = function(err)
             log:error("Gemini OAuth: Token exchange error: %s", vim.inspect(err))
@@ -1230,11 +1250,17 @@ local adapter = {
         setup = function(self)
             local access_token, project_id = get_access_token()
             if not access_token then
-                vim.notify("Gemini OAuth: Not authenticated. Run :GeminiOAuthSetup to authenticate.", vim.log.levels.ERROR)
+                vim.notify(
+                    "Gemini OAuth: Not authenticated. Run :GeminiOAuthSetup to authenticate.",
+                    vim.log.levels.ERROR
+                )
                 return false
             end
             if not project_id then
-                vim.notify("Gemini OAuth: No project ID. Run :GeminiOAuthSetup to reauthenticate.", vim.log.levels.ERROR)
+                vim.notify(
+                    "Gemini OAuth: No project ID. Run :GeminiOAuthSetup to reauthenticate.",
+                    vim.log.levels.ERROR
+                )
                 return false
             end
 
@@ -1457,9 +1483,18 @@ local adapter = {
             desc = "The model that will complete your prompt.",
             default = "gemini-2.5-flash",
             choices = {
-                ["gemini-3-pro-preview"] = { formatted_name = "Gemini 3 Pro", opts = { can_reason = true, has_vision = true } },
-                ["gemini-2.5-pro"] = { formatted_name = "Gemini 2.5 Pro", opts = { can_reason = true, has_vision = true } },
-                ["gemini-2.5-flash"] = { formatted_name = "Gemini 2.5 Flash", opts = { can_reason = true, has_vision = true } },
+                ["gemini-3-pro-preview"] = {
+                    formatted_name = "Gemini 3 Pro",
+                    opts = { can_reason = true, has_vision = true },
+                },
+                ["gemini-2.5-pro"] = {
+                    formatted_name = "Gemini 2.5 Pro",
+                    opts = { can_reason = true, has_vision = true },
+                },
+                ["gemini-2.5-flash"] = {
+                    formatted_name = "Gemini 2.5 Flash",
+                    opts = { can_reason = true, has_vision = true },
+                },
                 ["gemini-2.0-flash"] = { formatted_name = "Gemini 2.0 Flash", opts = { has_vision = true } },
                 ["gemini-2.0-flash-lite"] = { formatted_name = "Gemini 2.0 Flash Lite", opts = { has_vision = true } },
                 ["gemini-1.5-pro"] = { formatted_name = "Gemini 1.5 Pro", opts = { has_vision = true } },
