@@ -36,9 +36,9 @@ return
                     },
 
                     -- pylint配置
-                    pylint = {
-                        enabled = true,
-                    },
+                    -- pylint = {
+                    --     enabled = true,
+                    -- },
 
                     -- 其他常用插件配置
                     pycodestyle = {
