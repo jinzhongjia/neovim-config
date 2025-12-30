@@ -33,8 +33,10 @@ return
                     },
                     indentscope = {
                         enabled = true,
-                        group = "FylerIndentMarker",
-                        marker = "│",
+                        markers = {
+                            { "│", "FylerIndentMarker" },
+                            { "└", "FylerIndentMarker" },
+                        },
                     },
                     mappings = {
                         ["q"] = "CloseView",
