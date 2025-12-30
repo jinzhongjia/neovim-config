@@ -15,7 +15,7 @@ return
 
                     -- pydocstyle配置（默认禁用，需要手动启用）
                     pydocstyle = {
-                        enabled = true,
+                        enabled = false,
                         convention = "numpy", -- 可选值: "pep257", "numpy", "google"
                     },
 
