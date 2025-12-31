@@ -142,37 +142,37 @@ return
                     return { "lsp", "indent" }
                 end,
                 -- 首次打开时关闭特定类型的折叠（仅对 LSP provider 有效）
-                close_fold_kinds_for_ft = {
-                    default = {
-                        "imports",
-                        -- "comment",
-                    },
-                    -- 可以为特定语言添加额外的 fold kinds
-                    go = {
-                        "imports",
-                        -- "comment",
-                    },
-                    python = {
-                        "imports",
-                        -- "comment",
-                    },
-                    typescript = {
-                        "imports",
-                        -- "comment",
-                    },
-                    typescriptreact = {
-                        "imports",
-                        -- "comment",
-                    },
-                    javascript = {
-                        "imports",
-                        -- "comment",
-                    },
-                    javascriptreact = {
-                        "imports",
-                        -- "comment",
-                    },
-                },
+                -- close_fold_kinds_for_ft = {
+                --     default = {
+                --         "imports",
+                --         -- "comment",
+                --     },
+                --     -- 可以为特定语言添加额外的 fold kinds
+                --     go = {
+                --         "imports",
+                --         -- "comment",
+                --     },
+                --     python = {
+                --         "imports",
+                --         -- "comment",
+                --     },
+                --     typescript = {
+                --         "imports",
+                --         -- "comment",
+                --     },
+                --     typescriptreact = {
+                --         "imports",
+                --         -- "comment",
+                --     },
+                --     javascript = {
+                --         "imports",
+                --         -- "comment",
+                --     },
+                --     javascriptreact = {
+                --         "imports",
+                --         -- "comment",
+                --     },
+                -- },
                 -- 预览窗口配置
                 preview = {
                     win_config = {
