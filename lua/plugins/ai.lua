@@ -498,6 +498,7 @@ return {
                 proto = true,
                 markdown = true,
                 yaml = true,
+                python = true,
             },
         },
     },
