@@ -5,20 +5,55 @@ return
         "stevearc/conform.nvim",
         event = "VeryLazy",
         cmd = { "ConformInfo" },
-        opts = {},
+        opts = {
+            default_format_opts = {
+                lsp_format = "fallback",
+            },
+            formatters_by_ft = {
+                c = { "clang_format" },
+                cpp = { "clang_format" },
+                go = {
+                    "goimports",
+                    "goimports-reviser",
+                },
+                html = { "prettierd" },
+                json = { "prettierd" },
+                jsonc = { "prettierd" },
+                rust = { "rustfmt" },
+                bash = { "shfmt" },
+                lua = { "stylua" },
+                javascript = { "prettierd" },
+                typescript = { "prettierd" },
+                javascriptreact = { "prettierd" },
+                typescriptreact = { "prettierd" },
+                vue = { "prettierd" },
+                python = {
+                    "yapf",
+                },
+                zig = { "zigfmt" },
+                markdown = { "prettierd" },
+                yaml = { "yamlfmt" },
+                proto = { "buf" },
+                http = { "kulala-fmt" },
+            },
+            formatters = {
+                ["goimports-reviser"] = {
+                    command = "goimports-reviser",
+                    args = { "-imports-order=std,project,company,general" },
+                    stdin = true,
+                },
+            },
+        },
         keys = {
             {
+                -- Customize or remove this keymap to your liking
                 "<leader>f",
                 function()
-                    require("conform").format({
-                        async = false,
-                        lsp_fallback = true,
-                    })
+                    require("conform").format({ async = true, lsp_format = "fallback" })
                 end,
-                mode = { "n", "v" },
-                desc = "Format file or range",
+                mode = "n",
+                desc = "Format buffer",
             },
         },
     },
 }
-
