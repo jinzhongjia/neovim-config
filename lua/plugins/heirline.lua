@@ -117,6 +117,53 @@ return
                 hl = { fg = "#c0caf5", bg = "#1a1b26" },
             }
 
+            -- CodeCompanion 专用状态栏
+            local CodeCompanionStatusLine = {
+                condition = function()
+                    return conditions.buffer_matches({ filetype = { "codecompanion" } })
+                end,
+                -- 左侧：CodeCompanion 标签
+                {
+                    provider = " 󰚩 CodeCompanion ",
+                    hl = { fg = "#000000", bg = "#bb9af7", bold = true },
+                },
+                Space,
+                -- 模型名称
+                {
+                    provider = function()
+                        local bufnr = vim.api.nvim_get_current_buf()
+                        local metadata = _G.codecompanion_chat_metadata and _G.codecompanion_chat_metadata[bufnr]
+                        if metadata and metadata.model then
+                            return "󰘦 " .. metadata.model .. " "
+                        end
+                        return ""
+                    end,
+                    hl = { fg = "#7aa2f7", bg = "#1a1b26" },
+                },
+                Align,
+                -- Tokens 数量
+                {
+                    provider = function()
+                        local bufnr = vim.api.nvim_get_current_buf()
+                        local metadata = _G.codecompanion_chat_metadata and _G.codecompanion_chat_metadata[bufnr]
+                        if metadata and metadata.tokens then
+                            return "󰆾 " .. metadata.tokens .. " "
+                        end
+                        return ""
+                    end,
+                    hl = { fg = "#9ece6a", bg = "#1a1b26" },
+                },
+                -- 行号信息
+                {
+                    provider = function()
+                        local line = vim.api.nvim_win_get_cursor(0)[1]
+                        local lines = vim.api.nvim_buf_line_count(0)
+                        return string.format(" %d/%d ", line, lines)
+                    end,
+                    hl = { fg = "#c0caf5", bg = "#1a1b26" },
+                },
+            }
+
             -- 特殊窗口状态栏（NvimTree, Outline 等）
             local special_filetypes = {
                 NvimTree = { icon = "", label = "NvimTree", bg = "#9ece6a" },
@@ -166,6 +213,7 @@ return
             local StatusLine = {
                 hl = { bg = "#1a1b26" },
                 fallthrough = false, -- 第一个匹配的条件生效
+                CodeCompanionStatusLine,
                 SpecialStatusLine,
                 DefaultStatusLine,
             }
