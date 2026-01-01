@@ -117,14 +117,27 @@ return
                 hl = { fg = "#c0caf5", bg = "#1a1b26" },
             }
 
-            -- NvimTree 专用状态栏
-            local NvimTreeStatusLine = {
+            -- 特殊窗口状态栏（NvimTree, Outline 等）
+            local special_filetypes = {
+                NvimTree = { icon = "", label = "NvimTree", bg = "#9ece6a" },
+                Outline = { icon = "", label = "Outline", bg = "#7aa2f7" },
+            }
+
+            local SpecialStatusLine = {
                 condition = function()
-                    return conditions.buffer_matches({ filetype = { "NvimTree" } })
+                    return conditions.buffer_matches({ filetype = vim.tbl_keys(special_filetypes) })
                 end,
                 {
-                    provider = "  NvimTree ",
-                    hl = { fg = "#000000", bg = "#9ece6a", bold = true },
+                    provider = function()
+                        local ft = vim.bo.filetype
+                        local info = special_filetypes[ft] or { icon = "", label = ft, bg = "#7aa2f7" }
+                        return " " .. info.icon .. " " .. info.label .. " "
+                    end,
+                    hl = function()
+                        local ft = vim.bo.filetype
+                        local info = special_filetypes[ft] or { bg = "#7aa2f7" }
+                        return { fg = "#000000", bg = info.bg, bold = true }
+                    end,
                 },
                 Align,
                 {
@@ -153,7 +166,7 @@ return
             local StatusLine = {
                 hl = { bg = "#1a1b26" },
                 fallthrough = false, -- 第一个匹配的条件生效
-                NvimTreeStatusLine,
+                SpecialStatusLine,
                 DefaultStatusLine,
             }
 
