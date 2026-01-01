@@ -3,7 +3,7 @@ return
 {
     {
         "romgrk/barbar.nvim",
-        event = "VeryLazy",
+        event = "VimEnter",
         dependencies = {
             "tiagovla/scope.nvim",
             "nvim-tree/nvim-web-devicons",
