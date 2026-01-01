@@ -9,6 +9,9 @@ return
             local conditions = require("heirline.conditions")
             local utils = require("heirline.utils")
 
+            local Align = { provider = "%=" }
+            local Space = { provider = " " }
+
             local ViMode = {
                 init = function(self)
                     self.mode = vim.fn.mode(1)
@@ -34,22 +37,22 @@ return
                     return " " .. self.mode_names[self.mode] .. " "
                 end,
                 hl = function(self)
-                    local mode_color = {
-                        n = "red",
-                        i = "green",
-                        v = "cyan",
-                        V = "cyan",
-                        ["\22"] = "cyan",
-                        c = "orange",
-                        s = "purple",
-                        S = "purple",
-                        ["\19"] = "purple",
-                        R = "orange",
-                        r = "orange",
-                        ["!"] = "red",
-                        t = "red",
+                    local mode_colors = {
+                        n = { fg = "#000000", bg = "#7aa2f7", bold = true },
+                        i = { fg = "#000000", bg = "#9ece6a", bold = true },
+                        v = { fg = "#000000", bg = "#bb9af7", bold = true },
+                        V = { fg = "#000000", bg = "#bb9af7", bold = true },
+                        ["\22"] = { fg = "#000000", bg = "#bb9af7", bold = true },
+                        c = { fg = "#000000", bg = "#e0af68", bold = true },
+                        s = { fg = "#000000", bg = "#f7768e", bold = true },
+                        S = { fg = "#000000", bg = "#f7768e", bold = true },
+                        ["\19"] = { fg = "#000000", bg = "#f7768e", bold = true },
+                        R = { fg = "#000000", bg = "#e0af68", bold = true },
+                        r = { fg = "#000000", bg = "#e0af68", bold = true },
+                        ["!"] = { fg = "#000000", bg = "#f7768e", bold = true },
+                        t = { fg = "#000000", bg = "#7aa2f7", bold = true },
                     }
-                    return { fg = mode_color[self.mode], bold = true }
+                    return mode_colors[self.mode] or { fg = "#c0caf5", bg = "#1a1b26" }
                 end,
                 update = {
                     "ModeChanged",
@@ -64,16 +67,32 @@ return
                 init = function(self)
                     self.filename = vim.api.nvim_buf_get_name(0)
                 end,
-                hl = { fg = "white" },
+                hl = { fg = "#c0caf5", bg = "#1a1b26" },
                 {
                     provider = function(self)
                         local filename = vim.fn.fnamemodify(self.filename, ":t")
                         if filename == "" or filename == nil then
                             return " [No Name] "
                         end
-                        return " " .. filename .. " "
+                        local modified = vim.bo.modified and " ● " or " "
+                        return modified .. filename .. " "
                     end,
                 },
+            }
+
+            local FileIcon = {
+                init = function(self)
+                    local filename = vim.api.nvim_buf_get_name(0)
+                    local extension = vim.fn.fnamemodify(filename, ":e")
+                    self.icon, self.icon_color =
+                        require("nvim-web-devicons").get_icon_color(filename, extension, { default = true })
+                end,
+                provider = function(self)
+                    return self.icon and (self.icon .. " ")
+                end,
+                hl = function(self)
+                    return { fg = self.icon_color }
+                end,
             }
 
             local FileType = {
@@ -82,23 +101,29 @@ return
                     if ft == "" then
                         return ""
                     end
-                    return " " .. ft .. " "
+                    return " " .. ft:upper() .. " "
                 end,
-                hl = { fg = "white", bg = "blue" },
+                hl = { fg = "#7aa2f7", bg = "#1a1b26" },
             }
 
             local Ruler = {
                 provider = function()
-                    return " %3l:%-2c "
+                    local line = vim.api.nvim_win_get_cursor(0)[1]
+                    local col = vim.api.nvim_win_get_cursor(0)[2] + 1
+                    local lines = vim.api.nvim_buf_line_count(0)
+                    return string.format(" %d/%d:%d ", line, lines, col)
                 end,
-                hl = { fg = "white", bg = "black" },
+                hl = { fg = "#c0caf5", bg = "#1a1b26" },
             }
 
             local StatusLine = {
                 ViMode,
+                Space,
+                FileIcon,
                 FileNameBlock,
-                { provider = "%=" },
+                Align,
                 FileType,
+                Space,
                 Ruler,
             }
 
