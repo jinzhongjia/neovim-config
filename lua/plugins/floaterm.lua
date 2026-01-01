@@ -4,7 +4,6 @@ return
     {
         "voldikss/vim-floaterm",
         event = "VeryLazy",
-        opts = {},
         keys = {
             { "<leader>ft", "<CMD>FloatermNew<CR>", mode = { "n", "t" }, desc = "floaterm new" },
             { "<leader>fj", "<CMD>FloatermPrev<CR>", mode = { "n", "t" }, desc = "floaterm prev" },
