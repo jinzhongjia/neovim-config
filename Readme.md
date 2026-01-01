@@ -101,3 +101,10 @@ nvim
 - [**Nvy**](https://github.com/RMichelsen/Nvy) - Fast, native Windows Neovim GUI
 
 *Note: The configuration auto-detects and configures settings for these GUI clients.*
+
+### Command
+
+```sh
+# for utf-8 file names in Git
+git config --global core.quotepath false
+```
