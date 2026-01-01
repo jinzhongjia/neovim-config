@@ -1,15 +1,3 @@
-local opt = { noremap = true, silent = true }
-
---- @param name string
---- @return boolean
-function _G.__check_exec(name)
-    return vim.fn.executable(name) == 1
-end
-
-function _G.__key_bind(mode, lhs, rhs)
-    vim.api.nvim_set_keymap(mode, lhs, rhs, opt)
-end
-
 --- @param arr1 any[]
 --- @param arr2 any[]
 function _G.__tbl_merge(arr1, arr2)
@@ -51,8 +39,4 @@ function _G.__arr_concat(arr1, arr2)
         end
     end
     return arr1
-end
-
-function _G.is_windows()
-    return vim.fn.has("win32") == 1 or vim.fn.has("win64") == 1
 end
