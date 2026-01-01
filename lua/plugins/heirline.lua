@@ -164,12 +164,13 @@ return
                 },
             }
 
-            -- 特殊窗口状态栏（NvimTree, Outline, OpenCode 等）
+            -- 特殊窗口状态栏（NvimTree, Outline, OpenCode, Neogit 等）
             local special_filetypes = {
                 NvimTree = { icon = "", label = "NvimTree", bg = "#9ece6a" },
                 Outline = { icon = "", label = "Outline", bg = "#7aa2f7" },
                 opencode = { icon = "", label = "OpenCode", bg = "#f7768e" },
                 opencode_output = { icon = "", label = "OpenCode Output", bg = "#e0af68" },
+                NeogitStatus = { icon = "", label = "Neogit", bg = "#f5a97f" },
             }
 
             local SpecialStatusLine = {
