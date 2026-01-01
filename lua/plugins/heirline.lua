@@ -34,7 +34,8 @@ return
                     },
                 },
                 provider = function(self)
-                    return " " .. self.mode_names[self.mode] .. " "
+                    local mode_name = self.mode_names[self.mode] or self.mode or "UNKNOWN"
+                    return " " .. mode_name .. " "
                 end,
                 hl = function(self)
                     local mode_colors = {
