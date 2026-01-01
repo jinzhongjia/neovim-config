@@ -9,6 +9,16 @@ return
             local conditions = require("heirline.conditions")
             local utils = require("heirline.utils")
 
+            -- 监听 Copilot 状态变化，自动刷新状态栏
+            vim.api.nvim_create_autocmd("User", {
+                pattern = "CopilotStatus",
+                callback = function()
+                    vim.schedule(function()
+                        vim.cmd("redrawstatus")
+                    end)
+                end,
+            })
+
             local Align = { provider = "%=" }
             local Space = { provider = " " }
 
@@ -200,6 +210,33 @@ return
                 },
             }
 
+            -- Copilot 状态（延迟加载，避免性能问题）
+            local Copilot = {
+                condition = function()
+                    -- 只在 copilot 支持的 filetype 中显示
+                    local ok, client = pcall(require, "copilot.client")
+                    if not ok then
+                        return false
+                    end
+                    return client.buf_is_attached(vim.api.nvim_get_current_buf())
+                end,
+                -- 图标固定，通过颜色区分状态
+                provider = " ",
+                hl = function()
+                    local ok, api = pcall(require, "copilot.api")
+                    if not ok then
+                        return { fg = "#9ece6a" }
+                    end
+                    local data = api.status.data.status
+                    if data == "InProgress" then
+                        return { fg = "#e0af68" } -- 黄色：请求中
+                    elseif data == "Warning" then
+                        return { fg = "#f7768e" } -- 红色：警告
+                    else
+                        return { fg = "#ffffff" } -- 绿色：正常
+                    end
+                end,
+            }
             -- 默认状态栏
             local DefaultStatusLine = {
                 ViMode,
@@ -207,6 +244,8 @@ return
                 FileIcon,
                 FileNameBlock,
                 Align,
+                Copilot,
+                Space,
                 FileType,
                 Space,
                 Ruler,
