@@ -9,8 +9,8 @@ return
         },
         opts = {
             view = { adaptive_size = true },
-            disable_netrw = false, -- Let fyler.nvim handle netrw
-            hijack_netrw = false, -- Let fyler.nvim handle netrw
+            disable_netrw = true, -- Let fyler.nvim handle netrw
+            hijack_netrw = true, -- Let fyler.nvim handle netrw
             sync_root_with_cwd = true,
             update_focused_file = { enable = true },
             filters = {
