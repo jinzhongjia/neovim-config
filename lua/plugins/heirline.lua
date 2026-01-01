@@ -4,7 +4,7 @@ return
     {
         "rebelot/heirline.nvim",
         event = "VimEnter",
-        dependencies = { "nvim-tree/nvim-web-devicons" },
+        dependencies = { "nvim-tree/nvim-web-devicons", "SmiteshP/nvim-navic" },
         config = function()
             local conditions = require("heirline.conditions")
             local utils = require("heirline.utils")
@@ -221,8 +221,110 @@ return
                 DefaultStatusLine,
             }
 
+            -- Winbar: 显示文件路径和代码位置（navic）
+            local Navic = {
+                condition = function()
+                    local navic = require("nvim-navic")
+                    return navic.is_available()
+                end,
+                provider = function()
+                    local navic = require("nvim-navic")
+                    return navic.get_location({ highlight = true })
+                end,
+                update = "CursorMoved",
+            }
+
+            local WinbarFileName = {
+                init = function(self)
+                    self.filename = vim.api.nvim_buf_get_name(0)
+                end,
+                {
+                    provider = function(self)
+                        local filename = vim.fn.fnamemodify(self.filename, ":.")
+                        if filename == "" then
+                            return ""
+                        end
+                        -- 截断过长的路径
+                        if not conditions.width_percent_below(#filename, 0.4) then
+                            filename = vim.fn.pathshorten(filename)
+                        end
+                        return filename
+                    end,
+                    hl = { fg = "#7aa2f7" },
+                },
+            }
+
+            -- 判断是否为真实文件
+            local function is_real_file()
+                local bufname = vim.api.nvim_buf_get_name(0)
+                local buftype = vim.bo.buftype
+                local filetype = vim.bo.filetype
+
+                -- 必须有文件名
+                if bufname == "" then
+                    return false
+                end
+
+                -- buftype 必须为空（普通文件）
+                if buftype ~= "" then
+                    return false
+                end
+
+                -- 排除特殊 filetype
+                local excluded_ft = vim.tbl_keys(special_filetypes)
+                vim.list_extend(excluded_ft, { "gitcommit", "gitrebase", "hgcommit" })
+                if vim.tbl_contains(excluded_ft, filetype) then
+                    return false
+                end
+
+                return true
+            end
+
+            local WinBar = {
+                -- 只在真实文件中显示 winbar
+                condition = is_real_file,
+                WinbarFileName,
+                {
+                    condition = function()
+                        local navic = require("nvim-navic")
+                        return navic.is_available() and navic.get_location() ~= ""
+                    end,
+                    provider = " › ",
+                    hl = { fg = "#565f89" },
+                },
+                Navic,
+            }
+
             require("heirline").setup({
                 statusline = StatusLine,
+                winbar = WinBar,
+                opts = {
+                    disable_winbar_cb = function(args)
+                        -- 禁用 winbar 的条件（返回 true 则禁用）
+                        local bufname = vim.api.nvim_buf_get_name(args.buf)
+                        local buftype = vim.bo[args.buf].buftype
+                        local filetype = vim.bo[args.buf].filetype
+
+                        -- 无文件名
+                        if bufname == "" then
+                            return true
+                        end
+
+                        -- 非普通 buffer
+                        if buftype ~= "" then
+                            return true
+                        end
+
+                        -- 特殊 filetype
+                        local excluded_ft = vim.tbl_keys(special_filetypes)
+                        vim.list_extend(excluded_ft, { "gitcommit", "gitrebase", "hgcommit", "codecompanion" })
+                        if vim.tbl_contains(excluded_ft, filetype) then
+                            return true
+                        end
+
+                        return false
+                    end,
+                },
             })
         end,
     },
