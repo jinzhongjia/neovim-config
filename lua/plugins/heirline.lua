@@ -117,7 +117,28 @@ return
                 hl = { fg = "#c0caf5", bg = "#1a1b26" },
             }
 
-            local StatusLine = {
+            -- NvimTree 专用状态栏
+            local NvimTreeStatusLine = {
+                condition = function()
+                    return conditions.buffer_matches({ filetype = { "NvimTree" } })
+                end,
+                {
+                    provider = "  NvimTree ",
+                    hl = { fg = "#000000", bg = "#9ece6a", bold = true },
+                },
+                Align,
+                {
+                    provider = function()
+                        local line = vim.api.nvim_win_get_cursor(0)[1]
+                        local lines = vim.api.nvim_buf_line_count(0)
+                        return string.format(" %d/%d ", line, lines)
+                    end,
+                    hl = { fg = "#c0caf5", bg = "#1a1b26" },
+                },
+            }
+
+            -- 默认状态栏
+            local DefaultStatusLine = {
                 ViMode,
                 Space,
                 FileIcon,
@@ -126,6 +147,14 @@ return
                 FileType,
                 Space,
                 Ruler,
+            }
+
+            -- 主状态栏：根据 filetype 选择不同的状态栏
+            local StatusLine = {
+                hl = { bg = "#1a1b26" },
+                fallthrough = false, -- 第一个匹配的条件生效
+                NvimTreeStatusLine,
+                DefaultStatusLine,
             }
 
             require("heirline").setup({
