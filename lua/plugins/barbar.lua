@@ -93,7 +93,7 @@ return
             icons = {
                 buffer_index = true,
                 buffer_number = false,
-                button = "×",
+                button = "󰅖",
                 diagnostics = {
                     [vim.diagnostic.severity.ERROR] = { enabled = true, icon = " " },
                     [vim.diagnostic.severity.WARN] = { enabled = true, icon = " " },
@@ -101,16 +101,19 @@ return
                     [vim.diagnostic.severity.HINT] = { enabled = true, icon = "󰌵 " },
                 },
                 filetype = {
-                    custom_colors = false,
+                    custom_colors = true, -- 使用文件类型对应的颜色
                     enabled = true,
                 },
                 separator = { left = "▎", right = "" },
+                separator_at_end = false,
                 modified = { button = "●" },
-                pinned = { button = "󰐂", filename = true },
-                alternate = { filetype = { enabled = false } },
-                current = { buffer_index = true, filetype = { enabled = false } },
-                inactive = { button = "×", filetype = { enabled = false } },
-                visible = { modified = { buffer_number = false }, filetype = { enabled = false } },
+                pinned = { button = "󰐃", filename = true },
+                preset = "default",
+                -- 所有状态都显示文件图标
+                alternate = { filetype = { enabled = true } },
+                current = { buffer_index = true, filetype = { enabled = true } },
+                inactive = { button = "󰅖", filetype = { enabled = true } },
+                visible = { modified = { buffer_number = false }, filetype = { enabled = true } },
             },
             insert_at_end = false,
             insert_at_start = false,
