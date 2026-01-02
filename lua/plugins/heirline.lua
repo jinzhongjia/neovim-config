@@ -221,7 +221,7 @@ return
                     return client.buf_is_attached(vim.api.nvim_get_current_buf())
                 end,
                 -- 图标固定，通过颜色区分状态
-                provider = " ",
+                provider = " ",
                 hl = function()
                     local ok, api = pcall(require, "copilot.api")
                     if not ok then
