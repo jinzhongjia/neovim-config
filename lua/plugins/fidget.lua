@@ -2,6 +2,15 @@ return {
     {
         "j-hui/fidget.nvim",
         event = "VeryLazy",
-        opts = {},
+        opts = {
+            notification = {
+                window = {
+                    avoid = { "NvimTree" },
+                },
+            },
+            integration = {
+                ["nvim-tree"] = { enable = false },
+            },
+        },
     },
 }
