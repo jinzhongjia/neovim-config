@@ -11,6 +11,9 @@ return {
             inlay_hint = {
                 enable = true,
             },
+            lightbulb = {
+                enable = false,
+            },
         },
         keys = {
             { "<leader>rn", "<cmd>LspUI rename<cr>",      desc = "Rename symbol" },
