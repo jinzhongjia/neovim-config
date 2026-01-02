@@ -39,7 +39,7 @@ return
             formatters = {
                 ["goimports-reviser"] = {
                     command = "goimports-reviser",
-                    args = { "-imports-order=std,project,company,general" },
+                    args = { "-imports-order=std,project,company,general", "-output", "stdout", "$FILENAME" },
                     stdin = true,
                 },
             },
