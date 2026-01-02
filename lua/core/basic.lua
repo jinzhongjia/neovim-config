@@ -63,6 +63,17 @@ o.incsearch = true -- 边输入边显示搜索结果
 vim.keymap.set("n", "<leader>l", "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })
 
 -- =====================
+-- 窗口分割快捷键
+-- =====================
+vim.keymap.set("n", "<leader>sv", "<cmd>vsplit<CR>", { desc = "Vertical split" })
+vim.keymap.set("n", "<leader>sh", "<cmd>split<CR>", { desc = "Horizontal split" })
+vim.keymap.set("n", "<leader>sc", "<cmd>close<CR>", { desc = "Close split" })
+vim.keymap.set("n", "<leader>wh", "<C-w>h", { desc = "Switch to left window" })
+vim.keymap.set("n", "<leader>wj", "<C-w>j", { desc = "Switch to below window" })
+vim.keymap.set("n", "<leader>wk", "<C-w>k", { desc = "Switch to above window" })
+vim.keymap.set("n", "<leader>wl", "<C-w>l", { desc = "Switch to right window" })
+
+-- =====================
 -- 命令行
 -- =====================
 o.cmdheight = 1 -- 命令行高度为 1 行
