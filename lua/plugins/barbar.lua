@@ -95,10 +95,10 @@ return
                 buffer_number = false,
                 button = "󰅖",
                 diagnostics = {
-                    [vim.diagnostic.severity.ERROR] = { enabled = true, icon = " " },
-                    [vim.diagnostic.severity.WARN] = { enabled = true, icon = " " },
-                    [vim.diagnostic.severity.INFO] = { enabled = true, icon = " " },
-                    [vim.diagnostic.severity.HINT] = { enabled = true, icon = "󰌵 " },
+                    [vim.diagnostic.severity.ERROR] = { enabled = true, icon = "󰅚" },
+                    [vim.diagnostic.severity.WARN] = { enabled = true, icon = "" },
+                    [vim.diagnostic.severity.INFO] = { enabled = true, icon = "" },
+                    [vim.diagnostic.severity.HINT] = { enabled = true, icon = "" },
                 },
                 filetype = {
                     custom_colors = false, -- 使用 nvim-web-devicons 的原生颜色
