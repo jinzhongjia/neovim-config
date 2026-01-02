@@ -39,8 +39,7 @@ return
             formatters = {
                 ["goimports-reviser"] = {
                     command = "goimports-reviser",
-                    args = { "-imports-order=std,project,company,general", "-output", "stdout", "$FILENAME" },
-                    stdin = true,
+                    prepend_args = { "-imports-order=std,project,company,general " },
                 },
             },
         },
@@ -49,7 +48,7 @@ return
                 -- Customize or remove this keymap to your liking
                 "<leader>f",
                 function()
-                    require("conform").format({ async = true, lsp_format = "fallback" })
+                    require("conform").format({ async = false })
                 end,
                 mode = "n",
                 desc = "Format buffer",
