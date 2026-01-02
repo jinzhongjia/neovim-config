@@ -1,10 +1,9 @@
-return 
+return
 --- @type LazySpec
 {
     {
         "Mofiqul/vscode.nvim",
         priority = 1000,
-        enabled = true,
         opts = {
             italic_comments = true,
             italic_inlayhints = true,
@@ -17,4 +16,5 @@ return
             require("vscode").load()
         end,
     },
+    
 }
