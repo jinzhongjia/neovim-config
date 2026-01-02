@@ -131,9 +131,10 @@ o.showmode = false -- 不显示模式提示 (由状态栏插件处理)
 -- 折叠设置
 -- =====================
 o.foldcolumn = "1" -- 显示折叠指示列 (宽度为 1)
+vim.o.foldlevel = 99 -- Using ufo provider need a large value, feel free to decrease the value
 o.foldlevelstart = 99 -- 打开文件时的折叠级别 (99 = 几乎全部展开)
 o.foldenable = true -- 启用代码折叠功能
-o.fillchars = [[eob: ,fold: ,foldopen: ,foldsep: ,foldclose: ]] -- 自定义折叠图标字符
+o.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
 
 -- =====================
 -- 禁用特定功能

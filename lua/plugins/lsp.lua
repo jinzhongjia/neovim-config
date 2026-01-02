@@ -10,6 +10,17 @@ return
             "mason-org/mason-lspconfig.nvim",
         },
         config = function()
+            -- 为 nvim-ufo 添加 foldingRange capabilities
+            local capabilities = vim.lsp.protocol.make_client_capabilities()
+            capabilities.textDocument.foldingRange = {
+                dynamicRegistration = false,
+                lineFoldingOnly = true,
+            }
+            -- 设置全局 LSP 默认配置
+            vim.lsp.config("*", {
+                capabilities = capabilities,
+            })
+
             -- Mason 和 mason-lspconfig 设置
             require("mason").setup()
             require("mason-lspconfig").setup({
