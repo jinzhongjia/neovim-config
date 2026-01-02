@@ -3,7 +3,9 @@ return {
     settings = {
         gopls = {
             -- 启用 gofumpt 进行更严格的格式化
-            gofumpt = true,
+            gofumpt = false,
+            -- 启用语义令牌支持
+            semanticTokens = true,
             -- 启用 staticcheck 进行代码分析
             staticcheck = true,
             -- 启用所有分析器，例如 unusedparams
@@ -14,6 +16,7 @@ return {
             hints = {
                 assignVariableTypes = true,
                 compositeLiteralFields = true,
+                compositeLiteralTypes = true,
                 constantValues = true,
                 functionTypeParameters = true,
                 parameterNames = true,
