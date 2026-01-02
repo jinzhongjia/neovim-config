@@ -88,7 +88,7 @@ return
             focus_on_close = "left",
             hide = { extensions = false, inactive = false, current = false },
             highlight_alternate = false,
-            highlight_inactive_file_icons = false,
+            highlight_inactive_file_icons = true,
             highlight_visible = true,
             icons = {
                 buffer_index = true,
@@ -101,7 +101,7 @@ return
                     [vim.diagnostic.severity.HINT] = { enabled = true, icon = "󰌵 " },
                 },
                 filetype = {
-                    custom_colors = true, -- 使用文件类型对应的颜色
+                    custom_colors = false, -- 使用 nvim-web-devicons 的原生颜色
                     enabled = true,
                 },
                 separator = { left = "▎", right = "" },
