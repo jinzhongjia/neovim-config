@@ -7,6 +7,7 @@ return
         dependencies = {
             "tiagovla/scope.nvim",
             "nvim-tree/nvim-web-devicons",
+            "lewis6991/gitsigns.nvim",
         },
         keys = {
             {
@@ -108,6 +109,11 @@ return
                 separator_at_end = false,
                 modified = { button = "●" },
                 pinned = { button = "󰐃", filename = true },
+                gitsigns = {
+                    added = { enabled = true, icon = "+" },
+                    changed = { enabled = true, icon = "~" },
+                    deleted = { enabled = true, icon = "-" },
+                },
                 preset = "default",
                 -- 所有状态都显示文件图标
                 alternate = { filetype = { enabled = true } },
