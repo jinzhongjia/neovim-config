@@ -81,7 +81,15 @@ return
             scope = { enabled = true }, -- 代码作用域检测
             scratch = { enabled = true },
             scroll = { enabled = false }, -- 平滑滚动动画影响性能,禁用
-            statuscolumn = { enabled = true },
+            statuscolumn = {
+                enabled = true,
+                left = { "mark", "sign" }, -- 左侧: 标记、诊断图标
+                right = { "fold", "git" }, -- 右侧: 折叠图标、git 状态
+                folds = {
+                    open = true, -- 显示展开的折叠图标
+                    git_hl = true, -- 折叠图标使用 Git Signs 高亮
+                },
+            },
             terminal = { enabled = true },
             toggle = { enabled = true },
             words = { enabled = true }, -- 高亮相同单词并导航

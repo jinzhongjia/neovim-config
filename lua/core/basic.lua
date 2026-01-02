@@ -24,7 +24,7 @@ o.autochdir = false -- 不自动切换工作目录到当前文件所在目录
 -- 行号显示
 -- =====================
 o.number = true -- 显示绝对行号
-o.relativenumber = true -- 显示相对行号 (方便 j/k 跳转)
+o.relativenumber = false -- 关闭相对行号
 
 -- =====================
 -- 光标行高亮

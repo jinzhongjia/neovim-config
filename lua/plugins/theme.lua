@@ -16,5 +16,4 @@ return
             require("vscode").load()
         end,
     },
-    
 }
