@@ -48,7 +48,7 @@ return
                 -- Customize or remove this keymap to your liking
                 "<leader>f",
                 function()
-                    require("conform").format({ async = false })
+                    require("conform").format({ async = true })
                 end,
                 mode = "n",
                 desc = "Format buffer",
