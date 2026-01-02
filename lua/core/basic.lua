@@ -60,6 +60,8 @@ o.smartcase = true -- 如果搜索包含大写字母则区分大小写
 o.hlsearch = true -- 高亮所有搜索匹配项
 o.incsearch = true -- 边输入边显示搜索结果
 
+vim.keymap.set("n", "<leader>l", "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })
+
 -- =====================
 -- 命令行
 -- =====================
