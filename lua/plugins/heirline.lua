@@ -210,6 +210,36 @@ return
                 },
             }
 
+            -- Git 分支（基于当前工作目录）
+            local function get_git_branch()
+                -- 优先从 gitsigns 获取
+                local branch = vim.b.gitsigns_head
+                if branch and branch ~= "" then
+                    return branch
+                end
+                -- 否则直接调用 git 命令
+                local result = vim.fn.system("git branch --show-current 2>/dev/null")
+                if vim.v.shell_error == 0 then
+                    return result:gsub("\n", "")
+                end
+                return ""
+            end
+
+            local GitBranch = {
+                provider = function()
+                    local branch = get_git_branch()
+                    if branch == "" then
+                        return ""
+                    end
+                    -- 截断过长的分支名
+                    if #branch > 20 then
+                        branch = branch:sub(1, 17) .. "..."
+                    end
+                    return "  " .. branch .. " "
+                end,
+                hl = { fg = "#f5a97f", bg = "#1a1b26", bold = true },
+            }
+
             -- Copilot 状态（延迟加载，避免性能问题）
             local Copilot = {
                 condition = function()
@@ -240,6 +270,7 @@ return
             -- 默认状态栏
             local DefaultStatusLine = {
                 ViMode,
+                GitBranch,
                 Space,
                 FileIcon,
                 FileNameBlock,
