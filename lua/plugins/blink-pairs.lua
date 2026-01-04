@@ -1,5 +1,4 @@
-return 
-{
+return {
     "saghen/blink.pairs",
     version = "*", -- (recommended) only required with prebuilt binaries
     dependencies = "saghen/blink.download",
@@ -15,26 +14,7 @@ return
             pairs = {},
         },
         highlights = {
-            enabled = true,
-            cmdline = true,
-            groups = {
-                "BlinkPairsOrange",
-                "BlinkPairsPurple",
-                "BlinkPairsBlue",
-            },
-            unmatched_group = "BlinkPairsUnmatched",
-
-            -- highlights matching pairs under the cursor
-            matchparen = {
-                enabled = true,
-                -- known issue where typing won't update matchparen highlight, disabled by default
-                cmdline = false,
-                -- also include pairs not on top of the cursor, but surrounding the cursor
-                include_surrounding = false,
-                group = "BlinkPairsMatchParen",
-                priority = 250,
-            },
+            enabled = false,
         },
-        debug = false,
     },
 }
