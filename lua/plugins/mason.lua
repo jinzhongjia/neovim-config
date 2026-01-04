@@ -7,6 +7,7 @@ return {
         -- mason.nvim 本身不支持 ensure_installed，需要手动实现
         local ensure_installed = {
             "goimports",
+            "goimports-reviser",
             "golangci-lint",
             "prettierd",
             "shfmt",
