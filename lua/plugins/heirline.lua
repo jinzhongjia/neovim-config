@@ -231,13 +231,13 @@ return
                     if branch == "" then
                         return ""
                     end
-                    -- 截断过长的分支名
                     if #branch > 20 then
                         branch = branch:sub(1, 17) .. "..."
                     end
                     return "  " .. branch .. " "
                 end,
                 hl = { fg = "#f5a97f", bg = "#1a1b26", bold = true },
+                update = { "FocusGained", "BufEnter", "DirChanged", "User" },
             }
 
             -- Copilot 状态（延迟加载，避免性能问题）
