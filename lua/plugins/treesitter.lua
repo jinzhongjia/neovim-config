@@ -90,10 +90,37 @@ return
         opts = {
             multiline_threshold = 5,
         },
+        config = function(_, opts)
+            require("treesitter-context").setup(opts)
+            -- 添加底部下划线边界，视觉上区分 context 窗口和代码区域
+            vim.api.nvim_set_hl(0, "TreesitterContextBottom", { underline = true, sp = "Grey" })
+            vim.api.nvim_set_hl(0, "TreesitterContextLineNumberBottom", { underline = true, sp = "Grey" })
+        end,
         keys = {
             -- stylua: ignore
             { "<leader>[c", function() require("treesitter-context").go_to_context(vim.v.count1) end, desc = "jumping to context(upwards)" },
         },
+    },
+    {
+        "nvim-treesitter/nvim-treesitter-textobjects",
+        dependencies = "nvim-treesitter/nvim-treesitter",
+        event = { "VeryLazy" },
+        config = function()
+            require("nvim-treesitter.configs").setup({
+                textobjects = {
+                    move = {
+                        enable = true,
+                        set_jumps = true,
+                        goto_next_end = {
+                            ["<leader>]m"] = { query = "@function.outer", desc = "Next function end" },
+                        },
+                        goto_previous_start = {
+                            ["<leader>[m"] = { query = "@function.outer", desc = "Previous function start" },
+                        },
+                    },
+                },
+            })
+        end,
     },
     {
         "windwp/nvim-ts-autotag",
