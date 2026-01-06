@@ -4,6 +4,7 @@ return
     {
         "jinzhongjia/opencode.nvim",
         branch = "feat/single-opencode-client",
+        dev = true,
         event = "VeryLazy",
         dependencies = {
             "nvim-lua/plenary.nvim",
