@@ -157,3 +157,7 @@ g.loaded_perl_provider = false -- 禁用 Perl 提供者 (加速启动)
 g.loaded_netrw = 1 -- 禁用内置文件浏览器 netrw
 g.loaded_netrwPlugin = 1 -- 禁用 netrw 插件
 g.editorconfig = true -- 启用 EditorConfig 集成 (遵循项目 .editorconfig 配置)
+
+-- 启用字符级行内差异高亮，这是实现 VSCode 风格的关键
+vim.opt.diffopt:append("inline:char")
+vim.opt.diffopt:append("algorithm:patience")
