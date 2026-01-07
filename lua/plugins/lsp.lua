@@ -21,6 +21,18 @@ return
                 capabilities = capabilities,
             })
 
+            -- 阻止 LSP attach 到 diffview 等虚拟 buffer
+            vim.api.nvim_create_autocmd("LspAttach", {
+                callback = function(args)
+                    local bufname = vim.api.nvim_buf_get_name(args.buf)
+                    if bufname:match("^diffview://") then
+                        vim.schedule(function()
+                            vim.lsp.buf_detach_client(args.buf, args.data.client_id)
+                        end)
+                    end
+                end,
+            })
+
             -- Mason 和 mason-lspconfig 设置
             require("mason").setup()
             require("mason-lspconfig").setup({
