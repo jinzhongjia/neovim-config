@@ -4,6 +4,7 @@ return
     -- DAP 核心插件
     {
         "mfussenegger/nvim-dap",
+        dev = true,
         dependencies = {
             -- DAP UI - 提供调试界面
             {
@@ -281,6 +282,8 @@ return
                     detached = vim.fn.has("win32") == 0,
                 },
             }
+
+            dap.adapters.go = dap.adapters.delve
 
             dap.configurations.go = {
                 {
