@@ -174,6 +174,41 @@ return
                 },
             }
 
+            -- DAP UI 专用状态栏
+            local dapui_filetypes = {
+                dapui_scopes = { icon = "", label = "Scopes" },
+                dapui_breakpoints = { icon = "", label = "Breakpoints" },
+                dapui_stacks = { icon = "", label = "Stacks" },
+                dapui_watches = { icon = "", label = "Watches" },
+                ["dap-repl"] = { icon = "", label = "REPL" },
+                dapui_console = { icon = "", label = "Console" },
+            }
+
+            local DAPUIStatusLine = {
+                condition = function()
+                    return conditions.buffer_matches({ filetype = vim.tbl_keys(dapui_filetypes) })
+                end,
+                -- 左侧：DAP 图标 + 窗口类型
+                {
+                    provider = function()
+                        local ft = vim.bo.filetype
+                        local info = dapui_filetypes[ft] or { icon = "", label = ft }
+                        return " " .. info.icon .. " " .. info.label .. " "
+                    end,
+                    hl = { fg = "#000000", bg = "#f7768e", bold = true },
+                },
+                Align,
+                -- 右侧：行号信息
+                {
+                    provider = function()
+                        local line = vim.api.nvim_win_get_cursor(0)[1]
+                        local lines = vim.api.nvim_buf_line_count(0)
+                        return string.format(" %d/%d ", line, lines)
+                    end,
+                    hl = { fg = "#c0caf5", bg = "#1a1b26" },
+                },
+            }
+
             -- 特殊窗口状态栏（NvimTree, Outline, OpenCode, Neogit 等）
             local special_filetypes = {
                 NvimTree = { icon = "", label = "NvimTree", bg = "#9ece6a" },
@@ -287,6 +322,7 @@ return
                 hl = { bg = "#1a1b26" },
                 fallthrough = false, -- 第一个匹配的条件生效
                 CodeCompanionStatusLine,
+                DAPUIStatusLine,
                 SpecialStatusLine,
                 DefaultStatusLine,
             }
@@ -342,6 +378,7 @@ return
 
                 -- 排除特殊 filetype
                 local excluded_ft = vim.tbl_keys(special_filetypes)
+                vim.list_extend(excluded_ft, vim.tbl_keys(dapui_filetypes))
                 vim.list_extend(excluded_ft, { "gitcommit", "gitrebase", "hgcommit" })
                 if vim.tbl_contains(excluded_ft, filetype) then
                     return false
@@ -387,6 +424,7 @@ return
 
                         -- 特殊 filetype
                         local excluded_ft = vim.tbl_keys(special_filetypes)
+                        vim.list_extend(excluded_ft, vim.tbl_keys(dapui_filetypes))
                         vim.list_extend(excluded_ft, { "gitcommit", "gitrebase", "hgcommit", "codecompanion" })
                         if vim.tbl_contains(excluded_ft, filetype) then
                             return true
