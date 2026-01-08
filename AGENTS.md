@@ -172,6 +172,74 @@ return {
 - **Dependencies**: Declare dependencies explicitly in `dependencies` field
 - **Type annotations**: Use `--- @type LazySpec` for better LSP support in plugin files
 
+## Claude Code 集成 (claudecode.nvim)
+
+### 概述
+claudecode.nvim 提供 Claude Code CLI 的原生 Neovim 集成，通过 WebSocket 协议实现与官方 VS Code 扩展相同的功能。
+
+### 核心特性
+- **实时上下文追踪**: Claude 能看到你当前编辑的文件和选中的代码
+- **原生 Diff 支持**: 直接在 Neovim 中查看和应用 Claude 提议的修改
+- **Git 仓库感知**: 自动识别项目根目录，提供完整项目上下文
+- **文件树集成**: 从 NvimTree 直接添加文件到 Claude 上下文
+
+### 快捷键
+
+| 快捷键 | 模式 | 功能 | 说明 |
+|--------|------|------|------|
+| `<leader>ac` | Normal | 切换窗口 | 打开/关闭 Claude Code（主要入口） |
+| `<leader>af` | Normal | 聚焦窗口 | 智能聚焦/隐藏 |
+| `<leader>ab` | Normal | 添加当前文件 | 将正在编辑的文件加入上下文 |
+| `<leader>as` | Visual | 发送选中 | 发送代码片段给 Claude |
+| `<leader>as` | NvimTree | 添加文件 | 从文件树添加文件到上下文 |
+| `<leader>aa` | Normal | 接受修改 | 应用 Claude 提议的修改 |
+| `<leader>ad` | Normal | 拒绝修改 | 丢弃 Claude 提议的修改 |
+| `<leader>ar` | Normal | 恢复会话 | 继续上次的对话 |
+| `<leader>aC` | Normal | 继续对话 | 在当前会话继续 |
+| `<leader>am` | Normal | 选择模型 | 切换不同的 Claude 模型 |
+| `<C-,>` | Terminal | 快速隐藏 | 在终端模式下快速隐藏窗口 |
+
+### 典型工作流
+
+1. **启动 Claude**: 按 `<leader>ac` 打开浮动终端
+2. **添加上下文**:
+   - 方式一: 选中代码按 `<leader>as` 发送选中内容
+   - 方式二: 按 `<leader>ab` 添加当前文件
+   - 方式三: 在 NvimTree 中按 `<leader>as` 添加文件
+3. **与 Claude 对话**: 在终端中描述你的需求
+4. **查看修改**: Claude 提议修改时自动打开 diff 窗口
+5. **应用修改**:
+   - 按 `<leader>aa` 接受修改
+   - 按 `<leader>ad` 拒绝修改
+   - 或直接编辑 diff 再保存
+6. **关闭窗口**: 在终端模式按 `<C-,>` 隐藏
+
+### 配置说明
+
+配置文件: `lua/plugins/claudecode.lua`
+
+关键配置项:
+- `terminal_cmd = nil`: 使用系统 PATH 中的 `claude` 命令
+- `git_repo_cwd = true`: 在 git 仓库根目录运行，提供完整项目视图
+- `focus_after_send = true`: 发送代码后自动聚焦终端，方便继续对话
+- `keep_terminal_focus = true`: 打开 diff 后保持焦点在终端
+
+### 故障排查
+
+- **Claude 无法连接?** 检查 `:ClaudeCodeStatus` 并验证 lock 文件存在于 `~/.claude/ide/`
+- **需要调试日志?** 在 opts 中设置 `log_level = "debug"`
+- **终端问题?** snacks.nvim 已启用 terminal 支持，无需额外配置
+
+### 与其他 AI 工具的关系
+
+| 工具 | 用途 | 适用场景 |
+|------|------|----------|
+| **CodeCompanion** | 聊天式 AI 助手 | 问答、代码解释、小范围修改 |
+| **Copilot** | 代码补全 | 实时行内补全 |
+| **claudecode.nvim** | IDE 集成 | 项目级重构、多文件修改、完整上下文感知 |
+
+它们互补而不重叠，可以同时使用。
+
 ## For LLM
 
 LLM can modify this file if necessary to keep it up to date with changes in the configuration structure or best practices.
