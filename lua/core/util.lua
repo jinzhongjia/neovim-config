@@ -1,3 +1,5 @@
+---@alias LazySpec table
+
 --- @param arr1 any[]
 --- @param arr2 any[]
 function _G.__tbl_merge(arr1, arr2)
