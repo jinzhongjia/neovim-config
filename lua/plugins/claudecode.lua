@@ -20,25 +20,9 @@ return
                 provider = "snacks", -- 使用已有的 snacks.nvim 终端提供者
                 git_repo_cwd = true, -- 在 git 仓库根目录工作，Claude 能看到完整项目结构
 
-                -- 浮动窗口配置
-                snacks_win_opts = {
-                    position = "float", -- 浮动窗口模式
-                    width = 0.85, -- 85% 屏幕宽度
-                    height = 0.85, -- 85% 屏幕高度
-                    border = "rounded", -- 圆角边框
-                    backdrop = 60, -- 背景透明度
-                    keys = {
-                        -- 终端模式下的快捷键
-                        claude_hide = {
-                            "<C-,>", -- Ctrl+逗号快速隐藏
-                            function(self)
-                                self:hide()
-                            end,
-                            mode = "t",
-                            desc = "隐藏 Claude",
-                        },
-                    },
-                },
+                -- 右侧分屏配置
+                split_side = "right", -- 在右侧显示
+                split_width_percentage = 0.35, -- 占屏幕宽度的 35%
             },
 
             -- Diff 配置 - 当 Claude 提议代码修改时的行为
