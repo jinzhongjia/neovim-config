@@ -34,7 +34,6 @@ return
                 markdown = { "prettierd" },
                 yaml = { "yamlfmt" },
                 proto = { "buf" },
-                http = { "kulala-fmt" },
             },
             formatters = {
                 ["goimports-reviser"] = {

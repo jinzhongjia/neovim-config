@@ -8,9 +8,6 @@ return {
                     avoid = { "NvimTree" },
                 },
             },
-            integration = {
-                ["nvim-tree"] = { enable = false },
-            },
         },
     },
 }
