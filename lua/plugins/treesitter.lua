@@ -3,20 +3,12 @@ return
 {
     {
         "nvim-treesitter/nvim-treesitter",
-        version = false,
-        lazy = false, -- main 分支不支持 lazy-loading
+        branch = "master",
+        event = { "VeryLazy" },
         build = ":TSUpdate",
-        branch = "main",
-        config = function()
-            -- main 分支的配置非常简单，只需指定 install_dir（可选）
-            require("nvim-treesitter").setup({
-                -- 可选：指定 parser 安装目录
-                -- install_dir = vim.fn.stdpath('data') .. '/site',
-            })
-
-            -- 安装常用的 parsers（首次运行时）
-            -- 之后可以使用 :TSInstall <language> 命令安装其他 parsers
-            local parsers = {
+        cmd = { "TSUpdateSync", "TSUpdate", "TSInstall" },
+        opts = {
+            ensure_installed = {
                 "c",
                 "go",
                 "lua",
@@ -47,7 +39,6 @@ return
                 "json5",
                 "jsdoc",
                 "jsonc",
-                "latex",
                 "luadoc",
                 "luap",
                 "make",
@@ -55,7 +46,6 @@ return
                 "meson",
                 "ninja",
                 "nix",
-                "norg",
                 "proto",
                 "python",
                 "pug",
@@ -67,28 +57,35 @@ return
                 "toml",
                 "tsx",
                 "typescript",
-                "typst",
                 "vue",
                 "yaml",
                 "zig",
                 "prisma",
-            }
-
-            -- 异步安装 parsers（如果尚未安装）
-            require("nvim-treesitter").install(parsers)
-
-            -- 全局启用 treesitter highlighting
-            vim.api.nvim_create_autocmd("FileType", {
-                pattern = "*",
-                callback = function()
-                    pcall(vim.treesitter.start)
-                end,
-            })
+            },
+            auto_install = true,
+            highlight = {
+                enable = true,
+                additional_vim_regex_highlighting = false,
+            },
+            indent = { enable = false },
+            incremental_selection = {
+                enable = true,
+                keymaps = {
+                    init_selection = "gnn", -- set to `false` to disable one of the mappings
+                    node_incremental = "grn",
+                    scope_incremental = "grc",
+                    node_decremental = "grm",
+                },
+            },
+        },
+        ---@param opts TSConfig
+        config = function(_, opts)
+            require("nvim-treesitter.configs").setup(opts)
         end,
     },
     {
         "nvim-treesitter/nvim-treesitter-context",
-        branch = "main",
+        branch = "master",
         dependencies = "nvim-treesitter/nvim-treesitter",
         event = { "VeryLazy" },
         opts = {
@@ -107,62 +104,24 @@ return
     },
     {
         "nvim-treesitter/nvim-treesitter-textobjects",
+        branch = "master",
         dependencies = "nvim-treesitter/nvim-treesitter",
         event = { "VeryLazy" },
         config = function()
-            -- 配置
-            require("nvim-treesitter-textobjects").setup({
-                move = {
-                    set_jumps = true, -- 在跳转列表中记录跳转
+            require("nvim-treesitter.configs").setup({
+                textobjects = {
+                    move = {
+                        enable = true,
+                        set_jumps = true,
+                        goto_next_end = {
+                            ["<leader>]m"] = { query = "@function.outer", desc = "Next function end" },
+                        },
+                        goto_previous_start = {
+                            ["<leader>[m"] = { query = "@function.outer", desc = "Previous function start" },
+                        },
+                    },
                 },
             })
-
-            -- 键映射
-            local move = require("nvim-treesitter-textobjects.move")
-
-            -- 跳转到下一个函数/类/参数的开始
-            vim.keymap.set({ "n", "x", "o" }, "<leader>]m", function()
-                move.goto_next_start("@function.outer", "textobjects")
-            end, { desc = "Next function start" })
-            vim.keymap.set({ "n", "x", "o" }, "]c", function()
-                move.goto_next_start("@class.outer", "textobjects")
-            end, { desc = "Next class start" })
-            vim.keymap.set({ "n", "x", "o" }, "]a", function()
-                move.goto_next_start("@parameter.inner", "textobjects")
-            end, { desc = "Next parameter start" })
-
-            -- 跳转到下一个函数/类/参数的结束
-            vim.keymap.set({ "n", "x", "o" }, "<leader>]M", function()
-                move.goto_next_end("@function.outer", "textobjects")
-            end, { desc = "Next function end" })
-            vim.keymap.set({ "n", "x", "o" }, "]C", function()
-                move.goto_next_end("@class.outer", "textobjects")
-            end, { desc = "Next class end" })
-            vim.keymap.set({ "n", "x", "o" }, "]A", function()
-                move.goto_next_end("@parameter.inner", "textobjects")
-            end, { desc = "Next parameter end" })
-
-            -- 跳转到上一个函数/类/参数的开始
-            vim.keymap.set({ "n", "x", "o" }, "<leader>[m", function()
-                move.goto_previous_start("@function.outer", "textobjects")
-            end, { desc = "Previous function start" })
-            vim.keymap.set({ "n", "x", "o" }, "[c", function()
-                move.goto_previous_start("@class.outer", "textobjects")
-            end, { desc = "Previous class start" })
-            vim.keymap.set({ "n", "x", "o" }, "[a", function()
-                move.goto_previous_start("@parameter.inner", "textobjects")
-            end, { desc = "Previous parameter start" })
-
-            -- 跳转到上一个函数/类/参数的结束
-            vim.keymap.set({ "n", "x", "o" }, "<leader>[M", function()
-                move.goto_previous_end("@function.outer", "textobjects")
-            end, { desc = "Previous function end" })
-            vim.keymap.set({ "n", "x", "o" }, "[C", function()
-                move.goto_previous_end("@class.outer", "textobjects")
-            end, { desc = "Previous class end" })
-            vim.keymap.set({ "n", "x", "o" }, "[A", function()
-                move.goto_previous_end("@parameter.inner", "textobjects")
-            end, { desc = "Previous parameter end" })
         end,
     },
     {
@@ -171,8 +130,8 @@ return
         event = { "BufReadPre", "BufNewFile" },
         opts = {
             -- 全局默认配置
-            enable_close = true,           -- 自动关闭标签
-            enable_rename = true,          -- 自动重命名配对的标签
+            enable_close = true, -- 自动关闭标签
+            enable_rename = true, -- 自动重命名配对的标签
             enable_close_on_slash = false, -- 在输入 </ 时自动关闭
         },
         config = function(_, opts)
