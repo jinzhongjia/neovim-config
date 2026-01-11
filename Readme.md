@@ -1,110 +1,111 @@
-# Modern Neovim Configuration
+# Neovim Configuration
 
-[中文文档](https://github.com/jinzhongjia/neovim-config/blob/main/Readme_CN.md) | [Plugin List](https://github.com/jinzhongjia/neovim-config/blob/main/plugin_list.md)
+[中文文档](./Readme_CN.md)
 
-A comprehensive Neovim configuration featuring built-in LSP, AI assistance, and modern development tools.
+A modern Neovim configuration with LSP, code completion, AI assistance, and development tools.
 
-> *This configuration is tailored for my personal use. Rather than directly copying it, I encourage you to use it as inspiration to understand plugin ecosystems, dependency management, and configuration organization patterns for your own setup.*
+## Requirements
 
-## 📸 Screenshots
+- Neovim >= 0.10.0
+- Git >= 2.19.0
+- A Nerd Font (recommended: JetBrainsMono Nerd Font)
 
-![overview](https://github.com/jinzhongjia/neovim-config/blob/main/pic/overview.png?raw=true)
-![dash](https://github.com/jinzhongjia/neovim-config/blob/main/pic/dash.png?raw=true)
-![definition](https://github.com/jinzhongjia/neovim-config/blob/main/pic/definition.png?raw=true)
-![hover](https://github.com/jinzhongjia/neovim-config/blob/main/pic/hover.png?raw=true)
-![code_action](https://github.com/jinzhongjia/neovim-config/blob/main/pic/code_action.png?raw=true)
+## Installation
 
-## 📦 Installation
-
-### Requirements
-- **Neovim** `>= 0.10.0` (required for all features)
-- **Git** `>= 2.19.0` (for plugin management and version control)
-- A [Nerd Font](https://www.nerdfonts.com/) (recommended: JetBrainsMono Nerd Font for icons and symbols)
-
-### Quick Install
-
+### Linux/macOS
 ```bash
-# Unix-like systems (Linux/macOS)
 git clone https://github.com/jinzhongjia/neovim-config.git ~/.config/nvim
+```
 
-# Windows
+### Windows
+```bash
 git clone https://github.com/jinzhongjia/neovim-config.git ~/AppData/Local/nvim
 ```
 
-### TL;DR Quick Start
-```bash
-# clone
-git clone https://github.com/jinzhongjia/neovim-config.git ~/.config/nvim
-cd ~/.config/nvim
+## Quick Start
 
-# first open (downloads plugins)
-nvim
+1. Clone the repository
+2. Launch Neovim - plugins will be installed automatically by lazy.nvim
+3. Run `:Mason` to install language servers and tools
+4. Run `:checkhealth` to verify the configuration
+5. Restart Neovim
 
-# inside Neovim (after install finishes)
-:Mason         # install language servers / linters / formatters
-:checkhealth   # verify environment
+## Core Features
 
-# optional helpers
-:Lazy update   # keep plugins fresh
+### Language Support
+- LSP integration via nvim-lspconfig
+- Language server management with Mason
+- Code completion with blink.cmp
+- Syntax highlighting via Treesitter
+- Code formatting with conform.nvim
+
+### Development Tools
+- Git integration (gitsigns, neogit, diffview)
+- Fuzzy finding with snacks.nvim
+- Debugging support via nvim-dap
+- Terminal integration with floaterm
+
+### AI Assistance
+- GitHub Copilot integration
+- Claude Code support
+
+### UI Enhancements
+- Status line with lualine
+- Buffer line with bufferline
+- Code outline with outline.nvim
+- Enhanced search with hlslens
+- Code folding with nvim-ufo
+
+## Dependencies
+
+### Required
+- git >= 2.19.0
+- curl or wget
+
+### Recommended
+- unzip
+- ripgrep
+
+### Optional Language Runtimes
+Install based on your development needs:
+- Node.js >= 18.0.0 (for TypeScript/JavaScript LSP)
+- Python >= 3.8 (for Python LSP)
+- Go >= 1.20 (for Go LSP)
+- Rust toolchain (for Rust LSP)
+
+## Configuration Structure
+
+```
+nvim-config/
+├── init.lua              # Entry point
+├── lua/
+│   ├── core/            # Core configurations
+│   │   ├── basic.lua    # Basic settings
+│   │   ├── util.lua     # Utility functions
+│   │   └── init.lua     # Core initialization
+│   ├── plugins/         # Plugin configurations
+│   └── plugin.lua       # Plugin manager setup
+├── after/               # Runtime files
+└── plugin/              # Plugin override files
 ```
 
-### First Launch
-1. Open Neovim and wait for Lazy.nvim to install all plugins automatically
-2. Run `:checkhealth` to verify your environment
-3. Run `:Mason` to install LSP servers, formatters, and linters
-4. Restart Neovim to ensure all configurations are loaded
+## Plugin Management
 
-## 🛠️ Dependencies
+This configuration uses lazy.nvim for plugin management.
 
-### Essential Tools (Required)
-- **git** `>= 2.19.0` - Version control and plugin management
-- **curl** or **wget** - HTTP client for downloading tools
+### Common Commands
+- `:Lazy` - Open plugin manager UI
+- `:Lazy update` - Update all plugins
+- `:Lazy sync` - Install missing plugins and update
+- `:Lazy clean` - Remove unused plugins
 
-### Build Tools (Recommended)
-- **cmake** `>= 3.10` - Build system for native extensions
-- **make** - Build automation
-- **gcc** or **clang** - C compiler for Treesitter parsers
-- **unzip** - Archive extraction for Mason packages
+## Additional Configuration
 
-### Language Support (Optional - Install based on your needs)
-
-#### Primary Languages
-- **Node.js** `>= 18.0.0` & **npm** - JavaScript/TypeScript development
-  - Required for many LSP servers and tools
-- **Python** `>= 3.8` & **pip** - Python development
-  - Required for some formatters and linters
-- **Go** `>= 1.20` - Go development
-  - Required for Go LSP and tools
-- **Rust** & **cargo** - Rust development
-  - Required for Rust analyzer and some tools
-
-#### Additional Languages
-- **Zig** `>= 0.11.0` - Zig language support
-- **.NET SDK** `>= 6.0` - C# development
-- **Lua** `>= 5.1` - Lua development
-
-### Development Tools (Optional)
-- **Lazygit** - Terminal UI for Git (integrated with Neovim)
-- **Lazydocker** - Terminal UI for Docker
-- **MCP Hub** - Model Context Protocol server support
-- **GitHub CLI** (`gh`) - GitHub integration
-- **jq** - JSON processor (for some plugins)
-- **ripgrep** (`rg`) - Fast text search (used by Snacks.nvim)
-
-### Optional System Libraries
-- Compilation toolchain (gcc/clang, make, cmake) for building native extensions & Treesitter
-- unzip / tar utilities for extracting packages
-- SSL development libs (e.g. libssl) if certain tools require HTTPS features
-
-### GUI Clients (Optional)
-- [**Neovide**](https://neovide.dev/) - GPU-accelerated Neovim GUI with smooth animations
-- [**Nvy**](https://github.com/RMichelsen/Nvy) - Fast, native Windows Neovim GUI
-
-*Note: The configuration auto-detects and configures settings for these GUI clients.*
-
-### Command
-
-```sh
-# for utf-8 file names in Git
+### Git UTF-8 Support
+```bash
 git config --global core.quotepath false
 ```
+
+## Notes
+
+This configuration is tailored for personal use. Use it as reference to understand plugin ecosystems and configuration patterns rather than copying directly.
