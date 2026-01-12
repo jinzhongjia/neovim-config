@@ -1,4 +1,8 @@
-return {
-    "OXY2DEV/helpview.nvim",
-    lazy = false,
+return
+--- @type LazySpec
+{
+    {
+        "OXY2DEV/helpview.nvim",
+        lazy = false,
+    },
 }
