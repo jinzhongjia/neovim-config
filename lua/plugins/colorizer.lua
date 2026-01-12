@@ -49,14 +49,14 @@ return
                 virtualtext_inline = false, -- 不内联显示虚拟文本
 
                 -- 其他配置
-                always_update = false, -- 仅在缓冲区获得焦点时更新
+                always_update = true, -- 仅在缓冲区获得焦点时更新
             },
 
             -- 用户命令配置
-            user_commands = true, -- 启用全部命令
+            user_commands = false, -- 启用全部命令
 
             -- 懒加载配置
-            lazy_load = false,
+            lazy_load = true,
         },
     },
 }
