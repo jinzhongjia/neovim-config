@@ -45,7 +45,7 @@ return
                 },
                 diagnostics = {
                     info = false, -- 不包含 info 级别诊断
-                    warn = true, -- 包含警告
+                    warn = false, -- 包含警告
                     error = true, -- 包含错误
                 },
                 current_file = {
