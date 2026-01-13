@@ -21,14 +21,33 @@ return
                 capabilities = capabilities,
             })
 
-            -- 阻止 LSP attach 到 diffview 等虚拟 buffer
+            -- 镜像 nvim-lspconfig 的 bufname_valid 逻辑，阻止 LSP attach 到虚拟 buffer
+            local function bufname_valid(bufname)
+                if bufname:match("^/") or bufname:match("^[a-zA-Z]:") then
+                    return true
+                end
+                if bufname:match("^zipfile://") or bufname:match("^tarfile:") then
+                    return true
+                end
+                return false
+            end
+
             vim.api.nvim_create_autocmd("LspAttach", {
                 callback = function(args)
-                    local bufname = vim.api.nvim_buf_get_name(args.buf)
-                    if bufname:match("^diffview://") then
+                    local buftype = vim.bo[args.buf].buftype
+                    if buftype == "nofile" then
                         vim.schedule(function()
-                            vim.lsp.buf_detach_client(args.buf, args.data.client_id)
+                            pcall(vim.lsp.buf_detach_client, args.buf, args.data.client_id)
                         end)
+                        return true
+                    end
+
+                    local bufname = vim.api.nvim_buf_get_name(args.buf)
+                    if #bufname > 0 and not bufname_valid(bufname) then
+                        vim.schedule(function()
+                            pcall(vim.lsp.buf_detach_client, args.buf, args.data.client_id)
+                        end)
+                        return true
                     end
                 end,
             })
