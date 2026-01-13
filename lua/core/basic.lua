@@ -132,6 +132,17 @@ o.background = "dark" -- 使用深色背景主题
 o.termguicolors = true -- 启用 24 位真彩色支持
 
 -- =====================
+-- 复制高亮
+-- =====================
+vim.api.nvim_create_autocmd("TextYankPost", {
+    desc = "Highlight text on yank",
+    group = vim.api.nvim_create_augroup("highlight_yank", { clear = true }),
+    callback = function()
+        vim.highlight.on_yank({ higroup = "IncSearch", timeout = 200 })
+    end,
+})
+
+-- =====================
 -- 显示设置
 -- =====================
 o.list = false -- 不显示不可见字符 (Tab、空格、换行符等)
