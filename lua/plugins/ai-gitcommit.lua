@@ -4,5 +4,6 @@ return {
     event = "VeryLazy",
     opts = {
         provider = "anthropic", -- "openai" | "anthropic" | "copilot"
+        languages = { "English", "Chinese" },
     },
 }
