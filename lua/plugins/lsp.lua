@@ -73,7 +73,6 @@ return
                     "golangci_lint_ls",
                     "markdown_oxide",
                     "zls",
-                    "cmake_language_server",
                 },
                 -- 您也可以设置为 automatic_enable = false，然后手动调用 vim.lsp.enable()
                 automatic_enable = true,
