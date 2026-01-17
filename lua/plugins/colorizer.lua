@@ -6,7 +6,8 @@ return
         event = "BufReadPre",
         opts = {
             filetypes = {
-                "*", -- 为所有文件类型启用
+                "html", -- 为所有文件类型启用
+                "css",
                 "!vim", -- 排除 vim 文件类型
             },
             user_default_options = {
