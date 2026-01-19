@@ -34,6 +34,7 @@ return
                 markdown = { "prettierd" },
                 yaml = { "yamlfmt" },
                 proto = { "buf" },
+                sql = { "sleek" },
             },
             formatters = {
                 ["goimports-reviser"] = {

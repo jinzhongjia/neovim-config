@@ -19,6 +19,7 @@ return {
             "stylua",
             "yapf",
             "yamlfmt",
+            "sleek",
         }
 
         local registry = require("mason-registry")
@@ -26,6 +27,9 @@ return {
             for _, pkg_name in ipairs(ensure_installed) do
                 local ok, pkg = pcall(registry.get_package, pkg_name)
                 if ok and not pkg:is_installed() then
+                    vim.schedule(function()
+                        vim.notify("Mason: installing " .. pkg_name, vim.log.levels.INFO)
+                    end)
                     pkg:install()
                 end
             end
