@@ -10,7 +10,7 @@ return
         },
         opts = {
             -- 启用所有需要的 filetype（需与 ft 保持一致）
-            file_types = { "markdown", "codecompanion","opencode_output" },
+            file_types = { "markdown", "codecompanion", "opencode_output" },
             -- 启用 anti-conceal：光标所在行显示原始 markdown 语法
             anti_conceal = {
                 enabled = true,
@@ -61,4 +61,3 @@ return
         },
     },
 }
-

@@ -9,8 +9,13 @@ return
             max_join_length = 120,
         },
         keys = {
-            { "<leader>m", function() require("treesj").toggle() end, desc = "Toggle split/join" },
+            {
+                "<leader>m",
+                function()
+                    require("treesj").toggle()
+                end,
+                desc = "Toggle split/join",
+            },
         },
     },
 }
-
