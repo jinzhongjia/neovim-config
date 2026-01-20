@@ -2,8 +2,7 @@ return
 --- @type LazySpec
 {
     {
-        "jinzhongjia/opencode.nvim",
-        branch = "feat/single-opencode-client",
+        "sudo-tee/opencode.nvim",
         dev = true,
         event = "VeryLazy",
         dependencies = {
