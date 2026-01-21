@@ -15,6 +15,7 @@ local ensure_installed = {
     "markdown_oxide",
     "zls",
     "typos_lsp",
+    "asm_lsp",
 }
 
 return
