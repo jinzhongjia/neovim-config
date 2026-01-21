@@ -20,6 +20,9 @@ return {
             "yapf",
             "yamlfmt",
             "sleek",
+            "shellcheck",
+            "hadolint",
+            "actionlint",
         }
 
         local registry = require("mason-registry")
