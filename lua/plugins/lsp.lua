@@ -1,6 +1,6 @@
 local ensure_installed = {
     "gopls",
-    "pyrefly",
+    "basedpyright",
     "vtsls",
     "lua_ls",
     "buf_ls",
