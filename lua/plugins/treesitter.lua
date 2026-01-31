@@ -1,86 +1,80 @@
+local languages = {
+    "c",
+    "go",
+    "lua",
+    "vim",
+    "vimdoc",
+    "bash",
+    "c_sharp",
+    "cmake",
+    "cpp",
+    "comment",
+    "css",
+    "diff",
+    "dockerfile",
+    "git_config",
+    "git_rebase",
+    "gitattributes",
+    "gitcommit",
+    "gitignore",
+    "gomod",
+    "gosum",
+    "gowork",
+    "hjson",
+    "html",
+    "http",
+    "ini",
+    "javascript",
+    "json",
+    "json5",
+    "jsdoc",
+    "luadoc",
+    "luap",
+    "make",
+    "markdown",
+    "meson",
+    "ninja",
+    "nix",
+    "proto",
+    "python",
+    "pug",
+    "regex",
+    "rust",
+    "scss",
+    "sql",
+    "svelte",
+    "toml",
+    "tsx",
+    "typescript",
+    "vue",
+    "yaml",
+    "zig",
+    "prisma",
+}
+
 return
 --- @type LazySpec
 {
     {
+        -- main 分支是完全重写版本，需要 Neovim 0.11+
+        -- 不再支持懒加载
         "nvim-treesitter/nvim-treesitter",
-        branch = "master",
-        event = { "VeryLazy" },
+        lazy = false,
         build = ":TSUpdate",
-        cmd = { "TSUpdateSync", "TSUpdate", "TSInstall" },
-        opts = {
-            ensure_installed = {
-                "c",
-                "go",
-                "lua",
-                "vim",
-                "vimdoc",
-                "bash",
-                "c_sharp",
-                "cmake",
-                "cpp",
-                "comment",
-                "css",
-                "diff",
-                "dockerfile",
-                "git_config",
-                "git_rebase",
-                "gitattributes",
-                "gitcommit",
-                "gitignore",
-                "gomod",
-                "gosum",
-                "gowork",
-                "hjson",
-                "html",
-                "http",
-                "ini",
-                "javascript",
-                "json",
-                "json5",
-                "jsdoc",
-                "jsonc",
-                "luadoc",
-                "luap",
-                "make",
-                "markdown",
-                "meson",
-                "ninja",
-                "nix",
-                "proto",
-                "python",
-                "pug",
-                "regex",
-                "rust",
-                "scss",
-                "sql",
-                "svelte",
-                "toml",
-                "tsx",
-                "typescript",
-                "vue",
-                "yaml",
-                "zig",
-                "prisma",
-            },
-            auto_install = true,
-            highlight = {
-                enable = true,
-                additional_vim_regex_highlighting = false,
-            },
-            indent = { enable = false },
-            incremental_selection = {
-                enable = true,
-                keymaps = {
-                    init_selection = "gnn", -- set to `false` to disable one of the mappings
-                    node_incremental = "grn",
-                    scope_incremental = "grc",
-                    node_decremental = "grm",
-                },
-            },
-        },
-        ---@param opts TSConfig
-        config = function(_, opts)
-            require("nvim-treesitter.configs").setup(opts)
+        config = function()
+            require("nvim-treesitter").setup({})
+            require("nvim-treesitter").install(languages)
+
+            vim.api.nvim_create_autocmd("FileType", {
+                pattern = languages,
+                callback = function()
+                    vim.treesitter.start()
+                    vim.wo[0][0].foldexpr = "v:lua.vim.treesitter.foldexpr()"
+                    vim.wo[0][0].foldmethod = "expr"
+                    -- 实验性功能，如需启用取消下行注释
+                    -- vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+                end,
+            })
         end,
     },
     {
@@ -104,47 +98,46 @@ return
     },
     {
         "nvim-treesitter/nvim-treesitter-textobjects",
-        branch = "master",
+        branch = "main",
         dependencies = "nvim-treesitter/nvim-treesitter",
         event = { "VeryLazy" },
         config = function()
-            require("nvim-treesitter.configs").setup({
-                textobjects = {
-                    move = {
-                        enable = true,
-                        set_jumps = true,
-                        goto_next_end = {
-                            ["<leader>]m"] = { query = "@function.outer", desc = "Next function end" },
-                        },
-                        goto_previous_start = {
-                            ["<leader>[m"] = { query = "@function.outer", desc = "Previous function start" },
-                        },
-                    },
-                },
+            require("nvim-treesitter-textobjects").setup({
+                move = { set_jumps = true },
             })
         end,
+        keys = {
+            {
+                "<leader>]m",
+                function()
+                    require("nvim-treesitter-textobjects.move").goto_next_end("@function.outer", "textobjects")
+                end,
+                mode = { "n", "x", "o" },
+                desc = "Next function end",
+            },
+            {
+                "<leader>[m",
+                function()
+                    require("nvim-treesitter-textobjects.move").goto_previous_start("@function.outer", "textobjects")
+                end,
+                mode = { "n", "x", "o" },
+                desc = "Previous function start",
+            },
+        },
     },
     {
         "windwp/nvim-ts-autotag",
         dependencies = "nvim-treesitter/nvim-treesitter",
         event = { "BufReadPre", "BufNewFile" },
         opts = {
-            -- 全局默认配置
-            enable_close = true, -- 自动关闭标签
-            enable_rename = true, -- 自动重命名配对的标签
-            enable_close_on_slash = false, -- 在输入 </ 时自动关闭
+            enable_close = true,
+            enable_rename = true,
+            enable_close_on_slash = false,
         },
         config = function(_, opts)
             require("nvim-ts-autotag").setup({
                 opts = opts,
-                -- 可以针对特定文件类型进行配置覆盖
-                per_filetype = {
-                    -- 例如: ["html"] = { enable_close = false }
-                },
-                -- 如果需要支持额外的语言，可以添加别名
-                -- aliases = {
-                --     ["your_language"] = "html",
-                -- }
+                per_filetype = {},
             })
         end,
     },
