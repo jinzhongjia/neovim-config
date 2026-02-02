@@ -11,7 +11,6 @@ local ensure_installed = {
     "html",
     "rust_analyzer",
     "yamlls",
-    "golangci_lint_ls",
     "markdown_oxide",
     "zls",
     "typos_lsp",
