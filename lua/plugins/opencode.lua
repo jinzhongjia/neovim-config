@@ -15,7 +15,7 @@ return
             -- 只配置与默认不同的部分
             preferred_picker = "snacks", -- 使用 snacks 作为文件选择器
             preferred_completion = "blink", -- 使用 blink.cmp 作为补全引擎
-            default_mode = "Sisyphus",
+            default_mode = "sisyphus",
             -- 渲染配置
             render = {
                 enabled = true,
