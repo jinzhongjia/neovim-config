@@ -61,6 +61,7 @@ git clone https://github.com/jinzhongjia/neovim-config.git ~/AppData/Local/nvim
 ### 必需
 - git >= 2.19.0
 - curl 或 wget
+- tree sitter cli
 
 ### 推荐
 - unzip
