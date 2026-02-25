@@ -63,7 +63,8 @@ return
             -- 集成配置
             integrations = {
                 snacks = true,
-                diffview = true, -- 启用 diffview 集成
+                diffview = false, -- 启用 diffview 集成
+                codediff = true,
                 telescope = false, -- 禁用 telescope 集成以提升性能
             },
 
@@ -88,6 +89,7 @@ return
             -- 性能优化：禁用行号
             disable_line_numbers = true,
             disable_relative_line_numbers = true,
+            diff_viewer = "codediff",
 
             -- sections 配置（性能优化：默认折叠某些不常用的部分）
             sections = {
