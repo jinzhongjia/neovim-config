@@ -3,6 +3,7 @@ return {
     dev = true,
     event = "VeryLazy",
     opts = {
+        provider = "anthropic",
         languages = { "English", "Chinese" },
     },
 }
