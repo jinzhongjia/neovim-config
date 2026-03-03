@@ -3,7 +3,7 @@ return {
     {
         "jinzhongjia/LspUI.nvim",
         dev = true,
-        event = "VeryLazy",
+        event = "LspAttach",
         opts = {
             signature = {
                 enable = true,

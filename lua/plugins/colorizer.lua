@@ -3,7 +3,7 @@ return
 {
     {
         "catgoose/nvim-colorizer.lua",
-        event = "BufReadPre",
+        ft = { "html", "css" },
         opts = {
             filetypes = {
                 "html", -- 仅在 html/css 文件中启用

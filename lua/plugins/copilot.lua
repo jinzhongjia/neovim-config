@@ -3,7 +3,7 @@ return {
     -- ========== Copilot ==========
     {
         "zbirenbaum/copilot.lua",
-        event = "VeryLazy",
+        event = "InsertEnter",
         opts = {
             suggestion = {
                 enabled = true,

@@ -3,7 +3,6 @@ return
 {
     {
         "hedyhli/outline.nvim",
-        event = "VeryLazy",
         cmd = { "Outline", "OutlineOpen", "OutlineFocus" },
         opts = {},
         keys = { -- Example mapping to toggle outline

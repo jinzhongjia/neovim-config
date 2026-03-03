@@ -7,7 +7,7 @@ return
         dependencies = {
             "folke/lazydev.nvim",
         },
-        event = "VeryLazy",
+        event = { "InsertEnter", "CmdlineEnter" },
         opts = {
             sources = {
                 default = {

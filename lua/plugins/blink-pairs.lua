@@ -1,5 +1,6 @@
 return {
     "saghen/blink.pairs",
+    event = "InsertEnter",
     version = "*", -- (recommended) only required with prebuilt binaries
     dependencies = "saghen/blink.download",
     --- @module 'blink.pairs'

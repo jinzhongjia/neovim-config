@@ -3,7 +3,6 @@ return
 {
     {
         "stevearc/conform.nvim",
-        event = "VeryLazy",
         cmd = { "ConformInfo" },
         opts = {
             default_format_opts = {
