@@ -4,8 +4,8 @@ local work_opts = {
     providers = {
         openai = {
             api_key = vim.env.LLAMA_API_KEY,
-            model = "Llama-3.3-70B-Instruct",
-            endpoint = "https://api.llama.com/compat/v1/chat/completions",
+            model = vim.env.LLAMA_MODEL,
+            endpoint = vim.env.LLAMA_ENDPOINT,
         },
     },
 }
@@ -29,5 +29,5 @@ return {
     "jinzhongjia/ai-gitcommit.nvim",
     dev = true,
     event = "VeryLazy",
-    opts = my_opts,
+    opts = opts,
 }
