@@ -23,8 +23,6 @@ else
     opts = my_opts
 end
 
-print("is work device: ", vim.env.IS_WORK_DEVICE)
-
 return {
     "jinzhongjia/ai-gitcommit.nvim",
     dev = true,
