@@ -98,6 +98,9 @@ o.hidden = true -- 允许隐藏未保存的缓冲区
 -- 鼠标与剪贴板
 -- =====================
 o.mouse = "a" -- 在所有模式下启用鼠标支持
+if vim.fn.has("win32") == 1 and vim.fn.executable("win32yank.exe") == 1 then
+    g.clipboard = "win32yank" -- 0.12 支持直接指定内置 clipboard provider 名称
+end
 o.clipboard = "unnamedplus" -- 与系统剪贴板同步 (y/p 直接操作系统剪贴板)
 
 -- =====================
@@ -124,6 +127,8 @@ o.splitright = true -- 垂直分割时新窗口在右侧
 -- 补全菜单
 -- =====================
 o.completeopt = "menu,menuone,noselect,noinsert" -- 补全选项: 显示菜单、单项也显示、不自动选中、不自动插入
+o.winborder = "rounded" -- 0.12: 统一内置浮窗边框样式
+o.pumborder = "rounded" -- 0.12: 统一内置补全菜单边框样式
 
 -- =====================
 -- 颜色主题

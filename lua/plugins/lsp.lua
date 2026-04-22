@@ -41,7 +41,7 @@ return
 
             -- 镜像 nvim-lspconfig 的 bufname_valid 逻辑，阻止 LSP attach 到虚拟 buffer
             local function bufname_valid(bufname)
-                if bufname:match("^/") or bufname:match("^[a-zA-Z]:") then
+                if bufname:match("^[/\\]") or bufname:match("^[a-zA-Z]:") then
                     return true
                 end
                 if bufname:match("^zipfile://") or bufname:match("^tarfile:") then
