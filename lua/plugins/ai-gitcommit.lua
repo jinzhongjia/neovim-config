@@ -1,6 +1,7 @@
+local languages = { "English", "Chinese" }
 local work_opts = {
     provider = "openai",
-    languages = { "English", "Chinese" },
+    languages = languages,
     providers = {
         openai = {
             api_key = vim.env.LLAMA_API_KEY,
@@ -11,8 +12,7 @@ local work_opts = {
 }
 
 local my_opts = {
-    provider = "anthropic",
-    languages = { "English", "Chinese" },
+    languages = languages,
 }
 
 local opts = {}
