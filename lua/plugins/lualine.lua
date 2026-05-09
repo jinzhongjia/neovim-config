@@ -60,6 +60,12 @@ return
                 return ""
             end
 
+            -- 当前工作目录名
+            local function cwd_name()
+                local cwd = vim.fn.getcwd()
+                return "󰉋 " .. vim.fn.fnamemodify(cwd, ":t")
+            end
+
             -- DAP UI 扩展
             local dapui_extension = {
                 sections = {
@@ -73,7 +79,9 @@ return
                             color = { fg = colors.black, bg = colors.red, gui = "bold" },
                         },
                     },
-                    lualine_b = {},
+                    lualine_b = {
+                        { cwd_name, color = { fg = colors.black, bg = colors.purple, gui = "bold" } },
+                    },
                     lualine_c = {},
                     lualine_x = {},
                     lualine_y = {},
@@ -94,6 +102,7 @@ return
                         },
                     },
                     lualine_b = {
+                        { cwd_name, color = { fg = colors.black, bg = colors.purple, gui = "bold" } },
                         { codecompanion_model, color = { fg = colors.blue, bg = colors.bg } },
                     },
                     lualine_c = {},
@@ -178,6 +187,7 @@ return
                 sections = {
                     lualine_a = { "mode" },
                     lualine_b = {
+                        { cwd_name, color = { fg = colors.black, bg = colors.purple, gui = "bold" } },
                         { "branch", icon = "", color = { fg = colors.peach, gui = "bold" } },
                     },
                     lualine_c = {
@@ -223,7 +233,9 @@ return
                 },
                 inactive_sections = {
                     lualine_a = {},
-                    lualine_b = {},
+                    lualine_b = {
+                        { cwd_name, color = { fg = colors.gray } },
+                    },
                     lualine_c = { "filename" },
                     lualine_x = { "location" },
                     lualine_y = {},
