@@ -138,27 +138,6 @@ return
             },
             -- ===== Picker: 快速查找 (Ctrl+p/f) =====
             {
-                "<leader>ff",
-                function()
-                    Snacks.picker.files()
-                end,
-                desc = "Files",
-            },
-            {
-                "<leader>fF",
-                function()
-                    Snacks.picker.files({ hidden = true, ignored = true })
-                end,
-                desc = "Files (all)",
-            },
-            {
-                "<leader>fg",
-                function()
-                    Snacks.picker.grep()
-                end,
-                desc = "Grep",
-            },
-            {
                 "<leader>fG",
                 function()
                     Snacks.picker.grep({ hidden = true, ignored = true })
@@ -210,22 +189,6 @@ return
                     Snacks.picker.diagnostics()
                 end,
                 desc = "Workspace diagnostics",
-            },
-
-            -- ===== Picker: 搜索内容 (leader-/ = search) =====
-            {
-                "<leader>/",
-                function()
-                    Snacks.picker.grep()
-                end,
-                desc = "Live grep",
-            },
-            {
-                "<leader>*",
-                function()
-                    Snacks.picker.grep_word()
-                end,
-                desc = "Grep cursor word",
             },
 
             -- ===== Picker: Tabs =====

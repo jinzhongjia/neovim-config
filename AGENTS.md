@@ -240,6 +240,35 @@ claudecode.nvim 提供 Claude Code CLI 的原生 Neovim 集成，通过 WebSocke
 
 它们互补而不重叠，可以同时使用。
 
+## FFF 文件搜索集成 (fff.nvim)
+
+### 快捷键
+
+| 快捷键 | 功能 | 说明 |
+|--------|------|------|
+| `<leader>ff` | 查找文件 | frecency 排序 |
+| `<leader>fF` | 查找所有文件 | 忽略 .gitignore |
+| `<leader>fg` | 内容搜索 | live grep，`<S-Tab>` 切换 plain/regex/fuzzy 模式 |
+| `<leader>/` | 内容搜索 | 同 `<leader>fg` |
+| `<leader>*` | 搜索光标单词 | |
+| `<leader>fz` | 模糊内容搜索 | fuzzy/plain 模式 |
+
+### 命令
+
+| 命令 | 说明 |
+|------|------|
+| `:FFFScan` | 强制重新扫描文件 |
+| `:FFFHealth` | 健康检查 |
+| `:FFFClearCache [all\|frecency\|files]` | 清除缓存 |
+| `:FFFOpenLog` | 打开日志文件 |
+
+### 保留的其他搜索工具
+
+- **grug-far.nvim**: 搜索替换（fff 不支持替换），快捷键 `<leader>gf*`
+- **flash.nvim**: 行内快速跳转
+- **hlslens.nvim**: 搜索高亮增强
+- **snacks.nvim picker**: Buffers、Recent、LSP 符号、诊断
+
 ## For LLM
 
 LLM can modify this file if necessary to keep it up to date with changes in the configuration structure or best practices.
