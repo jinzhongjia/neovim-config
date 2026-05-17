@@ -126,7 +126,7 @@ o.splitright = true -- 垂直分割时新窗口在右侧
 -- =====================
 -- 补全菜单
 -- =====================
-o.completeopt = "menu,menuone,noselect,noinsert" -- 补全选项: 显示菜单、单项也显示、不自动选中、不自动插入
+o.completeopt = "menu,menuone,noselect,noinsert,nearest" -- 补全选项: 显示菜单、单项也显示、不自动选中、不自动插入、按距光标距离排序 (0.12+)
 o.winborder = "rounded" -- 0.12: 统一内置浮窗边框样式
 o.pumborder = "rounded" -- 0.12: 统一内置补全菜单边框样式
 
