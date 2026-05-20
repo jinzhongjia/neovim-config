@@ -60,6 +60,34 @@ return
                 return ""
             end
 
+            -- CodeCompanion 请求状态
+            local codecompanion_processing = false
+            local codecompanion_spinner_index = 1
+            local codecompanion_spinner_symbols =
+                { "⠋", "⠙", "⠹", "⠸", "⠼", "⠴", "⠦", "⠧", "⠇", "⠏" }
+
+            vim.api.nvim_create_autocmd("User", {
+                pattern = "CodeCompanionRequest*",
+                group = vim.api.nvim_create_augroup("LualineCodeCompanion", { clear = true }),
+                callback = function(request)
+                    if request.match == "CodeCompanionRequestStarted" then
+                        codecompanion_processing = true
+                    elseif request.match == "CodeCompanionRequestFinished" then
+                        codecompanion_processing = false
+                    end
+                    vim.cmd("redrawstatus")
+                end,
+            })
+
+            local function codecompanion_status()
+                if not codecompanion_processing then
+                    return ""
+                end
+
+                codecompanion_spinner_index = (codecompanion_spinner_index % #codecompanion_spinner_symbols) + 1
+                return "󰚩 " .. codecompanion_spinner_symbols[codecompanion_spinner_index]
+            end
+
             -- 当前工作目录名
             local function cwd_name()
                 local cwd = vim.fn.getcwd()
@@ -108,6 +136,7 @@ return
                     lualine_c = {},
                     lualine_x = {
                         { codecompanion_tokens, color = { fg = colors.green, bg = colors.bg } },
+                        { codecompanion_status, color = { fg = colors.orange, bg = colors.bg } },
                     },
                     lualine_y = {},
                     lualine_z = { "location" },
@@ -199,6 +228,7 @@ return
                         },
                     },
                     lualine_x = {
+                        { codecompanion_status, color = { fg = colors.orange } },
                         {
                             "copilot",
                             show_colors = true,
