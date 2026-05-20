@@ -169,7 +169,10 @@ o.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
 -- 禁用特定功能
 -- =====================
 g.zig_fmt_autosave = false -- 禁用 Zig 文件自动格式化
-g.loaded_perl_provider = false -- 禁用 Perl 提供者 (加速启动)
+g.loaded_node_provider = 0 -- 禁用 Node.js remote-plugin provider
+g.loaded_perl_provider = 0 -- 禁用 Perl provider
+g.loaded_python3_provider = 0 -- 禁用 Python provider
+g.loaded_ruby_provider = 0 -- 禁用 Ruby provider
 g.loaded_netrw = 1 -- 禁用内置文件浏览器 netrw
 g.loaded_netrwPlugin = 1 -- 禁用 netrw 插件
 g.editorconfig = true -- 启用 EditorConfig 集成 (遵循项目 .editorconfig 配置)

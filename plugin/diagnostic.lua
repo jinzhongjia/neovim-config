@@ -6,6 +6,7 @@
 --     vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
 -- end
 vim.diagnostic.config({
+    severity_sort = true,
     signs = {
         text = {
             [vim.diagnostic.severity.ERROR] = "󰅚",
@@ -27,3 +28,10 @@ vim.diagnostic.config({
         },
     },
 })
+
+vim.keymap.set("n", "gK", function()
+    local config = vim.diagnostic.config()
+    vim.diagnostic.config({
+        virtual_lines = not config.virtual_lines and { current_line = true } or false,
+    })
+end, { desc = "Toggle current line diagnostics" })
