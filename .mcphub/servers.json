@@ -5,12 +5,6 @@
       "args": [],
       "disabled": false,
       "description": "FFF file and content search tools for the current workspace"
-    },
-    "vectorcode": {
-      "command": "vectorcode-mcp-server",
-      "args": [],
-      "disabled": false,
-      "description": "VectorCode semantic code search and repository indexing tools"
     }
   }
 }

@@ -17,38 +17,15 @@ return
             "nvim-treesitter/nvim-treesitter",
             "ravitemer/codecompanion-history.nvim",
             {
-                "Davidyz/VectorCode",
-                version = "*",
-                build = "uv tool upgrade vectorcode",
-                dependencies = { "nvim-lua/plenary.nvim" },
-                opts = {
-                    async_opts = {
-                        n_query = 3,
-                        notify = false,
-                        run_on_register = false,
-                    },
-                    n_query = 3,
-                    notify = true,
-                    timeout_ms = 10000,
-                },
-            },
-            {
                 "ravitemer/mcphub.nvim",
                 build = "bundled_build.lua",
                 dependencies = {
                     "nvim-lua/plenary.nvim",
-                    {
-                        "Joakker/lua-json5",
-                        build = "./install.sh",
-                    },
                 },
                 opts = {
                     use_bundled_binary = true,
                     auto_approve = false,
                     auto_toggle_mcp_servers = true,
-                    json_decode = function(str)
-                        return require("json5").parse(str)
-                    end,
                     workspace = {
                         enabled = true,
                         look_for = { ".mcphub/servers.json", ".vscode/mcp.json", ".cursor/mcp.json" },
@@ -88,7 +65,6 @@ return
                         },
                         memory = {
                             auto_create_memories_on_summary_generation = true,
-                            vectorcode_exe = "vectorcode",
                             notify = true,
                             index_on_startup = false,
                         },
@@ -100,32 +76,6 @@ return
                         make_vars = false,
                         make_slash_commands = true,
                         show_result_in_chat = true,
-                    },
-                },
-                vectorcode = {
-                    opts = {
-                        tool_group = {
-                            enabled = true,
-                            extras = { "file_search" },
-                            collapse = false,
-                        },
-                        tool_opts = {
-                            ["*"] = {
-                                use_lsp = false,
-                            },
-                            query = {
-                                default_num = { chunk = 20, document = 5 },
-                                max_num = { chunk = 50, document = 10 },
-                                no_duplicate = true,
-                                chunk_mode = false,
-                                summarise = {
-                                    enabled = false,
-                                },
-                            },
-                            vectorise = {
-                                require_approval_before = true,
-                            },
-                        },
                     },
                 },
             },
