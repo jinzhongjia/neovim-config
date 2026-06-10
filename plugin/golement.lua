@@ -223,6 +223,11 @@ local implementation_callback = create_implementation_callback()
 local gopls_client
 local active_requests = {}
 
+-- gopls 就绪状态跟踪:只有当 workspace 完全加载后才发 implementation 请求,
+-- 避免在大型项目初始化阶段抢占 gopls 资源、拖慢首次加载。
+local gopls_ready = {} -- [client_id] = true 表示该 gopls 实例的 workspace 已加载完成
+local gopls_progress_seen = {} -- [client_id] = true 表示收到过任意进度事件
+
 -- LSP 交互
 local function get_gopls_client()
     -- Check if cached client is still valid
@@ -332,7 +337,8 @@ local function annotate_structs_interfaces(bufnr)
     end
 
     local client = get_gopls_client()
-    if not client then
+    -- gopls 未就绪(workspace 还在加载)时跳过,等就绪后由进度回调统一重渲染
+    if not client or not gopls_ready[client.id] then
         return
     end
 
@@ -343,6 +349,16 @@ local function annotate_structs_interfaces(bufnr)
                 set_virt_text(bufnr, node.line, _prefix, names)
             end
         end)
+    end
+end
+
+-- gopls 就绪后,统一重渲染所有已加载的 Go buffer
+-- (初始化阶段被跳过的渲染在这里补上)
+local function annotate_all_go_buffers()
+    for _, bufnr in ipairs(api.nvim_list_bufs()) do
+        if api.nvim_buf_is_loaded(bufnr) and vim.bo[bufnr].filetype == "go" then
+            annotate_structs_interfaces(bufnr)
+        end
     end
 end
 
@@ -388,6 +404,76 @@ api.nvim_create_autocmd({ "TextChanged", "TextChangedI", "LspAttach" }, {
     callback = debounce(function(args)
         annotate_structs_interfaces(args.buf)
     end, config.debounce_delay),
+})
+
+-- 监听 gopls 的 workspace 加载进度:收到 "end" 表示初始化完成,
+-- 此时才标记就绪并补渲染,确保 implementation 请求不会在加载期发出。
+api.nvim_create_autocmd("LspProgress", {
+    group = augroup,
+    callback = function(args)
+        local data = args.data
+        if not data or not data.client_id then
+            return
+        end
+        local client = vim.lsp.get_client_by_id(data.client_id)
+        if not client or client.name ~= "gopls" then
+            return
+        end
+        local id = client.id
+        gopls_progress_seen[id] = true
+        local value = data.params and data.params.value
+        if value and value.kind == "end" and not gopls_ready[id] then
+            gopls_ready[id] = true
+            vim.schedule(annotate_all_go_buffers)
+        end
+    end,
+})
+
+-- 兜底:小项目/瞬时加载可能根本不发进度事件。gopls attach 后等待一小段时间,
+-- 若期间没收到任何进度,就认为已就绪,避免永远不渲染。
+api.nvim_create_autocmd("LspAttach", {
+    group = augroup,
+    pattern = { "*.go" },
+    callback = function(args)
+        local client = vim.lsp.get_client_by_id(args.data.client_id)
+        if not client or client.name ~= "gopls" then
+            return
+        end
+        local id = client.id
+        if gopls_ready[id] then
+            return
+        end
+        local timer = uv.new_timer()
+        if not timer then
+            return
+        end
+        timer:start(3000, 0, function()
+            if not timer:is_closing() then
+                timer:stop()
+                timer:close()
+            end
+            vim.schedule(function()
+                -- 只有在完全没收到进度事件时才兜底就绪;
+                -- 若已收到进度(大项目仍在加载),交给 "end" 事件处理。
+                if not gopls_ready[id] and not gopls_progress_seen[id] then
+                    gopls_ready[id] = true
+                    annotate_all_go_buffers()
+                end
+            end)
+        end)
+    end,
+})
+
+-- gopls 退出时清理就绪状态,避免重启后误用旧标记
+api.nvim_create_autocmd("LspDetach", {
+    group = augroup,
+    callback = function(args)
+        local id = args.data and args.data.client_id
+        if id then
+            gopls_ready[id] = nil
+            gopls_progress_seen[id] = nil
+        end
+    end,
 })
 
 -- Clear file cache on BufDelete to prevent memory leaks
