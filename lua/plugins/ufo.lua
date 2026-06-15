@@ -54,6 +54,9 @@ return
                 },
                 -- 优先使用 LSP，fallback 到 treesitter，最后 indent
                 provider_selector = function(bufnr, filetype, buftype)
+                    if filetype == "opencode_output" or filetype == "codecompanion" then
+                        return ""
+                    end
                     return { "lsp", "indent" }
                 end,
                 fold_virt_text_handler = handler,
