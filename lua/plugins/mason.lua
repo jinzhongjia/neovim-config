@@ -11,6 +11,7 @@ return {
             "goimports-reviser",
             "golangci-lint",
             "prettierd",
+            "eslint-lsp",
             "shfmt",
             "clang-format",
             "ast-grep",

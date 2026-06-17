@@ -3,6 +3,7 @@ local ensure_installed = {
     "basedpyright",
     "ruff",
     "vtsls",
+    "eslint",
     "lua_ls",
     "buf_ls",
     "dockerls",
