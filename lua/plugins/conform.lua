@@ -13,7 +13,7 @@ return
                 cpp = { "clang_format" },
                 go = {
                     "goimports",
-                    "goimports-reviser",
+                    "gofumpt",
                 },
                 html = { "prettierd" },
                 json = { "prettierd" },
@@ -35,12 +35,6 @@ return
                 yaml = { "yamlfmt" },
                 proto = { "buf" },
                 sql = { "sleek" },
-            },
-            formatters = {
-                ["goimports-reviser"] = {
-                    command = "goimports-reviser",
-                    prepend_args = { "-imports-order=std,project,company,general " },
-                },
             },
         },
         keys = {
