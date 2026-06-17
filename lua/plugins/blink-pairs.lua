@@ -3,6 +3,9 @@ return {
     event = "InsertEnter",
     version = "*", -- (recommended) only required with prebuilt binaries
     dependencies = "saghen/blink.download",
+    build = function()
+        require("blink.pairs").build():wait(60000)
+    end,
     --- @module 'blink.pairs'
     --- @type blink.pairs.Config
     opts = {
