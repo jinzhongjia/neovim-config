@@ -156,6 +156,7 @@ return
         config = function()
             local dap = require("dap")
             local dapui = require("dapui")
+            local python = require("core.python")
 
             -- DAP UI 设置
             ---@diagnostic disable-next-line: missing-fields
@@ -318,6 +319,45 @@ return
                     request = "attach",
                     mode = "local",
                     processId = require("dap.utils").pick_process,
+                },
+            }
+
+            -- Python (debugpy)
+            local debugpy_python = vim.fn.stdpath("data") .. "/mason/packages/debugpy/venv/bin/python"
+
+            dap.adapters.python = function(callback, config)
+                local command = vim.fn.executable(debugpy_python) == 1 and debugpy_python
+                    or python.python_path(config.cwd or vim.fn.getcwd())
+
+                callback({
+                    type = "executable",
+                    command = command,
+                    args = { "-m", "debugpy.adapter" },
+                })
+            end
+
+            dap.configurations.python = {
+                {
+                    type = "python",
+                    request = "launch",
+                    name = "Debug file",
+                    program = "${file}",
+                    console = "integratedTerminal",
+                    pythonPath = function()
+                        return python.python_path(python.project_root(vim.api.nvim_buf_get_name(0)))
+                    end,
+                },
+                {
+                    type = "python",
+                    request = "launch",
+                    name = "Debug module",
+                    module = function()
+                        return vim.fn.input("Module: ")
+                    end,
+                    console = "integratedTerminal",
+                    pythonPath = function()
+                        return python.python_path(python.project_root(vim.api.nvim_buf_get_name(0)))
+                    end,
                 },
             }
         end,

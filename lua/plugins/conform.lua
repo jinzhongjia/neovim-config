@@ -27,7 +27,8 @@ return
                 typescriptreact = { "prettierd" },
                 vue = { "prettierd" },
                 python = {
-                    "yapf",
+                    "ruff_organize_imports",
+                    "ruff_format",
                 },
                 zig = { "zigfmt" },
                 markdown = { "prettierd" },

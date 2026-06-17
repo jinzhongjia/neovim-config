@@ -1,6 +1,7 @@
 local ensure_installed = {
     "gopls",
     "basedpyright",
+    "ruff",
     "vtsls",
     "lua_ls",
     "buf_ls",

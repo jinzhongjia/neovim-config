@@ -94,6 +94,20 @@ return
                 return "󰉋 " .. vim.fn.fnamemodify(cwd, ":t")
             end
 
+            local function python_env()
+                if vim.bo.filetype ~= "python" then
+                    return ""
+                end
+
+                local ok, venv_selector = pcall(require, "venv-selector")
+                local venv = ok and venv_selector.venv() or vim.env.VIRTUAL_ENV or vim.env.CONDA_PREFIX
+                if not venv or venv == "" then
+                    return ""
+                end
+
+                return " " .. vim.fn.fnamemodify(venv, ":t")
+            end
+
             -- DAP UI 扩展
             local dapui_extension = {
                 sections = {
@@ -228,6 +242,7 @@ return
                         },
                     },
                     lualine_x = {
+                        { python_env, color = { fg = colors.green } },
                         { codecompanion_status, color = { fg = colors.orange } },
                         {
                             "copilot",
