@@ -2,7 +2,7 @@ return
 --- @type LazySpec
 {
     {
-        "NeogitOrg/neogit",
+        "jinzhongjia/neogit",
         dependencies = {
             "nvim-lua/plenary.nvim", -- required
 
