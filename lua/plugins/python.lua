@@ -12,6 +12,9 @@ return
         keys = {
             { "<leader>pv", "<cmd>VenvSelect<cr>", ft = "python", desc = "Select Python venv" },
         },
+        init = function()
+            require("core.python").setup_auto_refresh()
+        end,
         opts = {
             options = {
                 picker = "snacks",

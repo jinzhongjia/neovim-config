@@ -15,6 +15,10 @@ local venv_bin = is_windows and "Scripts" or "bin"
 local python_exe = is_windows and "python.exe" or "python"
 local uv = vim.uv or vim.loop
 local env_cache = {}
+local refresh = {
+    roots = {},
+    group = nil,
+}
 
 local function joinpath(...)
     return table.concat(
@@ -141,21 +145,16 @@ function M.command_python(root)
     end
 end
 
-local function resolve_environment(root)
-    root = root or M.project_root()
-    local cache_key = table.concat({
+local function environment_cache_key(root)
+    return table.concat({
         root,
         vim.env.UV_PROJECT_ENVIRONMENT or "",
         vim.env.VIRTUAL_ENV or "",
         vim.env.CONDA_PREFIX or "",
     }, "\n")
-    local cached = env_cache[cache_key]
-    if cached then
-        return cached.venv, cached.python
-    end
+end
 
-    local candidates = {}
-
+local function add_venv_candidates(candidates, root)
     add_relative_candidate(candidates, root, vim.env.UV_PROJECT_ENVIRONMENT)
     add_candidate(candidates, vim.env.VIRTUAL_ENV)
     add_candidate(candidates, vim.env.CONDA_PREFIX)
@@ -172,7 +171,53 @@ local function resolve_environment(root)
     add_candidate(candidates, joinpath(root, ".direnv", "python-3.11"))
     add_candidate(candidates, joinpath(root, ".direnv", "python-3.10"))
     add_candidate(candidates, joinpath(root, ".direnv", "python-3.9"))
+end
 
+local function environment_signature(root)
+    local candidates = {}
+    local parts = { environment_cache_key(root) }
+
+    add_venv_candidates(candidates, root)
+
+    for _, venv in ipairs(candidates) do
+        local stat = uv.fs_stat(M.venv_python(venv))
+        parts[#parts + 1] = venv .. ":" .. (stat and stat.type or "")
+    end
+
+    return table.concat(parts, "\n")
+end
+
+local function close_handle(handle)
+    if handle and not handle:is_closing() then
+        handle:stop()
+        handle:close()
+    end
+end
+
+function M.clear_cache(root)
+    if not root then
+        env_cache = {}
+        return
+    end
+
+    local prefix = root .. "\n"
+    for key in pairs(env_cache) do
+        if key == root or vim.startswith(key, prefix) then
+            env_cache[key] = nil
+        end
+    end
+end
+
+local function resolve_environment(root)
+    root = root or M.project_root()
+    local cache_key = environment_cache_key(root)
+    local cached = env_cache[cache_key]
+    if cached then
+        return cached.venv, cached.python
+    end
+
+    local candidates = {}
+    add_venv_candidates(candidates, root)
     for _, venv in ipairs(candidates) do
         if readable_dir(venv) and executable(M.venv_python(venv)) then
             env_cache[cache_key] = { venv = venv }
@@ -220,6 +265,9 @@ function M.apply_lsp_settings(config, root)
     if venv then
         config.settings.python.venvPath = vim.fs.dirname(venv)
         config.settings.python.venv = vim.fs.basename(venv)
+    else
+        config.settings.python.venvPath = nil
+        config.settings.python.venv = nil
     end
 end
 
@@ -229,6 +277,191 @@ function M.apply_ruff_init_options(config, root)
         configurationPreference = "filesystemFirst",
         interpreter = { M.python_path(root) },
     })
+end
+
+local function python_buffers(root)
+    local buffers = {}
+
+    for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+        if vim.bo[bufnr].filetype == "python" then
+            local name = vim.api.nvim_buf_get_name(bufnr)
+            if name ~= "" and M.project_root(name) == root then
+                buffers[#buffers + 1] = bufnr
+            end
+        end
+    end
+
+    return buffers
+end
+
+local function client_uses_root(client, root)
+    if client.config and client.config.root_dir == root then
+        return true
+    end
+
+    for _, workspace in ipairs(client.workspace_folders or {}) do
+        if workspace.name == root then
+            return true
+        end
+    end
+
+    return false
+end
+
+function M.refresh_lsp(root)
+    M.clear_cache(root)
+
+    for _, client in ipairs(vim.lsp.get_clients()) do
+        if client_uses_root(client, root) then
+            if client.name == "basedpyright" then
+                M.apply_lsp_settings(client.config, root)
+                client.notify("workspace/didChangeConfiguration", {
+                    settings = client.config.settings or {},
+                })
+            elseif client.name == "ruff" then
+                M.apply_ruff_init_options(client.config, root)
+                client.notify("workspace/didChangeConfiguration", {
+                    settings = client.config.init_options and client.config.init_options.settings or {},
+                })
+            end
+        end
+    end
+
+    vim.cmd("redrawstatus")
+end
+
+local function close_root(root)
+    local state = refresh.roots[root]
+    if not state then
+        return
+    end
+
+    for path, watcher in pairs(state.watchers) do
+        close_handle(watcher)
+        state.watchers[path] = nil
+    end
+
+    close_handle(state.debounce)
+    refresh.roots[root] = nil
+end
+
+local function schedule_root_refresh(root)
+    local state = refresh.roots[root]
+    if not state then
+        return
+    end
+
+    if not state.debounce then
+        state.debounce = uv.new_timer()
+    end
+
+    state.debounce:stop()
+    state.debounce:start(
+        120,
+        0,
+        vim.schedule_wrap(function()
+            if #python_buffers(root) == 0 then
+                close_root(root)
+                return
+            end
+
+            M.update_root_watches(root)
+
+            local next_signature = environment_signature(root)
+            if next_signature ~= state.signature then
+                state.signature = next_signature
+                M.refresh_lsp(root)
+            end
+        end)
+    )
+end
+
+local function watch_path(root, path)
+    local state = refresh.roots[root]
+    if not state or state.watchers[path] or not readable_dir(path) then
+        return
+    end
+
+    local watcher = uv.new_fs_event()
+    if not watcher then
+        return
+    end
+
+    local ok = watcher:start(path, {}, function(err)
+        if err then
+            close_handle(watcher)
+            state.watchers[path] = nil
+            return
+        end
+
+        schedule_root_refresh(root)
+    end)
+
+    if ok then
+        state.watchers[path] = watcher
+    else
+        close_handle(watcher)
+    end
+end
+
+function M.update_root_watches(root)
+    watch_path(root, root)
+
+    local candidates = {}
+    add_venv_candidates(candidates, root)
+
+    for _, venv in ipairs(candidates) do
+        watch_path(root, venv)
+        watch_path(root, joinpath(venv, venv_bin))
+    end
+end
+
+local function watch_root(root)
+    if not refresh.roots[root] then
+        refresh.roots[root] = {
+            signature = environment_signature(root),
+            watchers = {},
+        }
+    end
+
+    M.update_root_watches(root)
+end
+
+local function cleanup_unowned_roots()
+    for root in pairs(refresh.roots) do
+        if #python_buffers(root) == 0 then
+            close_root(root)
+        end
+    end
+end
+
+function M.setup_auto_refresh()
+    if refresh.group then
+        return
+    end
+
+    refresh.group = vim.api.nvim_create_augroup("PythonVenvRefresh", { clear = true })
+    vim.api.nvim_create_autocmd({ "BufEnter", "DirChanged", "FileType", "FocusGained" }, {
+        group = refresh.group,
+        callback = function(args)
+            local bufnr = args.buf
+            if bufnr and vim.bo[bufnr].filetype == "python" then
+                local root = M.project_root(vim.api.nvim_buf_get_name(bufnr))
+                watch_root(root)
+                schedule_root_refresh(root)
+            end
+        end,
+    })
+    vim.api.nvim_create_autocmd({ "BufDelete", "BufWipeout" }, {
+        group = refresh.group,
+        callback = cleanup_unowned_roots,
+    })
+
+    if vim.bo.filetype == "python" then
+        local root = M.project_root(vim.api.nvim_buf_get_name(0))
+        watch_root(root)
+        schedule_root_refresh(root)
+    end
 end
 
 return M
