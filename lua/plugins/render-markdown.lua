@@ -57,6 +57,11 @@ return
                         padding = { highlight = "NormalFloat" }, -- 使用浮动窗口背景色
                     },
                 },
+                filetype = {
+                    opencode_output = {
+                        anti_conceal = { enabled = false },
+                    },
+                },
             },
         },
     },
