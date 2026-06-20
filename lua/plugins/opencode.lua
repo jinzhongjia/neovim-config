@@ -34,6 +34,11 @@ return
                         wrap = true, -- Wraps text inside input window
                     },
                 },
+                output = {
+                    tools = {
+                        use_folds = false, -- 禁用 OpenCode 输出窗口的自动折叠
+                    },
+                },
             },
 
             -- 上下文配置优化
