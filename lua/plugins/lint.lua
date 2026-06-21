@@ -3,7 +3,7 @@ return
 {
     {
         "mfussenegger/nvim-lint",
-        event = { "BufReadPost", "BufNewFile", "BufWritePost" },
+        event = "BufWritePost",
         config = function()
             local lint = require("lint")
 
@@ -15,16 +15,11 @@ return
                 ["yaml.ghaction"] = { "actionlint" },
             }
 
-            vim.api.nvim_create_autocmd({ "BufWritePost", "BufReadPost", "InsertLeave" }, {
+            vim.api.nvim_create_autocmd("BufWritePost", {
                 group = vim.api.nvim_create_augroup("nvim-lint", { clear = true }),
-                callback = function(args)
+                callback = function()
                     local buftype = vim.bo.buftype
                     if buftype ~= "" and buftype ~= "acwrite" then
-                        return
-                    end
-
-                    -- golangci-lint is project-wide and slow; run it only after writes.
-                    if vim.bo.filetype == "go" and args.event ~= "BufWritePost" then
                         return
                     end
 

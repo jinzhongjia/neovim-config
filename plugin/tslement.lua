@@ -1,3 +1,7 @@
+if not vim.g.__load_tsplements then
+    return
+end
+
 local api = vim.api
 
 -- 配置管理

@@ -100,13 +100,20 @@ return
                 end
 
                 local ok, venv_selector = pcall(require, "venv-selector")
-                local venv = ok and venv_selector.venv() or nil
+                local venv = ok and venv_selector.venv() or vim.env.VIRTUAL_ENV or vim.env.CONDA_PREFIX
 
                 if not venv or venv == "" then
                     local python_ok, python = pcall(require, "core.python")
-                    venv = python_ok and python.find_venv(python.project_root(vim.api.nvim_buf_get_name(0)))
-                        or vim.env.VIRTUAL_ENV
-                        or vim.env.CONDA_PREFIX
+                    if python_ok then
+                        local root = python.project_root(vim.api.nvim_buf_get_name(0))
+                        for _, name in ipairs({ ".venv", "venv" }) do
+                            local candidate = vim.fs.joinpath(root, name)
+                            if vim.uv.fs_stat(python.venv_python(candidate)) then
+                                venv = candidate
+                                break
+                            end
+                        end
+                    end
                 end
                 if not venv or venv == "" then
                     return ""

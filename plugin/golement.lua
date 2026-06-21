@@ -1,3 +1,7 @@
+if not vim.g.__load_goplements then
+    return
+end
+
 local api = vim.api
 local uv = vim.loop
 
