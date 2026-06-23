@@ -18,7 +18,7 @@ return
             -- 基础配置
             terminal_cmd = nil, -- 使用默认的全局 claude 命令 (/usr/sbin/claude)
             log_level = "warn", -- 日志级别: trace|debug|info|warn|error
-            auto_start = false, -- 按命令/快捷键加载后再启动 WebSocket 服务
+            auto_start = true, -- 加载插件时启动 WebSocket 服务；否则可视选择发送时 selection tracking 不会启用
 
             -- 选择跟踪配置
             track_selection = true, -- 实时追踪光标选择，Claude 能看到你正在查看的代码
