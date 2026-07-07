@@ -11,12 +11,17 @@ return
         opts = {
             -- 启用所有需要的 filetype（需与 ft 保持一致）
             file_types = { "markdown", "codecompanion", "opencode_output" },
-            -- 启用 anti-conceal：光标所在行显示原始 markdown 语法
+            -- Normal 模式保持预览效果，避免光标所在行露出原始 Markdown 符号
             anti_conceal = {
                 enabled = true,
-                -- 光标上下各显示 0 行的原始语法（仅当前行）
+                disabled_modes = { "n" },
                 above = 0,
                 below = 0,
+            },
+            win_options = {
+                concealcursor = {
+                    rendered = "n",
+                },
             },
             -- 启用 LSP completions 支持（用于 checkbox 和 callouts 补全）
             completions = {
