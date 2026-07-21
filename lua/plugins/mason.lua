@@ -22,7 +22,6 @@ return {
         local ensure_installed = {
             "goimports",
             "goimports-reviser",
-            "golangci-lint",
             "prettierd",
             "eslint-lsp",
             "shfmt",
