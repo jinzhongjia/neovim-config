@@ -33,16 +33,16 @@ o.relativenumber = true
 o.signcolumn = "yes"
 o.cursorline = true
 o.termguicolors = true
-o.showmode = false           -- statusline handles this
-o.laststatus = 3             -- global statusline
+o.showmode = false -- statusline handles this
+o.laststatus = 3 -- global statusline
 o.cmdheight = 1
 o.pumheight = 12
-o.pumborder = "rounded"      -- 0.12: popup menu border
-o.pummaxwidth = 50           -- 0.12: popup max width
-o.winborder = "rounded"      -- 0.12: floating window border
+o.pumborder = "rounded" -- 0.12: popup menu border
+o.pummaxwidth = 50 -- 0.12: popup max width
+o.winborder = "rounded" -- 0.12: floating window border
 o.scrolloff = 8
 o.sidescrolloff = 8
-o.sidescroll = 5             -- horizontal scroll step (wrap is off)
+o.sidescroll = 5 -- horizontal scroll step (wrap is off)
 o.wrap = false
 o.colorcolumn = "120"
 o.background = "dark"
@@ -54,8 +54,8 @@ o.shiftwidth = 4
 o.softtabstop = 4
 o.smartindent = true
 o.breakindent = true
-o.shiftround = true          -- round indent to a shiftwidth multiple
-o.whichwrap = "b,s,<,>,[,]"  -- let these keys cross line boundaries
+o.shiftround = true -- round indent to a shiftwidth multiple
+o.whichwrap = "b,s,<,>,[,]" -- let these keys cross line boundaries
 
 -- Search
 o.ignorecase = true
@@ -67,7 +67,7 @@ o.incsearch = true
 o.updatetime = 200
 o.timeoutlen = 300
 o.redrawtime = 1500
-o.lazyredraw = false         -- incompatible with noice-like UIs
+o.lazyredraw = false -- incompatible with noice-like UIs
 
 -- Files
 o.undofile = true
@@ -75,16 +75,16 @@ o.swapfile = false
 o.backup = false
 o.writebackup = false
 
--- Completion (0.12 native)
-o.autocomplete = true        -- 0.12: native auto-completion
+-- Completion — blink.cmp owns insert completion (plugins/completion.lua),
+-- so native 'autocomplete' stays off; completeopt only serves manual <C-x>
 o.completeopt = "menu,menuone,noselect,popup,nearest"
 o.shortmess = vim.o.shortmess .. "c"
 
 -- Command-line completion
 o.wildmenu = true
-o.wildmode = "longest:full,full"  -- 第一次 Tab: 最长公共前缀，第二次: 循环
-o.wildoptions = "pum,fuzzy"      -- 弹出菜单 + 模糊匹配
-o.wildchar = 9                   -- Tab 触发（0.12 中也支持 / ? :g :v 搜索补全）
+o.wildmode = "longest:full,full" -- 第一次 Tab: 最长公共前缀，第二次: 循环
+o.wildoptions = "pum,fuzzy" -- 弹出菜单 + 模糊匹配
+o.wildchar = 9 -- Tab 触发（0.12 中也支持 / ? :g :v 搜索补全）
 
 -- Split
 o.splitbelow = true
@@ -93,8 +93,8 @@ o.splitkeep = "screen"
 
 -- Grep (use ripgrep if available)
 if vim.fn.executable("rg") == 1 then
-  o.grepprg = "rg --vimgrep --smart-case --hidden"
-  o.grepformat = "%f:%l:%c:%m"
+    o.grepprg = "rg --vimgrep --smart-case --hidden"
+    o.grepformat = "%f:%l:%c:%m"
 end
 
 -- Diff (0.12 improved defaults)
@@ -106,7 +106,7 @@ o.mousemodel = "extend"
 
 -- Clipboard
 if vim.fn.has("win32") == 1 and vim.fn.executable("win32yank.exe") == 1 then
-  vim.g.clipboard = "win32yank"  -- 0.12: built-in provider by name
+    vim.g.clipboard = "win32yank" -- 0.12: built-in provider by name
 end
 o.clipboard = "unnamedplus"
 
@@ -126,20 +126,20 @@ local fcs = vim.opt.fillchars:get()
 
 -- Marker on fold-start lines only; blank everywhere else
 function _G.fold_icon()
-  local lnum = vim.v.lnum
-  if vim.v.virtnum ~= 0 or vim.fn.foldlevel(lnum) <= vim.fn.foldlevel(lnum - 1) then
-    return " "
-  end
-  return vim.fn.foldclosed(lnum) == -1 and fcs.foldopen or fcs.foldclose
+    local lnum = vim.v.lnum
+    if vim.v.virtnum ~= 0 or vim.fn.foldlevel(lnum) <= vim.fn.foldlevel(lnum - 1) then
+        return " "
+    end
+    return vim.fn.foldclosed(lnum) == -1 and fcs.foldopen or fcs.foldclose
 end
 
 -- ponytail: assumes number+relativenumber are both on or both off (true here;
 -- TermOpen and NvimTree turn both off). Add the rnu-only case if it comes up.
 function _G.line_nr()
-  if vim.v.virtnum ~= 0 or not (vim.wo.number or vim.wo.relativenumber) then
-    return ""
-  end
-  return (vim.v.relnum > 0 and vim.v.relnum or vim.v.lnum) .. " "
+    if vim.v.virtnum ~= 0 or not (vim.wo.number or vim.wo.relativenumber) then
+        return ""
+    end
+    return (vim.v.relnum > 0 and vim.v.relnum or vim.v.lnum) .. " "
 end
 
 o.statuscolumn = "%{v:lua.fold_icon()}%s%=%{v:lua.line_nr()}"

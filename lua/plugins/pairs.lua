@@ -1,23 +1,8 @@
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
--- Auto pairs — mini.pairs (lightweight, smart)
+-- Auto pairs — blink.pairs (Rust matcher, syntax-aware)
+-- download() is the documented vim.pack path: fetches the prebuilt
+-- binary matching the pinned tag, no-op when already current.
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-require("mini.pairs").setup({
-  -- In which modes mappings from this `config` table are created
-  modes = { insert = true, command = false, terminal = false },
-
-  -- Global mappings
-  mappings = {
-    ["("] = { action = "open", pair = "()", neigh_pattern = "[^\\]." },
-    ["["] = { action = "open", pair = "[]", neigh_pattern = "[^\\]." },
-    ["{"] = { action = "open", pair = "{}", neigh_pattern = "[^\\]." },
-
-    [")"] = { action = "close", pair = "()", neigh_pattern = "[^\\]." },
-    ["]"] = { action = "close", pair = "[]", neigh_pattern = "[^\\]." },
-    ["}"] = { action = "close", pair = "{}", neigh_pattern = "[^\\]." },
-
-    ['"'] = { action = "closeopen", pair = '""', neigh_pattern = "[^\\].", register = { cr = false } },
-    ["'"] = { action = "closeopen", pair = "''", neigh_pattern = "[^%a\\].", register = { cr = false } },
-    ["`"] = { action = "closeopen", pair = "``", neigh_pattern = "[^\\].", register = { cr = false } },
-  },
-})
+require("blink.pairs").download():pwait(60000)
+require("blink.pairs").setup()

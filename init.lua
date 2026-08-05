@@ -10,7 +10,6 @@ require("core.keymaps")
 require("core.autocmds")
 require("core.diagnostics")
 require("core.lsp")
-require("core.completion")
 
 -- Plugin management (vim.pack built-in)
 require("plugins")
