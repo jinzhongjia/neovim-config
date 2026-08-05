@@ -89,6 +89,11 @@ vim.pack.add({
     -- │ which-key — leader 键位速查弹窗                          │
     -- └─────────────────────────────────────────────────────────┘
     gh("folke/which-key.nvim"),
+
+    -- ┌─────────────────────────────────────────────────────────┐
+    -- │ Markdown — 缓冲区内渲染（treesitter based）              │
+    -- └─────────────────────────────────────────────────────────┘
+    gh("MeanderingProgrammer/render-markdown.nvim"),
 })
 
 -- Load plugin configs after pack
@@ -96,6 +101,7 @@ require("plugins.mason")
 require("plugins.lazydev")
 require("plugins.completion")
 require("plugins.treesitter")
+require("plugins.markdown")
 require("plugins.fzf")
 require("plugins.file-explorer")
 require("plugins.flash")
