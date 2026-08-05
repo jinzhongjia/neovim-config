@@ -62,8 +62,8 @@ map("n", "]l", "<cmd>lnext<CR>zz", { desc = "Next loclist" })
 map("n", "[l", "<cmd>lprev<CR>zz", { desc = "Prev loclist" })
 
 -- ── Diagnostics ──────────────────────────────────────────────
-map("n", "[d", vim.diagnostic.goto_prev, { desc = "Prev diagnostic" })
-map("n", "]d", vim.diagnostic.goto_next, { desc = "Next diagnostic" })
+-- [d / ]d 是 0.10+ 内置默认（支持 count），不再自建（旧实现用的
+-- goto_prev/goto_next 已废弃）
 -- Not under <leader>d/<leader>e: those are taken by dap.lua, fzf.lua and the file tree
 map("n", "<leader>cd", vim.diagnostic.open_float, { desc = "Diagnostic float" })
 map("n", "<leader>cD", vim.diagnostic.setloclist, { desc = "Diagnostics to loclist" })
@@ -80,11 +80,10 @@ map("n", "<leader>ci", vim.lsp.buf.incoming_calls, { desc = "Incoming calls" })
 map("n", "<leader>co", vim.lsp.buf.outgoing_calls, { desc = "Outgoing calls" })
 map("n", "<leader>cr", vim.lsp.buf.rename, { desc = "Rename" })
 map("n", "<leader>cs", vim.lsp.buf.signature_help, { desc = "Signature help" })
-map("i", "<C-s>", vim.lsp.buf.signature_help, { desc = "Signature help" })
+-- 插入模式签名帮助：0.11+ 内置 <C-s>，不再自建
 
--- ── File explorer (nvim-tree, see plugins/file-explorer.lua) ─
--- netrw is disabled there, so :Explore no longer exists
-map("n", "<leader>fe", "<cmd>NvimTreeFocus<CR>", { desc = "File explorer (focus)" })
+-- ── File explorer ────────────────────────────────────────────
+-- <leader>e / <leader>fe 都在 plugins/file-explorer.lua（懒加载）
 
 -- Terminal keymaps → see lua/plugins/terminal.lua (floating multi-terminal)
 

@@ -1,211 +1,172 @@
 # Neovim 0.12 Minimal Performance Config
 
-这是一套基于 Neovim 0.12 的极简高性能配置，追求**极致的启动速度和运行性能**。配置原则是：**能用内置功能解决的绝不引入插件**。
+基于 Neovim 0.12 的极简高性能配置。原则：**能用内置功能解决的绝不引入插件；
+必须引入的插件，低频场景一律懒加载**。
 
 ## ✨ 核心特性
 
-- **极致性能**：启动时间极快（<50ms），仅保留必要的极少数插件。
+- **启动 ~200ms**（warm，全功能加载；重型低频插件已移出启动路径：
+  blink.pairs → InsertEnter，copilot → InsertEnter，DAP → 首次按键，
+  nvim-tree → 首次打开，render-markdown → 首个 markdown 文件）。
 - **Neovim 0.12 原生能力**：
-  - 使用内置 `vim.pack` 替代 lazy.nvim/packer。
-  - 使用内置 `'autocomplete'` 替代 nvim-cmp。
-  - 使用内置 `vim.lsp.config` + `vim.lsp.enable`；`nvim-lspconfig` 只作为
-    `cmd`/`filetypes`/`root_markers` 的基础配置来源，`after/lsp/*.lua` 覆盖 settings。
-  - 使用内置实验性 `ui2` 替代 noice.nvim。
-  - 使用内置状态栏和诊断 API（`vim.diagnostic.status`）。
-- **完整语言支持**：Lua、TypeScript/JavaScript、Go、Rust、Zig、Python、C/C++、
-  CSS、HTML、YAML、Protobuf 的 LSP，以及 Go/Rust/C/Python/TS 的 DAP。
-- **最少插件依赖**：
-  - `fzf-lua`：提供最快、最轻量的搜索体验（依赖系统 `fzf` 和 `rg`）。
-  - `nvim-tree`：侧边栏文件树（+ `nvim-web-devicons` 图标），替代 netrw。
-  - `flash.nvim`：标签式跳转（含 f/F/t/T 标签与 treesitter 选择）。
-  - `copilot.lua`：Copilot 行内补全（ghost text，需要 Node.js）。
-  - `bufferline.nvim`：Buffer 标签栏（带诊断计数、NvimTree offset）。
-  - `nvim-lspconfig`：只当 server base 配置来源（`cmd`/`filetypes`/`root_markers`），
-    不调 `setup()`；`eslint` 的 `workspace/configuration` handler、`clangd` 的
-    utf-8 offsetEncoding、`rust_analyzer`/`gopls` 的多层根探测都靠它。
-  - `lazydev.nvim`：按需给 `lua_ls` 喂 Neovim/插件的 Lua 类型。
-  - `nvim-treesitter`：管理语法高亮。
-  - `nvim-dap` / `nvim-dap-ui`：处理调试功能。
-  - `vscode.nvim`：VS Code Dark+ 风格配色方案。
+  - 内置 `vim.pack` 管理插件（版本锁定见 `nvim-pack-lock.json`）。
+  - 内置 `vim.lsp.config` + `vim.lsp.enable`；`nvim-lspconfig` 只作为
+    `cmd`/`filetypes`/`root_markers` 基础配置来源，`after/lsp/*.lua` 覆盖 settings。
+  - 内置实验性 `ui2`（消除 Press-ENTER、cmdline 高亮）。
+  - 内置 difftool（`:DiffTool`）、undotree（`<leader>u`）、注释（`gc`）、
+    增量选区（`v_an`/`v_in`）、`[d`/`]d` 诊断跳转、`exrc` 项目本地配置。
+  - 自绘彩色状态栏（模式色块 / fugitive 分支 / mini.diff hunk 计数 /
+    诊断 / LSP 进度事件缓存 / 宏录制提示），无 lualine。
+- **完整语言支持**：Lua、TS/JS、Go、Rust、Zig、Python、C/C++、CSS、HTML、
+  JSON、YAML、Protobuf、Bash、Dockerfile（LSP + treesitter + 格式化 + DAP）。
+
+## 📦 插件清单（按职责）
+
+| 职责 | 插件 | 加载时机 |
+|---|---|---|
+| 补全 | blink.cmp（+ lazydev） | 启动 |
+| 括号配对 | blink.pairs（+ blink.lib） | InsertEnter |
+| 语法 | nvim-treesitter + textobjects（均 main 分支） | 启动 |
+| LSP 基础数据 | nvim-lspconfig（不调 setup） | 启动 |
+| 包管理 | mason.nvim（`:MasonInstallAll`） | 启动 |
+| 搜索 | fzf-lua（max-perf profile，接管 `vim.ui.select`） | 启动 |
+| 文件树 | nvim-tree + nvim-web-devicons | 首次 `<leader>e` |
+| Buffer 栏 | bufferline.nvim | 启动 |
+| Git | vim-fugitive + mini.diff | 启动 |
+| 格式化 | conform.nvim | 启动（按键才干活） |
+| 调试 | nvim-dap + nvim-dap-ui + nvim-nio | 首次 DAP 按键 |
+| 跳转 | flash.nvim（`s`/`S`） | 启动 |
+| 包围 | mini.surround（`gs` 前缀） | 启动 |
+| TODO | todo-comments.nvim（+ plenary） | 启动 |
+| Markdown | render-markdown.nvim | 首个 markdown |
+| 键位速查 | which-key.nvim | 启动 |
+| AI | claudecode.nvim / opencode.nvim / copilot.lua | 启动 / 启动 / InsertEnter |
+| 配色 | vscode.nvim | 启动 |
 
 ## 📦 安装指南
 
 ### 1. 环境依赖
 
-确保系统中已安装以下工具：
-- **Neovim >= 0.12**
-- `git`
-- `fzf` 和 `ripgrep` (用于 fzf-lua 搜索)
-- `fd` (可选，用于更快的寻找文件)
-- 各语言对应的 LSP 和 DAP（见下文）
+- **Neovim >= 0.12**、`git`
+- `fzf`、`ripgrep`（搜索）、`fd`（可选，加速找文件）
+- Node.js（copilot / 部分 LSP）、Nerd Font
+- Rust 二进制（blink.cmp/blink.pairs 的匹配器）由插件按 tag 自动下载，无需 cargo
 
 ### 2. 获取配置
 
 ```bash
-# 备份原有配置
 mv ~/.config/nvim ~/.config/nvim.bak
 mv ~/.local/share/nvim ~/.local/share/nvim.bak
-
-# 将本配置复制到 Neovim 目录
-cp -r ./nvim-config ~/.config/nvim
+git clone <本仓库> ~/.config/nvim
 ```
 
-### 3. 安装 LSP Server
+首次启动 `vim.pack` 自动克隆插件、treesitter 自动装缺失 parser。
 
-用 Mason 一把装齐（列表见 `lua/plugins/mason.lua`）：
+### 3. 安装 LSP / DAP / 格式化器
 
 ```vim
 :MasonInstallAll
 ```
 
-启用的 server 见 `lua/core/lsp.lua` 的 `vim.lsp.enable`，逐个的 settings 覆盖放在
-`after/lsp/<name>.lua`：lua_ls、vtsls、eslint、gopls、rust_analyzer、zls、
-basedpyright、ruff、clangd、cssls、html、yamlls、buf_ls、protols、typos_lsp。
-
-### 4. 安装 DAP Debugger
-
-- **Go**: `go install github.com/go-delve/delve/cmd/dlv@latest`
-- **Python**: `pip install debugpy`
-- **Rust/C**: 安装 `codelldb` 或 `lldb-dap`
-- **TypeScript**: `npm install -g @anthropic-ai/js-debug-adapter`
+列表见 `lua/plugins/mason.lua`；启用的 server 见 `lua/core/lsp.lua`，
+settings 覆盖在 `after/lsp/<name>.lua`。rustfmt/zigfmt 随语言工具链走，
+不经 Mason。
 
 ## ⌨️ 核心快捷键
 
-### 基础与窗口
-- `<leader>w`：保存
-- `<leader>q`：退出
-- `<C-h/j/k/l>`：窗口切换
-- `<leader>wh/wj/wk/wl`：窗口切换（leader 版）
-- `<leader>sv` / `<leader>sh` / `<leader>sc`：竖分屏 / 横分屏 / 关闭窗口
-- `<C-Up/Down/Left/Right>`：窗口调整大小
-- `<S-h/l>`：Buffer 切换
-- `<Esc>` 或 `<leader>l`：清除搜索高亮
-- localleader 为 `,`
+leader 为空格，localleader 为 `,`。**按下 `<leader>` 停顿即弹 which-key 速查**，
+以下只列主干。
 
-### 文件与搜索 (fzf-lua & nvim-tree)
-- `<leader>ff`：查找文件
-- `<leader>sg`：全局搜索文本 (Live Grep)
-- `<leader>sw`：搜索光标下的词
-- `<leader>e`：开关文件树 (nvim-tree)
-- `<leader>fe`：聚焦文件树
-- 树内 `g?` 查看全部按键
+### 基础
 
-### Copilot (copilot.lua)
-首次使用先 `:Copilot auth` 登录。仅在白名单文件类型启用（见 `lua/plugins/copilot.lua`）。
-- `<M-l>`：接受建议
-- `<M-]>` / `<M-[>`：下一条 / 上一条
-- `<C-]>`：丢弃当前建议
+- `<leader>w` 保存 · `<leader>q` 退出 · `<C-h/j/k/l>` 窗口切换
+- `<leader>sv`/`sh`/`sc` 分屏 · `<S-h>`/`<S-l>` 切 buffer
+- `<leader>1..9` 跳第 N 个 buffer（bufferline，`<leader>b*` 更多操作）
+- `<Esc>` 清搜索高亮 · `<leader>u` 内置 Undotree
 
-### Buffer 标签栏 (bufferline.nvim)
-- `<leader>1`…`<leader>9`：跳到第 N 个 buffer
-- `<leader>bp` / `<leader>bn`：上一个 / 下一个（`<S-h>` / `<S-l>` 同效）
-- `<leader>bb`：picker 选 buffer
-- `<leader>bc` / `<leader>bo`：关闭当前 / 关闭其他
-- `<leader>bd` / `<leader>bf`：关闭左侧 / 右侧
-- `<leader>bm` / `<leader>bi`：左移 / 右移当前 buffer
-- `<leader>bs` / `<leader>be` / `<leader>bt`：按目录 / 扩展名 / 相对目录排序
+### 补全（blink.cmp）
 
-### 跳转 (flash.nvim)
-- `s`：Flash 跳转（n/x/o）
-- `S`：Treesitter 节点跳转（n/x/o）
-- `r`：Remote Flash（operator-pending）
-- `R`：Treesitter Search（o/x）
-- `<C-s>`：搜索命令行内开关 Flash
+- `<C-j>`/`<C-k>` 选择 · `<CR>` 确认 · `<A-.>`/`<A-,>` 手动开/关菜单
+- `<Tab>`：菜单可见选下一项 → copilot 建议可见则接受 → snippet 跳转
+- `<C-b>`/`<C-f>` 文档滚动 · `<C-l>`/`<C-h>` snippet 前后跳
+- `<A-;>` copilot 开关自动触发 · `<A-'>` copilot 下一条/丢弃
+- cmdline 补全同样由 blink 接管；copilot 首次 `:Copilot auth` 登录
+
+### 编辑
+
+- `gsa`/`gsd`/`gsr` 加/删/换包围（mini.surround，`gsaiw"` 给词加引号）
+- `af`/`if` 函数、`ac`/`ic` 类、`aa`/`ia` 参数（treesitter textobjects）
+- `]f`/`[f` 函数间跳 · `]t`/`[t` TODO 间跳 · `s`/`S` flash 跳转
+- `<leader>cf` 格式化（conform，LSP fallback）
+
+### 文件与搜索（fzf-lua）
+
+- `<leader>ff`/`fr`/`fb` 文件/最近/buffer · `<leader>sg` live grep
+- `<leader>sw` 搜光标词 · `<leader>/` buffer 内搜 · `<leader>st` 搜 TODO
+- `<leader>e` 文件树开关 · `<leader>fe` 聚焦（树内 `g?` 看键位）
 
 ### LSP
 
-配置见 `lua/core/lsp.lua`（`vim.lsp.enable` + LspAttach）、`lua/core/keymaps.lua`、
-`lua/plugins/fzf.lua`。
+0.12 内置：`grn` 重命名 · `gra` code action · `grr` 引用 · `gri` 实现 ·
+`grt` 类型定义 · `grx` codelens · `gO` 大纲 · 插入模式 `<C-s>` 签名帮助。
 
-**Neovim 0.12 内置默认键位**（无需配置，开箱即有）：
+本配置补充：`gd`/`gD` 定义/声明 · `K` 悬停 · `<leader>ca` action ·
+`<leader>cr` 重命名 · `<leader>ci`/`co` 调用层级 · `<leader>ih` inlay hints 开关。
 
-| 键位 | 作用 |
-|---|---|
-| `grn` | 重命名 |
-| `gra` | Code Action |
-| `grr` | 查找引用 |
-| `gri` | 跳转实现 |
-| `grt` | 跳转类型定义 |
-| `gO` | 文档符号大纲 |
-| `<C-x><C-o>` | 手动触发补全（本配置另绑了 `<C-n>` / `<C-p>`） |
+fzf 列表版（结果多时）：`<leader>ls`/`lS` 符号 · `ld` 定义 · `lr` 引用 ·
+`li` 实现 · `la` action。
 
-**本配置补充的跳转与操作**：
+诊断：`[d`/`]d` 跳转（内置） · `<leader>cd` 浮窗 · `<leader>cD` loclist ·
+`<leader>dd`/`dw` fzf 文档/工作区诊断。
 
-| 键位 | 作用 |
-|---|---|
-| `gd` | 跳转定义 |
-| `gD` | 跳转声明 |
-| `K` | 悬停文档 |
-| `<C-s>`（插入模式） | 签名帮助 |
-| `<leader>cs` | 签名帮助（普通模式） |
-| `<leader>ca` | Code Action |
-| `<leader>cr` | 重命名 |
-| `<leader>cf` | 格式化（异步） |
-| `<leader>ci` / `<leader>co` | 调用层级：调入 / 调出 |
-| `<leader>ih` | 开关 inlay hints（buffer 局部，attach 后才有） |
+### Git（`<leader>g*`，一键一职）
 
-**fzf-lua 列表式入口**（`<leader>l*`，适合结果多的场景）：
+| 键 | 功能 | 键 | 功能 |
+|---|---|---|---|
+| `gg` | fugitive 状态 | `gs` | fzf status picker |
+| `gc` | commit | `gl` | fzf log 浏览 |
+| `gb` | blame | `gB` | fzf 分支 |
+| `gp`/`gP`/`gf` | push/pull/fetch | `gw`/`gr` | 暂存/检出当前文件 |
+| `gd` | Gdiffsplit vs index | `gD` | difftool vs HEAD |
+| `go` | mini.diff overlay | | |
 
-| 键位 | 作用 |
-|---|---|
-| `<leader>ls` / `<leader>lS` | 文档符号 / 工作区符号 |
-| `<leader>ld` | 定义列表 |
-| `<leader>lr` | 引用列表 |
-| `<leader>li` | 实现列表 |
-| `<leader>la` | Code Action 列表 |
+hunk 操作（mini.diff）：`gh` 暂存（operator）· `gH` 撤销 · `[h`/`]h` 跳转；
+任意两路径比较用 `:DiffTool <l> <r>`。
 
-**诊断**：
+### 调试（DAP，首次按键自动加载）
 
-| 键位 | 作用 |
-|---|---|
-| `[d` / `]d` | 上 / 下一个诊断 |
-| `<leader>cd` | 诊断浮窗（`<leader>e` 已归文件树，`<leader>d*` 已归 DAP） |
-| `<leader>cD` | 诊断写入 loclist |
-| `<leader>dd` / `<leader>dw` | fzf 列出文档 / 工作区诊断 |
-
-> Inlay hints 在 attach 时自动打开，code lens 刻意不开（太吵），需要时用
-> `vim.lsp.codelens.run()`。LSP 加载进度由 ui2 的 msg 浮窗渲染，见
-> `lua/plugins/ui2.lua`。
-
-### 调试 (DAP)
-- `<F5>`：启动/继续调试
-- `<F10>`：单步跳过 (Step Over)
-- `<F11>`：单步进入 (Step Into)
-- `<F12>`：单步跳出 (Step Out)
-- `<leader>db`：切换断点
-- `<leader>du`：切换调试 UI
-- `<leader>de`：评估表达式 (Eval)
+- `<F5>` 继续 · `<F10>`/`<F11>`/`<F12>` 步过/入/出
+- `<leader>db` 断点 · `dB` 条件断点 · `du` UI · `de` 求值（可视模式可用）
 
 ## 📁 目录结构
 
 ```text
 ~/.config/nvim/
-├── init.lua                # 入口文件
-├── lua/
-│   ├── core/               # 核心配置（无插件依赖）
-│   │   ├── options.lua     # 选项与性能设置
-│   │   ├── keymaps.lua     # 快捷键
-│   │   ├── autocmds.lua    # 自动命令
-│   │   ├── diagnostics.lua # 诊断样式
-│   │   ├── lsp.lua         # 内置 LSP 加载器
-│   │   └── completion.lua  # 内置自动补全配置
-│   └── plugins/            # 插件配置
-│       ├── init.lua        # vim.pack 插件管理器入口
-│       ├── treesitter.lua  # 语法高亮
-│       ├── fzf.lua         # 搜索
-│       ├── files.lua       # 文件树
-│       ├── dap.lua         # 调试
-│       ├── colorscheme.lua # 配色
-│       ├── statusline.lua  # 原生状态栏
-│       └── ui2.lua         # 原生 UI2
-├── lsp/                    # 各语言 LSP 配置
-│   ├── ts_ls.lua
-│   ├── gopls.lua
-│   ├── rust_analyzer.lua
-│   ├── pyright.lua
-│   ├── clangd.lua
-│   ├── cssls.lua
-│   └── html.lua
-└── dap/                    # DAP 说明文档
-    └── README.md
+├── init.lua                  # 入口
+├── nvim-pack-lock.json       # vim.pack 版本锁
+├── after/lsp/                # 各 server settings 覆盖（15+ 个）
+├── lua/core/                 # 无插件依赖
+│   ├── options.lua           # 选项（exrc、fold、grep=rg…）
+│   ├── keymaps.lua           # 基础键位
+│   ├── autocmds.lua          # 自动命令
+│   ├── diagnostics.lua       # 诊断样式
+│   └── lsp.lua               # vim.lsp.enable + LspAttach
+└── lua/plugins/
+    ├── init.lua              # vim.pack 清单 + require 入口
+    ├── completion.lua        # blink.cmp（capabilities 注入）
+    ├── pairs.lua             # blink.pairs（InsertEnter）
+    ├── treesitter.lua        # parser 管理 + textobjects
+    ├── fzf.lua               # 搜索 + ui_select
+    ├── file-explorer.lua     # nvim-tree（懒加载）
+    ├── statusline.lua        # 自绘彩色状态栏
+    ├── diff.lua / git.lua    # mini.diff / fugitive
+    ├── format.lua            # conform
+    ├── dap.lua               # 调试（懒加载）
+    ├── markdown.lua          # render-markdown（懒加载）
+    ├── surround.lua / todo.lua / which-key.lua / flash.lua
+    ├── copilot.lua           # InsertEnter 懒加载
+    ├── ai.lua / terminal.lua / bufferline.lua / colorscheme.lua
+    ├── mason.lua             # :MasonInstallAll
+    ├── lazydev.lua / difftool.lua / ui2.lua
+    └── …
 ```

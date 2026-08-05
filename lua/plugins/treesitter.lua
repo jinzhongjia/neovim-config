@@ -10,6 +10,7 @@ local langs = {
     "bash",
     "c",
     "css",
+    "dockerfile",
     "go",
     "gomod",
     "gosum",

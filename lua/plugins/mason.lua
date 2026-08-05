@@ -30,6 +30,7 @@ local ensure_installed = {
     "clangd", -- C/C++
     "css-lsp", -- CSS
     "html-lsp", -- HTML
+    "json-lsp", -- JSON
     "yaml-language-server", -- YAML
     "buf", -- Protobuf (buf_ls)
     "protols", -- Protobuf
