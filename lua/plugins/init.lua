@@ -13,6 +13,8 @@ vim.pack.add({
     -- │ (built-in TS exists but nvim-treesitter manages parsers)│
     -- └─────────────────────────────────────────────────────────┘
     { src = gh("nvim-treesitter/nvim-treesitter"), version = "main" },
+    -- textobjects 必须跟主仓库同用 main 分支（API 已重写）
+    { src = gh("nvim-treesitter/nvim-treesitter-textobjects"), version = "main" },
 
     -- ┌─────────────────────────────────────────────────────────┐
     -- │ Fuzzy Finder — fzf-lua (fastest picker, no dependencies)│
@@ -43,6 +45,17 @@ vim.pack.add({
     -- │ Motion — flash.nvim (label jumps, treesitter select)    │
     -- └─────────────────────────────────────────────────────────┘
     gh("folke/flash.nvim"),
+
+    -- ┌─────────────────────────────────────────────────────────┐
+    -- │ Surround — mini.surround（gs 前缀，s 被 flash 占用）     │
+    -- └─────────────────────────────────────────────────────────┘
+    gh("echasnovski/mini.surround"),
+
+    -- ┌─────────────────────────────────────────────────────────┐
+    -- │ TODO 注释高亮 + 搜索（plenary 是它的运行时依赖）          │
+    -- └─────────────────────────────────────────────────────────┘
+    gh("folke/todo-comments.nvim"),
+    gh("nvim-lua/plenary.nvim"),
 
     -- ┌─────────────────────────────────────────────────────────┐
     -- │ Mason — LSP/DAP package manager                         │
@@ -112,6 +125,8 @@ require("plugins.markdown")
 require("plugins.fzf")
 require("plugins.file-explorer")
 require("plugins.flash")
+require("plugins.surround")
+require("plugins.todo")
 require("plugins.dap")
 require("plugins.colorscheme")
 require("plugins.statusline")

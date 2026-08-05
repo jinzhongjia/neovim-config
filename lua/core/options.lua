@@ -70,6 +70,7 @@ o.redrawtime = 1500
 o.lazyredraw = false -- incompatible with noice-like UIs
 
 -- Files
+o.exrc = true -- 项目本地 .nvim.lua（内置信任机制，首次会询问）
 o.undofile = true
 o.swapfile = false
 o.backup = false

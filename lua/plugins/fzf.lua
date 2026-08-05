@@ -28,9 +28,16 @@ fzf.setup({
             or "find . -type f -not -path '*/.git/*'",
     },
     grep = {
-        rg_opts = "--column --line-number --no-heading --color=always --smart-case --hidden -g '!.git/'",
+        -- max-perf 关闭了 fzf 的 --ansi 解析，rg 必须 --color=never，
+        -- 否则转义码会原样显示（fzf 自身仍高亮匹配片段）。
+        -- 相比 profile 默认多了 --hidden -g '!.git/'（搜隐藏文件）
+        rg_opts = "--column --line-number --no-heading --color=never --smart-case"
+            .. " --max-columns=4096 --hidden -g '!.git/' -e",
     },
 })
+
+-- vim.ui.select 走 fzf 浮窗（code action 选择等）
+fzf.register_ui_select()
 
 -- Keymaps
 local map = vim.keymap.set

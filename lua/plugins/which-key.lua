@@ -18,5 +18,6 @@ require("which-key").setup({
         { "<leader>s", group = "Search / Split", mode = { "n", "v" } },
         { "<leader>t", group = "Terminal" },
         { "<leader>w", group = "Window (直接按 w 保存)" },
+        { "gs", group = "Surround" },
     },
 })
