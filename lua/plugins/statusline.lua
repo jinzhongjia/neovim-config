@@ -10,6 +10,7 @@ local palette = {
     fg = "#cccccc",
     dim = "#808080",
     blue = "#569cd6",
+    green = "#6a9955",
     teal = "#4ec9b0",
     purple = "#c586c0",
     red = "#f44747",
@@ -40,6 +41,9 @@ local function set_hl()
     hl("SLDiagWarn", { fg = palette.warn, bg = palette.bg })
     hl("SLDiagInfo", { fg = palette.info, bg = palette.bg })
     hl("SLDiagHint", { fg = palette.hint, bg = palette.bg })
+    hl("SLDiffAdd", { fg = palette.green, bg = palette.bg })
+    hl("SLDiffChange", { fg = palette.warn, bg = palette.bg })
+    hl("SLDiffDelete", { fg = palette.red, bg = palette.bg })
     -- 透明背景（中段）上的元素
     hl("SLProgress", { fg = palette.dim })
     hl("SLRec", { fg = palette.black, bg = palette.red, bold = true })
@@ -175,7 +179,21 @@ function _G.statusline()
     add("%#SLSection# ")
     local branch = git_branch()
     if branch ~= "" then
-        add("%#SLGit# " .. branch .. " %#SLDim#│%#SLSection# ")
+        add("%#SLGit# " .. branch .. " ")
+        -- mini.diff 的 hunk 统计（buffer 未 attach 时为 nil）
+        local diff = vim.b.minidiff_summary
+        if diff then
+            if (diff.add or 0) > 0 then
+                add("%#SLDiffAdd#+" .. diff.add .. " ")
+            end
+            if (diff.change or 0) > 0 then
+                add("%#SLDiffChange#~" .. diff.change .. " ")
+            end
+            if (diff.delete or 0) > 0 then
+                add("%#SLDiffDelete#-" .. diff.delete .. " ")
+            end
+        end
+        add("%#SLDim#│%#SLSection# ")
     end
     if vim.bo.buftype == "terminal" then
         add(" terminal ")
@@ -242,7 +260,13 @@ end
 vim.o.statusline = "%!v:lua.statusline()"
 
 -- 这些事件不一定触发重绘，手动刷一下（LspProgress 在上面的缓存回调里刷）
+local redraw_group = vim.api.nvim_create_augroup("SLRedraw", { clear = true })
 vim.api.nvim_create_autocmd({ "ModeChanged", "DiagnosticChanged", "RecordingEnter", "RecordingLeave" }, {
-    group = vim.api.nvim_create_augroup("SLRedraw", { clear = true }),
+    group = redraw_group,
+    command = "redrawstatus",
+})
+vim.api.nvim_create_autocmd("User", {
+    pattern = "MiniDiffUpdated",
+    group = redraw_group,
     command = "redrawstatus",
 })

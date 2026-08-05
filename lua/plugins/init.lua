@@ -70,8 +70,15 @@ vim.pack.add({
 
     -- ┌─────────────────────────────────────────────────────────┐
     -- │ Git — Fugitive (classic, fast, zero-config)             │
+    -- │       + mini.diff (gutter 标记 / hunk 操作)              │
     -- └─────────────────────────────────────────────────────────┘
     gh("tpope/vim-fugitive"),
+    gh("echasnovski/mini.diff"),
+
+    -- ┌─────────────────────────────────────────────────────────┐
+    -- │ Format — conform.nvim（<leader>cf，LSP fallback）        │
+    -- └─────────────────────────────────────────────────────────┘
+    gh("stevearc/conform.nvim"),
 
     -- ┌─────────────────────────────────────────────────────────┐
     -- │ AI — Claude Code + OpenCode + Copilot                   │
@@ -112,6 +119,8 @@ require("plugins.bufferline")
 require("plugins.ui2")
 require("plugins.difftool")
 require("plugins.git")
+require("plugins.diff")
+require("plugins.format")
 require("plugins.ai")
 require("plugins.copilot")
 require("plugins.terminal")
