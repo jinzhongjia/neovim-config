@@ -5,32 +5,31 @@
 local fzf = require("fzf-lua")
 
 fzf.setup({
-  -- Use "max-perf" profile for speed
-  "max-perf",
-  winopts = {
-    height = 0.85,
-    width = 0.80,
-    row = 0.35,
-    col = 0.50,
-    border = "rounded",
-    preview = {
-      layout = "flex",
-      flip_columns = 120,
-      delay = 50,
+    -- Use "max-perf" profile for speed
+    "max-perf",
+    winopts = {
+        height = 0.85,
+        width = 0.80,
+        row = 0.35,
+        col = 0.50,
+        border = "rounded",
+        preview = {
+            layout = "flex",
+            flip_columns = 120,
+            delay = 50,
+        },
     },
-  },
-  fzf_opts = {
-    ["--layout"] = "reverse",
-    ["--info"] = "inline-right",
-  },
-  files = {
-    cmd = vim.fn.executable("fd") == 1
-      and "fd --type f --hidden --follow --exclude .git"
-      or "find . -type f -not -path '*/.git/*'",
-  },
-  grep = {
-    rg_opts = "--column --line-number --no-heading --color=always --smart-case --hidden -g '!.git/'",
-  },
+    fzf_opts = {
+        ["--layout"] = "reverse",
+        ["--info"] = "inline-right",
+    },
+    files = {
+        cmd = vim.fn.executable("fd") == 1 and "fd --type f --hidden --follow --exclude .git"
+            or "find . -type f -not -path '*/.git/*'",
+    },
+    grep = {
+        rg_opts = "--column --line-number --no-heading --color=always --smart-case --hidden -g '!.git/'",
+    },
 })
 
 -- Keymaps
@@ -60,10 +59,10 @@ map("n", "<leader>la", fzf.lsp_code_actions, { desc = "Code actions" })
 map("n", "<leader>dd", fzf.diagnostics_document, { desc = "Document diagnostics" })
 map("n", "<leader>dw", fzf.diagnostics_workspace, { desc = "Workspace diagnostics" })
 
--- Git
-map("n", "<leader>gc", fzf.git_commits, { desc = "Git commits" })
-map("n", "<leader>gs", fzf.git_status, { desc = "Git status" })
-map("n", "<leader>gb", fzf.git_branches, { desc = "Git branches" })
+-- Git（gc/gb 留给 fugitive 的 commit/blame，见 plugins/git.lua）
+map("n", "<leader>gl", fzf.git_commits, { desc = "Git log (commits)" })
+map("n", "<leader>gs", fzf.git_status, { desc = "Git status (picker)" })
+map("n", "<leader>gB", fzf.git_branches, { desc = "Git branches" })
 
 -- Misc
 map("n", "<leader>fh", fzf.helptags, { desc = "Help tags" })

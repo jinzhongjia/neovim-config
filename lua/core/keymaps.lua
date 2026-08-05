@@ -7,7 +7,6 @@ local map = vim.keymap.set
 
 -- ── General ──────────────────────────────────────────────────
 map("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })
-map("n", "<leader>l", "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })
 map("n", "<leader>w", "<cmd>w<CR>", { desc = "Save" })
 map("n", "<leader>q", "<cmd>q<CR>", { desc = "Quit" })
 map("n", "<leader>Q", "<cmd>qa!<CR>", { desc = "Force quit all" })
@@ -52,20 +51,9 @@ map("v", "K", ":m '<-2<CR>gv=gv", { desc = "Move line up", silent = true })
 map("v", "<", "<gv")
 map("v", ">", ">gv")
 
--- ── Search (built-in grep + quickfix) ────────────────────────
-map("n", "<leader>sg", function()
-  local word = vim.fn.input("Grep > ")
-  if word ~= "" then
-    vim.cmd("silent grep! " .. vim.fn.shellescape(word))
-    vim.cmd("copen")
-  end
-end, { desc = "Grep project" })
-
-map("n", "<leader>sw", function()
-  local word = vim.fn.expand("<cword>")
-  vim.cmd("silent grep! " .. vim.fn.shellescape(word))
-  vim.cmd("copen")
-end, { desc = "Grep word under cursor" })
+-- ── Search ───────────────────────────────────────────────────
+-- <leader>sg/<leader>sw 等搜索键由 fzf-lua 提供（plugins/fzf.lua）；
+-- 这里原有的内置 grep 版本一直被 fzf 同名映射覆盖，已删
 
 -- Quickfix navigation
 map("n", "]q", "<cmd>cnext<CR>zz", { desc = "Next quickfix" })
@@ -85,7 +73,9 @@ map("n", "gd", vim.lsp.buf.definition, { desc = "Go to definition" })
 map("n", "gD", vim.lsp.buf.declaration, { desc = "Go to declaration" })
 map("n", "K", vim.lsp.buf.hover, { desc = "Hover" })
 map("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "Code action" })
-map("n", "<leader>cf", function() vim.lsp.buf.format({ async = true }) end, { desc = "Format" })
+map("n", "<leader>cf", function()
+    vim.lsp.buf.format({ async = true })
+end, { desc = "Format" })
 map("n", "<leader>ci", vim.lsp.buf.incoming_calls, { desc = "Incoming calls" })
 map("n", "<leader>co", vim.lsp.buf.outgoing_calls, { desc = "Outgoing calls" })
 map("n", "<leader>cr", vim.lsp.buf.rename, { desc = "Rename" })
@@ -99,6 +89,9 @@ map("n", "<leader>fe", "<cmd>NvimTreeFocus<CR>", { desc = "File explorer (focus)
 -- Terminal keymaps → see lua/plugins/terminal.lua (floating multi-terminal)
 
 -- ── Built-in Undotree (0.12) ─────────────────────────────────
+-- 内置可选插件，必须 packadd 才有 :Undotree 命令（之前漏了，报
+-- Not an editor command 就是这个原因）
+vim.cmd.packadd("nvim.undotree")
 map("n", "<leader>u", "<cmd>Undotree<CR>", { desc = "Undo tree" })
 
 -- ── DAP (loaded after plugin) ────────────────────────────────

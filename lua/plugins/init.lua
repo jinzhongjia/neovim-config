@@ -84,6 +84,11 @@ vim.pack.add({
     -- │ Colorscheme — vscode.nvim (no deps)                     │
     -- └─────────────────────────────────────────────────────────┘
     gh("Mofiqul/vscode.nvim"),
+
+    -- ┌─────────────────────────────────────────────────────────┐
+    -- │ which-key — leader 键位速查弹窗                          │
+    -- └─────────────────────────────────────────────────────────┘
+    gh("folke/which-key.nvim"),
 })
 
 -- Load plugin configs after pack
@@ -105,3 +110,4 @@ require("plugins.ai")
 require("plugins.copilot")
 require("plugins.terminal")
 require("plugins.pairs")
+require("plugins.which-key")
