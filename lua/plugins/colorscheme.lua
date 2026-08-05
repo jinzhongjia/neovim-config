@@ -1,11 +1,16 @@
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
--- lazydev.nvim — feeds lua_ls the Neovim/plugin Lua types on demand
--- after/lsp/lua_ls.lua deliberately leaves workspace.library to this.
+-- Colorscheme — vscode.nvim (dark/light follows 'background')
+-- Options carried over from the repo's previous lazy.nvim spec.
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-require("lazydev").setup({
-  library = {
-    -- 当检测到 'vim.uv' 时，加载 luvit 类型定义
-    { path = "${3rd}/luv/library", words = { "vim%.uv" } },
-  },
+local vscode = require("vscode")
+
+vscode.setup({
+  italic_comments = true,
+  italic_inlayhints = true,
+  underline_links = true,
+  disable_nvimtree_bg = true,
+  terminal_colors = true,
 })
+
+vscode.load()

@@ -1,140 +1,61 @@
-local languages = {
-    "c",
-    "go",
-    "lua",
-    "vim",
-    "vimdoc",
-    "bash",
-    "c_sharp",
-    "cmake",
-    "cpp",
-    "comment",
-    "css",
-    "diff",
-    "dockerfile",
-    "git_config",
-    "git_rebase",
-    "gitattributes",
-    "gitcommit",
-    "gitignore",
-    "gomod",
-    "gosum",
-    "gowork",
-    "hjson",
-    "html",
-    "http",
-    "ini",
-    "javascript",
-    "json",
-    "json5",
-    "jsdoc",
-    "luadoc",
-    "luap",
-    "make",
-    "markdown",
-    "meson",
-    "ninja",
-    "nix",
-    "proto",
-    "python",
-    "pug",
-    "regex",
-    "rust",
-    "scss",
-    "sql",
-    "svelte",
-    "toml",
-    "tsx",
-    "typescript",
-    "vue",
-    "yaml",
-    "zig",
-    "prisma",
+-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+-- Treesitter — parser management & enhanced highlighting
+-- nvim-treesitter `main` branch: no .configs module, no auto
+-- highlight/indent. Parsers via install(), rest via autocmd.
+-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+local ts = require("nvim-treesitter")
+
+local langs = {
+  "c",
+  "css",
+  "go",
+  "gomod",
+  "gosum",
+  "html",
+  "javascript",
+  "json",
+  "lua",
+  "markdown",
+  "markdown_inline",
+  "python",
+  "rust",
+  "toml",
+  "tsx",
+  "typescript",
+  "vim",
+  "vimdoc",
+  "yaml",
 }
 
-return
---- @type LazySpec
-{
-    {
-        -- main 分支是完全重写版本，需要 Neovim 0.11+
-        -- 不再支持懒加载
-        "nvim-treesitter/nvim-treesitter",
-        lazy = false,
-        build = ":TSUpdate",
-        config = function()
-            require("nvim-treesitter").setup({})
-            require("nvim-treesitter").install(languages)
+-- Install only what's missing (install() re-downloads otherwise)
+local installed = {}
+for _, l in ipairs(ts.get_installed("parsers")) do
+  installed[l] = true
+end
+local missing = vim.tbl_filter(function(l)
+  return not installed[l]
+end, langs)
+if #missing > 0 then
+  ts.install(missing)
+end
 
-            vim.api.nvim_create_autocmd("FileType", {
-                pattern = "*",
-                callback = function()
-                    pcall(vim.treesitter.start)
-                end,
-            })
-        end,
-    },
-    {
-        "nvim-treesitter/nvim-treesitter-context",
-        branch = "master",
-        dependencies = "nvim-treesitter/nvim-treesitter",
-        event = { "VeryLazy" },
-        opts = {
-            multiline_threshold = 5,
-        },
-        config = function(_, opts)
-            require("treesitter-context").setup(opts)
-            -- 添加底部下划线边界，视觉上区分 context 窗口和代码区域
-            vim.api.nvim_set_hl(0, "TreesitterContextBottom", { underline = true, sp = "Grey" })
-            vim.api.nvim_set_hl(0, "TreesitterContextLineNumberBottom", { underline = true, sp = "Grey" })
-        end,
-        keys = {
-            -- stylua: ignore
-            { "<leader>[c", function() require("treesitter-context").go_to_context(vim.v.count1) end, desc = "jumping to context(upwards)" },
-        },
-    },
-    {
-        "nvim-treesitter/nvim-treesitter-textobjects",
-        branch = "main",
-        dependencies = "nvim-treesitter/nvim-treesitter",
-        event = { "VeryLazy" },
-        config = function()
-            require("nvim-treesitter-textobjects").setup({
-                move = { set_jumps = true },
-            })
-        end,
-        keys = {
-            {
-                "<leader>]m",
-                function()
-                    require("nvim-treesitter-textobjects.move").goto_next_end("@function.outer", "textobjects")
-                end,
-                mode = { "n", "x", "o" },
-                desc = "Next function end",
-            },
-            {
-                "<leader>[m",
-                function()
-                    require("nvim-treesitter-textobjects.move").goto_previous_start("@function.outer", "textobjects")
-                end,
-                mode = { "n", "x", "o" },
-                desc = "Previous function start",
-            },
-        },
-    },
-    {
-        "windwp/nvim-ts-autotag",
-        dependencies = "nvim-treesitter/nvim-treesitter",
-        event = { "BufReadPre", "BufNewFile" },
-        opts = {
-            enable_close = true,
-            enable_rename = true,
-            enable_close_on_slash = false,
-        },
-        config = function(_, opts)
-            require("nvim-ts-autotag").setup({
-                opts = opts,
-                per_filetype = {},
-            })
-        end,
-    },
-}
+-- highlight + indent are opt-in per buffer on `main`
+vim.api.nvim_create_autocmd("FileType", {
+  group = vim.api.nvim_create_augroup("user_treesitter", {}),
+  callback = function(ev)
+    -- Skip very large files (performance)
+    local stats = vim.uv.fs_stat(vim.api.nvim_buf_get_name(ev.buf))
+    if stats and stats.size > 1024 * 1024 then
+      return
+    end
+    -- ponytail: pcall instead of checking parser availability first —
+    -- start() already resolves filetype→lang and fails cheaply.
+    if not pcall(vim.treesitter.start, ev.buf) then
+      return
+    end
+    vim.bo[ev.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+  end,
+})
+
+-- 0.12 built-in incremental selection: v_an / v_in

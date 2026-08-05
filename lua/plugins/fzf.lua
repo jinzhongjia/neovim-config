@@ -1,0 +1,72 @@
+-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+-- fzf-lua — fastest fuzzy finder (uses native fzf binary)
+-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+local fzf = require("fzf-lua")
+
+fzf.setup({
+  -- Use "max-perf" profile for speed
+  "max-perf",
+  winopts = {
+    height = 0.85,
+    width = 0.80,
+    row = 0.35,
+    col = 0.50,
+    border = "rounded",
+    preview = {
+      layout = "flex",
+      flip_columns = 120,
+      delay = 50,
+    },
+  },
+  fzf_opts = {
+    ["--layout"] = "reverse",
+    ["--info"] = "inline-right",
+  },
+  files = {
+    cmd = vim.fn.executable("fd") == 1
+      and "fd --type f --hidden --follow --exclude .git"
+      or "find . -type f -not -path '*/.git/*'",
+  },
+  grep = {
+    rg_opts = "--column --line-number --no-heading --color=always --smart-case --hidden -g '!.git/'",
+  },
+})
+
+-- Keymaps
+local map = vim.keymap.set
+
+-- Files
+map("n", "<leader>ff", fzf.files, { desc = "Find files" })
+map("n", "<leader>fr", fzf.oldfiles, { desc = "Recent files" })
+map("n", "<leader>fb", fzf.buffers, { desc = "Buffers" })
+
+-- Search/Grep
+map("n", "<leader>sg", fzf.live_grep, { desc = "Live grep" })
+map("n", "<leader>sw", fzf.grep_cword, { desc = "Grep word" })
+map("n", "<leader>sW", fzf.grep_cWORD, { desc = "Grep WORD" })
+map("n", "<leader>sb", fzf.lgrep_curbuf, { desc = "Grep current buffer" })
+map("v", "<leader>sg", fzf.grep_visual, { desc = "Grep selection" })
+
+-- LSP
+map("n", "<leader>ls", fzf.lsp_document_symbols, { desc = "Document symbols" })
+map("n", "<leader>lS", fzf.lsp_workspace_symbols, { desc = "Workspace symbols" })
+map("n", "<leader>ld", fzf.lsp_definitions, { desc = "Definitions" })
+map("n", "<leader>lr", fzf.lsp_references, { desc = "References" })
+map("n", "<leader>li", fzf.lsp_implementations, { desc = "Implementations" })
+map("n", "<leader>la", fzf.lsp_code_actions, { desc = "Code actions" })
+
+-- Diagnostics
+map("n", "<leader>dd", fzf.diagnostics_document, { desc = "Document diagnostics" })
+map("n", "<leader>dw", fzf.diagnostics_workspace, { desc = "Workspace diagnostics" })
+
+-- Git
+map("n", "<leader>gc", fzf.git_commits, { desc = "Git commits" })
+map("n", "<leader>gs", fzf.git_status, { desc = "Git status" })
+map("n", "<leader>gb", fzf.git_branches, { desc = "Git branches" })
+
+-- Misc
+map("n", "<leader>fh", fzf.helptags, { desc = "Help tags" })
+map("n", "<leader>fk", fzf.keymaps, { desc = "Keymaps" })
+map("n", "<leader>fc", fzf.commands, { desc = "Commands" })
+map("n", "<leader>/", fzf.lgrep_curbuf, { desc = "Search in buffer" })

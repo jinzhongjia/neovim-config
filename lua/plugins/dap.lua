@@ -1,365 +1,230 @@
-return
---- @type LazySpec
-{
-    -- DAP 核心插件
+-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+-- DAP (Debug Adapter Protocol) configuration
+-- Supports: Go (delve), Rust/C (codelldb/lldb), Python (debugpy), TS/JS (js-debug)
+-- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+local dap = require("dap")
+local dapui = require("dapui")
+
+-- ── DAP UI Setup ─────────────────────────────────────────────
+dapui.setup({
+  icons = { expanded = "▾", collapsed = "▸", current_frame = "●" },
+  layouts = {
     {
-        "mfussenegger/nvim-dap",
-        dev = true,
-        dependencies = {
-            -- DAP UI - 提供调试界面
-            {
-                "rcarriga/nvim-dap-ui",
-                dependencies = {
-                    "nvim-neotest/nvim-nio",
-                },
-            },
-            -- 显示内联变量值
-            {
-                "theHamsta/nvim-dap-virtual-text",
-                dependencies = { "nvim-treesitter/nvim-treesitter" },
-            },
-        },
-        keys = {
-            -- 断点操作
-            {
-                "<leader>db",
-                function()
-                    require("dap").toggle_breakpoint()
-                end,
-                desc = "Toggle Breakpoint",
-            },
-            {
-                "<leader>dB",
-                function()
-                    require("dap").set_breakpoint(vim.fn.input("Breakpoint condition: "))
-                end,
-                desc = "Breakpoint Condition",
-            },
-            {
-                "<leader>dl",
-                function()
-                    require("dap").set_breakpoint(nil, nil, vim.fn.input("Log point message: "))
-                end,
-                desc = "Logpoint",
-            },
-            -- 调试控制
-            {
-                "<leader>dc",
-                function()
-                    require("dap").continue()
-                end,
-                desc = "Continue",
-            },
-            {
-                "<leader>dn",
-                function()
-                    require("dap").new()
-                end,
-                desc = "New Session",
-            },
-            {
-                "<leader>dp",
-                function()
-                    require("dap").pause()
-                end,
-                desc = "Pause",
-            },
-            {
-                "<leader>dt",
-                function()
-                    require("dap").terminate()
-                end,
-                desc = "Terminate",
-            },
-            {
-                "<leader>dr",
-                function()
-                    require("dap").restart()
-                end,
-                desc = "Restart",
-            },
-            -- 步进操作（使用方向键风格）
-            {
-                "<leader>dj",
-                function()
-                    require("dap").step_over()
-                end,
-                desc = "Step Over",
-            },
-            {
-                "<leader>di",
-                function()
-                    require("dap").step_into()
-                end,
-                desc = "Step Into",
-            },
-            {
-                "<leader>do",
-                function()
-                    require("dap").step_out()
-                end,
-                desc = "Step Out",
-            },
-            {
-                "<leader>dO",
-                function()
-                    require("dap").step_back()
-                end,
-                desc = "Step Back",
-            },
-            -- REPL 和 UI
-            {
-                "<leader>dR",
-                function()
-                    require("dap").repl.toggle()
-                end,
-                desc = "Toggle REPL",
-            },
-            {
-                "<leader>du",
-                function()
-                    require("dapui").toggle()
-                end,
-                desc = "Toggle DAP UI",
-            },
-            {
-                "<leader>de",
-                function()
-                    require("dapui").eval()
-                end,
-                mode = { "n", "v" },
-                desc = "Eval Expression",
-            },
-            -- 其他
-            {
-                "<leader>dC",
-                function()
-                    require("dap").run_to_cursor()
-                end,
-                desc = "Run to Cursor",
-            },
-            {
-                "<leader>dg",
-                function()
-                    require("dap").goto_()
-                end,
-                desc = "Go to Line (No Execute)",
-            },
-            {
-                "<leader>dw",
-                function()
-                    require("dap.ui.widgets").hover()
-                end,
-                desc = "Widgets",
-            },
-        },
-        config = function()
-            local dap = require("dap")
-            local dapui = require("dapui")
-            local python = require("core.python")
-
-            -- DAP UI 设置
-            ---@diagnostic disable-next-line: missing-fields
-            dapui.setup({
-                icons = { expanded = "▾", collapsed = "▸", current_frame = "▸" },
-                mappings = {
-                    expand = { "<CR>", "<2-LeftMouse>" },
-                    open = "o",
-                    remove = "d",
-                    edit = "e",
-                    repl = "r",
-                    toggle = "t",
-                },
-                element_mappings = {},
-                expand_lines = true,
-                layouts = {
-                    {
-                        elements = {
-                            { id = "scopes", size = 0.25 },
-                            { id = "breakpoints", size = 0.25 },
-                            { id = "stacks", size = 0.25 },
-                            { id = "watches", size = 0.25 },
-                        },
-                        position = "left",
-                        size = 40,
-                    },
-                    {
-                        elements = {
-                            { id = "repl", size = 0.5 },
-                            { id = "console", size = 0.5 },
-                        },
-                        position = "bottom",
-                        size = 10,
-                    },
-                },
-                floating = {
-                    max_height = nil,
-                    max_width = nil,
-                    border = "rounded",
-                    mappings = {
-                        close = { "q", "<Esc>" },
-                    },
-                },
-                controls = {
-                    enabled = true,
-                    element = "repl",
-                    icons = {
-                        pause = "",
-                        play = "",
-                        step_into = "",
-                        step_over = "",
-                        step_out = "",
-                        step_back = "",
-                        run_last = "",
-                        terminate = "",
-                    },
-                },
-                ---@diagnostic disable-next-line: missing-fields
-                render = {
-                    max_type_length = nil,
-                    max_value_lines = 100,
-                },
-            })
-
-            -- DAP 虚拟文本设置
-            require("nvim-dap-virtual-text").setup({
-                enabled = true,
-                enabled_commands = true,
-                highlight_changed_variables = true,
-                highlight_new_as_changed = false,
-                show_stop_reason = true,
-                commented = false,
-                only_first_definition = true,
-                all_references = false,
-                clear_on_continue = false,
-                virt_text_pos = "eol",
-            })
-
-            -- 自动打开/关闭 DAP UI
-            dap.listeners.before.attach.dapui_config = function()
-                dapui.open()
-            end
-            dap.listeners.before.launch.dapui_config = function()
-                dapui.open()
-            end
-            dap.listeners.before.event_terminated.dapui_config = function()
-                dapui.close()
-            end
-            dap.listeners.before.event_exited.dapui_config = function()
-                dapui.close()
-            end
-
-            -- 自定义断点图标
-            vim.fn.sign_define("DapBreakpoint", { text = "●", texthl = "DapBreakpoint", linehl = "", numhl = "" })
-            vim.fn.sign_define(
-                "DapBreakpointCondition",
-                { text = "●", texthl = "DapBreakpointCondition", linehl = "", numhl = "" }
-            )
-            vim.fn.sign_define("DapLogPoint", { text = "◆", texthl = "DapLogPoint", linehl = "", numhl = "" })
-            vim.fn.sign_define("DapStopped", { text = "▶", texthl = "DapStopped", linehl = "DapStopped", numhl = "" })
-            vim.fn.sign_define(
-                "DapBreakpointRejected",
-                { text = "○", texthl = "DapBreakpointRejected", linehl = "", numhl = "" }
-            )
-
-            -- 设置高亮
-            vim.api.nvim_set_hl(0, "DapBreakpoint", { fg = "#e51400" })
-            vim.api.nvim_set_hl(0, "DapBreakpointCondition", { fg = "#f5a623" })
-            vim.api.nvim_set_hl(0, "DapLogPoint", { fg = "#61afef" })
-            vim.api.nvim_set_hl(0, "DapStopped", { fg = "#98c379", bg = "#31353f" })
-            vim.api.nvim_set_hl(0, "DapBreakpointRejected", { fg = "#656565" })
-
-            ------------------------------------------------------------------
-            -- 调试适配器配置
-            ------------------------------------------------------------------
-
-            -- Go (Delve)
-            dap.adapters.delve = {
-                type = "server",
-                port = "${port}",
-                executable = {
-                    command = "dlv",
-                    args = { "dap", "-l", "127.0.0.1:${port}" },
-                    detached = vim.fn.has("win32") == 0,
-                },
-            }
-
-            dap.adapters.go = dap.adapters.delve
-
-            dap.configurations.go = {
-                {
-                    type = "delve",
-                    name = "Debug",
-                    request = "launch",
-                    program = "${file}",
-                },
-                {
-                    type = "delve",
-                    name = "Debug (go.mod)",
-                    request = "launch",
-                    program = "./${relativeFileDirname}",
-                },
-                {
-                    type = "delve",
-                    name = "Debug test",
-                    request = "launch",
-                    mode = "test",
-                    program = "${file}",
-                },
-                {
-                    type = "delve",
-                    name = "Debug test (go.mod)",
-                    request = "launch",
-                    mode = "test",
-                    program = "./${relativeFileDirname}",
-                },
-                {
-                    type = "delve",
-                    name = "Attach",
-                    request = "attach",
-                    mode = "local",
-                    processId = require("dap.utils").pick_process,
-                },
-            }
-
-            -- Python (debugpy)
-            local debugpy_python = vim.fn.stdpath("data") .. "/mason/packages/debugpy/venv/bin/python"
-
-            dap.adapters.python = function(callback, config)
-                local command = vim.fn.executable(debugpy_python) == 1 and debugpy_python
-                    or python.python_path(config.cwd or vim.fn.getcwd())
-
-                callback({
-                    type = "executable",
-                    command = command,
-                    args = { "-m", "debugpy.adapter" },
-                })
-            end
-
-            dap.configurations.python = {
-                {
-                    type = "python",
-                    request = "launch",
-                    name = "Debug file",
-                    program = "${file}",
-                    console = "integratedTerminal",
-                    pythonPath = function()
-                        return python.python_path(python.project_root(vim.api.nvim_buf_get_name(0)))
-                    end,
-                },
-                {
-                    type = "python",
-                    request = "launch",
-                    name = "Debug module",
-                    module = function()
-                        return vim.fn.input("Module: ")
-                    end,
-                    console = "integratedTerminal",
-                    pythonPath = function()
-                        return python.python_path(python.project_root(vim.api.nvim_buf_get_name(0)))
-                    end,
-                },
-            }
-        end,
+      elements = {
+        { id = "scopes", size = 0.4 },
+        { id = "breakpoints", size = 0.2 },
+        { id = "stacks", size = 0.2 },
+        { id = "watches", size = 0.2 },
+      },
+      position = "left",
+      size = 40,
     },
+    {
+      elements = {
+        { id = "repl", size = 0.5 },
+        { id = "console", size = 0.5 },
+      },
+      position = "bottom",
+      size = 10,
+    },
+  },
+})
+
+-- Auto open/close DAP UI
+dap.listeners.after.event_initialized["dapui_config"] = function()
+  dapui.open()
+end
+dap.listeners.before.event_terminated["dapui_config"] = function()
+  dapui.close()
+end
+dap.listeners.before.event_exited["dapui_config"] = function()
+  dapui.close()
+end
+
+-- ── Breakpoint signs ─────────────────────────────────────────
+vim.fn.sign_define("DapBreakpoint", { text = "●", texthl = "DiagnosticError" })
+vim.fn.sign_define("DapBreakpointCondition", { text = "◆", texthl = "DiagnosticWarn" })
+vim.fn.sign_define("DapLogPoint", { text = "◇", texthl = "DiagnosticInfo" })
+vim.fn.sign_define("DapStopped", { text = "▶", texthl = "DiagnosticOk", linehl = "DapStoppedLine" })
+vim.fn.sign_define("DapBreakpointRejected", { text = "○", texthl = "DiagnosticHint" })
+
+-- ── Adapters ─────────────────────────────────────────────────
+
+-- Go (Delve)
+dap.adapters.delve = {
+  type = "server",
+  port = "${port}",
+  executable = {
+    command = "dlv",
+    args = { "dap", "-l", "127.0.0.1:${port}" },
+  },
 }
+
+-- C/Rust (codelldb)
+dap.adapters.codelldb = {
+  type = "server",
+  port = "${port}",
+  executable = {
+    command = "codelldb",
+    args = { "--port", "${port}" },
+  },
+}
+
+-- C/Rust fallback (lldb-dap, ships with LLVM)
+dap.adapters["lldb-dap"] = {
+  type = "executable",
+  command = "lldb-dap",
+}
+
+-- Python (debugpy)
+dap.adapters.python = function(cb, config)
+  if config.request == "attach" then
+    cb({
+      type = "server",
+      port = config.connect.port or 5678,
+      host = config.connect.host or "127.0.0.1",
+    })
+  else
+    cb({
+      type = "executable",
+      command = "python3",
+      args = { "-m", "debugpy.adapter" },
+    })
+  end
+end
+
+-- JavaScript/TypeScript (js-debug-adapter via vscode-js-debug)
+dap.adapters["pwa-node"] = {
+  type = "server",
+  host = "localhost",
+  port = "${port}",
+  executable = {
+    command = "js-debug-adapter",
+    args = { "${port}" },
+  },
+}
+
+-- ── Configurations ───────────────────────────────────────────
+
+-- Go
+dap.configurations.go = {
+  {
+    type = "delve",
+    name = "Debug",
+    request = "launch",
+    program = "${file}",
+  },
+  {
+    type = "delve",
+    name = "Debug (package)",
+    request = "launch",
+    program = "./${relativeFileDirname}",
+  },
+  {
+    type = "delve",
+    name = "Debug test",
+    request = "launch",
+    mode = "test",
+    program = "./${relativeFileDirname}",
+  },
+}
+
+-- Rust
+dap.configurations.rust = {
+  {
+    name = "Debug",
+    type = "codelldb",
+    request = "launch",
+    program = function()
+      return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/target/debug/", "file")
+    end,
+    cwd = "${workspaceFolder}",
+    stopOnEntry = false,
+  },
+}
+
+-- C/C++
+dap.configurations.c = {
+  {
+    name = "Debug",
+    type = "codelldb",
+    request = "launch",
+    program = function()
+      return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
+    end,
+    cwd = "${workspaceFolder}",
+    stopOnEntry = false,
+  },
+}
+dap.configurations.cpp = dap.configurations.c
+
+-- Python
+dap.configurations.python = {
+  {
+    type = "python",
+    request = "launch",
+    name = "Launch file",
+    program = "${file}",
+    pythonPath = function()
+      -- Use virtualenv if available
+      local venv = os.getenv("VIRTUAL_ENV")
+      if venv then
+        return venv .. "/bin/python"
+      end
+      return "python3"
+    end,
+  },
+  {
+    type = "python",
+    request = "launch",
+    name = "Launch module",
+    module = function()
+      return vim.fn.input("Module: ")
+    end,
+  },
+}
+
+-- TypeScript/JavaScript
+dap.configurations.typescript = {
+  {
+    type = "pwa-node",
+    request = "launch",
+    name = "Launch file",
+    program = "${file}",
+    cwd = "${workspaceFolder}",
+    runtimeExecutable = "npx",
+    runtimeArgs = { "tsx" },
+  },
+}
+dap.configurations.javascript = {
+  {
+    type = "pwa-node",
+    request = "launch",
+    name = "Launch file",
+    program = "${file}",
+    cwd = "${workspaceFolder}",
+  },
+}
+
+-- ── Keymaps ──────────────────────────────────────────────────
+local map = vim.keymap.set
+
+map("n", "<leader>db", dap.toggle_breakpoint, { desc = "DAP: Toggle breakpoint" })
+map("n", "<leader>dB", function()
+  dap.set_breakpoint(vim.fn.input("Condition: "))
+end, { desc = "DAP: Conditional breakpoint" })
+map("n", "<leader>dc", dap.continue, { desc = "DAP: Continue" })
+map("n", "<leader>di", dap.step_into, { desc = "DAP: Step into" })
+map("n", "<leader>do", dap.step_over, { desc = "DAP: Step over" })
+map("n", "<leader>dO", dap.step_out, { desc = "DAP: Step out" })
+map("n", "<leader>dr", dap.restart, { desc = "DAP: Restart" })
+map("n", "<leader>dt", dap.terminate, { desc = "DAP: Terminate" })
+map("n", "<leader>dl", dap.run_last, { desc = "DAP: Run last" })
+map("n", "<leader>du", dapui.toggle, { desc = "DAP: Toggle UI" })
+map("n", "<leader>de", dapui.eval, { desc = "DAP: Eval" })
+map("v", "<leader>de", dapui.eval, { desc = "DAP: Eval selection" })
+map("n", "<F5>", dap.continue, { desc = "DAP: Continue" })
+map("n", "<F10>", dap.step_over, { desc = "DAP: Step over" })
+map("n", "<F11>", dap.step_into, { desc = "DAP: Step into" })
+map("n", "<F12>", dap.step_out, { desc = "DAP: Step out" })
