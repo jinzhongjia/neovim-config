@@ -116,6 +116,20 @@ vim.pack.add({
     gh("MeanderingProgrammer/render-markdown.nvim"),
 })
 
+-- :PackUpdate [插件名...] 更新插件（无参=全部；加 ! 跳过确认 buffer）
+vim.api.nvim_create_user_command("PackUpdate", function(cmd)
+    vim.pack.update(#cmd.fargs > 0 and cmd.fargs or nil, { force = cmd.bang })
+end, {
+    nargs = "*",
+    bang = true,
+    complete = function()
+        return vim.tbl_map(function(p)
+            return p.spec.name
+        end, vim.pack.get())
+    end,
+    desc = "vim.pack update (! = no confirm)",
+})
+
 -- Load plugin configs after pack
 require("plugins.mason")
 require("plugins.lazydev")
