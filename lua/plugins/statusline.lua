@@ -100,6 +100,60 @@ local function git_branch()
     return ok and branch or ""
 end
 
+-- ── LSP 进度缓存 ──────────────────────────────────────────────
+-- 不能在 statusline 里调 vim.lsp.status()：它会消费进度队列，而
+-- statusline 每次重绘都会执行，消息被第一次重绘吃掉后就消失了。
+-- 这里从事件负载自建缓存，按 client + token 跟踪。
+local progress = {} -- client_id -> token -> { name, title, message, percentage }
+
+local function progress_text()
+    local parts = {}
+    for _, tokens in pairs(progress) do
+        for _, t in pairs(tokens) do
+            local s = t.name .. ": " .. (t.title or "")
+            if t.message then
+                s = s .. " " .. t.message
+            end
+            if t.percentage then
+                s = s .. (" (%d%%)"):format(t.percentage)
+            end
+            parts[#parts + 1] = s
+        end
+    end
+    return table.concat(parts, "  ")
+end
+
+vim.api.nvim_create_autocmd("LspProgress", {
+    group = vim.api.nvim_create_augroup("SLProgress", { clear = true }),
+    callback = function(args)
+        local params = args.data and args.data.params
+        local value = params and params.value
+        if type(value) ~= "table" or params.token == nil then
+            return
+        end
+        local cid = args.data.client_id
+        progress[cid] = progress[cid] or {}
+        if value.kind == "end" then
+            progress[cid][params.token] = nil
+            if next(progress[cid]) == nil then
+                progress[cid] = nil
+            end
+        else
+            if value.kind == "begin" then
+                local client = vim.lsp.get_client_by_id(cid)
+                progress[cid][params.token] = { name = client and client.name or "lsp", title = value.title }
+            end
+            local t = progress[cid][params.token]
+            if not t then -- report 先于 begin，丢弃
+                return
+            end
+            t.message = value.message or t.message
+            t.percentage = value.percentage or t.percentage
+        end
+        vim.cmd.redrawstatus()
+    end,
+})
+
 function _G.statusline()
     local mode = vim.api.nvim_get_mode().mode
     local m = modes[mode:sub(1, 1)] or { mode:upper(), "SLModeN" }
@@ -147,9 +201,9 @@ function _G.statusline()
     add("%=")
 
     -- ── 右:LSP 进度（截断防刷屏）──
-    local progress = vim.lsp.status()
-    if progress ~= "" then
-        add("%#SLProgress#" .. vim.fn.strcharpart(progress, 0, 50) .. " ")
+    local prog = progress_text()
+    if prog ~= "" then
+        add("%#SLProgress#" .. vim.fn.strcharpart(prog, 0, 60) .. " ")
     end
 
     -- ── 右:诊断 + LSP + 文件类型 ──
@@ -187,8 +241,8 @@ end
 
 vim.o.statusline = "%!v:lua.statusline()"
 
--- 这些事件不一定触发重绘，手动刷一下
-vim.api.nvim_create_autocmd({ "ModeChanged", "LspProgress", "DiagnosticChanged", "RecordingEnter", "RecordingLeave" }, {
+-- 这些事件不一定触发重绘，手动刷一下（LspProgress 在上面的缓存回调里刷）
+vim.api.nvim_create_autocmd({ "ModeChanged", "DiagnosticChanged", "RecordingEnter", "RecordingLeave" }, {
     group = vim.api.nvim_create_augroup("SLRedraw", { clear = true }),
     command = "redrawstatus",
 })
