@@ -84,9 +84,11 @@ vim.pack.add({
     -- ┌─────────────────────────────────────────────────────────┐
     -- │ Git — Fugitive (classic, fast, zero-config)             │
     -- │       + mini.diff (gutter 标记 / hunk 操作)              │
+    -- │       + neogit (magit 式 status/stage/rebase 界面)       │
     -- └─────────────────────────────────────────────────────────┘
     gh("tpope/vim-fugitive"),
     gh("echasnovski/mini.diff"),
+    gh("NeogitOrg/neogit"), -- plenary 已在上面
 
     -- ┌─────────────────────────────────────────────────────────┐
     -- │ Format — conform.nvim（<leader>cf，LSP fallback）        │
@@ -148,6 +150,7 @@ require("plugins.bufferline")
 require("plugins.ui2")
 require("plugins.difftool")
 require("plugins.git")
+require("plugins.neogit")
 require("plugins.diff")
 require("plugins.format")
 require("plugins.ai")
