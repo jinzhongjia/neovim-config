@@ -33,6 +33,11 @@ vim.pack.add({
     gh("akinsho/bufferline.nvim"),
 
     -- ┌─────────────────────────────────────────────────────────┐
+    -- │ Outline — 符号大纲侧边栏（LSP symbols，零依赖）          │
+    -- └─────────────────────────────────────────────────────────┘
+    gh("hedyhli/outline.nvim"),
+
+    -- ┌─────────────────────────────────────────────────────────┐
     -- │ Completion + auto pairs — blink.cmp / blink.pairs       │
     -- │ Pinned to release tags so the prebuilt Rust binaries    │
     -- │ download automatically (no cargo needed)                │
@@ -140,6 +145,7 @@ require("plugins.treesitter")
 require("plugins.markdown")
 require("plugins.fzf")
 require("plugins.file-explorer")
+require("plugins.outline")
 require("plugins.flash")
 require("plugins.surround")
 require("plugins.todo")
