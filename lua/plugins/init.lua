@@ -17,9 +17,10 @@ vim.pack.add({
     { src = gh("nvim-treesitter/nvim-treesitter-textobjects"), version = "main" },
 
     -- ┌─────────────────────────────────────────────────────────┐
-    -- │ Fuzzy Finder — fzf-lua (fastest picker, no dependencies)│
+    -- │ snacks — picker / terminal / statuscolumn / 通知 / ui   │
+    -- │ 一个仓库顶掉 fzf-lua + 一堆小插件，纯 Lua 无外部依赖    │
     -- └─────────────────────────────────────────────────────────┘
-    gh("ibhagwan/fzf-lua"),
+    gh("folke/snacks.nvim"),
 
     -- ┌─────────────────────────────────────────────────────────┐
     -- │ File Tree — nvim-tree (sidebar tree, replaces netrw)    │
@@ -138,12 +139,14 @@ end, {
 })
 
 -- Load plugin configs after pack
+-- snacks 放最前：它提供 vim.ui.input/select、picker、statuscolumn，
+-- 且 todo-comments 只在 Snacks 已存在时才注册 todo_comments picker source
+require("plugins.snacks")
 require("plugins.mason")
 require("plugins.lazydev")
 require("plugins.completion")
 require("plugins.treesitter")
 require("plugins.markdown")
-require("plugins.fzf")
 require("plugins.file-explorer")
 require("plugins.outline")
 require("plugins.flash")

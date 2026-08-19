@@ -13,7 +13,7 @@ require("claudecode").setup({
   terminal = {
     split_side = "right",
     split_width_percentage = 0.35,
-    provider = "native",  -- no snacks.nvim dependency
+    provider = "snacks",  -- 复用 Snacks.terminal（styles.terminal）
     auto_close = true,
     auto_insert = true,
   },
@@ -44,8 +44,8 @@ map("n", "<leader>aC", "<cmd>ClaudeCode --continue<CR>", { desc = "Claude: Conti
 -- ── OpenCode (opencode.nvim) ─────────────────────────────────
 -- Neovim frontend for the opencode AI agent
 require("opencode").setup({
-  -- Use fzf-lua as picker (already in our config)
-  preferred_picker = "fzf-lua",
+  -- Picker 用 snacks（fzf-lua 已经从配置里去掉了）
+  preferred_picker = "snacks",
   -- Use native vim completion (no blink/nvim-cmp)
   preferred_completion = "vim_complete",
   -- Default keymaps

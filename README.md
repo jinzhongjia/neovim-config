@@ -17,6 +17,7 @@
     增量选区（`v_an`/`v_in`）、`[d`/`]d` 诊断跳转、`exrc` 项目本地配置。
   - 自绘彩色状态栏（模式色块 / fugitive 分支 / mini.diff hunk 计数 /
     诊断 / LSP 进度事件缓存 / 宏录制提示），无 lualine。
+  - `statuscolumn` 交给 snacks：左 mark/sign，右 fold/git（认 mini.diff 的 sign）。
 - **完整语言支持**：Lua、TS/JS、Go、Rust、Zig、Python、C/C++、CSS、HTML、
   JSON、YAML、Protobuf、Bash、Dockerfile（LSP + treesitter + 格式化 + DAP）。
 
@@ -29,7 +30,7 @@
 | 语法 | nvim-treesitter + textobjects（均 main 分支） | 启动 |
 | LSP 基础数据 | nvim-lspconfig（不调 setup） | 启动 |
 | 包管理 | mason.nvim（`:MasonInstallAll`） | 启动 |
-| 搜索 | fzf-lua（max-perf profile，接管 `vim.ui.select`） | 启动 |
+| 搜索 / 终端 / 通知 / 缩进线 | snacks.nvim（picker、terminal、statuscolumn、`vim.ui.input`+`select`、bigfile、scratch、zen） | 启动 |
 | 文件树 | nvim-tree + nvim-web-devicons | 首次 `<leader>e` |
 | Buffer 栏 | bufferline.nvim | 启动 |
 | Git | vim-fugitive + mini.diff | 启动 |
@@ -48,7 +49,7 @@
 ### 1. 环境依赖
 
 - **Neovim >= 0.12**、`git`
-- `fzf`、`ripgrep`（搜索）、`fd`（可选，加速找文件）
+- `ripgrep`（grep 搜索）、`fd`（可选，加速找文件）；snacks picker 是纯 Lua，不需要 `fzf`
 - Node.js（copilot / 部分 LSP）、Nerd Font
 - Rust 二进制（blink.cmp/blink.pairs 的匹配器）由插件按 tag 自动下载，无需 cargo
 
@@ -99,10 +100,13 @@ leader 为空格，localleader 为 `,`。**按下 `<leader>` 停顿即弹 which-
 - `]f`/`[f` 函数间跳 · `]t`/`[t` TODO 间跳 · `s`/`S` flash 跳转
 - `<leader>cf` 格式化（conform，LSP fallback）
 
-### 文件与搜索（fzf-lua）
+### 文件与搜索（snacks picker）
 
-- `<leader>ff`/`fr`/`fb` 文件/最近/buffer · `<leader>sg` live grep
-- `<leader>sw` 搜光标词 · `<leader>/` buffer 内搜 · `<leader>st` 搜 TODO
+- `<leader>ff`/`fr`/`fb` 文件/最近/buffer · `<leader>sg` live grep（可视模式搜选区）
+- `<leader>sw`/`sW` 搜光标词/WORD · `<leader>sb`、`<leader>/` buffer 内搜 ·
+  `<leader>sB` 搜所有打开的 buffer · `<leader>st` 搜 TODO
+- `<leader>fh`/`fk`/`fc` help/keymaps/命令 · `<leader>fR` 重开上次 picker ·
+  `<leader>fP` 列出所有 picker
 - `<leader>e` 文件树开关 · `<leader>fe` 聚焦（树内 `g?` 看键位）
 
 ### LSP
@@ -113,25 +117,39 @@ leader 为空格，localleader 为 `,`。**按下 `<leader>` 停顿即弹 which-
 本配置补充：`gd`/`gD` 定义/声明 · `K` 悬停 · `<leader>ca` action ·
 `<leader>cr` 重命名 · `<leader>ci`/`co` 调用层级 · `<leader>ih` inlay hints 开关。
 
-fzf 列表版（结果多时）：`<leader>ls`/`lS` 符号 · `ld` 定义 · `lr` 引用 ·
-`li` 实现 · `la` action。
+picker 列表版（结果多时）：`<leader>ls`/`lS` 符号 · `ld` 定义 · `lr` 引用 ·
+`li` 实现 · `la` action。`]]`/`[[` 在同名符号间跳（snacks words）。
 
 诊断：`[d`/`]d` 跳转（内置） · `<leader>cd` 浮窗 · `<leader>cD` loclist ·
-`<leader>dd`/`dw` fzf 文档/工作区诊断。
+`<leader>dd`/`dw` picker 文档/工作区诊断。
 
 ### Git（`<leader>g*`，一键一职）
 
 | 键 | 功能 | 键 | 功能 |
 |---|---|---|---|
-| `gg` | fugitive 状态 | `gs` | fzf status picker |
-| `gc` | commit | `gl` | fzf log 浏览 |
-| `gb` | blame | `gB` | fzf 分支 |
+| `gg` | fugitive 状态 | `gs` | status picker |
+| `gc` | commit | `gl` | log 浏览 |
+| `gb` | blame | `gB` | 分支 |
 | `gp`/`gP`/`gf` | push/pull/fetch | `gw`/`gr` | 暂存/检出当前文件 |
 | `gd` | Gdiffsplit vs index | `gD` | difftool vs HEAD |
-| `go` | mini.diff overlay | | |
+| `go` | mini.diff overlay | `gy` | 浏览器打开远端（可视模式带行号） |
 
 hunk 操作（mini.diff）：`gh` 暂存（operator）· `gH` 撤销 · `[h`/`]h` 跳转；
 任意两路径比较用 `:DiffTool <l> <r>`。
+
+### 终端（Snacks.terminal）
+
+- `<C-\>` 或 `<leader>tt` 开关浮动终端 · `<leader>tn` 新开一个
+- `<leader>t1..t5` 直达第 N 个 · `<leader>t]`/`t[` 前后切 · 终端内 `<C-]>` 切下一个
+- `<Esc><Esc>` 回 normal（单个 `<Esc>` 留给终端里的程序）· `q` 收起
+
+### 其它（snacks）
+
+- `<leader>n` 通知历史 · `<leader>N` 清掉当前通知
+- `<leader>.` 草稿 buffer（带持久化文件）· `<leader>S` 挑一个草稿
+- `<leader>zz` zen 模式 · `<leader>zw` 最大化当前窗口
+- `<leader>T*` 各种开关：`Ts` 拼写 · `Tw` 折行 · `Tc` conceal · `Tl` 行号 ·
+  `Td` 诊断 · `Tt` treesitter · `Ti` 缩进线 · `TD` dim
 
 ### 调试（DAP，首次按键自动加载）
 
@@ -156,7 +174,7 @@ hunk 操作（mini.diff）：`gh` 暂存（operator）· `gH` 撤销 · `[h`/`]h
     ├── completion.lua        # blink.cmp（capabilities 注入）
     ├── pairs.lua             # blink.pairs（InsertEnter）
     ├── treesitter.lua        # parser 管理 + textobjects
-    ├── fzf.lua               # 搜索 + ui_select
+    ├── snacks.lua            # picker/terminal/statuscolumn/通知/ui_select
     ├── file-explorer.lua     # nvim-tree（懒加载）
     ├── statusline.lua        # 自绘彩色状态栏
     ├── diff.lua / git.lua    # mini.diff / fugitive
@@ -165,7 +183,8 @@ hunk 操作（mini.diff）：`gh` 暂存（operator）· `gH` 撤销 · `[h`/`]h
     ├── markdown.lua          # render-markdown（懒加载）
     ├── surround.lua / todo.lua / which-key.lua / flash.lua
     ├── copilot.lua           # InsertEnter 懒加载
-    ├── ai.lua / terminal.lua / bufferline.lua / colorscheme.lua
+    ├── terminal.lua          # 浮动终端（Snacks.terminal）
+    ├── ai.lua / bufferline.lua / colorscheme.lua
     ├── mason.lua             # :MasonInstallAll
     ├── lazydev.lua / difftool.lua / ui2.lua
     └── …

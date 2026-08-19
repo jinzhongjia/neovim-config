@@ -52,8 +52,8 @@ map("v", "<", "<gv")
 map("v", ">", ">gv")
 
 -- ── Search ───────────────────────────────────────────────────
--- <leader>sg/<leader>sw 等搜索键由 fzf-lua 提供（plugins/fzf.lua）；
--- 这里原有的内置 grep 版本一直被 fzf 同名映射覆盖，已删
+-- <leader>sg/<leader>sw 等搜索键由 snacks picker 提供（plugins/snacks.lua）；
+-- 这里原有的内置 grep 版本一直被同名映射覆盖，已删
 
 -- Quickfix navigation
 map("n", "]q", "<cmd>cnext<CR>zz", { desc = "Next quickfix" })
@@ -64,7 +64,7 @@ map("n", "[l", "<cmd>lprev<CR>zz", { desc = "Prev loclist" })
 -- ── Diagnostics ──────────────────────────────────────────────
 -- [d / ]d 是 0.10+ 内置默认（支持 count），不再自建（旧实现用的
 -- goto_prev/goto_next 已废弃）
--- Not under <leader>d/<leader>e: those are taken by dap.lua, fzf.lua and the file tree
+-- Not under <leader>d/<leader>e: those are taken by dap.lua, snacks.lua and the file tree
 map("n", "<leader>cd", vim.diagnostic.open_float, { desc = "Diagnostic float" })
 map("n", "<leader>cD", vim.diagnostic.setloclist, { desc = "Diagnostics to loclist" })
 

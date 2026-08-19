@@ -1,239 +1,81 @@
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
--- Floating Terminal — pure Lua, no plugin needed
--- Supports multiple named terminals, toggle, and navigation
+-- 浮动终端 — Snacks.terminal（替掉原来手写的 250 行实现）
+-- snacks 按 count 区分终端实例：count=1..N 各自一个 buffer，
+-- toggle 同一个 count 就是显示/隐藏同一个终端。
+-- 窗口参数在这里按次传（不写进 styles.terminal）：claudecode 也用
+-- Snacks.terminal，全局样式会连它右侧那个 split 一起改掉。
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-local M = {}
+local MAX = 5 -- <leader>t1..t5，同时也是 ]/[ 循环的上界
+local current = 1
 
--- Terminal state
-M.terminals = {}  -- { [id] = { buf, win, chan } }
-M.current = 1
-M.total = 0
+local win = { position = "float", border = "rounded", width = 0.85, height = 0.8 }
 
--- Float window config
-local function float_opts()
-  local width = math.floor(vim.o.columns * 0.85)
-  local height = math.floor(vim.o.lines * 0.80)
-  local row = math.floor((vim.o.lines - height) / 2) - 1
-  local col = math.floor((vim.o.columns - width) / 2)
-
-  return {
-    relative = "editor",
-    width = width,
-    height = height,
-    row = row,
-    col = col,
-    style = "minimal",
-    border = "rounded",
-    title = " Terminal ",
-    title_pos = "center",
-  }
+-- create=false：只查不建，用来判断某个槽位是否已经有终端
+local function get(id)
+    return Snacks.terminal.get(nil, { count = id, create = false })
 end
 
--- Create a new terminal
-function M.new_terminal()
-  M.total = M.total + 1
-  local id = M.total
-
-  -- Create buffer
-  local buf = vim.api.nvim_create_buf(false, true)
-  vim.bo[buf].filetype = "floatterm"
-
-  -- Open float window
-  local opts = float_opts()
-  opts.title = string.format(" Terminal %d ", id)
-  local win = vim.api.nvim_open_win(buf, true, opts)
-
-  -- Start terminal in the buffer
-  local chan = vim.fn.termopen(vim.o.shell, {
-    on_exit = function()
-      -- Mark as exited but don't auto-close (user might want to see output)
-      if M.terminals[id] then
-        M.terminals[id].exited = true
-      end
-    end,
-  })
-
-  M.terminals[id] = { buf = buf, win = win, chan = chan, exited = false }
-  M.current = id
-
-  -- Enter insert mode
-  vim.cmd("startinsert")
-
-  return id
+local function toggle(id)
+    current = math.max(1, math.min(id or current, MAX))
+    Snacks.terminal.toggle(nil, { count = current, win = win })
 end
 
--- Toggle terminal (show/hide)
-function M.toggle(id)
-  id = id or M.current
-
-  -- If no terminals exist, create one
-  if M.total == 0 then
-    M.new_terminal()
-    return
-  end
-
-  -- Clamp id
-  if id < 1 then id = 1 end
-  if id > M.total then id = M.total end
-
-  local term = M.terminals[id]
-  if not term then
-    M.new_terminal()
-    return
-  end
-
-  -- If window is valid and visible, hide it
-  if term.win and vim.api.nvim_win_is_valid(term.win) then
-    vim.api.nvim_win_hide(term.win)
-    term.win = nil
-    return
-  end
-
-  -- If buffer is gone (terminal exited and wiped), create new
-  if not vim.api.nvim_buf_is_valid(term.buf) then
-    M.terminals[id] = nil
-    M.new_terminal()
-    return
-  end
-
-  -- Show the terminal in a float
-  local opts = float_opts()
-  opts.title = string.format(" Terminal %d ", id)
-  term.win = vim.api.nvim_open_win(term.buf, true, opts)
-  M.current = id
-  vim.cmd("startinsert")
-end
-
--- Go to next terminal
-function M.next()
-  if M.total == 0 then
-    M.new_terminal()
-    return
-  end
-
-  -- Hide current
-  local cur = M.terminals[M.current]
-  if cur and cur.win and vim.api.nvim_win_is_valid(cur.win) then
-    vim.api.nvim_win_hide(cur.win)
-    cur.win = nil
-  end
-
-  -- Find next valid terminal
-  local next_id = M.current
-  for _ = 1, M.total do
-    next_id = next_id % M.total + 1
-    if M.terminals[next_id] and vim.api.nvim_buf_is_valid(M.terminals[next_id].buf) then
-      M.toggle(next_id)
-      return
+local function hide_current()
+    local term = get(current)
+    if term and term:win_valid() then
+        term:hide()
     end
-  end
-
-  -- No valid terminals, create new
-  M.new_terminal()
 end
 
--- Go to previous terminal
-function M.prev()
-  if M.total == 0 then
-    M.new_terminal()
-    return
-  end
+-- 切到下一个/上一个槽位：先收起当前的，再打开目标（没有就新建）
+local function cycle(step)
+    hide_current()
+    current = (current - 1 + step) % MAX + 1
+    Snacks.terminal.toggle(nil, { count = current, win = win })
+end
 
-  -- Hide current
-  local cur = M.terminals[M.current]
-  if cur and cur.win and vim.api.nvim_win_is_valid(cur.win) then
-    vim.api.nvim_win_hide(cur.win)
-    cur.win = nil
-  end
-
-  -- Find prev valid terminal
-  local prev_id = M.current
-  for _ = 1, M.total do
-    prev_id = prev_id - 1
-    if prev_id < 1 then prev_id = M.total end
-    if M.terminals[prev_id] and vim.api.nvim_buf_is_valid(M.terminals[prev_id].buf) then
-      M.toggle(prev_id)
-      return
+-- 开一个新终端：占用第一个空槽位，满了就沿用当前的
+local function new()
+    for i = 1, MAX do
+        if not get(i) then
+            hide_current()
+            toggle(i)
+            return
+        end
     end
-  end
-
-  M.new_terminal()
+    toggle()
 end
 
--- Send command to current terminal
-function M.send(cmd)
-  local term = M.terminals[M.current]
-  if term and term.chan then
-    vim.fn.chansend(term.chan, cmd .. "\n")
-  end
-end
-
--- Expose globally
-_G.FloatTerm = M
-
--- ── Keymaps ──────────────────────────────────────────────────
 local map = vim.keymap.set
 
--- Toggle terminal (Ctrl+\)
 map({ "n", "t" }, "<C-\\>", function()
-  M.toggle()
+    toggle()
 end, { desc = "Terminal: Toggle" })
 
--- New terminal
-map({ "n", "t" }, "<C-\\><C-n>", function()
-  -- Hide current first
-  local cur = M.terminals[M.current]
-  if cur and cur.win and vim.api.nvim_win_is_valid(cur.win) then
-    vim.api.nvim_win_hide(cur.win)
-    cur.win = nil
-  end
-  M.new_terminal()
-end, { desc = "Terminal: New" })
-
--- Navigate terminals
-map("t", "<C-]>", function()
-  M.next()
+map("n", "<leader>tt", function()
+    toggle()
+end, { desc = "Terminal: Toggle" })
+map("n", "<leader>tn", new, { desc = "Terminal: New" })
+map("n", "<leader>t]", function()
+    cycle(1)
 end, { desc = "Terminal: Next" })
-
-map("t", "<C-[>", function()
-  -- In terminal mode, <C-[> is Esc by default, remap to prev only with modifier
-  M.prev()
+map("n", "<leader>t[", function()
+    cycle(-1)
 end, { desc = "Terminal: Prev" })
 
--- Leader keymaps (normal mode)
-map("n", "<leader>tn", function() M.new_terminal() end, { desc = "Terminal: New" })
-map("n", "<leader>tt", function() M.toggle() end, { desc = "Terminal: Toggle" })
-map("n", "<leader>t]", function() M.next() end, { desc = "Terminal: Next" })
-map("n", "<leader>t[", function() M.prev() end, { desc = "Terminal: Prev" })
-
--- Toggle specific terminal by number (1-5)
-for i = 1, 5 do
-  map("n", "<leader>t" .. i, function()
-    if not M.terminals[i] or not vim.api.nvim_buf_is_valid(M.terminals[i].buf) then
-      -- Create terminals up to this number
-      while M.total < i do
-        -- Hide current if showing
-        local cur = M.terminals[M.current]
-        if cur and cur.win and vim.api.nvim_win_is_valid(cur.win) then
-          vim.api.nvim_win_hide(cur.win)
-          cur.win = nil
-        end
-        M.new_terminal()
-        -- Hide the newly created one too (unless it's the target)
-        if M.total ~= i then
-          local t = M.terminals[M.total]
-          if t and t.win and vim.api.nvim_win_is_valid(t.win) then
-            vim.api.nvim_win_hide(t.win)
-            t.win = nil
-          end
-        end
-      end
-    else
-      M.toggle(i)
-    end
-  end, { desc = "Terminal: Toggle #" .. i })
+for i = 1, MAX do
+    map("n", "<leader>t" .. i, function()
+        toggle(i)
+    end, { desc = "Terminal: Toggle #" .. i })
 end
 
--- Exit terminal mode with Esc Esc (keep single Esc for terminal apps)
+-- 终端内切下一个终端。不再映射 <C-[>：它在终端里就是 Esc，
+-- 之前那份配置把它抢去当"上一个"，等于把 Esc 弄坏了。
+map("t", "<C-]>", function()
+    cycle(1)
+end, { desc = "Terminal: Next" })
+
+-- <Esc><Esc> 回 normal（snacks 的 terminal style 默认也是双击 Esc，
+-- 这里显式补一条，免得以后它改默认值）；单个 Esc 留给终端里的程序
 map("t", "<Esc><Esc>", "<C-\\><C-n>", { desc = "Terminal: Exit to normal mode" })

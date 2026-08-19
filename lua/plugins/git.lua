@@ -4,7 +4,7 @@
 
 local map = vim.keymap.set
 
--- gl（log）/ gs（status picker）/ gB（branches）在 plugins/fzf.lua
+-- gl（log）/ gs（status picker）/ gB（branches）/ gy（gitbrowse）在 plugins/snacks.lua
 map("n", "<leader>gg", "<cmd>Git<CR>", { desc = "Fugitive: Status" })
 map("n", "<leader>gc", "<cmd>Git commit<CR>", { desc = "Fugitive: Commit" })
 map("n", "<leader>gp", "<cmd>Git push<CR>", { desc = "Fugitive: Push" })

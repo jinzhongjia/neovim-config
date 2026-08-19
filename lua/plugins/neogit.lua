@@ -1,7 +1,7 @@
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 -- Neogit — magit 式 git 界面（stage/commit/rebase/log 全键盘操作）
 -- 只写与 upstream 默认值不同的项：kind=tab、stashes/recent/unpulled 默认折叠、
--- disable_line_numbers、integrations 自动探测（会认出已装的 fzf-lua）都已是默认。
+-- disable_line_numbers、integrations 自动探测（会认出已装的 snacks）都已是默认。
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 -- ponytail: setup() 约 13ms，推到第一个事件循环 tick，不算进启动时间。

@@ -3,25 +3,13 @@
 -- Options carried over from the repo's previous lazy.nvim spec.
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
--- ponytail: plain :bdelete semantics instead of Snacks.bufdelete — this
--- config has no snacks.nvim. Window layout isn't preserved; swap in a
--- layout-preserving delete only if that actually bothers you.
+-- Snacks.bufdelete 删 buffer 时会保住窗口布局（普通 :bdelete 会把窗口一起关掉）
 local function bufdelete(n)
-  local buf = (n == nil or n == 0) and vim.api.nvim_get_current_buf() or n
-  -- no force: refuses to drop unsaved changes
-  local ok, err = pcall(vim.api.nvim_buf_delete, buf, {})
-  if not ok then
-    vim.notify(err, vim.log.levels.WARN)
-  end
+  Snacks.bufdelete((n == nil or n == 0) and vim.api.nvim_get_current_buf() or n)
 end
 
 local function bufdelete_others()
-  local cur = vim.api.nvim_get_current_buf()
-  for _, b in ipairs(vim.api.nvim_list_bufs()) do
-    if b ~= cur and vim.bo[b].buflisted then
-      pcall(vim.api.nvim_buf_delete, b, {})
-    end
-  end
+  Snacks.bufdelete.other()
 end
 
 require("bufferline").setup({

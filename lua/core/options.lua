@@ -117,30 +117,9 @@ o.foldexpr = "v:lua.vim.treesitter.foldexpr()"
 o.foldlevel = 99
 o.foldlevelstart = 99
 o.foldenable = true
--- 'foldcolumn' always renders nesting-level digits, so build the column
--- ourselves: fold marker only, no digits.
-o.foldcolumn = "0"
+-- 'statuscolumn' 由 snacks 接管（plugins/snacks.lua）：它自己画 mark/sign/
+-- fold/git，折叠图标取的就是下面 'fillchars' 里的 foldopen/foldclose。
+-- 'foldcolumn' 必须非 "0"：snacks 拿它当"要不要画折叠图标"的开关；整列
+-- 渲染已经被 statuscolumn 接管，所以这个 1 不会真的多占一列宽度。
+o.foldcolumn = "1"
 o.fillchars = [[eob: ,fold: ,foldopen:,foldsep: ,foldclose:]]
-
--- Reuse the glyphs already set in 'fillchars' instead of hardcoding them
-local fcs = vim.opt.fillchars:get()
-
--- Marker on fold-start lines only; blank everywhere else
-function _G.fold_icon()
-    local lnum = vim.v.lnum
-    if vim.v.virtnum ~= 0 or vim.fn.foldlevel(lnum) <= vim.fn.foldlevel(lnum - 1) then
-        return " "
-    end
-    return vim.fn.foldclosed(lnum) == -1 and fcs.foldopen or fcs.foldclose
-end
-
--- ponytail: assumes number+relativenumber are both on or both off (true here;
--- TermOpen and NvimTree turn both off). Add the rnu-only case if it comes up.
-function _G.line_nr()
-    if vim.v.virtnum ~= 0 or not (vim.wo.number or vim.wo.relativenumber) then
-        return ""
-    end
-    return (vim.v.relnum > 0 and vim.v.relnum or vim.v.lnum) .. " "
-end
-
-o.statuscolumn = "%{v:lua.fold_icon()}%s%=%{v:lua.line_nr()}"
