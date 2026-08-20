@@ -18,6 +18,11 @@
   - 自绘彩色状态栏（模式色块 / fugitive 分支 / mini.diff hunk 计数 /
     诊断 / LSP 进度事件缓存 / 宏录制提示），无 lualine。
   - `statuscolumn` 交给 snacks：左 mark/sign，右 fold/git（认 mini.diff 的 sign）。
+- **Go / TS 实现关系提示**：`plugin/golement.lua`、`plugin/tslement.lua`
+  是仓库自带的两个零依赖脚本（treesitter + LSP），给 interface/struct 打上
+  `implements:` / `implemented by:` 行尾虚拟文本，按 filetype 懒加载。
+- **Go 工作流**：`after/ftplugin/go.lua` 用 tab 缩进；picker 全局排除
+  `*.gen.go`/`gen.go`/`*.pb.go`/`*.connect.go`/`*.connector.go` 这些生成物。
 - **完整语言支持**：Lua、TS/JS、Go、Rust、Zig、Python、C/C++、CSS、HTML、
   JSON、YAML、Protobuf、Bash、Dockerfile（LSP + treesitter + 格式化 + DAP）。
 
@@ -37,6 +42,10 @@
 | 格式化 | conform.nvim | 启动（按键才干活） |
 | 调试 | nvim-dap + nvim-dap-ui + nvim-nio | 首次 DAP 按键 |
 | 跳转 | flash.nvim（`s`/`S`） | 启动 |
+| split/join | treesj（`<leader>m`） | 首次按键 |
+| 行号预览 | numb.nvim（`:123`） | 首次进 cmdline |
+| CSV | csvview.nvim（`:CsvViewToggle`） | 首个 csv |
+| 退出插入 | better-escape.nvim（`jk`/`jj`） | InsertEnter |
 | 包围 | mini.surround（`gs` 前缀） | 启动 |
 | TODO | todo-comments.nvim（+ plenary） | 启动 |
 | Markdown | render-markdown.nvim | 首个 markdown |
@@ -98,7 +107,7 @@ leader 为空格，localleader 为 `,`。**按下 `<leader>` 停顿即弹 which-
 - `gsa`/`gsd`/`gsr` 加/删/换包围（mini.surround，`gsaiw"` 给词加引号）
 - `af`/`if` 函数、`ac`/`ic` 类、`aa`/`ia` 参数（treesitter textobjects）
 - `]f`/`[f` 函数间跳 · `]t`/`[t` TODO 间跳 · `s`/`S` flash 跳转
-- `<leader>cf` 格式化（conform，LSP fallback）
+- `<leader>cf` 格式化（conform，LSP fallback）· `<leader>m` split/join 切换
 
 ### 文件与搜索（snacks picker）
 
@@ -121,7 +130,8 @@ picker 列表版（结果多时）：`<leader>ls`/`lS` 符号 · `ld` 定义 · 
 `li` 实现 · `la` action。`]]`/`[[` 在同名符号间跳（snacks words）。
 
 诊断：`[d`/`]d` 跳转（内置） · `<leader>cd` 浮窗 · `<leader>cD` loclist ·
-`<leader>dd`/`dw` picker 文档/工作区诊断。
+`<leader>dd`/`dw` picker 文档/工作区诊断 · `gK` 当前行 virtual_lines 展开/收起
+（virtual_text 只显示第一行，长诊断看不全时用它）。
 
 ### Git（`<leader>g*`，一键一职）
 
@@ -163,6 +173,11 @@ hunk 操作（mini.diff）：`gh` 暂存（operator）· `gH` 撤销 · `[h`/`]h
 ├── init.lua                  # 入口
 ├── nvim-pack-lock.json       # vim.pack 版本锁
 ├── after/lsp/                # 各 server settings 覆盖（15+ 个）
+├── after/ftplugin/go.lua     # Go 用 tab（覆盖全局 expandtab）
+├── plugin/                   # 启动时自动 source
+│   ├── golement.lua          # Go implements 虚拟文本（守卫 + 懒 dofile）
+│   ├── tslement.lua          # TS 版同上
+│   └── pwsh.lua              # Windows 上把 shell 换成 pwsh
 ├── lua/core/                 # 无插件依赖
 │   ├── options.lua           # 选项（exrc、fold、grep=rg…）
 │   ├── keymaps.lua           # 基础键位
@@ -181,6 +196,8 @@ hunk 操作（mini.diff）：`gh` 暂存（operator）· `gH` 撤销 · `[h`/`]h
     ├── format.lua            # conform
     ├── dap.lua               # 调试（懒加载）
     ├── markdown.lua          # render-markdown（懒加载）
+    ├── implements.lua        # golement/tslement 的按 ft 懒加载器
+    ├── treesj.lua / numb.lua / csvview.lua / escape.lua
     ├── surround.lua / todo.lua / which-key.lua / flash.lua
     ├── copilot.lua           # InsertEnter 懒加载
     ├── terminal.lua          # 浮动终端（Snacks.terminal）

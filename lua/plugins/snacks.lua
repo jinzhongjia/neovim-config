@@ -7,6 +7,16 @@
 -- 它的 picker source；bigfile/quickfile 也得早于读文件的那批 autocmd。
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+-- Go 生成物：protoc / connect / 各种 codegen 出来的文件，搜索里全是噪音
+local go_generated = { "*.gen.go", "gen.go", "*.pb.go", "*.connect.go", "*.connector.go" }
+local go_generated_patterns = {
+    "%.gen%.go$",
+    "/gen%.go$",
+    "%.pb%.go$",
+    "%.connect%.go$",
+    "%.connector%.go$",
+}
+
 require("snacks").setup({
     -- ── 读文件相关 ────────────────────────────────────────────
     bigfile = { enabled = true }, -- 大文件关掉 treesitter/LSP/语法
@@ -60,8 +70,26 @@ require("snacks").setup({
         enabled = true,
         -- ui_select 默认开：vim.ui.select 走 snacks 浮窗
         sources = {
-            files = { hidden = true }, -- 跟旧的 fd --hidden 行为一致
-            grep = { hidden = true },
+            files = { hidden = true, exclude = go_generated }, -- 跟旧的 fd --hidden 行为一致
+            git_files = { exclude = go_generated },
+            grep = { hidden = true, exclude = go_generated },
+            grep_word = { exclude = go_generated },
+            grep_buffers = { exclude = go_generated },
+            -- smart 继承 files，不用另配；recent 走的是 oldfiles 列表，
+            -- exclude 那套 glob 不生效，只能用 filter 自己判路径
+            recent = {
+                filter = {
+                    filter = function(item)
+                        local path = item.file or item.text or ""
+                        for _, pat in ipairs(go_generated_patterns) do
+                            if path:match(pat) then
+                                return false
+                            end
+                        end
+                        return true
+                    end,
+                },
+            },
         },
     },
 

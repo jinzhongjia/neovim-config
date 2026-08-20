@@ -61,6 +61,7 @@ vim.lsp.enable({
     "basedpyright", -- Python (types)
     "ruff", -- Python (lint/format)
     "clangd", -- C/C++
+    "dockerls", -- Dockerfile
     "cssls", -- CSS
     "html", -- HTML
     "jsonls", -- JSON (package.json/tsconfig 等)

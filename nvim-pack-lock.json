@@ -1,5 +1,9 @@
 {
   "plugins": {
+    "better-escape.nvim": {
+      "rev": "3f4bc0b326606264ff75967f59091b5ddada0554",
+      "src": "https://github.com/max397574/better-escape.nvim"
+    },
     "blink.cmp": {
       "rev": "78336bc89ee5365633bcf754d93df01678b5c08f",
       "src": "https://github.com/saghen/blink.cmp",
@@ -30,6 +34,10 @@
       "rev": "261e70f26e6c02562495f900399234c4e26daa2f",
       "src": "https://github.com/zbirenbaum/copilot.lua"
     },
+    "csvview.nvim": {
+      "rev": "5c22774c3ecc7f8883af5d143b366e45b1f0875d",
+      "src": "https://github.com/hat0uma/csvview.nvim"
+    },
     "flash.nvim": {
       "rev": "b6346946d10d07998efee029fb0f7a593806d0cd",
       "src": "https://github.com/folke/flash.nvim"
@@ -53,6 +61,10 @@
     "neogit": {
       "rev": "37e0f22a2345bad1bffe01b31970885882f46275",
       "src": "https://github.com/NeogitOrg/neogit"
+    },
+    "numb.nvim": {
+      "rev": "36260c446465b1303b0b1922c722904791bdb03f",
+      "src": "https://github.com/nacro90/numb.nvim"
     },
     "nvim-dap": {
       "rev": "9e848e09a697ee95302a3ef2dd43fd6eb709e570",
@@ -111,6 +123,10 @@
     "todo-comments.nvim": {
       "rev": "31e3c38ce9b29781e4422fc0322eb0a21f4e8668",
       "src": "https://github.com/folke/todo-comments.nvim"
+    },
+    "treesj": {
+      "rev": "79aedb401bbdc7e4202f7881eab5f6feb2105b0a",
+      "src": "https://github.com/Wansmer/treesj"
     },
     "vim-fugitive": {
       "rev": "3b753cf8c6a4dcde6edee8827d464ba9b8c4a6f0",

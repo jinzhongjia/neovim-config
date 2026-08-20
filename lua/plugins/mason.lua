@@ -28,6 +28,7 @@ local ensure_installed = {
     "basedpyright", -- Python (types)
     "ruff", -- Python (lint/format)
     "clangd", -- C/C++
+    "dockerfile-language-server", -- Dockerfile (dockerls)
     "css-lsp", -- CSS
     "html-lsp", -- HTML
     "json-lsp", -- JSON

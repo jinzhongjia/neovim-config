@@ -53,6 +53,18 @@ vim.pack.add({
     gh("folke/flash.nvim"),
 
     -- ┌─────────────────────────────────────────────────────────┐
+    -- │ 编辑增强（都懒加载，按键/事件/ft 触发）                 │
+    -- │   treesj        — 结构化 split/join（<leader>m）        │
+    -- │   numb          — :123 先预览再跳                       │
+    -- │   csvview       — CSV 按列对齐                          │
+    -- │   better-escape — jk/jj 退出插入模式                    │
+    -- └─────────────────────────────────────────────────────────┘
+    gh("Wansmer/treesj"),
+    gh("nacro90/numb.nvim"),
+    gh("hat0uma/csvview.nvim"),
+    gh("max397574/better-escape.nvim"),
+
+    -- ┌─────────────────────────────────────────────────────────┐
     -- │ Surround — mini.surround（gs 前缀，s 被 flash 占用）     │
     -- └─────────────────────────────────────────────────────────┘
     gh("echasnovski/mini.surround"),
@@ -150,6 +162,10 @@ require("plugins.markdown")
 require("plugins.file-explorer")
 require("plugins.outline")
 require("plugins.flash")
+require("plugins.treesj")
+require("plugins.numb")
+require("plugins.csvview")
+require("plugins.escape")
 require("plugins.surround")
 require("plugins.todo")
 require("plugins.dap")
@@ -166,4 +182,5 @@ require("plugins.ai")
 require("plugins.copilot")
 require("plugins.terminal")
 require("plugins.pairs")
+require("plugins.implements")
 require("plugins.which-key")
