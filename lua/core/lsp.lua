@@ -22,20 +22,11 @@ vim.api.nvim_create_autocmd("LspAttach", {
         -- Code lens is deliberately not enabled — too noisy inline.
         -- Run one on demand with vim.lsp.codelens.run() if ever needed.
 
-        -- Enable document highlight on cursor hold
-        if client:supports_method("textDocument/documentHighlight") then
-            local hl_group = vim.api.nvim_create_augroup("LspHighlight_" .. buf, { clear = true })
-            vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI" }, {
-                group = hl_group,
-                buffer = buf,
-                callback = vim.lsp.buf.document_highlight,
-            })
-            vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
-                group = hl_group,
-                buffer = buf,
-                callback = vim.lsp.buf.clear_references,
-            })
-        end
+        -- 同名符号高亮由 snacks 的 words 模块负责（plugins/snacks.lua），
+        -- 它在 CursorMoved 上做 200ms 去抖后跑 document_highlight + clear_references，
+        -- 并且复用同一个 timer。这里原本还挂了一份 CursorHold/CursorMoved 的
+        -- 实现，效果完全重叠，只是每次空闲多发一个 documentHighlight 请求。
+        -- 要调整高亮行为改 snacks 的 words 配置，不要在这里再加一套。
 
         -- Buffer-local keymaps (supplement defaults: gra/grr/grn/grt/grx/gO)
         local map = function(mode, lhs, rhs, desc)

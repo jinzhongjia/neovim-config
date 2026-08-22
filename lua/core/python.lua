@@ -105,6 +105,28 @@ function M.venv_python(venv)
     return joinpath(venv, venv_bin, python_exe)
 end
 
+-- 下面这些探测都是 vim.system():wait(2000) 同步阻塞，串起来最坏 12s 卡住 UI。
+-- 每个都先看项目里有没有对应的标记文件，没有就不启动那个进程：
+-- 原来 `poetry env info` 在任何没有 .venv 的 python 项目都会被调用一次，
+-- 哪怕项目跟 poetry 毫无关系。
+local function pyproject_has(root, section)
+    local path = joinpath(root, "pyproject.toml")
+    if not file_readable(path) then
+        return false
+    end
+    local ok, content = pcall(vim.fn.readfile, path)
+    if not ok or not content then
+        return false
+    end
+    for _, line in ipairs(content) do
+        -- 只看 section 头，`[tool.hatch.envs.default]` 这类子表也算命中
+        if line:match("^%s*%[" .. section .. "[%].]") then
+            return true
+        end
+    end
+    return false
+end
+
 function M.command_python(root)
     root = root or M.project_root()
 
@@ -116,32 +138,42 @@ function M.command_python(root)
         end
     end
 
-    local poetry_python = command_python({ "poetry", "env", "info", "--executable" }, root)
-    if poetry_python then
-        return poetry_python
-    end
-
-    local pipenv_venv = system_output({ "pipenv", "--venv" }, root)
-    if pipenv_venv and pipenv_venv ~= "" and readable_dir(pipenv_venv) then
-        local pipenv_python = executable_python(M.venv_python(pipenv_venv))
-        if pipenv_python then
-            return pipenv_python
+    if file_readable(joinpath(root, "poetry.lock")) or pyproject_has(root, "tool%.poetry") then
+        local poetry_python = command_python({ "poetry", "env", "info", "--executable" }, root)
+        if poetry_python then
+            return poetry_python
         end
     end
 
-    local pdm_python = command_python({ "pdm", "run", "python", "-c", "import sys; print(sys.executable)" }, root)
-    if pdm_python then
-        return pdm_python
+    if file_readable(joinpath(root, "Pipfile")) then
+        local pipenv_venv = system_output({ "pipenv", "--venv" }, root)
+        if pipenv_venv and pipenv_venv ~= "" and readable_dir(pipenv_venv) then
+            local pipenv_python = executable_python(M.venv_python(pipenv_venv))
+            if pipenv_python then
+                return pipenv_python
+            end
+        end
     end
 
-    local hatch_python = command_python({ "hatch", "python", "-c", "import sys; print(sys.executable)" }, root)
-    if hatch_python then
-        return hatch_python
+    if file_readable(joinpath(root, "pdm.lock")) or pyproject_has(root, "tool%.pdm") then
+        local pdm_python = command_python({ "pdm", "run", "python", "-c", "import sys; print(sys.executable)" }, root)
+        if pdm_python then
+            return pdm_python
+        end
     end
 
-    local pyenv_python = command_python({ "pyenv", "which", "python" }, root)
-    if pyenv_python then
-        return pyenv_python
+    if pyproject_has(root, "tool%.hatch") then
+        local hatch_python = command_python({ "hatch", "python", "-c", "import sys; print(sys.executable)" }, root)
+        if hatch_python then
+            return hatch_python
+        end
+    end
+
+    if file_readable(joinpath(root, ".python-version")) then
+        local pyenv_python = command_python({ "pyenv", "which", "python" }, root)
+        if pyenv_python then
+            return pyenv_python
+        end
     end
 end
 
