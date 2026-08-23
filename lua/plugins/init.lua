@@ -88,6 +88,11 @@ vim.pack.add({
     gh("neovim/nvim-lspconfig"),
 
     -- ┌─────────────────────────────────────────────────────────┐
+    -- │ LspUI — LSP 浮窗交互（hover/rename/code action/跳转）    │
+    -- └─────────────────────────────────────────────────────────┘
+    gh("jinzhongjia/LspUI.nvim"),
+
+    -- ┌─────────────────────────────────────────────────────────┐
     -- │ lazydev — Neovim Lua types for lua_ls                   │
     -- └─────────────────────────────────────────────────────────┘
     gh("folke/lazydev.nvim"),
@@ -161,6 +166,7 @@ require("plugins.treesitter")
 require("plugins.markdown")
 require("plugins.file-explorer")
 require("plugins.outline")
+require("plugins.lspui")
 require("plugins.flash")
 require("plugins.treesj")
 require("plugins.numb")

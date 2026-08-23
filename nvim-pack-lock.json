@@ -1,5 +1,9 @@
 {
   "plugins": {
+    "LspUI.nvim": {
+      "rev": "0b5e36aebaac06b51df1c424e3d77a934955a169",
+      "src": "https://github.com/jinzhongjia/LspUI.nvim"
+    },
     "better-escape.nvim": {
       "rev": "3f4bc0b326606264ff75967f59091b5ddada0554",
       "src": "https://github.com/max397574/better-escape.nvim"

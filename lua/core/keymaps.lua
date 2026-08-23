@@ -68,17 +68,12 @@ map("n", "[l", "<cmd>lprev<CR>zz", { desc = "Prev loclist" })
 map("n", "<leader>cd", vim.diagnostic.open_float, { desc = "Diagnostic float" })
 map("n", "<leader>cD", vim.diagnostic.setloclist, { desc = "Diagnostics to loclist" })
 
--- ── LSP (supplements built-in gra/grr/grn/grt/grx/gO) ───────
-map("n", "gd", vim.lsp.buf.definition, { desc = "Go to definition" })
-map("n", "gD", vim.lsp.buf.declaration, { desc = "Go to declaration" })
-map("n", "K", vim.lsp.buf.hover, { desc = "Hover" })
-map("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "Code action" })
+-- ── LSP ──────────────────────────────────────────────────────
+-- gd/gD/K/grr/gri/grt 与 <leader>ca/cr/ci/co/cj/ck 由 LspUI 提供
+-- （plugins/lspui.lua）；内置默认 gra/grn/grx/gO 仍可用
 map("n", "<leader>cf", function()
     require("conform").format({ async = true })
 end, { desc = "Format (conform, LSP fallback)" })
-map("n", "<leader>ci", vim.lsp.buf.incoming_calls, { desc = "Incoming calls" })
-map("n", "<leader>co", vim.lsp.buf.outgoing_calls, { desc = "Outgoing calls" })
-map("n", "<leader>cr", vim.lsp.buf.rename, { desc = "Rename" })
 map("n", "<leader>cs", vim.lsp.buf.signature_help, { desc = "Signature help" })
 -- 插入模式签名帮助：0.11+ 内置 <C-s>，不再自建
 
