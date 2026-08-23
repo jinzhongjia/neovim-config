@@ -7,6 +7,7 @@ local map = vim.keymap.set
 
 -- ── General ──────────────────────────────────────────────────
 map("n", "<Esc>", "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })
+map("n", "<leader>l", "<cmd>nohlsearch<CR>", { desc = "Clear search highlight" })
 map("n", "<leader>w", "<cmd>w<CR>", { desc = "Save" })
 map("n", "<leader>q", "<cmd>q<CR>", { desc = "Quit" })
 map("n", "<leader>Q", "<cmd>qa!<CR>", { desc = "Force quit all" })
@@ -52,8 +53,8 @@ map("v", "<", "<gv")
 map("v", ">", ">gv")
 
 -- ── Search ───────────────────────────────────────────────────
--- <leader>sg/<leader>sw 等搜索键由 snacks picker 提供（plugins/snacks.lua）；
--- 这里原有的内置 grep 版本一直被同名映射覆盖，已删
+-- <leader>fg / <leader>/ / <leader>* 等搜索键由 snacks picker 提供
+--（plugins/snacks.lua，键位同 main）
 
 -- Quickfix navigation
 map("n", "]q", "<cmd>cnext<CR>zz", { desc = "Next quickfix" })
@@ -69,11 +70,11 @@ map("n", "<leader>cd", vim.diagnostic.open_float, { desc = "Diagnostic float" })
 map("n", "<leader>cD", vim.diagnostic.setloclist, { desc = "Diagnostics to loclist" })
 
 -- ── LSP ──────────────────────────────────────────────────────
--- gd/gD/K/grr/gri/grt 与 <leader>ca/cr/ci/co/cj/ck 由 LspUI 提供
--- （plugins/lspui.lua）；内置默认 gra/grn/grx/gO 仍可用
-map("n", "<leader>cf", function()
+-- K/<leader>rn/<leader>ca 与 <leader>gd/gD/gi/gr/gy/gk/gj/gh/gl
+-- 由 LspUI 提供（plugins/lspui.lua，键位同 main）；内置默认 gr* 仍可用
+map("n", "<leader>f", function()
     require("conform").format({ async = true })
-end, { desc = "Format (conform, LSP fallback)" })
+end, { desc = "Format buffer" })
 map("n", "<leader>cs", vim.lsp.buf.signature_help, { desc = "Signature help" })
 -- 插入模式签名帮助：0.11+ 内置 <C-s>，不再自建
 

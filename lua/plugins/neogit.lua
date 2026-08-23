@@ -13,4 +13,4 @@ vim.schedule(function()
     })
 end)
 
-vim.keymap.set("n", "<leader>gn", "<cmd>Neogit<CR>", { desc = "Neogit: Status" })
+vim.keymap.set("n", "<leader>ng", "<cmd>Neogit<CR>", { desc = "NeoGit" })

@@ -124,50 +124,47 @@ local P = function(source, opts)
     end
 end
 
--- ── Picker：文件 ──────────────────────────────────────────────
+-- ── Picker：文件（键位同 main 的 fff/floaterm 布局）──────────
 map("n", "<leader>ff", P("files"), { desc = "Find files" })
+map("n", "<leader>fF", P("files", { hidden = true, ignored = true }), { desc = "Find files (all)" })
 map("n", "<leader>fr", P("recent"), { desc = "Recent files" })
 map("n", "<leader>fb", P("buffers"), { desc = "Buffers" })
 map("n", "<leader>fh", P("help"), { desc = "Help tags" })
-map("n", "<leader>fk", P("keymaps"), { desc = "Keymaps" })
-map("n", "<leader>fc", P("commands"), { desc = "Commands" })
+-- fk/fc/ft/fj/fs 归终端（同 main floaterm，见 plugins/terminal.lua）
+map("n", "<leader>fK", P("keymaps"), { desc = "Keymaps" })
+map("n", "<leader>fC", P("commands"), { desc = "Commands" })
 map("n", "<leader>fR", P("resume"), { desc = "Resume last picker" })
-map("n", "<leader>fP", P("pickers"), { desc = "All pickers" })
+map("n", "<leader>tt", P("pickers"), { desc = "All pickers" })
 
--- ── Picker：搜索 ──────────────────────────────────────────────
-map("n", "<leader>sg", P("grep"), { desc = "Live grep" })
-map("v", "<leader>sg", P("grep_word"), { desc = "Grep selection" })
-map("n", "<leader>sw", P("grep_word"), { desc = "Grep word" })
+-- ── Picker：搜索（同 main：fg / fG / <leader>/ / <leader>*）──
+map("n", "<leader>fg", P("grep"), { desc = "Live grep" })
+map("v", "<leader>fg", P("grep_word"), { desc = "Grep selection" })
+map("n", "<leader>fG", P("grep", { hidden = true, ignored = true }), { desc = "Grep (all)" })
+map("n", "<leader>/", P("grep"), { desc = "Live grep" })
+map("n", "<leader>*", P("grep_word"), { desc = "Grep cursor word" })
 map("n", "<leader>sW", function()
     Snacks.picker.grep({ search = vim.fn.expand("<cWORD>") })
 end, { desc = "Grep WORD" })
 map("n", "<leader>sb", P("lines"), { desc = "Grep current buffer" })
 map("n", "<leader>sB", P("grep_buffers"), { desc = "Grep open buffers" })
-map("n", "<leader>/", P("lines"), { desc = "Search in buffer" })
 
--- ── Picker：LSP ───────────────────────────────────────────────
-map("n", "<leader>ls", P("lsp_symbols"), { desc = "Document symbols" })
-map("n", "<leader>lS", P("lsp_workspace_symbols"), { desc = "Workspace symbols" })
-map("n", "<leader>ld", P("lsp_definitions"), { desc = "Definitions" })
-map("n", "<leader>lr", P("lsp_references"), { desc = "References" })
-map("n", "<leader>li", P("lsp_implementations"), { desc = "Implementations" })
--- snacks 没有 code action picker：走 vim.ui.select（已被 snacks 接管）
-map("n", "<leader>la", vim.lsp.buf.code_action, { desc = "Code actions" })
+-- ── Picker：LSP 符号 / 诊断（同 main：ss/sS/sd/sD）────────────
+-- 定义/引用/实现跳转走 LspUI <leader>gd/gr/gi（plugins/lspui.lua）
+map("n", "<leader>ss", P("lsp_symbols"), { desc = "Document symbols" })
+map("n", "<leader>sS", P("lsp_workspace_symbols"), { desc = "Workspace symbols" })
+map("n", "<leader>sd", P("diagnostics_buffer"), { desc = "Document diagnostics" })
+map("n", "<leader>sD", P("diagnostics"), { desc = "Workspace diagnostics" })
 
--- ── Picker：诊断 ──────────────────────────────────────────────
-map("n", "<leader>dd", P("diagnostics_buffer"), { desc = "Document diagnostics" })
-map("n", "<leader>dw", P("diagnostics"), { desc = "Workspace diagnostics" })
-
--- ── Picker：Git（gg/gc/gb 等在 plugins/git.lua）───────────────
-map("n", "<leader>gl", P("git_log"), { desc = "Git log (commits)" })
-map("n", "<leader>gs", P("git_status"), { desc = "Git status (picker)" })
-map("n", "<leader>gB", P("git_branches"), { desc = "Git branches" })
-map({ "n", "v" }, "<leader>gy", function()
+-- ── Picker：Git（<leader>g* 归 LSP，git picker 用 <leader>G*）─
+map("n", "<leader>Gl", P("git_log"), { desc = "Git log (commits)" })
+map("n", "<leader>Gs", P("git_status"), { desc = "Git status (picker)" })
+map("n", "<leader>GB", P("git_branches"), { desc = "Git branches" })
+map({ "n", "v" }, "<leader>Gy", function()
     Snacks.gitbrowse()
 end, { desc = "Git browse (open remote)" })
 
 -- ── 通知 / 草稿 ───────────────────────────────────────────────
-map("n", "<leader>n", function()
+map("n", "<leader>sn", function()
     Snacks.notifier.show_history()
 end, { desc = "Notification history" })
 map("n", "<leader>N", function()

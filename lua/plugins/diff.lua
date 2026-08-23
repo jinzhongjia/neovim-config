@@ -13,4 +13,4 @@ diff.setup({
     },
 })
 
-vim.keymap.set("n", "<leader>go", diff.toggle_overlay, { desc = "Diff overlay (mini.diff)" })
+vim.keymap.set("n", "<leader>Go", diff.toggle_overlay, { desc = "Diff overlay (mini.diff)" })

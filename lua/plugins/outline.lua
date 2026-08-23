@@ -1,7 +1,7 @@
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 -- outline.nvim — 符号大纲侧边栏（LSP document symbols 的常驻视图）
--- 与 <leader>ls（snacks picker 弹窗式）互补：这个用来长时间挂着导航
--- 懒加载：setup 推迟到首次 <leader>lo，命令在那之前不存在
+-- 与 <leader>ss（snacks picker 弹窗式）互补：这个用来长时间挂着导航
+-- 懒加载：setup 推迟到首次 <leader>ao，命令在那之前不存在
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 local loaded = false
@@ -55,5 +55,5 @@ local function outline(cmd)
     end
 end
 
-vim.keymap.set("n", "<leader>lo", outline("Outline"), { desc = "Outline (symbols) toggle" })
-vim.keymap.set("n", "<leader>lO", outline("OutlineFocus"), { desc = "Outline focus" })
+vim.keymap.set("n", "<leader>ao", outline("Outline"), { desc = "Toggle outline" })
+vim.keymap.set("n", "<leader>aO", outline("OutlineFocus"), { desc = "Outline focus" })

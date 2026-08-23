@@ -1,5 +1,5 @@
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
--- conform.nvim — 格式化编排（<leader>cf，见 core/keymaps.lua）
+-- conform.nvim — 格式化编排（<leader>f，同 main，见 core/keymaps.lua）
 -- 配置移植自 main 分支；没配的语言 fallback 到 LSP 格式化
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 

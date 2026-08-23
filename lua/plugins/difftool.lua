@@ -10,10 +10,10 @@ vim.cmd.packadd("nvim.difftool")
 local map = vim.keymap.set
 
 -- 任意两个文件/目录比较直接用 :DiffTool <left> <right>（自带路径补全），
--- 不占键位；<leader>gd（vs index，可 do/dp 暂存）在 plugins/git.lua
+-- 不占键位；<leader>Gd（vs index，可 do/dp 暂存）在 plugins/git.lua
 
 -- Quick diff: current file vs git HEAD
-map("n", "<leader>gD", function()
+map("n", "<leader>GD", function()
     local file = vim.api.nvim_buf_get_name(0)
     if file == "" then
         vim.notify("No file in current buffer", vim.log.levels.WARN)

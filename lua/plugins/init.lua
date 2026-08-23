@@ -114,7 +114,7 @@ vim.pack.add({
     gh("NeogitOrg/neogit"), -- plenary 已在上面
 
     -- ┌─────────────────────────────────────────────────────────┐
-    -- │ Format — conform.nvim（<leader>cf，LSP fallback）        │
+    -- │ Format — conform.nvim（<leader>f，LSP fallback）         │
     -- └─────────────────────────────────────────────────────────┘
     gh("stevearc/conform.nvim"),
 

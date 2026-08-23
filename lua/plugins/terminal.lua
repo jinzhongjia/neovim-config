@@ -6,7 +6,7 @@
 -- Snacks.terminal，全局样式会连它右侧那个 split 一起改掉。
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-local MAX = 5 -- <leader>t1..t5，同时也是 ]/[ 循环的上界
+local MAX = 5 -- <leader>t1..t5，同时也是 fj/fk 循环的上界
 local current = 1
 
 local win = { position = "float", border = "rounded", width = 0.85, height = 0.8 }
@@ -53,16 +53,23 @@ map({ "n", "t" }, "<C-\\>", function()
     toggle()
 end, { desc = "Terminal: Toggle" })
 
-map("n", "<leader>tt", function()
+-- 键位同 main 的 floaterm：ft 新建 / fj 上一个 / fk 下一个 / fs 开关 / fc 关掉
+map({ "n", "t" }, "<leader>fs", function()
     toggle()
 end, { desc = "Terminal: Toggle" })
-map("n", "<leader>tn", new, { desc = "Terminal: New" })
-map("n", "<leader>t]", function()
-    cycle(1)
-end, { desc = "Terminal: Next" })
-map("n", "<leader>t[", function()
+map({ "n", "t" }, "<leader>ft", new, { desc = "Terminal: New" })
+map({ "n", "t" }, "<leader>fj", function()
     cycle(-1)
 end, { desc = "Terminal: Prev" })
+map({ "n", "t" }, "<leader>fk", function()
+    cycle(1)
+end, { desc = "Terminal: Next" })
+map({ "n", "t" }, "<leader>fc", function()
+    local term = get(current)
+    if term then
+        term:close({ buf = true })
+    end
+end, { desc = "Terminal: Kill" })
 
 for i = 1, MAX do
     map("n", "<leader>t" .. i, function()

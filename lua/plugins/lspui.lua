@@ -1,8 +1,7 @@
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 -- LspUI — LSP 浮窗交互（hover / rename / code action / 跳转 / 诊断）
--- 参照 main 分支配置迁移；键位适配 min 约定：
---   main 的 <leader>g* 在这里被 git 占用，改为覆盖内置同义键
---   （gd/gD/K/grr/gri/grt）+ <leader>c* 命名空间
+-- 键位与 main 分支一致：<leader>g* 归 LSP 导航，K hover，
+-- <leader>rn 重命名，<leader>ca code action（git 已挪去 <leader>G*）
 -- 懒加载：setup 推迟到首次 LspAttach（签名提示 / inlay hint 是
 -- 被动功能，必须在 attach 时初始化，不能等按键）
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -43,15 +42,15 @@ local function lspui(args)
 end
 
 local map = vim.keymap.set
-map("n", "gd", lspui("definition"), { desc = "Go to definition" })
-map("n", "gD", lspui("declaration"), { desc = "Go to declaration" })
-map("n", "K", lspui("hover"), { desc = "Hover" })
-map("n", "grr", lspui("reference"), { desc = "Find references" })
-map("n", "gri", lspui("implementation"), { desc = "Go to implementation" })
-map("n", "grt", lspui("type_definition"), { desc = "Go to type definition" })
+map("n", "K", lspui("hover"), { desc = "Hover information" })
+map("n", "<leader>rn", lspui("rename"), { desc = "Rename symbol" })
 map("n", "<leader>ca", lspui("code_action"), { desc = "Code action" })
-map("n", "<leader>cr", lspui("rename"), { desc = "Rename" })
-map("n", "<leader>ci", lspui("call_hierarchy incoming"), { desc = "Incoming calls" })
-map("n", "<leader>co", lspui("call_hierarchy outgoing"), { desc = "Outgoing calls" })
-map("n", "<leader>cj", lspui("diagnostic next"), { desc = "Next diagnostic (float)" })
-map("n", "<leader>ck", lspui("diagnostic prev"), { desc = "Prev diagnostic (float)" })
+map("n", "<leader>gd", lspui("definition"), { desc = "Go to definition" })
+map("n", "<leader>gD", lspui("declaration"), { desc = "Go to declaration" })
+map("n", "<leader>gi", lspui("implementation"), { desc = "Go to implementation" })
+map("n", "<leader>gr", lspui("reference"), { desc = "Find references" })
+map("n", "<leader>gy", lspui("type_definition"), { desc = "Go to type definition" })
+map("n", "<leader>gk", lspui("diagnostic prev"), { desc = "Previous diagnostic" })
+map("n", "<leader>gj", lspui("diagnostic next"), { desc = "Next diagnostic" })
+map("n", "<leader>gh", lspui("call_hierarchy incoming"), { desc = "Call hierarchy (callers)" })
+map("n", "<leader>gl", lspui("call_hierarchy outgoing"), { desc = "Call hierarchy (callees)" })
