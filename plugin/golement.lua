@@ -42,13 +42,11 @@ local function debounce(func, delay)
     return function(...)
         local args = { ... }
 
-        -- Stop and close existing timer
         if timer and not timer:is_closing() then
             timer:stop()
             timer:close()
         end
 
-        -- Create new timer
         timer = uv.new_timer()
         if not timer then
             vim.schedule(function()
@@ -110,7 +108,7 @@ local function find_types(bufnr)
     local root = parse_results[1]:root()
     local nodes = {}
 
-    for id, node in parsed_query:iter_captures(root, 0) do
+    for id, node in parsed_query:iter_captures(root, bufnr) do
         local type = parsed_query.captures[id]
         local line, character = node:range()
         table.insert(nodes, { line = line, character = character, type = type })
@@ -118,8 +116,12 @@ local function find_types(bufnr)
     return nodes
 end
 
--- 文件处理
-local file_cache = {}
+-- 渲染代数:每轮标注 +1,在途的旧回调发现代数不匹配就直接放弃
+local generation = 0
+
+-- 文件处理:缓存随每轮标注整体重置,一轮内同一文件只读一次,
+-- 跨轮自然失效,不会读到过期内容也不会无限增长
+local file_cache = {} -- [fname] = lines
 
 local function get_package_name(fdata)
     for _, line in ipairs(fdata) do
@@ -131,48 +133,39 @@ local function get_package_name(fdata)
     return ""
 end
 
-local function read_file_data(uri, bufnr)
-    if bufnr and vim.api.nvim_buf_is_loaded(bufnr) then
-        return vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+local function read_file_data(uri)
+    local fname = vim.uri_to_fname(uri)
+    local cached = file_cache[fname]
+    if cached then
+        return cached
     end
 
-    local file = vim.uri_to_fname(uri)
-    if not file_cache[file] then
-        local ok, content = pcall(vim.fn.readfile, file)
-        if ok and content then
-            file_cache[file] = content
-        else
-            return nil
-        end
+    local lines
+    -- 只复用已经加载的 buffer;不要用 uri_to_bufnr,
+    -- 它会为每个实现所在的文件凭空创建 buffer
+    local bufnr = vim.fn.bufnr(fname)
+    if bufnr ~= -1 and api.nvim_buf_is_loaded(bufnr) then
+        lines = api.nvim_buf_get_lines(bufnr, 0, -1, false)
+    else
+        local ok, content = pcall(vim.fn.readfile, fname)
+        lines = ok and content or nil
     end
-    return file_cache[file]
-end
 
--- Clear file cache periodically to prevent memory leak
-local function clear_file_cache()
-    file_cache = {}
+    if lines then
+        file_cache[fname] = lines
+    end
+    return lines
 end
 
 -- 统一的实现回调处理
 local function process_implementation(impl)
-    local uri = impl.uri
     local impl_line = impl.range.start.line
     local impl_start = impl.range.start.character
     local impl_end = impl.range["end"].character
 
-    local bufnr = vim.uri_to_bufnr(uri)
-    local data = read_file_data(uri, bufnr)
-
-    if not data or not data[impl_line + 1] then
+    local data = read_file_data(impl.uri)
+    if not data then
         return nil
-    end
-
-    local package_name = ""
-    if config.display_package then
-        package_name = get_package_name(data)
-        if package_name ~= "" then
-            package_name = package_name .. "."
-        end
     end
 
     local impl_text = data[impl_line + 1]
@@ -192,40 +185,43 @@ local function process_implementation(impl)
         return nil
     end
 
+    local package_name = ""
+    if config.display_package then
+        package_name = get_package_name(data)
+        if package_name ~= "" then
+            package_name = package_name .. "."
+        end
+    end
+
     return package_name .. impl_text:sub(start_col, end_col)
 end
 
-local function create_implementation_callback()
-    return function(result)
-        if not result then
-            return {}
-        end
-
-        local names = {}
-
-        local function process_single(impl)
-            local name = process_implementation(impl)
-            if name then
-                table.insert(names, name)
-            end
-        end
-
-        if result.uri then
-            process_single(result)
-        else
-            for _, impl in pairs(result) do
-                process_single(impl)
-            end
-        end
-
-        return names
+local function collect_implementation_names(result)
+    if not result then
+        return {}
     end
+
+    local names = {}
+
+    local function process_single(impl)
+        local name = process_implementation(impl)
+        if name then
+            table.insert(names, name)
+        end
+    end
+
+    if result.uri then
+        process_single(result)
+    else
+        for _, impl in pairs(result) do
+            process_single(impl)
+        end
+    end
+
+    return names
 end
 
-local implementation_callback = create_implementation_callback()
-
 local gopls_client
-local active_requests = {}
 
 -- gopls 就绪状态跟踪:只有当 workspace 完全加载后才发 implementation 请求,
 -- 避免在大型项目初始化阶段抢占 gopls 资源、拖慢首次加载。
@@ -234,7 +230,6 @@ local gopls_progress_seen = {} -- [client_id] = true 表示收到过任意进度
 
 -- LSP 交互
 local function get_gopls_client()
-    -- Check if cached client is still valid
     if gopls_client then
         local client = vim.lsp.get_client_by_id(gopls_client.id)
         if client and client.name == "gopls" then
@@ -242,88 +237,53 @@ local function get_gopls_client()
         end
     end
 
-    -- Get fresh client
     local clients = vim.lsp.get_clients({ name = "gopls" })
     gopls_client = clients and clients[1] or nil
     return gopls_client
 end
 
-local function get_implementation_names(bufnr, line, character, callback)
-    local client = get_gopls_client()
-    if not client then
-        return
-    end
-
-    -- Create unique request key
-    local request_key = string.format("%d:%d:%d", bufnr, line, character)
-
-    -- Cancel duplicate requests
-    if active_requests[request_key] then
-        return
-    end
-
-    active_requests[request_key] = true
-
-    -- Build request params manually to ensure correct buffer
+local function request_implementation_names(client, bufnr, line, character, callback)
     local params = {
         textDocument = vim.lsp.util.make_text_document_params(bufnr),
         position = { line = line, character = character },
     }
 
-    client:request(vim.lsp.protocol.Methods.textDocument_implementation, params, function(err, result, _, _)
-        active_requests[request_key] = nil
-
-        if err or not api.nvim_buf_is_valid(bufnr) then
+    local ok = client:request(vim.lsp.protocol.Methods.textDocument_implementation, params, function(err, result)
+        if err then
+            callback({})
             return
         end
-
-        -- Verify buffer hasn't changed
-        if vim.bo[bufnr].filetype ~= "go" then
-            return
-        end
-
-        local names = implementation_callback(result)
-        callback(names)
+        callback(collect_implementation_names(result))
     end, bufnr)
+
+    -- 请求没发出去也要回调,否则这一轮的 pending 计数永远归不了零
+    if not ok then
+        callback({})
+    end
 end
 
 -- 渲染相关
-local extmark_cache = {}
-
 local function clean_render(bufnr)
-    bufnr = bufnr or vim.api.nvim_get_current_buf()
-    vim.api.nvim_buf_clear_namespace(bufnr, namespace, 0, -1)
-    extmark_cache[bufnr] = {}
+    bufnr = bufnr or api.nvim_get_current_buf()
+    api.nvim_buf_clear_namespace(bufnr, namespace, 0, -1)
 end
 
-local function set_virt_text(bufnr, line, _prefix, names)
-    if #names < 1 or not is_valid_buffer(bufnr) then
+local function set_virt_text(bufnr, line, prefix, names, old_marks, used_marks)
+    if #names < 1 then
+        return
+    end
+    if line >= api.nvim_buf_line_count(bufnr) then
         return
     end
 
-    local line_count = api.nvim_buf_line_count(bufnr)
-    if line >= line_count then
-        return
-    end
-
-    local impl_text = _prefix .. table.concat(names, ", ")
-    local opts = {
-        virt_text = { { impl_text, "Goplements" } },
+    local ok, mark_id = pcall(api.nvim_buf_set_extmark, bufnr, namespace, line, 0, {
+        virt_text = { { prefix .. table.concat(names, ", "), "Goplements" } },
         virt_text_pos = "eol",
-    }
-
-    -- Use cached extmark ID if available
-    if not extmark_cache[bufnr] then
-        extmark_cache[bufnr] = {}
-    end
-
-    if extmark_cache[bufnr][line] then
-        opts.id = extmark_cache[bufnr][line]
-    end
-
-    local ok, mark_id = pcall(vim.api.nvim_buf_set_extmark, bufnr, namespace, line, 0, opts)
+        -- 复用同一行的旧 extmark 原位更新,避免先清屏后重画的闪烁
+        id = old_marks[line],
+    })
     if ok and mark_id then
-        extmark_cache[bufnr][line] = mark_id
+        used_marks[mark_id] = true
     end
 end
 
@@ -333,10 +293,9 @@ local function annotate_structs_interfaces(bufnr)
         return
     end
 
-    clean_render(bufnr)
     local nodes = find_types(bufnr)
-
     if #nodes == 0 then
+        clean_render(bufnr)
         return
     end
 
@@ -346,12 +305,47 @@ local function annotate_structs_interfaces(bufnr)
         return
     end
 
-    for _, node in ipairs(nodes) do
-        get_implementation_names(bufnr, node.line, node.character + 1, function(names)
-            if api.nvim_buf_is_valid(bufnr) and vim.bo[bufnr].filetype == "go" then
-                local _prefix = config.prefix[node.type]
-                set_virt_text(bufnr, node.line, _prefix, names)
+    generation = generation + 1
+    file_cache = {}
+    local gen = generation
+    local tick = api.nvim_buf_get_changedtick(bufnr)
+
+    -- 旧 extmark 按当前真实行号建索引:渲染时原位复用,
+    -- 全部请求返回后再删掉没被复用的,而不是先清屏再等异步重画
+    local old_marks = {} -- [line] = extmark_id
+    for _, mark in ipairs(api.nvim_buf_get_extmarks(bufnr, namespace, 0, -1, {})) do
+        old_marks[mark[2]] = mark[1]
+    end
+    local used_marks = {}
+    local pending = #nodes
+
+    local function on_request_done()
+        pending = pending - 1
+        if pending > 0 then
+            return
+        end
+        if gen ~= generation or not api.nvim_buf_is_valid(bufnr) then
+            return
+        end
+        for _, id in pairs(old_marks) do
+            if not used_marks[id] then
+                api.nvim_buf_del_extmark(bufnr, namespace, id)
             end
+        end
+    end
+
+    for _, node in ipairs(nodes) do
+        request_implementation_names(client, bufnr, node.line, node.character + 1, function(names)
+            if
+                config.enable
+                and gen == generation
+                and api.nvim_buf_is_valid(bufnr)
+                and vim.bo[bufnr].filetype == "go"
+                and api.nvim_buf_get_changedtick(bufnr) == tick
+            then
+                set_virt_text(bufnr, node.line, config.prefix[node.type], names, old_marks, used_marks)
+            end
+            on_request_done()
         end)
     end
 end
@@ -380,6 +374,8 @@ local function disable()
         return
     end
     config.enable = false
+    -- 代数 +1 让在途回调全部作废
+    generation = generation + 1
     clean_render()
 end
 
@@ -402,7 +398,9 @@ api.nvim_create_user_command("GoplementsToggle", toggle, { desc = "Toggle Goplem
 
 local augroup = api.nvim_create_augroup("Goplements", { clear = true })
 
-api.nvim_create_autocmd({ "TextChanged", "TextChangedI", "LspAttach" }, {
+-- 插入模式内不触发(原来的 TextChangedI 会在打字停顿时反复发全量
+-- implementation 请求),退出插入时用 InsertLeave 补一次即可
+api.nvim_create_autocmd({ "TextChanged", "InsertLeave", "LspAttach" }, {
     group = augroup,
     pattern = { "*.go" },
     callback = debounce(function(args)
@@ -476,22 +474,6 @@ api.nvim_create_autocmd("LspDetach", {
         if id then
             gopls_ready[id] = nil
             gopls_progress_seen[id] = nil
-        end
-    end,
-})
-
--- Clear file cache on BufDelete to prevent memory leaks
-api.nvim_create_autocmd("BufDelete", {
-    group = augroup,
-    pattern = { "*.go" },
-    callback = function(args)
-        -- Clear extmark cache for this buffer
-        if extmark_cache[args.buf] then
-            extmark_cache[args.buf] = nil
-        end
-        -- Periodic file cache cleanup
-        if math.random() < 0.1 then -- 10% chance
-            clear_file_cache()
         end
     end,
 })

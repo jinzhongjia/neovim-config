@@ -134,56 +134,15 @@ local function get_cached_query(ft, query_str)
     return cache.queries[key]
 end
 
-local function safe_get_node_text(node, source)
+local function safe_get_node_text(node, bufnr)
     if not node then
         return nil
     end
 
-    local ok, text = pcall(vim.treesitter.get_node_text, node, source)
+    local ok, text = pcall(vim.treesitter.get_node_text, node, bufnr)
     if ok and text and text ~= "" then
         return vim.trim(text)
     end
-
-    local sr, sc, er, ec = node:range()
-
-    if type(source) == "number" and api.nvim_buf_is_valid(source) then
-        local sr, sc, er, ec = node:range()
-        local lines = api.nvim_buf_get_text(source, sr, sc, er, ec, {})
-        if lines and #lines > 0 then
-            return vim.trim(table.concat(lines, "\n"))
-        end
-    elseif type(source) == "string" then
-        local segments = {}
-        for line in source:gmatch("[^\n]*") do
-            table.insert(segments, line)
-        end
-        if #segments == 0 then
-            return nil
-        end
-
-        local start_line = sr + 1
-        local end_line = er + 1
-
-        if start_line > #segments then
-            return nil
-        end
-
-        end_line = math.min(end_line, #segments)
-
-        if start_line == end_line then
-            return vim.trim(segments[start_line]:sub(sc + 1, ec))
-        end
-
-        local collected = {}
-        collected[#collected + 1] = segments[start_line]:sub(sc + 1)
-        for line_nr = start_line + 1, end_line - 1 do
-            collected[#collected + 1] = segments[line_nr]
-        end
-        collected[#collected + 1] = segments[end_line]:sub(1, ec)
-
-        return vim.trim(table.concat(collected, "\n"))
-    end
-
     return nil
 end
 
@@ -322,91 +281,62 @@ local function get_interface_name(bufnr, interface_data)
     return nil
 end
 
--- 提取类名（简化版）
-local function extract_class_name_from_location(bufnr, location)
-    local uri = location.uri
-    local target_bufnr = bufnr
-    local parser
-    local root
-    local source
-    local ft
-    local fname
+-- 每轮标注共用的文件行缓存,标注开始时重置:
+-- 同一轮内同一文件只读一次,跨轮自然失效
+local file_lines_cache = {} -- [fname] = lines
 
-    if uri ~= vim.uri_from_bufnr(bufnr) then
-        fname = vim.uri_to_fname(uri)
-        local existing_bufnr = vim.fn.bufnr(fname)
-        if existing_bufnr ~= -1 then
-            target_bufnr = existing_bufnr
-            if not api.nvim_buf_is_loaded(target_bufnr) then
-                vim.fn.bufload(target_bufnr)
-            end
-        else
-            target_bufnr = nil
-            local ok, lines = pcall(vim.fn.readfile, fname)
-            if not ok or not lines or #lines == 0 then
-                return vim.fn.fnamemodify(fname, ":t:r")
-            end
-            local text = table.concat(lines, "\n")
-            ft = vim.filetype.match({ filename = fname, contents = text }) or "typescript"
-            local lang = vim.treesitter.language.get_lang(ft) or ft
-            local parser_ok, string_parser = pcall(vim.treesitter.get_string_parser, text, lang)
-            if not parser_ok then
-                return vim.fn.fnamemodify(fname, ":t:r")
-            end
-            local trees = string_parser:parse()
-            if not trees or #trees == 0 then
-                return vim.fn.fnamemodify(fname, ":t:r")
-            end
-            root = trees[1]:root()
-            root = trees[1]:root()
-            source = text
-        end
+local function get_location_lines(bufnr, uri)
+    if uri == vim.uri_from_bufnr(bufnr) then
+        return api.nvim_buf_get_lines(bufnr, 0, -1, false), nil
     end
 
-    if not parser then
-        parser = get_cached_parser(target_bufnr or bufnr)
-        if not parser then
-            return nil
-        end
-        ft = ft or vim.bo[target_bufnr or bufnr].filetype
-        local parse_results = parser:parse()
-        if not parse_results or #parse_results == 0 then
-            return nil
-        end
-        root = parse_results[1]:root()
-        source = target_bufnr or bufnr
+    local fname = vim.uri_to_fname(uri)
+    local cached = file_lines_cache[fname]
+    if cached then
+        return cached, fname
     end
 
-    ft = ft or vim.bo[target_bufnr or bufnr].filetype
-    local class_query_str = [[(class_declaration name: (type_identifier) @name)]]
-    local query = get_cached_query(ft, class_query_str)
-    if not query then
+    local lines
+    -- 只复用已加载的 buffer,绝不 bufload:同步加载 buffer 会触发
+    -- 整套 autocmd / LSP attach,实现越多卡得越狠
+    local existing = vim.fn.bufnr(fname)
+    if existing ~= -1 and api.nvim_buf_is_loaded(existing) then
+        lines = api.nvim_buf_get_lines(existing, 0, -1, false)
+    else
+        local ok, content = pcall(vim.fn.readfile, fname)
+        lines = ok and content or {}
+    end
+
+    file_lines_cache[fname] = lines
+    return lines, fname
+end
+
+-- LSP 的 implementation 结果范围就精确指向实现类的类名,按范围截取
+-- 标识符即可,无需对整个文件跑 treesitter;截不到合法标识符、或截到的
+-- 是接口名本身(references 结果指向使用处)时退回文件名,与旧语义一致
+local function extract_impl_name(bufnr, location, interface_name)
+    local uri = location.uri or location.targetUri
+    local range = location.range or location.targetSelectionRange
+    if not uri or not range then
         return nil
     end
 
-    local target_line = location.range.start.line
-    local target_character = location.range.start.character
+    local lines, fname = get_location_lines(bufnr, uri)
+    local text = lines[range.start.line + 1]
 
-    for _, node in query:iter_captures(root, source) do
-        local start_line, start_col, end_line, end_col = node:range()
-        if start_line == target_line and start_col <= target_character and target_character <= end_col then
-            local name
-            if target_bufnr then
-                name = safe_get_node_text(node, target_bufnr)
-            else
-                name = safe_get_node_text(node, source)
-            end
-            if name then
-                return name
-            end
+    local name
+    if text and range.start.line == range["end"].line then
+        name = vim.trim(text:sub(range.start.character + 1, range["end"].character))
+        if not name:match("^[%w_$]+$") then
+            name = nil
         end
     end
 
-    if fname then
-        return vim.fn.fnamemodify(fname, ":t:r")
+    if (not name or name == interface_name) and fname then
+        name = vim.fn.fnamemodify(fname, ":t:r")
     end
 
-    return nil
+    return name
 end
 
 -- 查找接口实现（优化版）
@@ -424,11 +354,6 @@ local function find_interface_implementations(bufnr, clients, interface_data, in
 
     local method = query_config.lsp_method
     if not method then
-        find_interface_implementations(bufnr, clients, interface_data, interface_name, state, index + 1)
-        return
-    end
-
-    if not client then
         find_interface_implementations(bufnr, clients, interface_data, interface_name, state, index + 1)
         return
     end
@@ -451,10 +376,16 @@ local function find_interface_implementations(bufnr, clients, interface_data, in
 
     local changedtick = state.changedtick or api.nvim_buf_get_changedtick(bufnr)
 
-    client:request(method, {
-        textDocument = vim.lsp.util.make_text_document_params(),
+    local params = {
+        textDocument = vim.lsp.util.make_text_document_params(bufnr),
         position = { line = interface_data.line, character = interface_data.character },
-    }, function(err, result, ctx, lsp_config)
+    }
+    if method == vim.lsp.protocol.Methods.textDocument_references then
+        -- references 请求按协议必须带 context
+        params.context = { includeDeclaration = false }
+    end
+
+    client:request(method, params, function(err, result)
         if err or not api.nvim_buf_is_valid(bufnr) then
             find_interface_implementations(bufnr, clients, interface_data, interface_name, state, index + 1)
             return
@@ -471,7 +402,7 @@ local function find_interface_implementations(bufnr, clients, interface_data, in
 
         local added_new = false
         for _, impl in ipairs(result) do
-            local impl_name = extract_class_name_from_location(bufnr, impl)
+            local impl_name = extract_impl_name(bufnr, impl, interface_name)
             if impl_name and impl_name ~= interface_name then
                 if not state.impl_set[impl_name] then
                     added_new = true
@@ -508,6 +439,7 @@ local function annotate_interfaces(bufnr)
     end
 
     api.nvim_buf_clear_namespace(bufnr, namespace, 0, -1)
+    file_lines_cache = {}
 
     local clients = vim.lsp.get_clients({ bufnr = bufnr })
     local clients_by_method = {}
