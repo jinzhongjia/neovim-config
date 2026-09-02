@@ -14,5 +14,5 @@ require("core.autocmds")
 require("core.diagnostics")
 require("core.lsp")
 
--- Plugin management (vim.pack built-in)
+-- Plugin management (lazy.nvim)
 require("plugins")

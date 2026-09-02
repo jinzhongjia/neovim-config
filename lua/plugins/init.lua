@@ -1,192 +1,339 @@
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
--- Plugin management via vim.pack (built-in, Neovim 0.12)
--- Minimal plugin set — only what built-in cannot do
+-- Plugin management via lazy.nvim
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-local gh = function(repo)
-    return "https://github.com/" .. repo
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.uv.fs_stat(lazypath) then
+    local result = vim.fn.system({
+        "git",
+        "clone",
+        "--filter=blob:none",
+        "--branch=stable",
+        "https://github.com/folke/lazy.nvim.git",
+        lazypath,
+    })
+    if vim.v.shell_error ~= 0 then
+        error("Failed to install lazy.nvim:\n" .. result)
+    end
+end
+vim.opt.rtp:prepend(lazypath)
+
+local function config(name)
+    return function()
+        require("plugins." .. name)
+    end
 end
 
-vim.pack.add({
-    -- ┌─────────────────────────────────────────────────────────┐
-    -- │ Treesitter — syntax highlighting & textobjects          │
-    -- │ (built-in TS exists but nvim-treesitter manages parsers)│
-    -- └─────────────────────────────────────────────────────────┘
-    { src = gh("nvim-treesitter/nvim-treesitter"), version = "main" },
-    -- textobjects 必须跟主仓库同用 main 分支（API 已重写）
-    { src = gh("nvim-treesitter/nvim-treesitter-textobjects"), version = "main" },
+-- 本机优先加载工作区中的 omp.nvim，便于直接测试未提交改动。
+-- 使用 `OMP_NVIM_DEV=0 nvim` 可临时验证 lazy-lock.json 锁定的远端版本。
+local omp_dev_path = vim.fn.expand("~/code/omp.nvim")
+local omp_spec = { "jinzhongjia/omp.nvim" }
+if vim.env.OMP_NVIM_DEV ~= "0" and vim.fn.isdirectory(omp_dev_path) == 1 then
+    omp_spec = { dir = omp_dev_path, name = "omp.nvim" }
+    vim.g.omp_nvim_dev_path = omp_dev_path
+end
 
-    -- ┌─────────────────────────────────────────────────────────┐
-    -- │ snacks — picker / terminal / statuscolumn / 通知 / ui   │
-    -- │ 一个仓库顶掉 fzf-lua + 一堆小插件，纯 Lua 无外部依赖    │
-    -- └─────────────────────────────────────────────────────────┘
-    gh("folke/snacks.nvim"),
+require("lazy").setup({
+    spec = {
+        -- 启动期基础设施：quickfile/bigfile 必须赶在首次读文件前启用。
+        {
+            "folke/snacks.nvim",
+            lazy = false,
+            priority = 1000,
+            config = config("snacks"),
+        },
+        {
+            "Mofiqul/vscode.nvim",
+            lazy = false,
+            priority = 900,
+            config = config("colorscheme"),
+        },
 
-    -- ┌─────────────────────────────────────────────────────────┐
-    -- │ File Tree — nvim-tree (sidebar tree, replaces netrw)    │
-    -- └─────────────────────────────────────────────────────────┘
-    gh("nvim-tree/nvim-tree.lua"),
-    gh("nvim-tree/nvim-web-devicons"), -- icons for nvim-tree + bufferline
+        -- 读文件前注册 FileType/LSP 回调，避免错过首个 buffer。
+        {
+            "nvim-treesitter/nvim-treesitter",
+            branch = "main",
+            event = { "BufReadPre", "BufNewFile" },
+            dependencies = {
+                { "nvim-treesitter/nvim-treesitter-textobjects", branch = "main" },
+            },
+            config = config("treesitter"),
+        },
+        {
+            "saghen/blink.cmp",
+            version = "1.*",
+            event = { "BufReadPre", "BufNewFile", "InsertEnter", "CmdlineEnter" },
+            config = config("completion"),
+        },
+        {
+            "neovim/nvim-lspconfig",
+            event = { "BufReadPre", "BufNewFile" },
+            dependencies = { "saghen/blink.cmp" },
+        },
+        {
+            "folke/lazydev.nvim",
+            ft = "lua",
+            config = config("lazydev"),
+        },
+        {
+            "echasnovski/mini.diff",
+            event = { "BufReadPre", "BufNewFile" },
+            config = config("diff"),
+        },
 
-    -- ┌─────────────────────────────────────────────────────────┐
-    -- │ Bufferline — buffer tabs                                │
-    -- └─────────────────────────────────────────────────────────┘
-    gh("akinsho/bufferline.nvim"),
+        -- UI：启动完成后再加载，不阻塞首屏。
+        {
+            "akinsho/bufferline.nvim",
+            event = "VeryLazy",
+            dependencies = { "nvim-tree/nvim-web-devicons" },
+            config = config("bufferline"),
+        },
+        {
+            "folke/which-key.nvim",
+            event = "VeryLazy",
+            config = config("which-key"),
+        },
+        {
+            "echasnovski/mini.surround",
+            event = "VeryLazy",
+            config = config("surround"),
+        },
 
-    -- ┌─────────────────────────────────────────────────────────┐
-    -- │ Outline — 符号大纲侧边栏（LSP symbols，零依赖）          │
-    -- └─────────────────────────────────────────────────────────┘
-    gh("hedyhli/outline.nvim"),
+        -- 命令/按键触发的低频功能。
+        {
+            "nvim-tree/nvim-tree.lua",
+            cmd = { "NvimTreeOpen", "NvimTreeToggle", "NvimTreeFocus", "NvimTreeFindFile" },
+            keys = {
+                { "<leader>e", "<cmd>NvimTreeToggle<cr>", desc = "NvimTree" },
+                { "<leader>fe", "<cmd>NvimTreeFocus<cr>", desc = "File explorer (focus)" },
+            },
+            dependencies = { "nvim-tree/nvim-web-devicons" },
+            init = function()
+                vim.g.loaded_netrw = 1
+                vim.g.loaded_netrwPlugin = 1
+                vim.api.nvim_create_autocmd("VimEnter", {
+                    group = vim.api.nvim_create_augroup("NvimTreeDirOpen", { clear = true }),
+                    callback = function()
+                        local arg = vim.fn.argv(0)
+                        if arg ~= "" and vim.fn.isdirectory(arg) == 1 then
+                            require("lazy").load({ plugins = { "nvim-tree.lua" } })
+                            vim.cmd.NvimTreeOpen()
+                        end
+                    end,
+                })
+            end,
+            config = config("file-explorer"),
+        },
+        {
+            "hedyhli/outline.nvim",
+            cmd = { "Outline", "OutlineOpen", "OutlineFocus" },
+            keys = {
+                { "<leader>ao", "<cmd>Outline<cr>", desc = "Toggle outline" },
+                { "<leader>aO", "<cmd>OutlineFocus<cr>", desc = "Outline focus" },
+            },
+            config = config("outline"),
+        },
+        {
+            "jinzhongjia/LspUI.nvim",
+            event = "LspAttach",
+            keys = {
+                "K",
+                "<leader>rn",
+                "<leader>ca",
+                "<leader>gd",
+                "<leader>gD",
+                "<leader>gi",
+                "<leader>gr",
+                "<leader>gy",
+                "<leader>gk",
+                "<leader>gj",
+                "<leader>gh",
+                "<leader>gl",
+            },
+            config = config("lspui"),
+        },
+        {
+            "folke/flash.nvim",
+            keys = {
+                { "s", mode = { "n", "x", "o" } },
+                { "S", mode = { "n", "x", "o" } },
+            },
+            config = config("flash"),
+        },
+        {
+            "Wansmer/treesj",
+            keys = { "<leader>m" },
+            config = config("treesj"),
+        },
+        {
+            "williamboman/mason.nvim",
+            cmd = {
+                "Mason",
+                "MasonInstall",
+                "MasonUninstall",
+                "MasonUpdate",
+                "MasonLog",
+                "MasonInstallAll",
+                "MasonUpdateAll",
+                "MasonStatus",
+            },
+            config = config("mason"),
+        },
+        {
+            "tpope/vim-fugitive",
+            cmd = { "Git", "G", "Gdiffsplit", "Gread", "Gwrite" },
+            keys = {
+                "<leader>Gg",
+                "<leader>Gc",
+                "<leader>Gp",
+                "<leader>GP",
+                "<leader>Gb",
+                "<leader>Gf",
+                "<leader>Gw",
+                "<leader>Gr",
+                "<leader>Gd",
+            },
+            config = config("git"),
+        },
+        {
+            "NeogitOrg/neogit",
+            cmd = "Neogit",
+            keys = { "<leader>ng" },
+            dependencies = { "nvim-lua/plenary.nvim", "folke/snacks.nvim" },
+            config = config("neogit"),
+        },
+        {
+            "stevearc/conform.nvim",
+            cmd = "ConformInfo",
+            config = config("format"),
+        },
+        {
+            "mfussenegger/nvim-dap",
+            keys = {
+                "<leader>db",
+                "<leader>dB",
+                "<leader>dl",
+                "<leader>dc",
+                "<leader>dn",
+                "<leader>dp",
+                "<leader>dt",
+                "<leader>dr",
+                "<leader>dj",
+                "<leader>di",
+                "<leader>do",
+                "<leader>dO",
+                "<leader>dR",
+                "<leader>du",
+                { "<leader>de", mode = { "n", "v" } },
+                "<leader>dC",
+                "<leader>dg",
+                "<leader>dw",
+                "<F5>",
+                "<F10>",
+                "<F11>",
+                "<F12>",
+            },
+            dependencies = {
+                "nvim-neotest/nvim-nio",
+                "rcarriga/nvim-dap-ui",
+            },
+            config = config("dap"),
+        },
 
-    -- ┌─────────────────────────────────────────────────────────┐
-    -- │ Completion + auto pairs — blink.cmp / blink.pairs       │
-    -- │ Pinned to release tags so the prebuilt Rust binaries    │
-    -- │ download automatically (no cargo needed)                │
-    -- └─────────────────────────────────────────────────────────┘
-    { src = gh("saghen/blink.cmp"), version = vim.version.range("1.*") },
-    gh("saghen/blink.lib"), -- runtime dep of blink.pairs
-    { src = gh("saghen/blink.pairs"), version = vim.version.range("*") },
+        -- 事件和文件类型触发。
+        {
+            "saghen/blink.pairs",
+            version = "*",
+            event = "InsertEnter",
+            dependencies = { "saghen/blink.lib" },
+            build = function()
+                require("blink.pairs").download():pwait(60000)
+            end,
+            config = config("pairs"),
+        },
+        {
+            "zbirenbaum/copilot.lua",
+            event = "InsertEnter",
+            config = config("copilot"),
+        },
+        {
+            "max397574/better-escape.nvim",
+            event = "InsertEnter",
+            config = config("escape"),
+        },
+        {
+            "nacro90/numb.nvim",
+            event = "CmdlineEnter",
+            config = config("numb"),
+        },
+        {
+            "hat0uma/csvview.nvim",
+            ft = { "csv", "tsv" },
+            config = config("csvview"),
+        },
+        {
+            "folke/todo-comments.nvim",
+            event = { "BufReadPost", "BufNewFile" },
+            dependencies = { "nvim-lua/plenary.nvim", "folke/snacks.nvim" },
+            config = config("todo"),
+        },
+        {
+            "MeanderingProgrammer/render-markdown.nvim",
+            ft = { "markdown", "opencode_output", "omp_output" },
+            dependencies = {
+                "nvim-treesitter/nvim-treesitter",
+                "saghen/blink.cmp",
+            },
+            config = config("markdown"),
+        },
 
-    -- ┌─────────────────────────────────────────────────────────┐
-    -- │ Motion — flash.nvim (label jumps, treesitter select)    │
-    -- └─────────────────────────────────────────────────────────┘
-    gh("folke/flash.nvim"),
-
-    -- ┌─────────────────────────────────────────────────────────┐
-    -- │ 编辑增强（都懒加载，按键/事件/ft 触发）                 │
-    -- │   treesj        — 结构化 split/join（<leader>m）        │
-    -- │   numb          — :123 先预览再跳                       │
-    -- │   csvview       — CSV 按列对齐                          │
-    -- │   better-escape — jk/jj 退出插入模式                    │
-    -- └─────────────────────────────────────────────────────────┘
-    gh("Wansmer/treesj"),
-    gh("nacro90/numb.nvim"),
-    gh("hat0uma/csvview.nvim"),
-    gh("max397574/better-escape.nvim"),
-
-    -- ┌─────────────────────────────────────────────────────────┐
-    -- │ Surround — mini.surround（gs 前缀，s 被 flash 占用）     │
-    -- └─────────────────────────────────────────────────────────┘
-    gh("echasnovski/mini.surround"),
-
-    -- ┌─────────────────────────────────────────────────────────┐
-    -- │ TODO 注释高亮 + 搜索（plenary 是它的运行时依赖）          │
-    -- └─────────────────────────────────────────────────────────┘
-    gh("folke/todo-comments.nvim"),
-    gh("nvim-lua/plenary.nvim"),
-
-    -- ┌─────────────────────────────────────────────────────────┐
-    -- │ Mason — LSP/DAP package manager                         │
-    -- └─────────────────────────────────────────────────────────┘
-    gh("williamboman/mason.nvim"),
-
-    -- ┌─────────────────────────────────────────────────────────┐
-    -- │ lspconfig — base lsp/<name>.lua (cmd/filetypes/roots).  │
-    -- │ Our after/lsp/*.lua only carry settings overrides, so   │
-    -- │ this supplies what they omit. No setup() call needed.   │
-    -- └─────────────────────────────────────────────────────────┘
-    gh("neovim/nvim-lspconfig"),
-
-    -- ┌─────────────────────────────────────────────────────────┐
-    -- │ LspUI — LSP 浮窗交互（hover/rename/code action/跳转）    │
-    -- └─────────────────────────────────────────────────────────┘
-    gh("jinzhongjia/LspUI.nvim"),
-
-    -- ┌─────────────────────────────────────────────────────────┐
-    -- │ lazydev — Neovim Lua types for lua_ls                   │
-    -- └─────────────────────────────────────────────────────────┘
-    gh("folke/lazydev.nvim"),
-
-    -- ┌─────────────────────────────────────────────────────────┐
-    -- │ DAP — Debug Adapter Protocol                            │
-    -- └─────────────────────────────────────────────────────────┘
-    gh("mfussenegger/nvim-dap"),
-    gh("rcarriga/nvim-dap-ui"),
-    gh("nvim-neotest/nvim-nio"), -- required by dap-ui
-
-    -- ┌─────────────────────────────────────────────────────────┐
-    -- │ Git — Fugitive (classic, fast, zero-config)             │
-    -- │       + mini.diff (gutter 标记 / hunk 操作)              │
-    -- │       + neogit (magit 式 status/stage/rebase 界面)       │
-    -- └─────────────────────────────────────────────────────────┘
-    gh("tpope/vim-fugitive"),
-    gh("echasnovski/mini.diff"),
-    gh("NeogitOrg/neogit"), -- plenary 已在上面
-
-    -- ┌─────────────────────────────────────────────────────────┐
-    -- │ Format — conform.nvim（<leader>f，LSP fallback）         │
-    -- └─────────────────────────────────────────────────────────┘
-    gh("stevearc/conform.nvim"),
-
-    -- ┌─────────────────────────────────────────────────────────┐
-    -- │ AI — Claude Code + OpenCode + Copilot                   │
-    -- └─────────────────────────────────────────────────────────┘
-    gh("coder/claudecode.nvim"),
-    gh("sudo-tee/opencode.nvim"),
-    gh("zbirenbaum/copilot.lua"),
-
-    -- ┌─────────────────────────────────────────────────────────┐
-    -- │ Colorscheme — vscode.nvim (no deps)                     │
-    -- └─────────────────────────────────────────────────────────┘
-    gh("Mofiqul/vscode.nvim"),
-
-    -- ┌─────────────────────────────────────────────────────────┐
-    -- │ which-key — leader 键位速查弹窗                          │
-    -- └─────────────────────────────────────────────────────────┘
-    gh("folke/which-key.nvim"),
-
-    -- ┌─────────────────────────────────────────────────────────┐
-    -- │ Markdown — 缓冲区内渲染（treesitter based）              │
-    -- └─────────────────────────────────────────────────────────┘
-    gh("MeanderingProgrammer/render-markdown.nvim"),
+        -- AI 前端统一推迟到 VeryLazy；Copilot 单独在 InsertEnter 加载。
+        {
+            "coder/claudecode.nvim",
+            event = "VeryLazy",
+            dependencies = {
+                "folke/snacks.nvim",
+                "sudo-tee/opencode.nvim",
+                omp_spec,
+            },
+            config = config("ai"),
+        },
+    },
+    defaults = {
+        lazy = true,
+        version = false,
+    },
+    install = {
+        colorscheme = { "vscode", "habamax" },
+    },
+    checker = {
+        enabled = false,
+    },
+    change_detection = {
+        notify = false,
+    },
+    ui = {
+        border = "rounded",
+    },
+    performance = {
+        rtp = {
+            disabled_plugins = {
+                "gzip",
+                "matchit",
+                "matchparen",
+                "netrwPlugin",
+                "tarPlugin",
+                "tohtml",
+                "tutor",
+                "zipPlugin",
+            },
+        },
+    },
 })
 
--- :PackUpdate [插件名...] 更新插件（无参=全部；加 ! 跳过确认 buffer）
-vim.api.nvim_create_user_command("PackUpdate", function(cmd)
-    vim.pack.update(#cmd.fargs > 0 and cmd.fargs or nil, { force = cmd.bang })
-end, {
-    nargs = "*",
-    bang = true,
-    complete = function()
-        return vim.tbl_map(function(p)
-            return p.spec.name
-        end, vim.pack.get())
-    end,
-    desc = "vim.pack update (! = no confirm)",
-})
-
--- Load plugin configs after pack
--- snacks 放最前：它提供 vim.ui.input/select、picker、statuscolumn，
--- 且 todo-comments 只在 Snacks 已存在时才注册 todo_comments picker source
-require("plugins.snacks")
-require("plugins.mason")
-require("plugins.lazydev")
-require("plugins.completion")
-require("plugins.treesitter")
-require("plugins.markdown")
-require("plugins.file-explorer")
-require("plugins.outline")
-require("plugins.lspui")
-require("plugins.flash")
-require("plugins.treesj")
-require("plugins.numb")
-require("plugins.csvview")
-require("plugins.escape")
-require("plugins.surround")
-require("plugins.todo")
-require("plugins.dap")
-require("plugins.colorscheme")
+-- 仓库内置模块和基于 Snacks 的轻量键位不进入插件依赖图。
 require("plugins.statusline")
-require("plugins.bufferline")
+require("plugins.terminal")
 require("plugins.ui2")
 require("plugins.difftool")
-require("plugins.git")
-require("plugins.neogit")
-require("plugins.diff")
-require("plugins.format")
-require("plugins.ai")
-require("plugins.copilot")
-require("plugins.terminal")
-require("plugins.pairs")
 require("plugins.implements")
-require("plugins.which-key")

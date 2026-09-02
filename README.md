@@ -5,11 +5,11 @@
 
 ## ✨ 核心特性
 
-- **启动 ~200ms**（warm，全功能加载；重型低频插件已移出启动路径：
-  blink.pairs → InsertEnter，copilot → InsertEnter，DAP → 首次按键，
-  nvim-tree → 首次打开，render-markdown → 首个 markdown 文件）。
+- **精简启动路径**：只保留配色和 snacks 基础设施；bufferline/which-key/AI
+  推迟到 `VeryLazy`，补全/treesitter/LSP 数据在读文件前加载，其余低频插件按
+  命令、按键、事件或 filetype 拦截加载。
+- **lazy.nvim 插件管理**：自动引导，版本锁定见 `lazy-lock.json`。
 - **Neovim 0.12 原生能力**：
-  - 内置 `vim.pack` 管理插件（版本锁定见 `nvim-pack-lock.json`）。
   - 内置 `vim.lsp.config` + `vim.lsp.enable`；`nvim-lspconfig` 只作为
     `cmd`/`filetypes`/`root_markers` 基础配置来源，`after/lsp/*.lua` 覆盖 settings。
   - 内置实验性 `ui2`（消除 Press-ENTER、cmdline 高亮）。
@@ -30,27 +30,27 @@
 
 | 职责 | 插件 | 加载时机 |
 |---|---|---|
-| 补全 | blink.cmp（+ lazydev） | 启动 |
+| 补全 | blink.cmp（+ lazydev） | 读文件前 / InsertEnter / CmdlineEnter |
 | 括号配对 | blink.pairs（+ blink.lib） | InsertEnter |
-| 语法 | nvim-treesitter + textobjects（均 main 分支） | 启动 |
-| LSP 基础数据 | nvim-lspconfig（不调 setup） | 启动 |
-| 包管理 | mason.nvim（`:MasonInstallAll`） | 启动 |
+| 语法 | nvim-treesitter + textobjects（均 main 分支） | 读文件前 |
+| LSP 基础数据 | nvim-lspconfig（不调 setup） | 读文件前 |
+| 包管理 | mason.nvim（`:MasonInstallAll`） | 首次 Mason 命令 |
 | 搜索 / 终端 / 通知 / 缩进线 | snacks.nvim（picker、terminal、statuscolumn、`vim.ui.input`+`select`、bigfile、scratch、zen） | 启动 |
-| 文件树 | nvim-tree + nvim-web-devicons | 首次 `<leader>e` |
-| Buffer 栏 | bufferline.nvim | 启动 |
-| Git | vim-fugitive + mini.diff | 启动 |
-| 格式化 | conform.nvim | 启动（按键才干活） |
+| 文件树 | nvim-tree + nvim-web-devicons | 首次命令/按键或目录启动 |
+| Buffer 栏 | bufferline.nvim | VeryLazy |
+| Git | vim-fugitive + mini.diff | 首次命令/按键 / 读文件前 |
+| 格式化 | conform.nvim | 首次格式化 |
 | 调试 | nvim-dap + nvim-dap-ui + nvim-nio | 首次 DAP 按键 |
-| 跳转 | flash.nvim（`s`/`S`） | 启动 |
+| 跳转 | flash.nvim（`s`/`S`） | 首次按键 |
 | split/join | treesj（`<leader>m`） | 首次按键 |
 | 行号预览 | numb.nvim（`:123`） | 首次进 cmdline |
-| CSV | csvview.nvim（`:CsvViewToggle`） | 首个 csv |
+| CSV | csvview.nvim（`:CsvViewToggle`） | 首个 csv/tsv |
 | 退出插入 | better-escape.nvim（`jk`/`jj`） | InsertEnter |
-| 包围 | mini.surround（`gs` 前缀） | 启动 |
-| TODO | todo-comments.nvim（+ plenary） | 启动 |
+| 包围 | mini.surround（`gs` 前缀） | VeryLazy |
+| TODO | todo-comments.nvim（+ plenary） | 读文件后 |
 | Markdown | render-markdown.nvim | 首个 markdown |
-| 键位速查 | which-key.nvim | 启动 |
-| AI | claudecode.nvim / opencode.nvim / copilot.lua | 启动 / 启动 / InsertEnter |
+| 键位速查 | which-key.nvim | VeryLazy |
+| AI | claudecode.nvim / opencode.nvim / omp.nvim / copilot.lua | VeryLazy / InsertEnter |
 | 配色 | vscode.nvim | 启动 |
 
 ## 📦 安装指南
@@ -70,7 +70,8 @@ mv ~/.local/share/nvim ~/.local/share/nvim.bak
 git clone <本仓库> ~/.config/nvim
 ```
 
-首次启动 `vim.pack` 自动克隆插件、treesitter 自动装缺失 parser。
+首次启动会自动引导 `lazy.nvim`、安装插件并生成/更新 `lazy-lock.json`；
+treesitter 会自动安装缺失 parser。后续用 `:Lazy` 查看、更新和清理插件。
 
 ### 3. 安装 LSP / DAP / 格式化器
 
@@ -171,7 +172,7 @@ hunk 操作（mini.diff）：`gh` 暂存（operator）· `gH` 撤销 · `[h`/`]h
 ```text
 ~/.config/nvim/
 ├── init.lua                  # 入口
-├── nvim-pack-lock.json       # vim.pack 版本锁
+├── lazy-lock.json            # lazy.nvim 版本锁
 ├── after/lsp/                # 各 server settings 覆盖（15+ 个）
 ├── after/ftplugin/go.lua     # Go 用 tab（覆盖全局 expandtab）
 ├── plugin/                   # 启动时自动 source
@@ -185,7 +186,7 @@ hunk 操作（mini.diff）：`gh` 暂存（operator）· `gH` 撤销 · `[h`/`]h
 │   ├── diagnostics.lua       # 诊断样式
 │   └── lsp.lua               # vim.lsp.enable + LspAttach
 └── lua/plugins/
-    ├── init.lua              # vim.pack 清单 + require 入口
+    ├── init.lua              # lazy.nvim 引导、插件规格与加载拦截
     ├── completion.lua        # blink.cmp（capabilities 注入）
     ├── pairs.lua             # blink.pairs（InsertEnter）
     ├── treesitter.lua        # parser 管理 + textobjects

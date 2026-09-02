@@ -16,6 +16,7 @@ require("which-key").setup({
         { "<leader>i", group = "Inlay hints" },
         { "<leader>n", group = "Neogit" },
         { "<leader>o", group = "OpenCode" },
+        { "<leader>p", group = "OMP" },
         { "<leader>r", group = "Rename" },
         { "<leader>s", group = "Search / Symbols / Split", mode = { "n", "v" } },
         { "<leader>t", group = "Terminal slots / Pickers" },
