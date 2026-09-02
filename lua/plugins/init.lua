@@ -67,7 +67,7 @@ require("lazy").setup({
         },
         {
             "neovim/nvim-lspconfig",
-            event = { "BufReadPre", "BufNewFile" },
+            lazy = false,
             dependencies = { "saghen/blink.cmp", "williamboman/mason.nvim" },
         },
         {
