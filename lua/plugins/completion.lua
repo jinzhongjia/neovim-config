@@ -12,8 +12,8 @@ require("blink.cmp").setup({
             lazydev = {
                 name = "LazyDev",
                 module = "lazydev.integrations.blink",
-                -- lazydev 补全优先级最高 (see `:h blink.cmp`)
-                score_offset = 10,
+                -- require/module 补全优先于 LuaLS 的普通补全
+                score_offset = 100,
             },
             snippets = { score_offset = 9 },
             buffer = { score_offset = 8 },
