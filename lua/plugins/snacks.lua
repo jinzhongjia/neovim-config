@@ -68,6 +68,12 @@ require("snacks").setup({
     -- ── Picker（替代 fzf-lua，纯 Lua，无外部 fzf 依赖）─────────
     picker = {
         enabled = true,
+        win = {
+            input = {
+                -- 预览执行 normal! 定位时，保留输入光标在行尾后一格的位置。
+                wo = { virtualedit = "onemore" },
+            },
+        },
         -- ui_select 默认开：vim.ui.select 走 snacks 浮窗
         sources = {
             files = { hidden = true, exclude = go_generated }, -- 跟旧的 fd --hidden 行为一致
