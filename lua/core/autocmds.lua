@@ -87,9 +87,10 @@ autocmd("TermOpen", {
 })
 
 -- Filetype-specific indent
+-- Lua keeps the default 4 spaces, matching .stylua.toml.
 autocmd("FileType", {
   group = augroup("IndentOverrides", { clear = true }),
-  pattern = { "html", "css", "javascript", "typescript", "typescriptreact", "json", "yaml", "lua" },
+  pattern = { "html", "css", "javascript", "typescript", "typescriptreact", "json", "yaml" },
   callback = function()
     vim.bo.tabstop = 2
     vim.bo.shiftwidth = 2
