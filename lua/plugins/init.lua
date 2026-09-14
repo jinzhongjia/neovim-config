@@ -135,6 +135,7 @@ require("lazy").setup({
         },
         {
             "jinzhongjia/LspUI.nvim",
+            dev = true,
             event = "LspAttach",
             keys = {
                 "K",
