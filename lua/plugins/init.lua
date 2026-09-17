@@ -204,6 +204,13 @@ require("lazy").setup({
             config = config("neogit"),
         },
         {
+            "jinzhongjia/ai-gitcommit.nvim",
+            dev = true,
+            ft = "gitcommit",
+            cmd = "AICommit",
+            opts = {},
+        },
+        {
             "stevearc/conform.nvim",
             cmd = "ConformInfo",
             config = config("format"),
