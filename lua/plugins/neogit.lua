@@ -5,7 +5,10 @@
 
 require("neogit").setup({
     graph_style = "unicode",
-    commit_editor = { staged_diff_split_kind = "vsplit" },
+    commit_editor = {
+        staged_diff_split_kind = "vsplit",
+        spell_check = false,
+    },
 })
 
 vim.keymap.set("n", "<leader>ng", "<cmd>Neogit<CR>", { desc = "NeoGit" })
