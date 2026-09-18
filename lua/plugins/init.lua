@@ -53,6 +53,8 @@ require("lazy").setup({
         {
             "nvim-treesitter/nvim-treesitter",
             branch = "main",
+            -- Keep installed parsers compatible with the plugin's queries.
+            build = ":TSUpdate",
             event = { "BufReadPre", "BufNewFile" },
             dependencies = {
                 { "nvim-treesitter/nvim-treesitter-textobjects", branch = "main" },
