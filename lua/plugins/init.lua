@@ -290,7 +290,7 @@ require("lazy").setup({
         },
         {
             "MeanderingProgrammer/render-markdown.nvim",
-            ft = { "markdown", "opencode_output", "omp_output" },
+            ft = { "markdown", "omp_output" },
             dependencies = {
                 "nvim-treesitter/nvim-treesitter",
                 "saghen/blink.cmp",
@@ -298,17 +298,12 @@ require("lazy").setup({
             config = config("markdown"),
         },
 
-        -- AI 前端统一推迟到 VeryLazy；Copilot 单独在 InsertEnter 加载。
-        {
-            "coder/claudecode.nvim",
+        -- OMP 推迟到 VeryLazy；Copilot 单独在 InsertEnter 加载。
+        vim.tbl_extend("force", omp_spec, {
             event = "VeryLazy",
-            dependencies = {
-                "folke/snacks.nvim",
-                "sudo-tee/opencode.nvim",
-                omp_spec,
-            },
+            dependencies = { "folke/snacks.nvim" },
             config = config("ai"),
-        },
+        }),
     },
     defaults = {
         lazy = true,

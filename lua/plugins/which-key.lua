@@ -6,7 +6,7 @@
 require("which-key").setup({
     win = { border = "rounded" },
     spec = {
-        { "<leader>a", group = "AI (Claude) / Outline", mode = { "n", "v" } },
+        { "<leader>a", group = "Outline" },
         { "<leader>b", group = "Buffers" },
         { "<leader>c", group = "Code (LSP)" },
         { "<leader>d", group = "Debug (DAP)", mode = { "n", "v" } },
@@ -15,7 +15,6 @@ require("which-key").setup({
         { "<leader>G", group = "Git" },
         { "<leader>i", group = "Inlay hints" },
         { "<leader>n", group = "Neogit" },
-        { "<leader>o", group = "OpenCode" },
         { "<leader>p", group = "OMP" },
         { "<leader>r", group = "Rename" },
         { "<leader>s", group = "Search / Symbols / Split", mode = { "n", "v" } },

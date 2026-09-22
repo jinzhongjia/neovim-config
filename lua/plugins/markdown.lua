@@ -4,7 +4,7 @@
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 require("render-markdown").setup({
-    file_types = { "markdown", "opencode_output", "omp_output" },
+    file_types = { "markdown", "omp_output" },
 
     anti_conceal = {
         enabled = true,
@@ -35,9 +35,6 @@ require("render-markdown").setup({
             },
         },
         filetype = {
-            opencode_output = {
-                anti_conceal = { enabled = false },
-            },
             omp_output = {
                 anti_conceal = { enabled = false },
             },

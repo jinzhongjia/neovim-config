@@ -100,8 +100,7 @@ require("snacks").setup({
     },
 
     -- ── 终端 ──────────────────────────────────────────────────
-    -- 浮窗尺寸不写在 styles.terminal 里：claudecode 也复用 Snacks.terminal，
-    -- 全局样式会污染它右侧的 split；参数改在 plugins/terminal.lua 里按次传
+    -- 浮窗参数在 plugins/terminal.lua 里按次传，避免影响其他终端。
     terminal = { enabled = true },
 
     -- ── 明确关掉的 ────────────────────────────────────────────

@@ -2,8 +2,7 @@
 -- 浮动终端 — Snacks.terminal（替掉原来手写的 250 行实现）
 -- snacks 按 count 区分终端实例：count=1..N 各自一个 buffer，
 -- toggle 同一个 count 就是显示/隐藏同一个终端。
--- 窗口参数在这里按次传（不写进 styles.terminal）：claudecode 也用
--- Snacks.terminal，全局样式会连它右侧那个 split 一起改掉。
+-- 窗口参数按次传，避免全局 styles.terminal 影响其他终端。
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 local MAX = 5 -- <leader>t1..t5，同时也是 fj/fk 循环的上界

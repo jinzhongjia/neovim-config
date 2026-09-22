@@ -50,7 +50,7 @@
 | TODO | todo-comments.nvim（+ plenary） | 读文件后 |
 | Markdown | render-markdown.nvim | 首个 markdown |
 | 键位速查 | which-key.nvim | VeryLazy |
-| AI | claudecode.nvim / opencode.nvim / omp.nvim / copilot.lua | VeryLazy / InsertEnter |
+| AI | omp.nvim / copilot.lua | VeryLazy / InsertEnter |
 | 配色 | vscode.nvim | 启动 |
 
 ## 📦 安装指南
