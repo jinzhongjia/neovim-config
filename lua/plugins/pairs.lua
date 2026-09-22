@@ -1,6 +1,10 @@
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 -- Auto pairs — blink.pairs (Rust matcher, syntax-aware)
--- lazy.nvim 在安装/更新时下载二进制，首次 InsertEnter 时加载配置。
+-- lazy.nvim 构建时 require 也会触发配置，必须先准备原生库再 setup。
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-require("blink.pairs").setup()
+local pairs = require("blink.pairs")
+if not pairs.library_available() then
+    pairs.build():wait(60000)
+end
+pairs.setup()

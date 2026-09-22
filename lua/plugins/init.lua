@@ -256,8 +256,9 @@ require("lazy").setup({
             version = "*",
             event = "InsertEnter",
             dependencies = { "saghen/blink.lib" },
+            -- 使用 Cargo 构建；当前 blink.lib 的下载任务完成后仍会超时。
             build = function()
-                require("blink.pairs").download():pwait(60000)
+                require("blink.pairs").build():wait(60000)
             end,
             config = config("pairs"),
         },
