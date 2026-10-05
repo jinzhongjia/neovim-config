@@ -15,8 +15,8 @@
   - 内置实验性 `ui2`（消除 Press-ENTER、cmdline 高亮）。
   - 内置 difftool（`:DiffTool`）、undotree（`<leader>u`）、注释（`gc`）、
     增量选区（`v_an`/`v_in`）、`[d`/`]d` 诊断跳转、`exrc` 项目本地配置。
-  - 自绘彩色状态栏（模式色块 / fugitive 分支 / mini.diff hunk 计数 /
-    诊断 / LSP 进度事件缓存 / 宏录制提示），无 lualine。
+  - lualine 状态栏（vscode 主题 / 分支 / mini.diff hunk 计数 /
+    诊断 / LSP 进度事件缓存 / 宏录制提示）。
   - `statuscolumn` 交给 snacks：左 mark/sign，右 fold/git（认 mini.diff 的 sign）。
 - **Go / TS 实现关系提示**：`plugin/golement.lua`、`plugin/tslement.lua`
   是仓库自带的两个零依赖脚本（treesitter + LSP），给 interface/struct 打上
@@ -38,6 +38,7 @@
 | 搜索 / 终端 / 通知 / 缩进线 | snacks.nvim（picker、terminal、statuscolumn、`vim.ui.input`+`select`、bigfile、scratch、zen） | 启动 |
 | 文件树 | nvim-tree + nvim-web-devicons | 首次命令/按键或目录启动 |
 | Buffer 栏 | bufferline.nvim | VeryLazy |
+| 状态栏 | lualine.nvim | VeryLazy |
 | Git | vim-fugitive + mini.diff | 首次命令/按键 / 读文件前 |
 | 格式化 | conform.nvim | 首次格式化 |
 | 调试 | nvim-dap + nvim-dap-ui + nvim-nio | 首次 DAP 按键 |
@@ -192,7 +193,7 @@ hunk 操作（mini.diff）：`gh` 暂存（operator）· `gH` 撤销 · `[h`/`]h
     ├── treesitter.lua        # parser 管理 + textobjects
     ├── snacks.lua            # picker/terminal/statuscolumn/通知/ui_select
     ├── file-explorer.lua     # nvim-tree（懒加载）
-    ├── statusline.lua        # 自绘彩色状态栏
+    ├── statusline.lua        # lualine 状态栏
     ├── diff.lua / git.lua    # mini.diff / fugitive
     ├── format.lua            # conform
     ├── dap.lua               # 调试（懒加载）

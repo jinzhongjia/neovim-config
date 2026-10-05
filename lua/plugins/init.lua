@@ -85,6 +85,16 @@ require("lazy").setup({
 
         -- UI：启动完成后再加载，不阻塞首屏。
         {
+            "nvim-lualine/lualine.nvim",
+            event = "VeryLazy",
+            dependencies = { "nvim-tree/nvim-web-devicons" },
+            init = function()
+                -- lualine 加载前先占位空白，避免首屏闪一下默认状态栏
+                vim.o.statusline = " "
+            end,
+            config = config("statusline"),
+        },
+        {
             "akinsho/bufferline.nvim",
             event = "VeryLazy",
             dependencies = { "nvim-tree/nvim-web-devicons" },
@@ -341,7 +351,6 @@ require("lazy").setup({
 })
 
 -- 仓库内置模块和基于 Snacks 的轻量键位不进入插件依赖图。
-require("plugins.statusline")
 require("plugins.terminal")
 require("plugins.ui2")
 require("plugins.difftool")

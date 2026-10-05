@@ -8,5 +8,5 @@ if not ok or not ui2 then
     return
 end
 
--- LSP progress lives in the statusline now (vim.lsp.status()), not here
+-- LSP progress lives in the statusline (lualine), not here
 ui2.enable({})
