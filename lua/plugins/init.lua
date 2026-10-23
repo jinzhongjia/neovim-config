@@ -319,6 +319,7 @@ require("lazy").setup({
     },
     dev = {
         path = "~/code",
+        fallback = true,
     },
     install = {
         colorscheme = { "vscode", "habamax" },
