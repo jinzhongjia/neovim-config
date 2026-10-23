@@ -147,7 +147,6 @@ require("lazy").setup({
         },
         {
             "jinzhongjia/LspUI.nvim",
-            dev = true,
             event = "LspAttach",
             keys = {
                 "K",
@@ -217,7 +216,6 @@ require("lazy").setup({
         },
         {
             "jinzhongjia/ai-gitcommit.nvim",
-            dev = true,
             ft = "gitcommit",
             cmd = "AICommit",
             opts = {},
