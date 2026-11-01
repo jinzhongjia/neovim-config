@@ -48,7 +48,8 @@ vim.lsp.enable({
     "eslint", -- JS/TS linting
     "gopls", -- Go
     "rust_analyzer", -- Rust
-    "zls", -- Zig
+    "zig_analyzer", -- Zig (local build, see after/lsp/zig_analyzer.lua)
+    -- "zls", -- Zig
     "basedpyright", -- Python (types)
     "ruff", -- Python (lint/format)
     "clangd", -- C/C++
