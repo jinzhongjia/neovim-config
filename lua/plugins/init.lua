@@ -78,6 +78,12 @@ require("lazy").setup({
             config = config("lazydev"),
         },
         {
+            -- setup() 内部完成 vim.lsp.config + vim.lsp.enable("zig_analyzer")
+            "jinzhongjia/zig-analyzer.nvim",
+            ft = { "zig", "zon" },
+            opts = {},
+        },
+        {
             "echasnovski/mini.diff",
             event = { "BufReadPre", "BufNewFile" },
             config = config("diff"),

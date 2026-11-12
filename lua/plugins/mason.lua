@@ -18,7 +18,7 @@ require("mason").setup({
 
 -- All packages we need for LSP + DAP
 local ensure_installed = {
-    -- Mason 管理的 LSP；本地构建的 zig-analyzer 不在此列表中
+    -- Mason 管理的 LSP；zig-analyzer 由 zig-analyzer.nvim 管理，不在此列表中
     "lua-language-server", -- Lua
     "vtsls", -- TypeScript/JavaScript
     "eslint-lsp", -- JS/TS linting
