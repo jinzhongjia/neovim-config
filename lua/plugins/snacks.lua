@@ -3,8 +3,7 @@
 -- 接管：picker（替掉 fzf-lua）、terminal、statuscolumn、
 --       vim.ui.input/select、通知、indent 缩进线、bigfile/quickfile
 -- 关掉：dashboard / explorer（文件树仍是 nvim-tree）/ scroll（动画拖性能）
--- 必须在其它插件配置之前 setup：todo-comments 要靠 Snacks 存在才注册
--- 它的 picker source；bigfile/quickfile 也得早于读文件的那批 autocmd。
+-- 必须在其它插件配置之前 setup：bigfile/quickfile 得早于读文件的那批 autocmd。
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 -- Go 生成物：protoc / connect / 各种 codegen 出来的文件，搜索里全是噪音

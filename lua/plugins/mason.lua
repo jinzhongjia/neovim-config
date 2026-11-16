@@ -4,6 +4,8 @@
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 require("mason").setup({
+    -- bin 目录已在 core/options.lua 加进 PATH，这里不要再加一遍
+    PATH = "skip",
     ui = {
         border = "rounded",
         icons = {

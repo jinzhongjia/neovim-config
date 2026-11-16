@@ -22,6 +22,9 @@ vim.g.loaded_matchit = 1
 vim.g.loaded_matchparen = 1
 vim.g.loaded_tutor_mode_plugin = 1
 
+-- Mason 装的 LSP/格式化器/DAP 直接进 PATH，这样 mason.nvim 本体可以懒加载
+vim.env.PATH = vim.fn.stdpath("data") .. "/mason/bin" .. (vim.fn.has("win32") == 1 and ";" or ":") .. vim.env.PATH
+
 -- Let conform/LSP own formatting, not the zig ftplugin
 vim.g.zig_fmt_autosave = false
 

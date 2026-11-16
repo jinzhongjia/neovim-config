@@ -69,8 +69,9 @@ require("lazy").setup({
         },
         {
             "neovim/nvim-lspconfig",
+            -- 只需要它在 rtp 上提供 lsp/*.lua；blink 自己在读文件前加载，
+            -- mason 的 bin 目录由 core/options.lua 直接加进 PATH，都不必在启动时拉起。
             lazy = false,
-            dependencies = { "saghen/blink.cmp", "williamboman/mason.nvim" },
         },
         {
             "folke/lazydev.nvim",
@@ -113,7 +114,15 @@ require("lazy").setup({
         },
         {
             "echasnovski/mini.surround",
-            event = "VeryLazy",
+            keys = {
+                { "gsa", mode = { "n", "x" } },
+                "gsd",
+                "gsf",
+                "gsF",
+                "gsh",
+                "gsr",
+                "gsn",
+            },
             config = config("surround"),
         },
 
@@ -282,25 +291,9 @@ require("lazy").setup({
             config = config("copilot"),
         },
         {
-            "max397574/better-escape.nvim",
-            event = "InsertEnter",
-            config = config("escape"),
-        },
-        {
-            "nacro90/numb.nvim",
-            event = "CmdlineEnter",
-            config = config("numb"),
-        },
-        {
             "hat0uma/csvview.nvim",
             ft = { "csv", "tsv" },
             config = config("csvview"),
-        },
-        {
-            "folke/todo-comments.nvim",
-            event = { "BufReadPost", "BufNewFile" },
-            dependencies = { "nvim-lua/plenary.nvim", "folke/snacks.nvim" },
-            config = config("todo"),
         },
         {
             "MeanderingProgrammer/render-markdown.nvim",
@@ -312,9 +305,11 @@ require("lazy").setup({
             config = config("markdown"),
         },
 
-        -- OMP 推迟到 VeryLazy；Copilot 单独在 InsertEnter 加载。
+        -- OMP 按需加载：:Omp 或 <leader>p 前缀首次触发（setup 约 20ms）；
+        -- Copilot 单独在 InsertEnter 加载。
         vim.tbl_extend("force", omp_spec, {
-            event = "VeryLazy",
+            cmd = "Omp",
+            keys = { { "<leader>p", mode = { "n", "x" } } },
             dependencies = { "folke/snacks.nvim" },
             config = config("ai"),
         }),
@@ -360,3 +355,4 @@ require("plugins.terminal")
 require("plugins.ui2")
 require("plugins.difftool")
 require("plugins.implements")
+require("plugins.todo")

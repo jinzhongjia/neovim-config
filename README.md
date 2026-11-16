@@ -44,14 +44,14 @@
 | 调试 | nvim-dap + nvim-dap-ui + nvim-nio | 首次 DAP 按键 |
 | 跳转 | flash.nvim（`s`/`S`） | 首次按键 |
 | split/join | treesj（`<leader>m`） | 首次按键 |
-| 行号预览 | numb.nvim（`:123`） | 首次进 cmdline |
+| 行号预览 | 内置胶水（`:123`，`core/autocmds.lua`） | 启动 |
 | CSV | csvview.nvim（`:CsvViewToggle`） | 首个 csv/tsv |
-| 退出插入 | better-escape.nvim（`jk`/`jj`） | InsertEnter |
-| 包围 | mini.surround（`gs` 前缀） | VeryLazy |
-| TODO | todo-comments.nvim（+ plenary） | 读文件后 |
+| 退出插入 | 内置胶水（`jk`/`jj`，`core/keymaps.lua`） | 启动 |
+| 包围 | mini.surround（`gs` 前缀） | 首次按键 |
+| TODO | 内置胶水（`plugins/todo.lua`：matchadd + snacks grep） | 启动 |
 | Markdown | render-markdown.nvim | 首个 markdown |
 | 键位速查 | which-key.nvim | VeryLazy |
-| AI | omp.nvim / copilot.lua | VeryLazy / InsertEnter |
+| AI | omp.nvim / copilot.lua | 首次 `:Omp` 或 `<leader>p` / InsertEnter |
 | 配色 | vscode.nvim | 启动 |
 
 ## 📦 安装指南
@@ -199,7 +199,7 @@ hunk 操作（mini.diff）：`gh` 暂存（operator）· `gH` 撤销 · `[h`/`]h
     ├── dap.lua               # 调试（懒加载）
     ├── markdown.lua          # render-markdown（懒加载）
     ├── implements.lua        # golement/tslement 的按 ft 懒加载器
-    ├── treesj.lua / numb.lua / csvview.lua / escape.lua
+    ├── treesj.lua / csvview.lua
     ├── surround.lua / todo.lua / which-key.lua / flash.lua
     ├── copilot.lua           # InsertEnter 懒加载
     ├── terminal.lua          # 浮动终端（Snacks.terminal）

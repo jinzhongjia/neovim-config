@@ -53,6 +53,38 @@ autocmd("BufReadPost", {
   end,
 })
 
+-- :<行号> 输入过程中预览目标行（替掉 numb.nvim）
+-- 离开 cmdline 时先还原视图：回车的话由命令本身跳转，取消则留在原位
+local peek_view
+autocmd("CmdlineChanged", {
+  group = augroup("PeekLine", { clear = true }),
+  pattern = ":",
+  callback = function()
+    local line = tonumber(vim.fn.getcmdline())
+    if line then
+      peek_view = peek_view or vim.fn.winsaveview()
+      line = math.max(1, math.min(line, vim.api.nvim_buf_line_count(0)))
+      vim.api.nvim_win_set_cursor(0, { line, 0 })
+      vim.cmd("normal! zz")
+      vim.cmd.redraw()
+    elseif peek_view then
+      vim.fn.winrestview(peek_view)
+      peek_view = nil
+      vim.cmd.redraw()
+    end
+  end,
+})
+autocmd("CmdlineLeave", {
+  group = "PeekLine",
+  pattern = ":",
+  callback = function()
+    if peek_view then
+      vim.fn.winrestview(peek_view)
+      peek_view = nil
+    end
+  end,
+})
+
 -- Close some filetypes with <q>
 autocmd("FileType", {
   group = augroup("CloseWithQ", { clear = true }),
