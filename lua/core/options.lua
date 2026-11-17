@@ -48,7 +48,16 @@ o.sidescrolloff = 8
 o.sidescroll = 5 -- horizontal scroll step (wrap is off)
 o.wrap = false
 o.colorcolumn = "120"
-o.background = "dark"
+-- 默认固定深色。只有本机存在 local.lua（已 gitignore，不随仓库同步）且写了
+-- background 时才改变：
+--   return { background = "auto" }   -- 不设，Neovim 向终端查询底色自动 dark/light
+--   return { background = "light" }  -- 固定浅色
+-- 运行时手动切换用 <leader>Tb。
+local machine_file = loadfile(vim.fn.stdpath("config") .. "/local.lua")
+local machine = machine_file and machine_file() or {}
+if machine.background ~= "auto" then
+    o.background = machine.background or "dark"
+end
 
 -- Editing
 o.expandtab = true

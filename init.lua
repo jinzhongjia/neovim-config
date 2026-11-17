@@ -14,5 +14,8 @@ require("core.autocmds")
 require("core.diagnostics")
 require("core.lsp")
 
+-- 自带配色（colors/vsmin.lua + lua/vsmin/），深/浅跟随 'background'
+vim.cmd.colorscheme("vsmin")
+
 -- Plugin management (lazy.nvim)
 require("plugins")

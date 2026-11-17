@@ -15,7 +15,7 @@
   - 内置实验性 `ui2`（消除 Press-ENTER、cmdline 高亮）。
   - 内置 difftool（`:DiffTool`）、undotree（`<leader>u`）、注释（`gc`）、
     增量选区（`v_an`/`v_in`）、`[d`/`]d` 诊断跳转、`exrc` 项目本地配置。
-  - lualine 状态栏（vscode 主题 / 分支 / mini.diff hunk 计数 /
+  - lualine 状态栏（vsmin 主题 / 分支 / mini.diff hunk 计数 /
     诊断 / LSP 进度事件缓存 / 宏录制提示）。
   - `statuscolumn` 交给 snacks：左 mark/sign，右 fold/git（认 mini.diff 的 sign）。
 - **Go / TS 实现关系提示**：`plugin/golement.lua`、`plugin/tslement.lua`
@@ -52,7 +52,7 @@
 | Markdown | render-markdown.nvim | 首个 markdown |
 | 键位速查 | which-key.nvim | VeryLazy |
 | AI | omp.nvim / copilot.lua | 首次 `:Omp` 或 `<leader>p` / InsertEnter |
-| 配色 | vscode.nvim | 启动 |
+| 配色 | 自带 `vsmin`（`colors/vsmin.lua` + `lua/vsmin/`，VS Code 风格，默认深色；本机 `local.lua` 写 `background = "auto"/"light"` 才跟随终端或用浅色，`<leader>Tb` 临时切换） | 启动 |
 
 ## 📦 安装指南
 
@@ -203,7 +203,7 @@ hunk 操作（mini.diff）：`gh` 暂存（operator）· `gH` 撤销 · `[h`/`]h
     ├── surround.lua / todo.lua / which-key.lua / flash.lua
     ├── copilot.lua           # InsertEnter 懒加载
     ├── terminal.lua          # 浮动终端（Snacks.terminal）
-    ├── ai.lua / bufferline.lua / colorscheme.lua
+    ├── ai.lua / bufferline.lua
     ├── mason.lua             # :MasonInstallAll
     ├── lazydev.lua / difftool.lua / ui2.lua
     └── …

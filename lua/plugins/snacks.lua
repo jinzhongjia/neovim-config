@@ -207,3 +207,5 @@ Snacks.toggle.treesitter():map("<leader>Tt")
 Snacks.toggle.indent():map("<leader>Ti")
 -- inlay hints 已有 <leader>ih（core/lsp.lua），不再重复
 Snacks.toggle.dim():map("<leader>TD")
+-- 配色深/浅切换（vsmin 跟随 'background'）
+Snacks.toggle.option("background", { off = "light", on = "dark", name = "Dark Background" }):map("<leader>Tb")

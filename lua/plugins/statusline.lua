@@ -1,5 +1,5 @@
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
--- Statusline — lualine.nvim（主题用 vscode.nvim 自带的 lualine 主题）
+-- Statusline — lualine.nvim（主题 lua/lualine/themes/vsmin.lua，与配色同源）
 -- 布局: [模式] [分支 diff | 文件] REC ……… [进度] [诊断 LSP 类型] [位置]
 -- ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -82,7 +82,7 @@ end
 
 require("lualine").setup({
     options = {
-        theme = "vscode",
+        theme = "vsmin",
         globalstatus = true,
         component_separators = "",
         section_separators = "",

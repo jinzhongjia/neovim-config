@@ -42,12 +42,6 @@ require("lazy").setup({
             priority = 1000,
             config = config("snacks"),
         },
-        {
-            "Mofiqul/vscode.nvim",
-            lazy = false,
-            priority = 900,
-            config = config("colorscheme"),
-        },
 
         -- 读文件前注册 FileType/LSP 回调，避免错过首个 buffer。
         {
@@ -323,7 +317,7 @@ require("lazy").setup({
         fallback = true,
     },
     install = {
-        colorscheme = { "vscode", "habamax" },
+        colorscheme = { "vsmin", "habamax" },
     },
     checker = {
         enabled = false,
